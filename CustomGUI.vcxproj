@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{FE7EADDA-9712-45C7-96B9-A3614A7D63C2}</ProjectGuid>
+    <RootNamespace>CustomGUI</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;winspool.lib;comdlg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\GLEW\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;winspool.lib;comdlg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Book.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Container.cpp" />
+    <ClCompile Include="Controls.cpp" />
+    <ClCompile Include="CustomShape.cpp" />
+    <ClCompile Include="ElementAction.cpp" />
+    <ClCompile Include="ElementGroup.cpp" />
+    <ClCompile Include="Exponential.cpp" />
+    <ClCompile Include="FileProcessor.cpp" />
+    <ClCompile Include="FontFileReader.cpp" />
+    <ClCompile Include="FontMathcpp.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="KeyboardManager.cpp" />
+    <ClCompile Include="Linear.cpp" />
+    <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="Logorithmic.cpp" />
+    <ClCompile Include="MasterElement.cpp" />
+    <ClCompile Include="Maths.cpp" />
+    <ClCompile Include="MemoryManagement.cpp" />
+    <ClCompile Include="MouseManager.cpp" />
+    <ClCompile Include="NewCharacter.cpp" />
+    <ClCompile Include="NewRender.cpp" />
+    <ClCompile Include="Oscillation.cpp" />
+    <ClCompile Include="Page.cpp" />
+    <ClCompile Include="PageCreator.cpp" />
+    <ClCompile Include="PageGroup.cpp" />
+    <ClCompile Include="PageGroupItem.cpp" />
+    <ClCompile Include="Quad.cpp" />
+    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Selection.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="Slider.cpp" />
+    <ClCompile Include="System.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="TextSpecification.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Toggle.cpp" />
+    <ClCompile Include="UIElement.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="Book.h" />
+    <ClInclude Include="Boolean.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="Container.h" />
+    <ClInclude Include="Controls.h" />
+    <ClInclude Include="CustomShape.h" />
+    <ClInclude Include="Define.h" />
+    <ClInclude Include="Dependencies\GLEW\include\GL\eglew.h" />
+    <ClInclude Include="Dependencies\GLEW\include\GL\glew.h" />
+    <ClInclude Include="Dependencies\GLEW\include\GL\glxew.h" />
+    <ClInclude Include="Dependencies\GLEW\include\GL\wglew.h" />
+    <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3.h" />
+    <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="ElementAction.h" />
+    <ClInclude Include="ElementGroup.h" />
+    <ClInclude Include="Exponential.h" />
+    <ClInclude Include="FileProcessor.h" />
+    <ClInclude Include="FontFileReader.h" />
+    <ClInclude Include="FontMath.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="KeyboardManager.h" />
+    <ClInclude Include="Linear.h" />
+    <ClInclude Include="Loader.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="Logarithmic.h" />
+    <ClInclude Include="MasterElement.h" />
+    <ClInclude Include="Maths.h" />
+    <ClInclude Include="MemoryManagement.h" />
+    <ClInclude Include="MouseManager.h" />
+    <ClInclude Include="NewCharacter.h" />
+    <ClInclude Include="NewRender.h" />
+    <ClInclude Include="Oscillation.h" />
+    <ClInclude Include="Page.h" />
+    <ClInclude Include="PageCreator.h" />
+    <ClInclude Include="PageGroup.h" />
+    <ClInclude Include="PageGroupItem.h" />
+    <ClInclude Include="Quad.h" />
+    <ClInclude Include="RawModel.h" />
+    <ClInclude Include="RawTexture.h" />
+    <ClInclude Include="Render.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Selection.h" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="Slider.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="TextSpecification.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Toggle.h" />
+    <ClInclude Include="UIElement.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CustomGUI.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ProgramFiles\GUIData.txt" />
+    <Text Include="Shaders\FontFS.txt" />
+    <Text Include="Shaders\FontVS.txt" />
+    <Text Include="Shaders\FragmentShader.txt" />
+    <Text Include="Shaders\Text.txt" />
+    <Text Include="Shaders\VertexShader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\13-132414_icon-green-check-mark-png-transparent-png.png" />
+    <Image Include="Resources\440-4406206_black-check-mark-clipart-transparent-background-black-check.png" />
+    <Image Include="Resources\arial.png" />
+    <Image Include="Resources\calibri.png" />
+    <Image Include="Resources\candara.png" />
+    <Image Include="Resources\color-cube.png" />
+    <Image Include="Resources\container2.png" />
+    <Image Include="Resources\download (2).jpg" />
+    <Image Include="Resources\hiclipart.com.png" />
+    <Image Include="Resources\images (1).png" />
+    <Image Include="Resources\images (5).jpg" />
+    <Image Include="Resources\images.png" />
+    <Image Include="Resources\img_514215.png" />
+    <Image Include="Resources\metrostation-i-icon-png-clipart-thumbnail.jpg" />
+    <Image Include="Resources\pexels-photo-414612.jpeg" />
+    <Image Include="Resources\segoe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arial.fnt" />
+    <None Include="Resources\calibri (1).fnt" />
+    <None Include="Resources\candara.fnt" />
+    <None Include="Resources\segoe.fnt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
