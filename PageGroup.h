@@ -5,47 +5,60 @@
 #include "Log.h"
 #include "PageGroupItem.h"
 #include "Slider.h"
+#include "MasterElement.h"
 //#include "ProgressBar.h"
 
-struct PageGroupData
-{
-	Page* Page;
-	glm::vec2 Position;
-	glm::vec2 Size;
-	glm::vec2 Color;
+//struct CPageGroupData
+//{
+//	Page* Page;
+//	glm::vec2 Position;
+//	glm::vec2 Size;
+//	glm::vec2 Color;
+//
+//	bool MouseAccess;
+//	bool Centered;
+//	bool Highlighted;
+//	int ShapeType;
+//
+//	glm::vec2 XYShapesPerRow;
+//	glm::vec2 ShapeDataSize;
+//
+//	float Left;
+//	float Right;
+//	float Top;
+//	float Bottom;
+//
+//	//PageGroup Shape
+//	int GroupID;
+//	int ShapeCount;
+//	int ShapeOffset;
+//	int ShapeStartID;
+//
+//	//PageGroup Group
+//	int PageGroupCount;
+//
+//};
 
-	bool MouseAccess;
-	bool Centered;
-	bool Highlighted;
-	int ShapeType;
-
-	glm::vec2 XYShapesPerRow;
-	glm::vec2 ShapeDataSize;
-
-	float Left;
-	float Right;
-	float Top;
-	float Bottom;
-
-	//PageGroup Shape
-	int GroupID;
-	int ShapeCount;
-	int ShapeOffset;
-	int ShapeStartID;
-
-	//PageGroup Group
-	int PageGroupCount;
-
-};
-
-class PageGroup
+class PageGroup : public MasterElement
 {
 public:
+
+	//PageGroupData LoadedShape.PageGroup;
+	//PageGroupItemData CurrentPageItem;
+	//GroupData CurrentShapeGroup;
+	TextData CurrentText;
+	SliderData CurrentSliderData; //?
 
 	PageGroup();
 	PageGroup(Page& Page);
 	PageGroup(Page& Page, PageGroupData& PageGroup);
+	PageGroup(Page& Page, ShapeData& ShapeData);
 	PageGroup(Page& Page, int ID);
+
+	void Add_Default() {}; //Editor/None Set in Stone
+	void Add_Duplicate() {}; //Editor/None Set in Stone
+	void Add_Insert() {}; //Editor/None Set in Stone
+	void Delete() {};
 
 	void ReCalibrateID();
 
@@ -53,13 +66,6 @@ public:
 	//GroupData CurrentShapeGroup;
 	//TextData CurrentText;
 	//ShapeData CurrentShape;
-
-	PageGroupData CurrentPageGroup;
-	PageGroupItemData CurrentPageItem;
-	GroupData CurrentShapeGroup;
-	TextData CurrentText;
-	ShapeData CurrentShape;
-	SliderData CurrentSliderData; //?
 
 	//SetPosition();
 	//SetSize();

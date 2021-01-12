@@ -47,13 +47,13 @@ public:
 	static bool FirstCreation;
 	static CharacterData AllCharacters[94];
 
-	//Static Functions
-	static CharacterData FindCharacter(string& File, int ASCII); //Finds Character in Font File
-	static CharacterData& GetCharacter(int Ascii); //Returns Chosen Character's Data
-
 	//Public Members
 	string CurrentFontFile;
 	CharacterData CurrentCharacter;
+
+	//Static Functions
+	static CharacterData FindCharacter(string& File, int ASCII); //Finds Character in Font File
+	static CharacterData& GetCharacter(int Ascii); //Returns Chosen Character's Data
 
     //Constructors
 	NewCharacter(Page& Page);                       //New Shape

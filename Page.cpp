@@ -630,164 +630,164 @@ void Page::InsertShapeArray(int Spot, int Amount)
 
 
 //NOTE: when you are done using 600x1200 as resolution change specs to System.Height/width
-int Page::AddTextBox(TextSpecification TextSpecs)
-{
-	int ID = ShapeAmount();
-	cout << "NextLine Spacing " << TextSpecs.LineSpacing << endl;
-	ShapeData CharShapeData;
-	FontMath Font;
-	int SCR_HEIGHT = 600;
-	int SCR_WIDTH = 1200;
-
-	bool LineRestart = true;
-	float Maxline;
-
-	CharShapeData.MouseAccess = TextSpecs.MouseAccess;
-	CharShapeData.PartOfGroup = true;
-	CharShapeData.ShapeGroupStart = ShapeContainer.CurrentContainerAmount;
-	CharShapeData.ShapeGroupCount = TextSpecs.Count;
-	CharShapeData.Text = TextSpecs.Text;
-	CharShapeData.ShapeGroupPosition = TextSpecs.Position;
-	//CharShapeData.ShapeDataType = TYPE_TEXT;
-
-	const char* FullTextString = TextSpecs.Text.c_str();
-	glm::vec2 StartPosition;
-	if (TextSpecs.Centered == true)
-	{
-		TextSpecs.CursorPosition = { TextSpecs.Position[0] - (TextSpecs.Size[0] / 2), TextSpecs.Position[1] + (TextSpecs.Size[1] / 2) };
-		StartPosition = TextSpecs.CursorPosition;
-		Maxline = (TextSpecs.Position[0] + (TextSpecs.Size[0] / 2));
-	}
-	else
-	{
-		TextSpecs.CursorPosition = TextSpecs.Position;
-		StartPosition = TextSpecs.CursorPosition;
-		Maxline = (TextSpecs.Position[0] + TextSpecs.Size[0]);
-	}
-
-
-
-	//Text Loop
-	for (int n = 0; n < TextSpecs.Text.size(); n++)
-	{
-		//Retreives Character information from file
-		Character Char(TextSpecs.FontFile, TextSpecs.Text[n]);
-
-		CharShapeData.Position = Font.GetCharacterPosition(Char, TextSpecs.CursorPosition, TextSpecs.FontSize, LineRestart);
-		CharShapeData.Size = Font.GetCharacterSize(Char, CharShapeData.Position, SCR_HEIGHT, SCR_WIDTH, TextSpecs.FontSize);
-		CharShapeData.Color = TextSpecs.Color;
-		CharShapeData.ActiveTexture = TextSpecs.FontSlot;
-		CharShapeData.ShapeGroupOffset = ShapeContainer.CurrentContainerAmount - CharShapeData.ShapeGroupStart;
-		//AddCharacter(CharShapeData, Char, false);
-
-		////Checks if line needs to be returned 
-		LineRestart = QueryLineRestart(TextSpecs.CursorPosition, Maxline);
-		
-		TextSpecs.CursorPosition = Font.AdvanceCursor(Char, TextSpecs.FontSize, TextSpecs.CursorPosition, TextSpecs.CharSpacing);
-
-		LineRestart = QueryLineRestart(TextSpecs.CursorPosition, Maxline);
-		if (TextSpecs.List == false)
-		{
-			if (LineRestart == true)
-			{   ////Move CursorPosition to the next line
-				TextSpecs.CursorPosition = Font.NextLine(StartPosition, Char, TextSpecs.CursorPosition, TextSpecs.FontSize, TextSpecs.CharSpacing, TextSpecs.Position[0]);
-			}
-		}
-		else
-		{
-		    //Next Line if Space
-	
-			if (FullTextString[n - 1] == ' ' && FullTextString[n] == ' ' && FullTextString[n + 1] != ' ')
-			{   ////Move CursorPosition to the next line
-				TextSpecs.CursorPosition = Font.NextLine(StartPosition, Char, TextSpecs.CursorPosition, TextSpecs.FontSize, TextSpecs.LineSpacing,  TextSpecs.Position[0]);
-			}
-		}
-	}
-	return ID;
-}
-
-//Similar to replace grid
-void Page::ReplaceTextBox(TextSpecification NewTextSpecs)
-{
-	ShapeData CharShapeData;
-	FontMath Font;
-	int SCR_HEIGHT = 600;
-	int SCR_WIDTH = 1200;
-
-	float Maxline;
-	int ShapeDataDifference;
-	bool LineRestart = true;
-	glm::vec2 StartPosition;
-
-	ShapeData* OldShapeData = GetShapeDataP(NewTextSpecs.Start);
-	int GridInterval = OldShapeData->ShapeGroupStart;
-	CharShapeData.PartOfGroup = true;
-	CharShapeData.ShapeGroupStart = OldShapeData->ShapeGroupStart;
-	CharShapeData.Text = NewTextSpecs.Text;
-	CharShapeData.Position = NewTextSpecs.Position;
-	//CharShapeData.ShapeDataType = TYPE_TEXT;
-
-	if (NewTextSpecs.Centered == true)
-	{
-		NewTextSpecs.CursorPosition = { NewTextSpecs.Position[0] - (NewTextSpecs.Size[0] / 2), NewTextSpecs.Position[1] + (NewTextSpecs.Size[1] / 2) };
-		StartPosition = NewTextSpecs.CursorPosition;
-		Maxline = (NewTextSpecs.Position[0] + (NewTextSpecs.Size[0] / 2));
-	}
-	else
-	{
-		NewTextSpecs.CursorPosition = NewTextSpecs.Position;
-		StartPosition = NewTextSpecs.CursorPosition;
-		Maxline = (NewTextSpecs.Position[0] + NewTextSpecs.Size[0]);
-	}
-
-	////NewSize is bigger than the old size
-	//if (OldShapeData->GroupCount < NewTextSpecs.Count && OldShapeData->GroupCount != NewTextSpecs.Count)
-	//{
-	//	//insert diff
-	//	ShapeDataDifference = NewTextSpecs.Count - OldShapeData->GroupCount;
-	//	InsertShapeData(OldShapeData->GroupStart + OldShapeData->GroupCount, ShapeDataDifference, Zero1, true);
-	//	OldShapeData->GroupCount = NewTextSpecs.Count;
-	//}
-	//
-	////NewSize is smaller than the old size
-	//if (OldShapeData->GroupCount > NewTextSpecs.Count && OldShapeData->GroupCount != NewTextSpecs.Count)
-	//{
-	//	//deletediff
-	//	ShapeDataDifference = OldShapeData->GroupCount - NewTextSpecs.Count;
-	//	DeleteShapeData(OldShapeData->GroupStart + OldShapeData->GroupCount, ShapeDataDifference);
-	//	OldShapeData->GroupCount = NewTextSpecs.Count;
-	//}
-
-	//Text Loop
-	for (int n = 0; n < NewTextSpecs.Count; n++)
-	{
-		//Retreives Character information from file
-		Character Char(NewTextSpecs.FontFile, NewTextSpecs.Text[n]);
-
-		CharShapeData.Position = Font.GetCharacterPosition(Char, NewTextSpecs.CursorPosition, NewTextSpecs.FontSize, LineRestart);
-		CharShapeData.Size = Font.GetCharacterSize(Char, CharShapeData.Position, SCR_HEIGHT, SCR_WIDTH, NewTextSpecs.FontSize);
-		CharShapeData.Color = NewTextSpecs.Color;
-		CharShapeData.ActiveTexture = NewTextSpecs.FontSlot;
-		CharShapeData.ShapeGroupOffset = GridInterval;
-		//ReplaceCharacter(GridInterval, CharShapeData, Char, false);
-		LoadThisPage();
-
-		//cout << "Grid Interval" << GridInterval << endl;
-		////Checks if line needs to be returned 
-
-		NewTextSpecs.CursorPosition = Font.AdvanceCursor(Char, NewTextSpecs.FontSize, NewTextSpecs.CursorPosition, NewTextSpecs.CharSpacing);
-
-		LineRestart = QueryLineRestart(NewTextSpecs.CursorPosition, Maxline);
-
-		if (LineRestart == true)
-		{   ////Move CursorPosition to the next line
-			NewTextSpecs.CursorPosition = Font.NextLine(StartPosition, Char, NewTextSpecs.CursorPosition, NewTextSpecs.FontSize, NewTextSpecs.LineSpacing, NewTextSpecs.Position[0]);
-		}
-
-		GridInterval++;
-	}
-}
-
+//int Page::AddTextBox(TextSpecification TextSpecs)
+//{
+//	int ID = ShapeAmount();
+//	cout << "NextLine Spacing " << TextSpecs.LineSpacing << endl;
+//	ShapeData CharShapeData;
+//	FontMath Font;
+//	int SCR_HEIGHT = 600;
+//	int SCR_WIDTH = 1200;
+//
+//	bool LineRestart = true;
+//	float Maxline;
+//
+//	CharShapeData.MouseAccess = TextSpecs.MouseAccess;
+//	CharShapeData.PartOfGroup = true;
+//	CharShapeData.ShapeGroupStart = ShapeContainer.CurrentContainerAmount;
+//	CharShapeData.ShapeGroupCount = TextSpecs.Count;
+//	CharShapeData.Text = TextSpecs.Text;
+//	CharShapeData.ShapeGroupPosition = TextSpecs.Position;
+//	//CharShapeData.ShapeDataType = TYPE_TEXT;
+//
+//	const char* FullTextString = TextSpecs.Text.c_str();
+//	glm::vec2 StartPosition;
+//	if (TextSpecs.Centered == true)
+//	{
+//		TextSpecs.CursorPosition = { TextSpecs.Position[0] - (TextSpecs.Size[0] / 2), TextSpecs.Position[1] + (TextSpecs.Size[1] / 2) };
+//		StartPosition = TextSpecs.CursorPosition;
+//		Maxline = (TextSpecs.Position[0] + (TextSpecs.Size[0] / 2));
+//	}
+//	else
+//	{
+//		TextSpecs.CursorPosition = TextSpecs.Position;
+//		StartPosition = TextSpecs.CursorPosition;
+//		Maxline = (TextSpecs.Position[0] + TextSpecs.Size[0]);
+//	}
+//
+//
+//
+//	//Text Loop
+//	for (int n = 0; n < TextSpecs.Text.size(); n++)
+//	{
+//		//Retreives Character information from file
+//		Character Char(TextSpecs.FontFile, TextSpecs.Text[n]);
+//
+//		CharShapeData.Position = Font.GetCharacterPosition(Char, TextSpecs.CursorPosition, TextSpecs.FontSize, LineRestart);
+//		CharShapeData.Size = Font.GetCharacterSize(Char, CharShapeData.Position, SCR_HEIGHT, SCR_WIDTH, TextSpecs.FontSize);
+//		CharShapeData.Color = TextSpecs.Color;
+//		CharShapeData.ActiveTexture = TextSpecs.FontSlot;
+//		CharShapeData.ShapeGroupOffset = ShapeContainer.CurrentContainerAmount - CharShapeData.ShapeGroupStart;
+//		//AddCharacter(CharShapeData, Char, false);
+//
+//		////Checks if line needs to be returned 
+//		LineRestart = QueryLineRestart(TextSpecs.CursorPosition, Maxline);
+//		
+//		TextSpecs.CursorPosition = Font.AdvanceCursor(Char, TextSpecs.FontSize, TextSpecs.CursorPosition, TextSpecs.CharSpacing);
+//
+//		LineRestart = QueryLineRestart(TextSpecs.CursorPosition, Maxline);
+//		if (TextSpecs.List == false)
+//		{
+//			if (LineRestart == true)
+//			{   ////Move CursorPosition to the next line
+//				TextSpecs.CursorPosition = Font.NextLine(StartPosition, Char, TextSpecs.CursorPosition, TextSpecs.FontSize, TextSpecs.CharSpacing, TextSpecs.Position[0]);
+//			}
+//		}
+//		else
+//		{
+//		    //Next Line if Space
+//	
+//			if (FullTextString[n - 1] == ' ' && FullTextString[n] == ' ' && FullTextString[n + 1] != ' ')
+//			{   ////Move CursorPosition to the next line
+//				TextSpecs.CursorPosition = Font.NextLine(StartPosition, Char, TextSpecs.CursorPosition, TextSpecs.FontSize, TextSpecs.LineSpacing,  TextSpecs.Position[0]);
+//			}
+//		}
+//	}
+//	return ID;
+//}
+//
+////Similar to replace grid
+//void Page::ReplaceTextBox(TextSpecification NewTextSpecs)
+//{
+//	ShapeData CharShapeData;
+//	FontMath Font;
+//	int SCR_HEIGHT = 600;
+//	int SCR_WIDTH = 1200;
+//
+//	float Maxline;
+//	int ShapeDataDifference;
+//	bool LineRestart = true;
+//	glm::vec2 StartPosition;
+//
+//	ShapeData* OldShapeData = GetShapeDataP(NewTextSpecs.Start);
+//	int GridInterval = OldShapeData->ShapeGroupStart;
+//	CharShapeData.PartOfGroup = true;
+//	CharShapeData.ShapeGroupStart = OldShapeData->ShapeGroupStart;
+//	CharShapeData.Text = NewTextSpecs.Text;
+//	CharShapeData.Position = NewTextSpecs.Position;
+//	//CharShapeData.ShapeDataType = TYPE_TEXT;
+//
+//	if (NewTextSpecs.Centered == true)
+//	{
+//		NewTextSpecs.CursorPosition = { NewTextSpecs.Position[0] - (NewTextSpecs.Size[0] / 2), NewTextSpecs.Position[1] + (NewTextSpecs.Size[1] / 2) };
+//		StartPosition = NewTextSpecs.CursorPosition;
+//		Maxline = (NewTextSpecs.Position[0] + (NewTextSpecs.Size[0] / 2));
+//	}
+//	else
+//	{
+//		NewTextSpecs.CursorPosition = NewTextSpecs.Position;
+//		StartPosition = NewTextSpecs.CursorPosition;
+//		Maxline = (NewTextSpecs.Position[0] + NewTextSpecs.Size[0]);
+//	}
+//
+//	////NewSize is bigger than the old size
+//	//if (OldShapeData->GroupCount < NewTextSpecs.Count && OldShapeData->GroupCount != NewTextSpecs.Count)
+//	//{
+//	//	//insert diff
+//	//	ShapeDataDifference = NewTextSpecs.Count - OldShapeData->GroupCount;
+//	//	InsertShapeData(OldShapeData->GroupStart + OldShapeData->GroupCount, ShapeDataDifference, Zero1, true);
+//	//	OldShapeData->GroupCount = NewTextSpecs.Count;
+//	//}
+//	//
+//	////NewSize is smaller than the old size
+//	//if (OldShapeData->GroupCount > NewTextSpecs.Count && OldShapeData->GroupCount != NewTextSpecs.Count)
+//	//{
+//	//	//deletediff
+//	//	ShapeDataDifference = OldShapeData->GroupCount - NewTextSpecs.Count;
+//	//	DeleteShapeData(OldShapeData->GroupStart + OldShapeData->GroupCount, ShapeDataDifference);
+//	//	OldShapeData->GroupCount = NewTextSpecs.Count;
+//	//}
+//
+//	//Text Loop
+//	for (int n = 0; n < NewTextSpecs.Count; n++)
+//	{
+//		//Retreives Character information from file
+//		Character Char(NewTextSpecs.FontFile, NewTextSpecs.Text[n]);
+//
+//		CharShapeData.Position = Font.GetCharacterPosition(Char, NewTextSpecs.CursorPosition, NewTextSpecs.FontSize, LineRestart);
+//		CharShapeData.Size = Font.GetCharacterSize(Char, CharShapeData.Position, SCR_HEIGHT, SCR_WIDTH, NewTextSpecs.FontSize);
+//		CharShapeData.Color = NewTextSpecs.Color;
+//		CharShapeData.ActiveTexture = NewTextSpecs.FontSlot;
+//		CharShapeData.ShapeGroupOffset = GridInterval;
+//		//ReplaceCharacter(GridInterval, CharShapeData, Char, false);
+//		LoadThisPage();
+//
+//		//cout << "Grid Interval" << GridInterval << endl;
+//		////Checks if line needs to be returned 
+//
+//		NewTextSpecs.CursorPosition = Font.AdvanceCursor(Char, NewTextSpecs.FontSize, NewTextSpecs.CursorPosition, NewTextSpecs.CharSpacing);
+//
+//		LineRestart = QueryLineRestart(NewTextSpecs.CursorPosition, Maxline);
+//
+//		if (LineRestart == true)
+//		{   ////Move CursorPosition to the next line
+//			NewTextSpecs.CursorPosition = Font.NextLine(StartPosition, Char, NewTextSpecs.CursorPosition, NewTextSpecs.FontSize, NewTextSpecs.LineSpacing, NewTextSpecs.Position[0]);
+//		}
+//
+//		GridInterval++;
+//	}
+//}
+//
 //Character ShapeData Fabricated here
 //void Page::ReplaceCharacter(int Spot, ShapeData& NewShapeData, Character Character, bool Centered)
 //{
@@ -1156,7 +1156,7 @@ int Page::FindShapeData(double xMouse, double yMouse, bool Print)
 
 		//Set the Shape ID to the layer iterator
 			Result->ID = i;
-			Result->ShapeGroupStart = i - Result->ShapeGroupOffset;
+			Result->ShapeGroup.ShapeStart = i - Result->ShapeGroup.ShapeOffset; 
 
 			if (xMouse < Result->Right && xMouse >  Result->Left && yMouse < Result->Top && yMouse >  Result->Bottom)
 			{
@@ -2315,7 +2315,7 @@ void Page::HideTextBox(int TextStart, bool MouseAccess)
 {
 	ShapeData* Buffer = GetShapeDataP(TextStart);
 
-	for (int i = TextStart; i < TextStart + Buffer->ShapeGroupCount; i++)
+	for (int i = TextStart; i < TextStart + Buffer->ShapeGroup.ShapeCount; i++)
 	{
 		HideShapeData(i, MouseAccess);
 	}
@@ -2326,7 +2326,7 @@ void Page::UnHideTextBox(int TextStart, float AlphaChannel , bool MouseAccess)
 {
 	ShapeData* Buffer = GetShapeDataP(TextStart);
 
-	for (int i = TextStart; i < TextStart + Buffer->ShapeGroupCount; i++)
+	for (int i = TextStart; i < TextStart + Buffer->ShapeGroup.ShapeCount; i++)
 	{
 		UnHideShapeData(i, AlphaChannel, MouseAccess);
 	}
@@ -2706,14 +2706,14 @@ void Page::AddShape(ShapeData& Shape)
 	//Really Amount + 1 //
 	Shape.ID = ShapeAmount();
 
-	if (Shape.ShapeDataType == TYPE_SHAPE)
-	{
-		this->ShapeGroupCount++;
-		Shape.GroupID = this->ShapeGroupCount;
-		Shape.ShapeGroupStart = Shape.ID;
-		Shape.ShapeGroupCount = 0;
-		Shape.ShapeGroupOffset = 0;
-	}
+	//if (Shape.Type == TYPE_SHAPE)
+	//{
+	//	this->ShapeGroupCount++;
+	//    Shape.ShapeGroup.ID = this->ShapeGroupCount;
+	//	Shape.ShapeGroup.ShapeStart = Shape.ID;
+	//	Shape.ShapeGroup.ShapeCount = 0;
+	//	Shape.ShapeGroup.ShapeOffset = 0;
+	//}
 
 	Shape.Top = (Shape.Position.y + Shape.Size.y/2);
 	Shape.Bottom = (Shape.Position.y - Shape.Size.y/2);

@@ -5,36 +5,36 @@ NewGrid::NewGrid(Page& Page)
 	: ShapeGroup{Page}
 {
 	//Group Setup
-	this->CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-	this->CurrentGroupData.Count = CurrentGroupData.XYShapesPerRow[0] * CurrentGroupData.XYShapesPerRow[1] - 1;
+	this->LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+	this->LoadedShape.ShapeGroup.ShapeCount = LoadedShape.ShapeGroup.XYShapePerRow[0] * LoadedShape.ShapeGroup.XYShapePerRow[1] - 1;
 	//Out Of Bounds Check
-	if (Page.InBounds(Page.ShapeAmount() + CurrentGroupData.Count))
-	{this->CurrentGroupData.NextGroup = Page.GetNextShapeAddress(4);} //Default +4
+	//if (Page.InBounds(Page.ShapeAmount() + LoadedShape.ShapeGroup.ShapeCount))
+	//{this->LoadedShape.ShapeGroup.NextGroup = Page.GetNextShapeAddress(4);} //Default +4
 	//Attribute Setup
-	this->CurrentGroupData.Color = { 1.0, 1.0, 1.0, 1.0 };
-	this->CurrentGroupData.Size = { 0.5, 0.5 };
-	this->CurrentGroupData.Position = { 0.0, 0.0 };
-	this->CurrentGroupData.MouseAccess = true;
-	this->CurrentGroupData.Highlighted = false;
-	this->CurrentGroupData.Centered = true;
-	this->CurrentGroupData.XYShapesPerRow = { 2.0, 2.0 };
-	this->CurrentGroupData.ShapeDataSize = { 0.8, 0.8 };
+	this->LoadedShape.ShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 };
+	this->LoadedShape.ShapeGroup.Size = { 0.5, 0.5 };
+	this->LoadedShape.ShapeGroup.Position = { 0.0, 0.0 };
+	this->LoadedShape.ShapeGroup.MouseAccess = true;
+	this->LoadedShape.ShapeGroup.Highlighted = false;
+	this->LoadedShape.ShapeGroup.Centered = true;
+	this->LoadedShape.ShapeGroup.XYShapePerRow = { 2.0, 2.0 };
+	this->LoadedShape.ShapeGroup.ShapeSize = { 0.8, 0.8 };
 
 	AddGrid();
 }
 
 
-NewGrid::NewGrid(Page& Page, GroupData& GroupData)
-	:ShapeGroup{Page, GroupData}
+NewGrid::NewGrid(Page& Page, ShapeGroupData& ShapeGroupData)
+	:ShapeGroup{Page, ShapeGroupData }
 {
-	CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-	CurrentGroupData.Count = CurrentGroupData.XYShapesPerRow[0] * CurrentGroupData.XYShapesPerRow[1] - 1;
-	CurrentGroupData.Centered = true;
+	LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+	LoadedShape.ShapeGroup.ShapeCount = LoadedShape.ShapeGroup.XYShapePerRow[0] * LoadedShape.ShapeGroup.XYShapePerRow[1] - 1;
+	LoadedShape.ShapeGroup.Centered = true;
 
 	//Out Of Bounds Check
-	if (Page.InBounds(Page.ShapeAmount() + CurrentGroupData.Count))
-	{ CurrentGroupData.NextGroup = Page.GetNextShapeAddress(4);} //Default +4
-	 //Group Setup
+	//if (Page.InBounds(Page.ShapeAmount() + LoadedShape.ShapeGroup.Count))
+	//{ LoadedShape.ShapeGroup.NextGroup = Page.GetNextShapeAddress(4);} //Default +4
+	// //Group Setup
 	 AddGrid();
 }
 
@@ -43,16 +43,16 @@ NewGrid::NewGrid(Page& Page, int GroupID)
 	: ShapeGroup{Page, GroupID}
 {
 	//Set 1st shape of group
-	CurrentShape = Page.GetShapeDataR(GroupID);
+	LoadedShape = Page.GetShapeDataR(GroupID);
 	//SetGroupData
-	if (CurrentShape.ShapeDataType == TYPE_GRID)
+	if (LoadedShape.ShapeGroup.Type == TYPE_GRID)
 	{
-		ShapeToGroup(CurrentShape);
+		//ShapeToGroup(LoadedShape);
 	}
 	else
 	{
 		cout << "NEWGRID::ERROR::Shape is not part of grid " << endl;
-		CurrentShape.reset();
+		//LoadedShape.reset();
 	}
 }
 
@@ -62,19 +62,19 @@ NewGrid::NewGrid(Page& Page, int GroupID)
 int NewGrid::CreateGrid()
 {
 	int ShapeOffset = 0;
-	CurrentShape.ShapeDataType = TYPE_GRID;
+	LoadedShape.ShapeGroup.Type = TYPE_GRID;
 
 	//Add ShapeDatas to Page
-	for (int xQuad = 0; xQuad < this->CurrentGroupData.XYShapesPerRow[1]; xQuad++)
+	for (int xQuad = 0; xQuad < this->LoadedShape.ShapeGroup.XYShapePerRow[1]; xQuad++)
 	{
-		for (int yQuad = 0; yQuad < this->CurrentGroupData.XYShapesPerRow[0]; yQuad++)
+		for (int yQuad = 0; yQuad < this->LoadedShape.ShapeGroup.XYShapePerRow[0]; yQuad++)
 		{
 			//Set Per-ShapeData Details
-			CurrentShape.Position = LoadShapePosition(this->CurrentGroupData.Position, this->CurrentGroupData.Size, this->CurrentGroupData.XYShapesPerRow, { xQuad ,  yQuad }, this->CurrentGroupData.Centered);
-			CurrentShape.ShapeGroupOffset = ShapeOffset;
-			CurrentShape.GroupID = CurrentGroupData.GroupID;
+			LoadedShape.Position = LoadShapePosition(this->LoadedShape.ShapeGroup.Position, this->LoadedShape.ShapeGroup.Size, this->LoadedShape.ShapeGroup.XYShapePerRow, { xQuad ,  yQuad }, this->LoadedShape.ShapeGroup.Centered);
+			LoadedShape.ShapeGroup.ShapeOffset = ShapeOffset;
+			//LoadedShape.ShapeGroup.ID = LoadedShape.ShapeGroup.ID;
 			//Add Quad
-			Quad Quad_Grid(*CurrentGroupData.Page, CurrentShape);
+			Quad Quad_Grid(*CurrentPage, LoadedShape);
 			ShapeOffset++;
 		}
 	}
@@ -85,23 +85,23 @@ int NewGrid::CreateGrid()
 void NewGrid::ReplaceGrid()
 {
 	int ShapeOffset = 0;
-	int CurrentShapeID = CurrentGroupData.ShapeStartID;
-	Quad QuadP_Replace(*CurrentGroupData.Page, CurrentShapeID);
+	int LoadedShapeID = LoadedShape.ShapeGroup.ShapeStart;
+	Quad QuadP_Replace(*CurrentPage, LoadedShapeID);
 	//Add ShapeDatas to Page
-	for (int xQuad = 0; xQuad < this->CurrentGroupData.XYShapesPerRow[1]; xQuad++)
+	for (int xQuad = 0; xQuad < this->LoadedShape.ShapeGroup.XYShapePerRow[1]; xQuad++)
 	{
-		for (int yQuad = 0; yQuad < this->CurrentGroupData.XYShapesPerRow[0]; yQuad++)
+		for (int yQuad = 0; yQuad < this->LoadedShape.ShapeGroup.XYShapePerRow[0]; yQuad++)
 		{
-			QuadP_Replace.SwitchToShape(CurrentShapeID);
+			QuadP_Replace.Switch(LoadedShapeID);
 			//Set Per-ShapeData Details
-			CurrentShape.ID = CurrentShapeID;
-			cout << "CurrenShapeID" << CurrentShapeID << endl;
-			//cout << "CurrentGroup ShapeSize " << CurrentGroupData.ShapeDataSize[0] << " " << CurrentGroupData.ShapeDataSize[1]  << endl;
-			CurrentShape.Position = LoadShapePosition(this->CurrentGroupData.Position, this->CurrentGroupData.Size, this->CurrentGroupData.XYShapesPerRow, { xQuad ,  yQuad }, this->CurrentGroupData.Centered);
-			CurrentShape.ShapeGroupOffset = ShapeOffset;
+			LoadedShape.ID = LoadedShapeID;
+			cout << "CurrenShapeID" << LoadedShapeID << endl;
+			//cout << "CurrentGroup ShapeSize " << LoadedShape.ShapeGroup.ShapeDataSize[0] << " " << LoadedShape.ShapeGroup.ShapeDataSize[1]  << endl;
+			LoadedShape.Position = LoadShapePosition(this->LoadedShape.ShapeGroup.Position, this->LoadedShape.ShapeGroup.Size, this->LoadedShape.ShapeGroup.XYShapePerRow, { xQuad ,  yQuad }, this->LoadedShape.ShapeGroup.Centered);
+			LoadedShape.ShapeGroup.ShapeOffset = ShapeOffset;
 			//ReplaceQuad
-			QuadP_Replace.SetShape(CurrentShape);
-			CurrentShapeID++;
+			QuadP_Replace.SetShape(LoadedShape);
+			LoadedShapeID++;
 			ShapeOffset++;
 		}
 	}
@@ -152,10 +152,10 @@ glm::vec2 NewGrid::LoadShapePosition(glm::vec2 GroupPosition, glm::vec2 GroupSiz
 glm::vec2 NewGrid::LoadShapeSize(glm::vec2 GroupSize, glm::vec2 XYShapesPerRow, glm::vec2 ShapeDataSize)
 {
 
-	//cout << (CurrentGroupData.ShapeGroupSize[0] / (CurrentGroupData.XYShapesPerRow[0])) << endl;
-	//cout << (CurrentGroupData.ShapeGroupSize[1] / (CurrentGroupData.XYShapesPerRow[1])) << endl;
+	//cout << (LoadedShape.ShapeGroup.ShapeGroupSize[0] / (LoadedShape.ShapeGroup.XYShapesPerRow[0])) << endl;
+	//cout << (LoadedShape.ShapeGroup.ShapeGroupSize[1] / (LoadedShape.ShapeGroup.XYShapesPerRow[1])) << endl;
 
-	//cout << "XYShapeDatas per row " << CurrentGroupData.XYShapesPerRow[0] << CurrentGroupData.XYShapesPerRow[1] << endl;
+	//cout << "XYShapeDatas per row " << LoadedShape.ShapeGroup.XYShapesPerRow[0] << LoadedShape.ShapeGroup.XYShapesPerRow[1] << endl;
 	float xShapeDataSize = (GroupSize[0] / (XYShapesPerRow[0]));
 	float yShapeDataSize = (GroupSize[1] / (XYShapesPerRow[1]));
 
@@ -174,50 +174,50 @@ glm::vec2 NewGrid::LoadShapeSize(glm::vec2 GroupSize, glm::vec2 XYShapesPerRow, 
 void NewGrid::SetShapeData()
 {
 	//Grid Details
-	CurrentShape.ShapeGroupXYShapePerRow = CurrentGroupData.XYShapesPerRow;
-	CurrentShape.ShapeGroupShapeSize = CurrentGroupData.ShapeDataSize;
+	//LoadedShape.ShapeGroup.XYShapePerRow = LoadedShape.ShapeGroup.XYShapePerRow;
+	//LoadedShape.ShapeGroup.ShapeSize = LoadedShape.ShapeGroup.ShapeSize;
 
 	//Group Details
-	CurrentShape.ShapeGroupStart = this->CurrentGroupData.ShapeStartID;
-	CurrentShape.ShapeGroupCount = this->CurrentGroupData.XYShapesPerRow[0] * this->CurrentGroupData.XYShapesPerRow[1] - 1;
-	CurrentShape.ShapeGroupPosition = this->CurrentGroupData.Position;
-	CurrentShape.ShapeGroupSize = this->CurrentGroupData.Size;
-	CurrentShape.ShapeGroupColor = this->CurrentGroupData.Color;
-	CurrentShape.ShapeGroupMouseAccess = this->CurrentGroupData.MouseAccess;
-	CurrentShape.ShapeGroupCentered = this->CurrentGroupData.Centered;
-	CurrentShape.ShapeDataType = TYPE_GRID;
+	//LoadedShape.ShapeGroup.ShapeStart = this->LoadedShape.ShapeGroup.ShapeStart;
+	LoadedShape.ShapeGroup.ShapeCount = this->LoadedShape.ShapeGroup.XYShapePerRow[0] * this->LoadedShape.ShapeGroup.XYShapePerRow[1] - 1;
+	//LoadedShape.ShapeGroup.Position = this->LoadedShape.ShapeGroup.Position;
+	//LoadedShape.ShapeGroup.Size = this->LoadedShape.ShapeGroup.Size;
+	//LoadedShape.ShapeGroup.Color = this->LoadedShape.ShapeGroup.Color;
+	//LoadedShape.ShapeGroup.MouseAccess = this->LoadedShape.ShapeGroup.MouseAccess;
+	//LoadedShape.ShapeGroup.Centered = this->LoadedShape.ShapeGroup.Centered;
+	LoadedShape.ShapeGroup.Type = TYPE_GRID;
 
 	//Shape Details
-	CurrentShape.Size = LoadShapeSize(this->CurrentGroupData.Size, this->CurrentGroupData.XYShapesPerRow, this->CurrentGroupData.ShapeDataSize);
-	CurrentShape.Color = this->CurrentGroupData.Color;
+	LoadedShape.Size = LoadShapeSize(this->LoadedShape.ShapeGroup.Size, this->LoadedShape.ShapeGroup.XYShapePerRow, this->LoadedShape.ShapeGroup.ShapeSize);
+	LoadedShape.Color = this->LoadedShape.ShapeGroup.Color;
 }
 
 
 void NewGrid::SetGridXY(glm::vec2 XY)
 {
 	int NewCount = XY[0] * XY[1];
-	int NumShapesToAlter = NewCount - CurrentGroupData.Count;
-	CurrentGroupData.XYShapesPerRow = XY;
-	CurrentGroupData.Count = NewCount;
+	int NumShapesToAlter = NewCount - LoadedShape.ShapeGroup.ShapeCount;
+	LoadedShape.ShapeGroup.XYShapePerRow = XY;
+	LoadedShape.ShapeGroup.ShapeCount = NewCount;
 
 	//Add More Shapes
 	if (NumShapesToAlter > 0)
 	{
 		cout << "Inserted" << endl;
-		CurrentGroupData.Page->InsertShapeArray(CurrentGroupData.ShapeStartID, NumShapesToAlter);
+		CurrentPage->InsertShapeArray(LoadedShape.ShapeGroup.ShapeStart, NumShapesToAlter);
 	}
 	//RemoveShapes
 	else if (NumShapesToAlter < 0)
 	{
 		cout << "Removed " << endl;
-		CurrentGroupData.Page->DeleteShapeArray(CurrentGroupData.ShapeStartID, (NumShapesToAlter * -1));
+		CurrentPage->DeleteShapeArray(LoadedShape.ShapeGroup.ShapeStart, (NumShapesToAlter * -1));
 	}
 	Update();
 }
 
 void NewGrid::SetShapeSize(glm::vec2 ShapeSize)
 {
-	this->CurrentGroupData.ShapeDataSize = ShapeSize;
+	this->LoadedShape.ShapeGroup.ShapeSize = ShapeSize;
 	Update();
 
 }
@@ -228,22 +228,22 @@ void NewGrid::LoadGrid(Page* Page, int ShapeDataID)
 	ShapeData* ShapeDataDetails = Page->GetShapeDataP(ShapeDataID);
 
 	//Grid Details
-	this->CurrentGroupData.XYShapesPerRow = ShapeDataDetails->ShapeGroupXYShapePerRow;
-	this->CurrentGroupData.ShapeDataSize = ShapeDataDetails->ShapeGroupShapeSize;
+	this->LoadedShape.ShapeGroup.XYShapePerRow = ShapeDataDetails->ShapeGroup.XYShapePerRow;
+	this->LoadedShape.ShapeGroup.ShapeSize = ShapeDataDetails->ShapeGroup.ShapeSize;
 
 	//Group Details
-	this->CurrentGroupData.ShapeStartID = Page->ShapeAmount();
-	this->CurrentShape.GroupID = CurrentGroupData.GroupID;
-	this->CurrentGroupData.Count = ShapeDataDetails->ShapeGroupCount;
+	this->LoadedShape.ShapeGroup.ShapeStart = Page->ShapeAmount();
+	this->LoadedShape.ID = LoadedShape.ShapeGroup.ID;
+	this->LoadedShape.ShapeGroup.ShapeCount = ShapeDataDetails->ShapeGroup.ShapeCount;
 	//this->NextShapeDataGroup = ShapeDataDetails->NextShapeGroup;
-	this->CurrentGroupData.Position = ShapeDataDetails->ShapeGroupPosition;
-    this->CurrentGroupData.Size = ShapeDataDetails->ShapeGroupSize;
-    this->CurrentGroupData.Color = ShapeDataDetails->ShapeGroupColor;
-	this->CurrentGroupData.MouseAccess = ShapeDataDetails->MouseAccess;
-	this->CurrentGroupData.Centered = ShapeDataDetails->Centered;
-	this->CurrentGroupData.Highlighted = ShapeDataDetails->Highlighted;
+	this->LoadedShape.ShapeGroup.Position = ShapeDataDetails->ShapeGroup.Position;
+    this->LoadedShape.ShapeGroup.Size = ShapeDataDetails->ShapeGroup.Size;
+    this->LoadedShape.ShapeGroup.Color = ShapeDataDetails->ShapeGroup.Color;
+	this->LoadedShape.ShapeGroup.MouseAccess = ShapeDataDetails->MouseAccess;
+	this->LoadedShape.ShapeGroup.Centered = ShapeDataDetails->Centered;
+	this->LoadedShape.ShapeGroup.Highlighted = ShapeDataDetails->Highlighted;
 	//this->ShapeDataGroupType = ShapeDataDetails->ShapeDataType;
-	this->CurrentGroupData.ShapeStartID = ShapeDataDetails->ShapeGroupStart;
+	this->LoadedShape.ShapeGroup.ShapeStart = ShapeDataDetails->ShapeGroup.ShapeStart;
 }
 
 

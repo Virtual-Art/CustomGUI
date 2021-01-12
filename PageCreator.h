@@ -162,58 +162,26 @@ namespace PageCreator
 	void Empty();
 
 	//ShapeFunctions
-	void ShapePositionUp();
-	void ShapePositionDown();
-	void ShapePositionRight();
-	void ShapePositionLeft();
+	void PositionUp();
+	void PositionDown();
+	void PositionRight();
+	void PositionLeft();
 
-	void ShapeSizeUp();
-	void ShapeSizeDown();
-	void ShapeSizeRight();
-	void ShapeSizeLeft();
+	//Size
+	void SizeUp();
+	void SizeDown();
+	void SizeRight();
+	void SizeLeft();
 
-	void ShapeColorRUp();
-	void ShapeColorRDown();
-
-	void ShapeColorGUp();
-	void ShapeColorGDown();
-
-	void ShapeColorBUp();
-	void ShapeColorBDown();
-
-	void ShapeColorAUp();
-	void ShapeColorADown();
-
-	//ShapeGroup Functions 
-	void ShapeGroupPositionUp();
-	void ShapeGroupPositionDown();
-	void ShapeGroupPositionRight();
-	void ShapeGroupPositionLeft();
-			  
-	void ShapeGroupSizeUp();
-	void ShapeGroupSizeDown();
-	void ShapeGroupSizeRight();
-	void ShapeGroupSizeLeft();
-			  
-	void ShapeGroupColorRUp();
-	void ShapeGroupColorRDown();
-			  
-	void ShapeGroupColorGUp();
-	void ShapeGroupColorGDown();
-			  
-	void ShapeGroupColorBUp();
-	void ShapeGroupColorBDown();
-			  
-	void ShapeGroupColorAUp();
-	void ShapeGroupColorADown();
-
-
-	// Page item Group
-	void PageItemPositionUp();
-	void PageItemPositionDown();
-	void PageItemPositionRight();
-	void PageItemPositionLeft();
-
+	//RGBA
+	void ColorRUp();
+	void ColorRDown();
+	void ColorGUp();
+	void ColorGDown();
+	void ColorBUp();
+	void ColorBDown();
+	void ColorAUp();
+	void ColorADown();
 }
 
 #endif

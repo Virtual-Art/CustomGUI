@@ -119,15 +119,15 @@ ostream& operator<<(ostream& out, const ShapeData& ShapeData)
 	out << ShapeData.HighlightSize[0] << " " << ShapeData.HighlightSize[1] << endl;
 	out << ShapeData.HighlightColor[0] << " " << ShapeData.HighlightColor[1] << " " << ShapeData.HighlightColor[2] << " " << ShapeData.HighlightColor[3] << endl;
 	out << ShapeData.PartOfGroup << endl;
-	out << ShapeData.ShapeGroupStart << endl;
-	out << ShapeData.ShapeGroupCount << endl;
-	out << ShapeData.ShapeGroupOffset << endl;
-	out << ShapeData.ShapeGroupXYShapePerRow[0] << " " << ShapeData.ShapeGroupXYShapePerRow[1] << endl;
-	out << ShapeData.ShapeGroupPosition[0] << " " << ShapeData.ShapeGroupPosition[1] << endl;
-	out << ShapeData.ShapeGroupSize[0] << " " << ShapeData.ShapeGroupSize[1] << endl;
-	out << ShapeData.ShapeGroupShapeSize[0] << " " << ShapeData.ShapeGroupShapeSize[1] << endl;
-	out << ShapeData.ShapeGroupColor[0] << " " << ShapeData.ShapeGroupColor[1] << " " << ShapeData.ShapeGroupColor[2] << " " << ShapeData.ShapeGroupColor[3] << endl;
-	out << ShapeData.ShapeGroupCentered << endl;
+	out << ShapeData.ShapeGroup.ShapeStart << endl;
+	out << ShapeData.ShapeGroup.ShapeCount << endl;
+	out << ShapeData.ShapeGroup.ShapeOffset << endl;
+	out << ShapeData.ShapeGroup.XYShapePerRow[0] << " " << ShapeData.ShapeGroup.XYShapePerRow[1] << endl;
+	out << ShapeData.ShapeGroup.Position[0] << " " << ShapeData.ShapeGroup.Position[1] << endl;
+	out << ShapeData.ShapeGroup.Size[0] << " " << ShapeData.ShapeGroup.Size[1] << endl;
+	out << ShapeData.ShapeGroup.ShapeSize[0] << " " << ShapeData.ShapeGroup.Size[1] << endl;
+	out << ShapeData.ShapeGroup.Color[0] << " " << ShapeData.ShapeGroup.Color[1] << " " << ShapeData.ShapeGroup.Color[2] << " " << ShapeData.ShapeGroup.Color[3] << endl;
+	out << ShapeData.ShapeGroup.Centered << endl;
 	//out << ShapeData.ShapeDataType << endl;
 
 	    //<< "ShapeData "
@@ -227,15 +227,15 @@ istream& operator>>(istream& in, ShapeData& ShapeData)
 	in >> ShapeData.HighlightSize[0] >> ShapeData.HighlightSize[1];
 	in >> ShapeData.HighlightColor[0] >> ShapeData.HighlightColor[1] >> ShapeData.HighlightColor[2] >> ShapeData.HighlightColor[3];
 	in >> ShapeData.PartOfGroup;
-	in >> ShapeData.ShapeGroupStart;
-	in >> ShapeData.ShapeGroupCount;
-	in >> ShapeData.ShapeGroupOffset;
-	in >> ShapeData.ShapeGroupXYShapePerRow[0] >> ShapeData.ShapeGroupXYShapePerRow[1];
-	in >> ShapeData.ShapeGroupPosition[0] >> ShapeData.ShapeGroupPosition[1];
-	in >> ShapeData.ShapeGroupSize[0] >> ShapeData.ShapeGroupSize[1];
-	in >> ShapeData.ShapeGroupShapeSize[0] >> ShapeData.ShapeGroupShapeSize[1];
-	in >> ShapeData.ShapeGroupColor[0] >> ShapeData.ShapeGroupColor[1] >> ShapeData.ShapeGroupColor[2] >> ShapeData.ShapeGroupColor[3];
-	in >> ShapeData.ShapeGroupCentered;
+	in >> ShapeData.ShapeGroup.ShapeStart;
+	in >> ShapeData.ShapeGroup.ShapeCount;
+	in >> ShapeData.ShapeGroup.ShapeOffset;
+	in >> ShapeData.ShapeGroup.XYShapePerRow[0] >> ShapeData.ShapeGroup.XYShapePerRow[1];
+	in >> ShapeData.ShapeGroup.Position[0] >> ShapeData.ShapeGroup.Position[1];
+	in >> ShapeData.ShapeGroup.Size[0] >> ShapeData.ShapeGroup.Size[1];
+	in >> ShapeData.ShapeGroup.ShapeSize[0] >> ShapeData.ShapeGroup.Size[1];
+	in >> ShapeData.ShapeGroup.Color[0] >> ShapeData.ShapeGroup.Color[1] >> ShapeData.ShapeGroup.Color[2] >> ShapeData.ShapeGroup.Color[3];
+	in >> ShapeData.ShapeGroup.Centered;
 	//in >> ShapeData.ShapeDataType;
 
 	return in;

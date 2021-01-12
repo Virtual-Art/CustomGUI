@@ -1,25 +1,42 @@
 #ifndef MASTERELEMENT
 #define MASTERELEMENT
 
+//Position Conversions
+#define P_PIXEL_TO_COMPUTER 1
+#define MIDDLE_TO_TOPLEFT 2
+#define TOPLEFT_PIXEL_TO_COMPUTER 3
+#define P_COMPUTER_TO_PIXEL 4
+#define P_TOP_LEFT_TO_MIDDLE 5
+
+//Size Conversions
+#define S_PIXEL_TO_COMPUTER 1
+#define S_ONE_TO_COMPUTER 2
+#define S_COMPUTER_TO_PIXEL 3
+
 #include <iostream>
 #include "Page.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Log.h"
 
 using namespace std;
 
+//All the second tier hierarchy like Shape, ShapeGroup, PageItem, PageGroup defaults will be custom for creator
 class MasterElement
 {
 public:
 	MasterElement();
+	bool Initialized = false;
+	Page* CurrentPage;
+	ShapeData LoadedShape;
 
-	virtual void Add_Default() {}; //Editor/None Set in Stone
-	virtual void Add_Duplicate() {}; //Editor/None Set in Stone
-	virtual void Add_Insert() {}; //Editor/None Set in Stone
-	virtual void DeleteShape() {};
-	virtual void SwitchToShape(int RequstedShapeID) {};
-	virtual void SwitchToShape(Page& Page, int RequstedShapeID) {};
+	virtual void Add_Default() {};
+	virtual void Add_Duplicate() {}; 
+	virtual void Add_Insert() {};
+	virtual void Delete() {};
+	virtual void Switch(int RequstedShapeID) {};
+	virtual void Switch(Page& Page, int RequstedShapeID) {};
 	//virtual void SetShape(ShapeData& ShapeData) {};
 	//virtual void SetShape(ShapeData& ShapeData, glm::vec2 PSConversions) {};
 	virtual void SetPosition(glm::vec2 Position) {};                     //Set All
@@ -52,6 +69,35 @@ public:
 	virtual glm::vec2 GetSize() { return { -1.0, -1.0 }; };
 	virtual glm::vec4 GetColor() { return { -1.0, -1.0, -1.0, -1.0 }; };
 	virtual bool GetMouseAccess() { return false; };
+
+	glm::vec2 ApplyPositionConversion(glm::vec2 Position, int Conversion, glm::vec2 Size);
+	glm::vec2 ApplyPositionConversion(glm::vec2 Position, int Conversion);
+	glm::vec2 ApplySizeConversion(glm::vec2 Position, int Conversion);
+
+	//Position TopLeft/BottomLeft Conversions 
+	glm::vec2 PTLPixelToComputer(glm::vec2 Position); //Working
+	glm::vec2 PBLPixelToComputer(glm::vec2 Position); //Working
+	glm::vec2 PMiddleToTopLeft(glm::vec2 Position, glm::vec2 Size);
+	glm::vec2 PTopLeftToMiddle(glm::vec2 Position, glm::vec2 Size);
+
+	glm::vec2 PComputerToTLPixel(glm::vec2 Position); //Working
+	glm::vec2 PComputerToBLPixel(glm::vec2 Position); //Working
+
+
+	//SizeConversions
+	glm::vec2 SPixelToComputer(glm::vec2 Size); //Working
+	glm::vec2 SOneToComputer(glm::vec2 Size);   //Working
+
+	glm::vec2 SComputerToPixel(glm::vec2 Size); //Working
+	glm::vec2 SComputerToOne(glm::vec2 Size);   //Working
+
+	bool IsInitialized();
+	bool IsInBounds(int ID);
+
+protected:
+
+	
+
 };
 
 #endif

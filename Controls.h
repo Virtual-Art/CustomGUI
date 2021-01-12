@@ -35,7 +35,7 @@ public:
 	Controls(Page& Page);
 
 	ControlsData CurrentControl;
-	GroupData CurrentGroupData;
+	//GroupData CurrentGroupData;
 };
 
 #endif

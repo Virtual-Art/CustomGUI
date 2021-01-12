@@ -79,91 +79,91 @@ void PageCreator::CreateFunctionContainer()
 void PageCreator::SetCreatorFunctions()
 {
 	//Position
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_UP]    = ShapePositionUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_DOWN]  = ShapePositionDown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_RIGHT] = ShapePositionRight;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_LEFT]  = ShapePositionLeft;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_UP]    = PositionUp;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_DOWN]  = PositionDown;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_RIGHT] = PositionRight;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_LEFT]  = PositionLeft;
 
 	//Size
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_UP]    = ShapeSizeUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_DOWN]  = ShapeSizeDown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_RIGHT] = ShapeSizeRight;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_LEFT]  = ShapeSizeLeft;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_UP]    = SizeUp;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_DOWN]  = SizeDown;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_RIGHT] = SizeRight;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_LEFT]  = SizeLeft;
 
 	//R
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_UP]    = ShapeColorRUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_DOWN]  = ShapeColorRDown;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_UP]    = ColorRUp;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_DOWN]  = ColorRDown;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_RIGHT] = Empty;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_LEFT]  = Empty;
 
 	//G
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_UP] = ShapeColorGUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_DOWN] = ShapeColorGDown;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_UP]   = ColorGUp;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_DOWN] = ColorGDown;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_RIGHT] = Empty;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_LEFT]  = Empty;
 
 	//B
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_UP] = ShapeColorBUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_DOWN] = ShapeColorBDown;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_UP]   = ColorBUp;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_DOWN] = ColorBDown;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_RIGHT] = Empty;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_LEFT] = Empty;
 
 	//A
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_UP] = ShapeColorAUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_DOWN] = ShapeColorADown;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_UP]   = ColorAUp;
+	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_DOWN] = ColorADown;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_RIGHT] = Empty;
 	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_LEFT] = Empty;
 
 	/////////////SHAPEGROUP//////////////////
 
-	//Position
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_UP]    = ShapeGroupPositionUp;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_DOWN]  = ShapeGroupPositionDown;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_RIGHT] = ShapeGroupPositionRight;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_LEFT]  = ShapeGroupPositionLeft;
-															
-	//Size													
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_UP]    = ShapeGroupSizeUp;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_DOWN]  = ShapeGroupSizeDown;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_RIGHT] = ShapeGroupSizeRight;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_LEFT]  = ShapeGroupSizeLeft;
-																	  
-	//R																  
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_UP]     = ShapeGroupColorRUp;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_DOWN]   = ShapeGroupColorRDown;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_RIGHT]  = Empty;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_LEFT]   = Empty;
-															
-	//G														
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_UP]     = ShapeGroupColorGUp;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_DOWN]   = ShapeGroupColorGDown;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_RIGHT]  = Empty;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_LEFT]   = Empty;
-																	 
-	//B																 
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_UP]     = ShapeGroupColorBUp;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_DOWN]   = ShapeGroupColorBDown;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_RIGHT]  = Empty;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_LEFT]   = Empty;
-																	  
-	//A																  
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_UP]     = ShapeGroupColorAUp;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_DOWN]   = ShapeGroupColorADown;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_RIGHT]  = Empty;
-	CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_LEFT]   = Empty;
-
+	////Position
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_UP]    = PositionUp;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_DOWN]  = PositionDown;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_RIGHT] = PositionRight;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_LEFT]  = PositionLeft;
+	//														
+	////Size													
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_UP]    = SizeUp;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_DOWN]  = SizeDown;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_RIGHT] = SizeRight;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_LEFT]  = SizeLeft;
 	//																  
-	CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_UP] = Empty;
-	CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_DOWN] = Empty;
-	CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_RIGHT] = Empty;
-	CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_LEFT] = Empty;
-
-
-	// Page Item Group
-	CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_UP]    = PageItemPositionUp;
-	CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_DOWN]  = PageItemPositionDown;
-	CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_RIGHT] = PageItemPositionRight;
-	CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_LEFT]  = PageItemPositionLeft;
+	////R																  
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_UP]     = ColorRUp;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_DOWN]   = ColorRDown;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_RIGHT]  = Empty;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_LEFT]   = Empty;
+	//														
+	////G														
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_UP]     = ColorGUp;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_DOWN]   = ColorGDown;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_RIGHT]  = Empty;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_LEFT]   = Empty;
+	//																 
+	////B																 
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_UP]     = ColorBUp;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_DOWN]   = ColorBDown;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_RIGHT]  = Empty;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_LEFT]   = Empty;
+	//																  
+	////A																  
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_UP]     = ColorAUp;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_DOWN]   = ColorADown;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_RIGHT]  = Empty;
+	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_LEFT]   = Empty;
+	//
+	////																  
+	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_UP] = Empty;
+	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_DOWN] = Empty;
+	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_RIGHT] = Empty;
+	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_LEFT] = Empty;
+	//
+	//
+	//// Page Item Group
+	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_UP]    = PageItemPositionUp;
+	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_DOWN]  = PageItemPositionDown;
+	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_RIGHT] = PageItemPositionRight;
+	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_LEFT]  = PageItemPositionLeft;
 }
 
 void PageCreator::SetArrowKeys()
@@ -338,6 +338,7 @@ void PageCreator::AlternateUp()
 	if (CurrentLevel == 1)
 	{
 		Text_CurrentLevel.SetText("Shape");
+
 	}
 	if (CurrentLevel == 2)
 	{
@@ -401,7 +402,7 @@ void PageCreator::Add()
 {
 	//ShapeSelected->Add_Default();
 	//CurrentFunction = 0;
-	PageItemSelected->Add_Default();
+	Element_Selected->Add_Default();
 	CurrentFunction = 0;
 }
 
@@ -409,33 +410,33 @@ void PageCreator::Duplicate()
 {
 	//ShapeSelected->Add_Duplicate();
 	//CurrentFunction = 0;
-	PageItemSelected->Add_Duplicate();
+	Element_Selected->Add_Duplicate();
 	CurrentFunction = 0;
 }
 
 void PageCreator::Insert()
 {
 	//ShapeSelected->Add_Insert();
-	PageItemSelected->Add_Insert();
+	Element_Selected->Add_Insert();
 	CurrentFunction = 0;
 }
 
 void PageCreator::Next()
 {
-	ShapeSelected->SwitchToShape(ShapeSelected->CurrentShapeData.ID + 1);
+	Element_Selected->Switch(ShapeSelected->CurrentShapeData.ID + 1);
 }
 
 void PageCreator::Previous()
 {
-	ShapeSelected->SwitchToShape(ShapeSelected->CurrentShapeData.ID - 1);
+	Element_Selected->Switch(ShapeSelected->CurrentShapeData.ID - 1);
 }
 
 
 void PageCreator::Delete()
 {
 	int PreviousShape = ShapeSelected->CurrentShapeData.ID - 1;
-	ShapeSelected->DeleteShape();
-	ShapeSelected->SwitchToShape(PreviousShape);
+	Element_Selected->Delete();
+	Element_Selected->Switch(PreviousShape);
 }
 
 void PageCreator::SetQuadSelected(int MouseState, int ShapeHovered)
@@ -445,11 +446,11 @@ void PageCreator::SetQuadSelected(int MouseState, int ShapeHovered)
 		if (QuadSelected.CurrentShapeData.ID > -1)
 		{
 			//ShapeSelected->SetColor(PreviousColor);
-			Element_Selected->SwitchToShape(ShapeHovered);
+			Element_Selected->Switch(ShapeHovered);
 			//PreviousColor = ShapeSelected->CurrentShapeData.Color;
 			//ShapeSelected->SetColor({ 0.0, 1.0, 0.0, 1.0 });
-			cout << "ShapeHovered: " << ShapeHovered << endl;
-			cout << "QuadSelectedID: " << QuadSelected.CurrentShapeData.ID << endl;
+			//cout << "ShapeHovered: " << ShapeHovered << endl;
+			//cout << "QuadSelectedID: " << QuadSelected.CurrentShapeData.ID << endl;
 		}
 	}
 
@@ -521,50 +522,50 @@ void PageCreator::Empty()
 }
 
 // POSITION
-void PageCreator::ShapePositionUp()
+void PageCreator::PositionUp()
 {
 	Element_Selected->OffsetPosition({ 0.0, 0.00166 * PixelOffset }, OnlyY);
 }
-void PageCreator::ShapePositionDown()
+void PageCreator::PositionDown()
 {
 	Element_Selected->OffsetPosition({ 0.0, -0.00166 * PixelOffset }, OnlyY);
 }
-void PageCreator::ShapePositionRight()
+void PageCreator::PositionRight()
 {
 	Element_Selected->OffsetPosition({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
 }
-void PageCreator::ShapePositionLeft()
+void PageCreator::PositionLeft()
 {
 	Element_Selected->OffsetPosition({ -0.00166 * PixelOffset, 0.0 }, OnlyX);
 }
 
 //SIZE
-void PageCreator::ShapeSizeUp()
+void PageCreator::SizeUp()
 {
-	Element_Selected->OffsetSize({ 0.0, 0.00166 * PixelOffset }, OnlyX);
+	Element_Selected->OffsetSize({ 0.0, 0.00166 * PixelOffset }, OnlyY);
 }
-void PageCreator::ShapeSizeDown()
+void PageCreator::SizeDown()
 {
 	Element_Selected->OffsetSize({ 0.0, 0.00166 * -PixelOffset }, OnlyY);
 }
-void PageCreator::ShapeSizeRight()
+void PageCreator::SizeRight()
 {
 	Element_Selected->OffsetSize({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
 }
-void PageCreator::ShapeSizeLeft()
+void PageCreator::SizeLeft()
 {
 	Element_Selected->OffsetSize({ 0.00166 * -PixelOffset, 0.0}, OnlyX);
 }
 
 // COLOR
-void PageCreator::ShapeColorRUp()
+void PageCreator::ColorRUp()
 {
 	if (Element_Selected->GetColor()[0] < 1.0)
 	{
 		Element_Selected->OffsetColor({ 0.01 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
 	}
 }
-void PageCreator::ShapeColorRDown()
+void PageCreator::ColorRDown()
 {
 	if (Element_Selected->GetColor()[1] > 1.0)
 	{
@@ -572,7 +573,7 @@ void PageCreator::ShapeColorRDown()
 	}
 }
 
-void PageCreator::ShapeColorGUp()
+void PageCreator::ColorGUp()
 {
 	if (Element_Selected->GetColor()[1] < 1.0)
 	{
@@ -580,7 +581,7 @@ void PageCreator::ShapeColorGUp()
 	}
 }
 
-void PageCreator::ShapeColorGDown()
+void PageCreator::ColorGDown()
 {
 	if (Element_Selected->GetColor()[1] > 0.0)
 	{
@@ -588,14 +589,14 @@ void PageCreator::ShapeColorGDown()
 	}
 }
 
-void PageCreator::ShapeColorBUp()
+void PageCreator::ColorBUp()
 {
 	if (Element_Selected->GetColor()[2] < 1.0)
 	{
 		Element_Selected->OffsetColor({ 0.0, 0.0, 0.01 * PixelOffset, 0.0 }, OnlyB);
 	}
 }
-void PageCreator::ShapeColorBDown()
+void PageCreator::ColorBDown()
 {
 	if (Element_Selected->GetColor()[2] > 1.0)
 	{
@@ -603,14 +604,14 @@ void PageCreator::ShapeColorBDown()
 	}
 }
 
-void PageCreator::ShapeColorAUp()
+void PageCreator::ColorAUp()
 {
 	if (Element_Selected->GetColor()[3] < 1.0)
 	{
 		Element_Selected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * PixelOffset }, OnlyA);
 	}
 }
-void PageCreator::ShapeColorADown()
+void PageCreator::ColorADown()
 {
 	if (Element_Selected->GetColor()[3] > 1.0)
 	{
@@ -618,143 +619,4 @@ void PageCreator::ShapeColorADown()
 	}
 }
 
-////////////////ShapeGroup////////////////////////////////////
-// POSITION
-void PageCreator::ShapeGroupPositionUp()
-{
-	ShapeSelected->CurrentShapeData.Position[1] += 0.00166 * PixelOffset;
-	ShapeSelected->OffsetPosition({ 0.0, 0.00166 }, OnlyX);
-}
-void PageCreator::ShapeGroupPositionDown()
-{
-	ShapeSelected->CurrentShapeData.Position[1] -= 0.00166 * PixelOffset;
-	ShapeSelected->OffsetPosition({ 0.0, -0.00166 }, OnlyX);
-}
-void PageCreator::ShapeGroupPositionRight()
-{
-	ShapeSelected->CurrentShapeData.Position[0] += 0.00166 * PixelOffset;
-	ShapeSelected->OffsetPosition({ 0.00166, 0.0 }, OnlyY);
-}
-void PageCreator::ShapeGroupPositionLeft()
-{
-	ShapeSelected->CurrentShapeData.Position[0] -= 0.00166 * PixelOffset;
-	ShapeSelected->OffsetPosition({ -0.00166, 0.0 }, OnlyY);
-}
-
-//SIZE
-void PageCreator::ShapeGroupSizeUp()
-{
-	ShapeSelected->CurrentShapeData.Size[1] += 0.00166 * PixelOffset;
-	ShapeSelected->OffsetSize({ OnePixel * PixelOffset, 0.0 }, OnlyY);
-}
-void PageCreator::ShapeGroupSizeDown()
-{
-	ShapeSelected->CurrentShapeData.Size[1] -= 0.00166 * PixelOffset;
-	ShapeSelected->OffsetSize({ OnePixel * -PixelOffset, 0.0 }, OnlyY);
-}
-void PageCreator::ShapeGroupSizeRight()
-{
-	ShapeSelected->CurrentShapeData.Size[0] += 0.00166 * PixelOffset;
-	ShapeSelected->OffsetSize({ 0.0, OnePixel * PixelOffset }, OnlyX);
-}
-void PageCreator::ShapeGroupSizeLeft()
-{
-	ShapeSelected->CurrentShapeData.Size[0] -= 0.00166 * PixelOffset;
-	ShapeSelected->OffsetSize({ 0.0, OnePixel * -PixelOffset }, OnlyX);
-}
-
-// COLOR
-void PageCreator::ShapeGroupColorRUp()
-{
-	if (ShapeSelected->CurrentShapeData.Color[0] < 1.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[0] += 0.01;
-		ShapeSelected->OffsetColor({ OnePixel * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-		cout << "Coloring " << endl;
-	}
-}
-void PageCreator::ShapeGroupColorRDown()
-{
-	if (ShapeSelected->CurrentShapeData.Color[1] > 1.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[0] -= 0.01;
-		ShapeSelected->OffsetColor({ OnePixel * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-	}
-}
-
-void PageCreator::ShapeGroupColorGUp()
-{
-	if (ShapeSelected->CurrentShapeData.Color[1] < 1.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[1] += 0.01;
-		ShapeSelected->OffsetColor({ 0.0, OnePixel * PixelOffset,  0.0, 0.0 }, OnlyG);
-	}
-}
-
-void PageCreator::ShapeGroupColorGDown()
-{
-	if (ShapeSelected->CurrentShapeData.Color[1] > 0.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[1] -= 0.01;
-		ShapeSelected->OffsetColor({ 0.0, OnePixel * -PixelOffset,  0.0, 0.0 }, OnlyG);
-	}
-}
-
-void PageCreator::ShapeGroupColorBUp()
-{
-	if (ShapeSelected->CurrentShapeData.Color[2] < 1.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[2] += 0.01;
-		ShapeSelected->OffsetColor({ 0.0, 0.0, OnePixel * PixelOffset, 0.0 }, OnlyB);
-	}
-}
-void PageCreator::ShapeGroupColorBDown()
-{
-	if (ShapeSelected->CurrentShapeData.Color[2] > 1.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[2] -= 0.01;
-		ShapeSelected->OffsetColor({ 0.0, 0.0, OnePixel * -PixelOffset,  0.0 }, OnlyB);
-	}
-}
-
-void PageCreator::ShapeGroupColorAUp()
-{
-	if (ShapeSelected->CurrentShapeData.Color[3] < 1.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[3] += 0.01;
-		ShapeSelected->OffsetColor({ 0.0, 0.0, 0.0, OnePixel * PixelOffset }, OnlyA);
-	}
-}
-void PageCreator::ShapeGroupColorADown()
-{
-	if (ShapeSelected->CurrentShapeData.Color[3] > 1.0)
-	{
-		ShapeSelected->CurrentShapeData.Color[3] -= 0.01;
-		ShapeSelected->OffsetColor({ 0.0, 0.0, 0.0, OnePixel * -PixelOffset }, OnlyA);
-	}
-}
-
-////////////////////////////////////////////////////////////////////
-
-// POSITION
-void PageCreator::PageItemPositionUp()
-{
-	PageItemSelected->CurrentPageItem.Position[1] += 0.00166 * PixelOffset;
-	PageItemSelected->OffsetPosition({ 0.0, 0.00166 }, OnlyX);
-}
-void PageCreator::PageItemPositionDown()
-{
-	PageItemSelected->CurrentPageItem.Position[1] -= 0.00166 * PixelOffset;
-	PageItemSelected->OffsetPosition({ 0.0, -0.00166 }, OnlyX);
-}
-void PageCreator::PageItemPositionRight()
-{
-	PageItemSelected->CurrentPageItem.Position[0] += 0.00166 * PixelOffset;
-	PageItemSelected->OffsetPosition({ 0.00166, 0.0 }, OnlyY);
-}
-void PageCreator::PageItemPositionLeft()
-{
-	PageItemSelected->CurrentPageItem.Position[0] -= 0.00166 * PixelOffset;
-	PageItemSelected->OffsetPosition({ -0.00166, 0.0 }, OnlyY);
-}
 

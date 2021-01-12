@@ -14,7 +14,7 @@ NewCharacter::NewCharacter(Page& Page) // WORKING
 		SetCharacter('T');
 		SetShapeRatios();
 		BuildShapeVertices();
-		Page.AddShape(this->CurrentShapeData);
+		Page.AddShape(this->LoadedShape);
 	}
 	else
 	{
@@ -31,7 +31,7 @@ NewCharacter::NewCharacter(Page& Page, ShapeData& ShapeData) //WORKING
 		SetCharacter(ShapeData.Ascii);
 		SetShapeRatios();
 		BuildShapeVertices();
-		Page.AddShape(this->CurrentShapeData);
+		Page.AddShape(this->LoadedShape);
 	}
 	else
 	{
@@ -51,7 +51,7 @@ NewCharacter::NewCharacter(Page& Page, int CharacterID) //WORKING
 	//Shape Read/Write
 	if (FirstCreation == false)
 	{
-		SetCharacter(CurrentShapeData.Ascii);
+		SetCharacter(LoadedShape.Ascii);
 	}
 	else
 	{
@@ -95,7 +95,6 @@ NewCharacter::NewCharacter(Page& Page, string FontFilePath)
 			//Load all the characers
 			int StartFromZero = Ascii - FIRST_ASCII;
 			AllCharacters[StartFromZero] = FindCharacter(Font, Ascii);
-			cout << "Ascii: " << Ascii << " "  << AllCharacters[StartFromZero].CharWidth  << endl;
 			CenterCharacter(AllCharacters[StartFromZero]);
 		}
 
@@ -240,7 +239,7 @@ void NewCharacter::SetShape(ShapeData& ShapeData)
 {
 	if (ShapeData.ID > -1 && ShapeData.ID < CurrentPage->ShapeAmount())
 	{
-		CurrentShapeData = ShapeData;
+		LoadedShape = ShapeData;
 		Update();
 	}
 	else
@@ -252,7 +251,7 @@ void NewCharacter::SetShape(ShapeData& ShapeData)
 void NewCharacter::SetCharacter(int Ascii)
 {
 	this->CurrentCharacter = NewCharacter::AllCharacters[Ascii - 32];
-	CurrentShapeData.Ascii = Ascii;
+	LoadedShape.Ascii = Ascii;
 	SetShapeRatios();
 }
 
@@ -261,10 +260,10 @@ void NewCharacter::SetAction(int ShapeDataActionID){};
 //Makeup of a Square
 void NewCharacter::SetShapeRatios()
 {
-	TopRightXYRatio = { CurrentShapeData.Size[0] / 2, CurrentShapeData.Size[1] / 2 };
-	BottomRightXYRatio = { CurrentShapeData.Size[0] / 2, CurrentShapeData.Size[1] / -2 };
-	BottomLeftXYRatio = { CurrentShapeData.Size[0] / -2, CurrentShapeData.Size[1] / -2 };
-	TopLeftXYRatio = { CurrentShapeData.Size[0] / -2, CurrentShapeData.Size[1] / 2 };
+	TopRightXYRatio = { LoadedShape.Size[0] / 2, LoadedShape.Size[1] / 2 };
+	BottomRightXYRatio = { LoadedShape.Size[0] / 2, LoadedShape.Size[1] / -2 };
+	BottomLeftXYRatio = { LoadedShape.Size[0] / -2, LoadedShape.Size[1] / -2 };
+	TopLeftXYRatio = { LoadedShape.Size[0] / -2, LoadedShape.Size[1] / 2 };
 }
 
 //ShapePosition, Color, character needs to be set for this to work properly
@@ -272,25 +271,25 @@ void NewCharacter::BuildShapeVertices()
 {
 	for (int i = 0; i < 4; i++)
 	{
-		CurrentShapeData.Vertex[i].Color = CurrentShapeData.Color;
-		CurrentShapeData.Vertex[i].TexIndex = 1;
-		CurrentShapeData.Vertex[i].CentralPoint = { CurrentShapeData.Position[0] + (CurrentShapeData.Size[0] / 2), CurrentShapeData.Position[1] - (CurrentShapeData.Size[1] / 2) };
-		CurrentShapeData.Vertex[i].GUIAction = CurrentShapeData.Action;
+		LoadedShape.Vertex[i].Color = LoadedShape.Color;
+		LoadedShape.Vertex[i].TexIndex = 1;
+		LoadedShape.Vertex[i].CentralPoint = { LoadedShape.Position[0] + (LoadedShape.Size[0] / 2), LoadedShape.Position[1] - (LoadedShape.Size[1] / 2) };
+		LoadedShape.Vertex[i].GUIAction = LoadedShape.Action;
 	}
 
-	CurrentShapeData.Vertex[0].Position = CurrentShapeData.Position + TopRightXYRatio;
-	CurrentShapeData.Vertex[1].Position = CurrentShapeData.Position + BottomRightXYRatio;
-	CurrentShapeData.Vertex[2].Position = CurrentShapeData.Position + BottomLeftXYRatio;
-	CurrentShapeData.Vertex[3].Position = CurrentShapeData.Position + TopLeftXYRatio;
+	LoadedShape.Vertex[0].Position = LoadedShape.Position + TopRightXYRatio;
+	LoadedShape.Vertex[1].Position = LoadedShape.Position + BottomRightXYRatio;
+	LoadedShape.Vertex[2].Position = LoadedShape.Position + BottomLeftXYRatio;
+	LoadedShape.Vertex[3].Position = LoadedShape.Position + TopLeftXYRatio;
 
 	//TopRight
-	CurrentShapeData.Vertex[0].TexCoords = { CurrentCharacter.CharxPos + (CurrentCharacter.CharWidth / CurrentCharacter.AtlasWidth), CurrentCharacter.CharyPos};
+	LoadedShape.Vertex[0].TexCoords = { CurrentCharacter.CharxPos + (CurrentCharacter.CharWidth / CurrentCharacter.AtlasWidth), CurrentCharacter.CharyPos};
 	//BottomRight
-	CurrentShapeData.Vertex[1].TexCoords = { CurrentCharacter.CharxPos + (CurrentCharacter.CharWidth / CurrentCharacter.AtlasWidth), CurrentCharacter.CharyPos + (CurrentCharacter.CharHeight/ CurrentCharacter.AtlasWidth)};
+	LoadedShape.Vertex[1].TexCoords = { CurrentCharacter.CharxPos + (CurrentCharacter.CharWidth / CurrentCharacter.AtlasWidth), CurrentCharacter.CharyPos + (CurrentCharacter.CharHeight/ CurrentCharacter.AtlasWidth)};
 	//BottomLeft
-	CurrentShapeData.Vertex[2].TexCoords = { CurrentCharacter.CharxPos, CurrentCharacter.CharyPos + (CurrentCharacter.CharHeight / CurrentCharacter.AtlasWidth) };
+	LoadedShape.Vertex[2].TexCoords = { CurrentCharacter.CharxPos, CurrentCharacter.CharyPos + (CurrentCharacter.CharHeight / CurrentCharacter.AtlasWidth) };
 	//TopLeft
-	CurrentShapeData.Vertex[3].TexCoords = { CurrentCharacter.CharxPos, CurrentCharacter.CharyPos};
+	LoadedShape.Vertex[3].TexCoords = { CurrentCharacter.CharxPos, CurrentCharacter.CharyPos};
 }
 
 //void NewCharacter::SetCharacterSize(int FontSize)
@@ -298,16 +297,16 @@ void NewCharacter::BuildShapeVertices()
 //	//Different characters have different heights. SizePercentage is how tall it is based on the lineHeight ex = 60/95;
 //	int xSizeInPixels = CurrentCharacter.xSizePercentage * FontSize;
 //	int ySizeInPixels = CurrentCharacter.ySizePercentage * FontSize;
-//	this->CurrentShapeData.Size = ConvertPixelSize({ xSizeInPixels, ySizeInPixels });
+//	this->LoadedShape.Size = ConvertPixelSize({ xSizeInPixels, ySizeInPixels });
 //}
 
 void NewCharacter::Update()
 {
-	CurrentCharacter = GetCharacter(CurrentShapeData.Ascii);
+	CurrentCharacter = GetCharacter(LoadedShape.Ascii);
 	SetShapeRatios();
 	BuildShapeVertices();
 	UpdateMouseAccess();
-	CurrentPage->ReplaceShape(CurrentShapeData);
+	CurrentPage->ReplaceShape(LoadedShape);
 }
 
 CharacterData& NewCharacter::GetCharacter(int Ascii)

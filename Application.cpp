@@ -269,12 +269,12 @@ int main(int argc, char** argv)
 	//GroupData_WelcomeDefault.Position = { -0.5, 0.0 };
 	//GroupData_WelcomeDefault.Color = Rose;
 
-	GroupData Main_Default;
-	Main_Default.Position = { PageCreator::Origin };
-	Main_Default.Size = { 0.4, 0.8 };
-	Main_Default.Color = PageCreator::Green;
-	Main_Default.XYShapesPerRow = { 2, 2 };
-	Main_Default.ShapeDataSize = { 0.8, 0.8 };
+	//GroupData Main_Default;
+	//Main_Default.Position = { PageCreator::Origin };
+	//Main_Default.Size = { 0.4, 0.8 };
+	//Main_Default.Color = PageCreator::Green;
+	//Main_Default.XYShapesPerRow = { 2, 2 };
+	//Main_Default.ShapeDataSize = { 0.8, 0.8 };
 
 	//Toggle NewToggle(GUI);
 
@@ -288,8 +288,8 @@ int main(int argc, char** argv)
 	Annoying.FontSize = 50;
 	Annoying.Centered = false;
 
-	Main_Default.Position = { 0.0, 0.5 };
-	Main_Default.Color = PageCreator::White;
+	//Main_Default.Position = { 0.0, 0.5 };
+	//Main_Default.Color = PageCreator::White;
 
 	bool YesCircle = true;
 	Page Circles(5000);
@@ -568,9 +568,6 @@ int main(int argc, char** argv)
 	glm::vec4 NewSelectedColor = { 0.0, 0.0, 0.0, 0.0 };
 	glm::vec4 LastSelectedColor = { 0.0, 0.0, 0.0, 1.0 };
 
-	//MainBook.Page[0].HideShapeData(15, false);
-
-
 
 	bool HighlightHover = true;
 
@@ -585,9 +582,6 @@ int main(int argc, char** argv)
 	int FrameCount = 0;
 	float FPS = 0;
 
-
-	//Keyboard.PrintKeySheet();
-
 	int PixelOffset = 8;
 	bool ShowGUI = true;
 
@@ -600,16 +594,6 @@ int main(int argc, char** argv)
 	float ActionTest1 = 0.8;
 	float ActionTest2 = 0.8;
 	float ActionTest3 = 0.8;
-
-	//SingleDimActionObject1 = 3.4cos(T - 30) + 0
-	//SingleDimActionObject2 = cos(T) + 45
-	//SingleDimActionObject3 = 6.2sin(T)^2 + 933
-	// ActionObjectVec3 RiseAction();
-	//RiseAction[0] = SingleDimActionObject1;
-	//RiseAction[1] = SingleDimActionObject2;
-	//RiseAction[2] = SingleDimActionObject3;
-	//vec3 Answer =  ActionObjectVec3(Time/Control);
-
 
 	double Time = 0.00;
 	Oscillation MyAction;
@@ -628,165 +612,6 @@ int main(int argc, char** argv)
 	NewCharacter AnyCharacter(MainBook.Page[0], "Resources/segoe.fnt");
 	//NewCharacter AnyCharacter2(MainBook.Page[0], "Resources/arial.fnt");
 
-
-	//ShapeData TheNextStepDefault;
-	//TheNextStepDefault.Position = {0.0, 0.0};
-	//TheNextStepDefault.Size = { 0.25, 0.25 };
-	//TheNextStepDefault.Color = { 0.25, 0.25, 0.25, 1.0 };
-	//TheNextStepDefault.ActiveTexture = 1.0;
-	//
-	//Quad TheNextStep(GUI, TheNextStepDefault);
-	//GUI.PrintVertexSheet(1);
-
-	//GUI.PrintVertexSheet(1);
-	//GUI.PrintShapeSheet();
-	string ThisCouldBeIt = "Few";
-
-
-	//Quad ConversionTest(GUI);
-	//ConversionTest.SetSize(ComputerCoords);
-
-	ShapeData FunctionQuadData;
-	FunctionQuadData.Position = PageCreator::Origin;
-	FunctionQuadData.Size = { 0.5, 0.5 };
-	//Quad FunctionQuad1(GUI, FunctionQuadData);
-
-	FunctionQuadData.Color = PageCreator::Purple;
-	//Quad FunctionQuad2(GUI, FunctionQuadData);
-
-//	cout << "ShapeAmount "<< FunctionQuad2.CurrentPage->ShapeAmount() << endl;
-
-
-	//Text
-	Text Welcome(GUI, Main_Default, Annoying);
-	cout << "Grid ID: " << GUI.ShapeAmount() << endl;
-
-	GroupData InvestmentDetails;
-	InvestmentDetails.Position = { -0.5, -0.2 };
-	InvestmentDetails.Color = { 0.0, 1.0, 1.0, 1.0 };
-
-	TextData TextData_InvestmentDetails;
-	TextData_InvestmentDetails.Centered = false;
-
-	int int_InitialInvestment = 180500;
-	int int_CurrentAsset = 182275;
-	int int_MadeInterest = int_CurrentAsset - int_InitialInvestment;
-	string string_InitialInvestment = "Initial  Investment: ";
-	string string_CurrentAsset = "Current  Asset: ";
-	string string_MadeInterest = "Amount  Made by Interest : ";
-	//coeasrumnwvxzbdhklfitj  pqyg  0128634579
-
-	ShapeData InvestmentBackgroundData;
-	InvestmentBackgroundData.Position = { -0.05, -0.4 };
-	InvestmentBackgroundData.Size = { 1.25, 0.8 };
-	InvestmentBackgroundData.Color = { 0.5, 0.6, 0.7, 1.0 };
-
-	//Inital Investment
-	//Quad InvestementBackground(GUI, InvestmentBackgroundData);
-
-	//Add Daily Quad
-	InvestmentBackgroundData.Position = { 0.25, -0.18 };
-	InvestmentBackgroundData.Size = { 0.07, 0.05 };
-	InvestmentBackgroundData.Color = { 0.0, 0.0, 0.0, 1.0 };
-	//Quad AddDaily(GUI, InvestmentBackgroundData);
-	TextData_InvestmentDetails.Phrase = "Add Daily";
-
-	//Add Daily Text
-	InvestmentBackgroundData.Position = { 0.18, -0.18 };
-	InvestmentBackgroundData.Color = PageCreator::Yellow;
-	//Text(GUI, InvestmentDetails, TextData_InvestmentDetails);
-
-	//Inital Investment
-	//Text Text_InitialInvestment(GUI, InvestmentDetails, TextData_InvestmentDetails,  int_InitialInvestment, string_InitialInvestment);
-
-
-	//Current Asset
-	InvestmentDetails.Color = PageCreator::Blue;
-	InvestmentDetails.Position = { -0.5, -0.4 };
-	//Text Text_CurrentAsset(GUI, InvestmentDetails, TextData_InvestmentDetails, int_CurrentAsset, string_CurrentAsset);
-
-	//Made Interest
-	InvestmentDetails.Color = PageCreator::Green;
-	InvestmentDetails.Position = { -0.5, -0.6 };
-	//Text Text_MadeInterest(GUI, InvestmentDetails, TextData_InvestmentDetails, int_MadeInterest, string_MadeInterest);
-
-	//Grid
-	//NewGrid Grid_Testing(GUI, Main_Default); //ID 3
-	//NewGrid Grid_Testing1(GUI, Main_Default); //ID 3
-	//
-	////Quad
-	//ShapeData Random_Quad_SD;
-	//Random_Quad_SD.Position = Origin;
-	//Random_Quad_SD.Size = {0.5, 0.5};
-	//Quad Random_Quad(GUI, Random_Quad_SD);
-
-	/////////////
-	//Quad ShapeSelected(GUI, 0);
-
-	//PageCreator PageCreator;
-
-	//PageCreator Creator(GUI, 1);
-
-	//Create Member Function pointer
-	typedef void(*Member_Function_Pointer)();//PageCreator::*
-
-	//Create Memeber Function Matrix
-	Member_Function_Pointer*** CreatorFunctions = new Member_Function_Pointer * *[7];
-	for (int i = 0; i < 7; i++)
-	{
-		CreatorFunctions[i] = new Member_Function_Pointer * [10];
-		for (int j = 0; j < 10; j++)
-		{
-			CreatorFunctions[i][j] = new Member_Function_Pointer[4];
-		}
-	}
-
-
-	int SHAPE_1 = 1;
-
-	//Set Member Function Pointer(s)
-	//[ALT][TAB][ARROW]
-	//[Level][MainFunction][SubFunction]
-
-
-	////Position
-	//CreatorFunctions[SHAPE_1][0][0] = &PageCreator::ShapePositionUp;
-	//CreatorFunctions[SHAPE_1][0][1] = &PageCreator::ShapePositionDown;
-	//CreatorFunctions[SHAPE_1][0][2] = &PageCreator::ShapePositionRight;
-	//CreatorFunctions[SHAPE_1][0][3] = &PageCreator::ShapePositionLeft;
-	//
-	////Size
-	//CreatorFunctions[SHAPE_1][1][0] = &PageCreator::ShapeSizeUp;
-	//CreatorFunctions[SHAPE_1][1][1] = &PageCreator::ShapeSizeDown;
-	//CreatorFunctions[SHAPE_1][1][2] = &PageCreator::ShapeSizeRight;
-	//CreatorFunctions[SHAPE_1][1][3] = &PageCreator::ShapeSizeLeft;
-	//
-	////Color[0]
-	//CreatorFunctions[SHAPE_1][2][0] = &PageCreator::ShapeColorRUp;
-	//CreatorFunctions[SHAPE_1][2][1] = &PageCreator::ShapeColorRDown;
-	//CreatorFunctions[SHAPE_1][2][2] = nullptr;
-	//CreatorFunctions[SHAPE_1][2][3] = nullptr;
-	//
-	////Color[1]
-	//CreatorFunctions[SHAPE_1][3][0] = &PageCreator::ShapeColorGUp;
-	//CreatorFunctions[SHAPE_1][3][1] = &PageCreator::ShapeColorGDown;
-	//CreatorFunctions[SHAPE_1][3][2] = nullptr;
-	//CreatorFunctions[SHAPE_1][3][3] = nullptr;
-	//
-	////Color[2]
-	//CreatorFunctions[SHAPE_1][4][0] = &PageCreator::ShapeColorBUp;
-	//CreatorFunctions[SHAPE_1][4][1] = &PageCreator::ShapeColorBDown;
-	//CreatorFunctions[SHAPE_1][4][2] = nullptr;
-	//CreatorFunctions[SHAPE_1][4][3] = nullptr;
-	//
-	////Color[3]
-	//CreatorFunctions[SHAPE_1][5][0] = &PageCreator::ShapeColorAUp;
-	//CreatorFunctions[SHAPE_1][5][1] = &PageCreator::ShapeColorADown;
-	//CreatorFunctions[SHAPE_1][5][2] = nullptr;
-	//CreatorFunctions[SHAPE_1][5][3] = nullptr;
-
-	//Play Member Function
-//	(*CreatorFunctions[1][0][3])();
 	int X;
 
 	//Set
@@ -795,7 +620,7 @@ int main(int argc, char** argv)
 
 	int CurrentAttribute = 0;
 
-	PageGroupItemData PageItem_FirstSlider;
+	PageItemData PageItem_FirstSlider;
 	PageItem_FirstSlider.Position = { 0.0, -0.2 };
 
 	SliderData Slider_FirstSlider;
@@ -803,7 +628,7 @@ int main(int argc, char** argv)
 	//Slider_FirstSlider.Ratio = "14.32";
 //	Slider FirstSlider(GUI);
 	Slider FirstSlider0(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
-	
+
 	Slider_FirstSlider.Description = " Hello";
 	//Slider_FirstSlider.Ratio = "14.35";
 	PageItem_FirstSlider.Position = { 0.0, -0.3 };
@@ -827,8 +652,8 @@ int main(int argc, char** argv)
 	Quad FontReference2(MainBook.Page[0]);
 	FontReference2.SetColor(PageCreator::Purple);
 	FontReference2.SetSize(FontReference.ApplySizeConversion({ 4000, 1 }, S_PIXEL_TO_COMPUTER));
-	
-	GroupData FontRefGroup;
+
+	ShapeGroupData FontRefGroup;
 	FontRefGroup.Position = { 0.0, 0.0 };
 	FontRefGroup.Size = FontReference.ApplySizeConversion({ 100, 25 }, S_PIXEL_TO_COMPUTER);
 	FontRefGroup.Color = PageCreator::White;
@@ -839,8 +664,8 @@ int main(int argc, char** argv)
 	FontRefText.FontSize = 50;
 	FontRefText.Centered = false;
 	FontRefText.EndStart = true;
+	
 	Text FixFont(MainBook.Page[0], FontRefGroup, FontRefText);
-
 	glm::vec4 TextLook = { 0.2, 0.5, 0.0, 1.0 }; // 0.34, 0.76, 100px
 
 	glm::vec2 lineSize = FontReference2.ApplySizeConversion({0, 100}, S_PIXEL_TO_COMPUTER);
@@ -878,12 +703,19 @@ int main(int argc, char** argv)
 	//RetreivedSlider.SwitchToSlider(46);
 	//RetreivedSlider.SetDescription("yesssss");
 
-	Quad Square(GUI);
-	Text Text_Master(GUI);
-	MasterElement& TheMaster = Square;
+	//Quad Square(GUI);
+	//Square.SetPosition({-0.5, 0.0});
+
+	FirstSlider1.SetPosition({ 0.4, 0.3 });
+	FirstSlider2.SetPosition({ -0.4, 0.3 });
+	//FirstSlider3.SetPosition({ 0.4, -0.3 });
+
+	//FirstSlider0.PrintGroupShapes();
+	Slider CopySlider(MainBook.Page[0], 22);
+	CopySlider.SetPosition({ 0.4, 0.3 });
+	//MasterElement& TheMaster = Square;
 
 	typedef void(*Master_P)();
-
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -900,7 +732,14 @@ int main(int argc, char** argv)
 		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(Mouse.xPos, Mouse.yPos, false);
 		GUIShapeDataHovered = GUI.FindShapeData(Mouse.xPos, Mouse.yPos, false);
 
-		PageCreator::SetQuadSelected(MouseState, EditorShapeDataHovered);
+		
+		//FirstSlider0.SetPosition({Mouse.xPos,Mouse.yPos});
+
+		//PageCreator::SetQuadSelected(MouseState, EditorShapeDataHovered);
+
+		//Text_Master.SetPosition({ Mouse.xPos, Mouse.yPos});
+
+		//FirstSlider0.SetPosition({Mouse.xPos, Mouse.yPos});
 
 		//cout << "PageItem ID: " << Test_PageGroup.FindPageItem(true, Mouse.xPos, Mouse.yPos) << endl;
        //  cout << "PageGroupID: " << FirstSlider0.FindShapeGroup(true, Mouse.xPos, Mouse.yPos) << endl;

@@ -12,7 +12,8 @@ class NewGrid : public ShapeGroup
 public: 
 
 	NewGrid(Page& Page);
-	NewGrid(Page& Page, GroupData& GroupData);
+	NewGrid(Page& Page, ShapeGroupData& ShapeGroupData);
+	NewGrid(Page& Page, ShapeData& ShapeData);
 	NewGrid(Page& Page, int GroupID);
 
 	void AddGrid();////
@@ -21,7 +22,6 @@ public:
 	int CreateGrid();
 	///
 
-	
 	void Update();////
 	///
 	//SetShapeData
@@ -30,9 +30,6 @@ public:
 
 	void SetGridXY(glm::vec2 XY);
 
-
-	//Object Functions
-	void SetGridMatrix(glm::vec2 XY);
 	//As a PErcentage out of 100
 	void SetShapeSize(glm::vec2 ShapeSize);
 

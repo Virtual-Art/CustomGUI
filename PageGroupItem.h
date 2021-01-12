@@ -15,64 +15,69 @@
 
 using namespace std;
 
-struct PageGroupItemData
-{
-	//GroupID: Group 436
-	//CellID : Cell 2 of Upper Group
-	//ShapeStart: Group Starts at Shape 1076
-	//GroupStart Offset: Shape is 10 shapes from this group's start
-	//CellCount: Group owns 6 cells
-	//ShapeCount: Group owns 23 Shapes
-
-	Page* Page;
-	unsigned int ShapeStartID; //ShapeID of the first Shape
-	unsigned int ShapeCount; //Item Count
-
-	unsigned int CellCount;
-	unsigned int CellID;
-	int CellOffset = 0;
-
-	int GroupID; //Item ID
-	ShapeData* NextGroup;
-
-	glm::vec2 Position;
-	glm::vec2 Size;
-	glm::vec4 Color;
-
-	bool MouseAccess = true;
-	bool Centered;
-	bool Highlighted;
-	int ShapeType;
-
-	float Left = -3.0;
-	float Right = -3.0;
-	float Top = -3.0;
-	float Bottom = -3.0;
-
-	glm::vec2 XYShapesPerRow;
-	glm::vec2 ShapeDataSize;
-
-	//Page Item Details
-	int PageGroupID;
-	int PageGroupShapeCount;
-	int PageGroupShapeOffset;
-	int PageGroupShapeStartID;
-};
+//struct PageGroupItemData
+//{
+//	//GroupID: Group 436
+//	//CellID : Cell 2 of Upper Group
+//	//ShapeStart: Group Starts at Shape 1076
+//	//GroupStart Offset: Shape is 10 shapes from this group's start
+//	//CellCount: Group owns 6 cells
+//	//ShapeCount: Group owns 23 Shapes
+//
+//	Page* Page;
+//	unsigned int ShapeStartID; //ShapeID of the first Shape
+//	unsigned int ShapeCount; //Item Count
+//
+//	unsigned int CellCount;
+//	unsigned int CellID;
+//	int CellOffset = 0;
+//
+//	int GroupID; //Item ID
+//	ShapeData* NextGroup;
+//
+//	glm::vec2 Position;
+//	glm::vec2 Size;
+//	glm::vec4 Color;
+//
+//	bool MouseAccess = true;
+//	bool Centered;
+//	bool Highlighted;
+//	int ShapeType;
+//
+//	float Left = -3.0;
+//	float Right = -3.0;
+//	float Top = -3.0;
+//	float Bottom = -3.0;
+//
+//	glm::vec2 XYShapesPerRow;
+//	glm::vec2 ShapeDataSize;
+//
+//	//Page Item Details
+//	int PageGroupID;
+//	int PageGroupShapeCount;
+//	int PageGroupShapeOffset;
+//	int PageGroupShapeStartID;
+//};
 
 class PageGroupItem : public MasterElement
 {
 public:
 
-	PageGroupItem();
-	PageGroupItem(Page& Page);
-	PageGroupItem(Page& Page, PageGroupItemData& PageItem);
-	PageGroupItem(Page& Page, int GroupID);
-
-	Page* CurrentPage;
-	PageGroupItemData CurrentPageItem;
-	GroupData CurrentShapeGroup; 
+	//PageGroupItemData LoadedShape.PageItem;
+	//GroupData CurrentShapeGroup;
 	TextData CurrentText;
 	ShapeData CurrentShape;
+
+	PageGroupItem();
+	PageGroupItem(Page& Page);
+	PageGroupItem(Page& Page, PageItemData& PageItemData);
+	PageGroupItem(Page& Page, ShapeData& LoadedShape);
+	PageGroupItem(Page& Page, int GroupID);
+
+	void Add_Default() override; //Editor/None Set in Stone
+	void Add_Duplicate() override; //Editor/None Set in Stone
+	void Add_Insert() override; //Editor/None Set in Stone
+	void Delete();
 
 	virtual void Update() = 0;
 	void ReCalibrateID();
@@ -82,14 +87,11 @@ public:
 	//void SwitchToPageItem(int ShapeID);
 
 	//ShapeData Editing
-	virtual void Add_Default(); //Editor/None Set in Stone
-	virtual void Add_Duplicate(); //Editor/None Set in Stone
-	virtual void Add_Insert(); //Editor/None Set in Stone
-	void DeletePageGroupItem();
-	void SwitchToPageGroupItem(int RequstedShapeID);
-	void SwitchToPageGroupItem(Page& Page, int RequstedShapeID);
-	void SetPageGroupItem(ShapeData& ShapeData);
-	void SetPageGroupItem(ShapeData& ShapeData, glm::vec2 PSConversions);
+
+	void Switch(int RequstedShapeID);
+	void Switch(Page& Page, int RequstedShapeID);
+	void SetPageItem(ShapeData& ShapeData);
+	void SetPageItem(ShapeData& ShapeData, glm::vec2 PSConversions);
 	void SetPosition(glm::vec2 Position);
 	void OffsetPosition(glm::vec2 PositionOffset);
 	void OffsetPosition(glm::vec2 PositionOffset, glm::vec2 bools);
@@ -103,25 +105,38 @@ public:
 
 	void PrintGroupShapes()
 	{
-		//ReCalibrateID();
-		//cout << "Printing Starting from: " << CurrentPageItem.ShapeStartID << endl;
-		//cout << "For the count: " << CurrentPageItem.ShapeCount << endl;
-		for (int i = CurrentPageItem.ShapeStartID; i < CurrentPageItem.ShapeStartID + CurrentPageItem.ShapeCount + 1; i++)
+		if (Initialized == false)
 		{
-			CurrentPageItem.Page->PrintShape(i);
+			Log::LogString("Cannot Print Shapes:: PageItem Not Initialized"); 
+			return;
+		}
+		else
+		{
+			Log::LogString("NO SHAPE WAS INITIALIZED");
+		}
+		//ReCalibrateID();
+		//cout << "Printing Starting from: " << LoadedShape.PageItem.ShapeStartID << endl;
+		//cout << "For the count: " << LoadedShape.PageItem.ShapeCount << endl;
+		for (int i = LoadedShape.PageItem.ShapeStart; i < LoadedShape.PageItem.ShapeStart + LoadedShape.PageItem.ShapeCount + 1; i++)
+		{
+			
+			CurrentPage->PrintShape(i);
 		}
 	}
 
 	void Init(Page& Page, int QuadID)
 	{
-		this->CurrentPageItem.Page = &Page;
-		if (QuadID != -1)
+		if (&Page != nullptr)
 		{
-			CurrentShape = Page.GetShapeDataR(QuadID);
+			Initialized = true;
+			CurrentPage = &Page;
+			if (QuadID != -1)
+			{
+				LoadedShape = Page.GetShapeDataR(QuadID);
+			}
+			LoadedShape.PageItem.Position = { 0.0, 0.0 };
+			Add_Default();
 		}
-		cout << "Quad Selected ID: " << QuadID << endl;
-		CurrentPageItem.Position = { 0.0, 0.0 };
-		Add_Default();
 	};
 
 
