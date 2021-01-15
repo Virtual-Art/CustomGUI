@@ -79,7 +79,7 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
-	virtual void Update() = 0;
+	virtual void Update() {};
 	void ReCalibrateID();
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);

@@ -13,9 +13,17 @@ ShapeGroup::ShapeGroup(Page& Page)
 	{
 		Initialized = true;
 		CurrentPage = &Page;
-		CurrentPage->ShapeGroupCount++;
+		CurrentPage->TotalShapeGroupCount++;
+		CurrentPage->CurrentShapeGroup++;
+		CurrentPage->CurrentShape = 0;
+		LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
 		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
-		LoadedShape.ShapeGroup.ID = CurrentPage->ShapeGroupCount;
+		Log::LogString("-------Shape Added--------");
+		Log::LogInt("CurrentShape     ", Page.CurrentShape);
+		Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
+		Log::LogInt("CurrentPageItem  ", Page.CurrentPageItem);
+		Log::LogInt("CurrentPageGroup ", Page.CurrentPageGroup);
+		Log::LogString(" ");
 	}
 }
 
@@ -29,7 +37,7 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData)
 		Initialized = true;
 		LoadedShape.ShapeGroup = ShapeGroupData;
 		CurrentPage = &Page;
-		CurrentPage->ShapeGroupCount++;
+		//CurrentPage->ShapeGroupCount++;
 	}
 	//LoadedShape.ShapeGroup.ID = LoadedShape.ShapeGroup.Page->ShapeGroup.ShapeCount;
 }
@@ -43,7 +51,7 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeData& ShapeData)
 		Initialized = true;
 		LoadedShape = ShapeData;
 		CurrentPage = &Page;
-		CurrentPage->ShapeGroupCount++;
+		//CurrentPage->ShapeGroupCount++;
 	}
 	//LoadedShape.ShapeGroup.ID = LoadedShape.ShapeGroup.Page->ShapeGroup.ShapeCount;
 }
@@ -513,4 +521,9 @@ void ShapeGroup::PrintGroupShapes()
 		if (IsInBounds(i) == false) return;
 		CurrentPage->PrintShape(i);
 	}
+}
+
+int ShapeGroup::GetCount()
+{
+	return LoadedShape.ShapeGroup.ShapeCount;
 }

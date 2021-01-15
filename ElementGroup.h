@@ -93,6 +93,7 @@ class ShapeGroup : public MasterElement
 		}
 	}
 	void PrintGroupShapes();
+	int GetCount();
 
 	// Basic
 	void SetPosition(glm::vec2 Position) override;                    

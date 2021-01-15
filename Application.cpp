@@ -706,14 +706,21 @@ int main(int argc, char** argv)
 	//Quad Square(GUI);
 	//Square.SetPosition({-0.5, 0.0});
 
+	Log::LogString("Before Slider editing");
 	FirstSlider1.SetPosition({ 0.4, 0.3 });
 	FirstSlider2.SetPosition({ -0.4, 0.3 });
 	//FirstSlider3.SetPosition({ 0.4, -0.3 });
 
 	//FirstSlider0.PrintGroupShapes();
+	Log::LogString("Before Copy");
 	Slider CopySlider(MainBook.Page[0], 22);
-	CopySlider.SetPosition({ 0.4, 0.3 });
+	
+	//CopySlider.SetPosition({ 0.4, 0.3 });
 	//MasterElement& TheMaster = Square;
+
+	cout << "Look here! " << endl;
+
+
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -732,6 +739,30 @@ int main(int argc, char** argv)
 		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(Mouse.xPos, Mouse.yPos, false);
 		GUIShapeDataHovered = GUI.FindShapeData(Mouse.xPos, Mouse.yPos, false);
 
+		//Shape = 1
+		//ShapeGRoup = 2
+		//PageItem = 3
+		//PageGroup = 4
+		if (KeyState.Key1 == GUI_1_CLICKED)
+		{
+			cout << "Tried" << endl;
+			Quad Shape_0(GUI);
+		}
+
+		if (KeyState.Key1 == GUI_2_CLICKED)
+		{
+			ShapeGroup ShapeGroup_0(GUI);
+		}
+
+		if (KeyState.Key1 == GUI_3_CLICKED)
+		{
+			PageGroupItem PageItem_0(GUI);
+		}
+
+		if (KeyState.Key1 == GUI_4_CLICKED)
+		{
+			PageGroup PageGroup_0(GUI);
+		}
 		
 		//FirstSlider0.SetPosition({Mouse.xPos,Mouse.yPos});
 

@@ -12,7 +12,17 @@ PageGroup::PageGroup(Page& Page)
 	{
 		Initialized = true;
 		CurrentPage = &Page;
-		CurrentPage->PageItemCount++;
+		CurrentPage->TotalPageGroupCount++;
+		Page.CurrentPageGroup = Page.TotalPageGroupCount;
+		Page.CurrentPageItem = 0;
+		Page.CurrentShapeGroup = 0;
+		Page.CurrentShape = 0;
+		Log::LogString("-------Shape Added--------");
+		Log::LogInt("CurrentShape     ", Page.CurrentShape);
+		Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
+		Log::LogInt("CurrentPageItem  ", Page.CurrentPageItem);
+		Log::LogInt("CurrentPageGroup ", Page.CurrentPageGroup);
+		Log::LogString(" ");
 	}
 }
 
@@ -23,8 +33,12 @@ PageGroup::PageGroup(Page& Page, PageGroupData& PageGroup)
 		Initialized = true;
 		CurrentPage = &Page;
 		LoadedShape.PageGroup = PageGroup;
-		CurrentPage->PageItemCount++;
-		LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
+		//CurrentPage->PageItemCount++;
+		//LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
+		Page.CurrentPageGroup = Page.TotalPageItemCount;
+		Page.CurrentPageItem = 0;
+		Page.CurrentShapeGroup = 0;
+		Page.CurrentShape = 0;
 	}
 	//;
 }
@@ -36,7 +50,11 @@ PageGroup::PageGroup(Page& Page, ShapeData& ShapeData)
 		Initialized = true;
 		CurrentPage = &Page;
 		LoadedShape = ShapeData;
-		CurrentPage->PageItemCount++;
+		//CurrentPage->PageItemCount++;
+		//Page.CurrentPageGroup = Page.PageItemCount;
+		Page.CurrentPageItem = 0;
+		Page.CurrentShapeGroup = 0;
+		Page.CurrentShape = 0;
 	}
 	//CurrentPageItem.GroupID = CurrentPageItem.Page->PageItemCount;
 }
@@ -65,6 +83,10 @@ PageGroup::PageGroup(Page& Page, int ID)
 		CurrentPage = &Page;
 		if (IsInBounds(ID) == false) Log::LogString("Shape Group Initialization failed:: ID out of bounds"); return;
 		LoadedShape = Page.GetShapeDataR(ID);
+		Page.CurrentPageGroup = LoadedShape.PageGroup.ID;
+		Page.CurrentPageItem = 0;
+		Page.CurrentShapeGroup = 0;
+		Page.CurrentShape = 0;
 	}
 	Log::LogString("Page Item Not Initialized");
 }

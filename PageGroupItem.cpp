@@ -11,9 +11,18 @@ PageGroupItem::PageGroupItem(Page& Page)
 	{
 		Initialized = true;
 		CurrentPage = &Page;
-		CurrentPage->PageItemCount++;
-		LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
-		this->LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
+		CurrentPage->TotalPageItemCount++;
+		CurrentPage->CurrentPageItem++;
+		CurrentPage->CurrentShapeGroup = 0;
+		CurrentPage->CurrentShape = 0;
+		LoadedShape.PageItem.ID = CurrentPage->CurrentPageItem;
+		LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
+		Log::LogString("-------Shape Added--------");
+		Log::LogInt("CurrentShape     ", Page.CurrentShape);
+		Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
+		Log::LogInt("CurrentPageItem  ", Page.CurrentPageItem);
+		Log::LogInt("CurrentPageGroup ", Page.CurrentPageGroup);
+		Log::LogString(" ");
 	}
 }
 
@@ -26,10 +35,12 @@ PageGroupItem::PageGroupItem(Page& Page, PageItemData& PageItemData)
 		Initialized = true;
 		CurrentPage = &Page;
 		LoadedShape.PageItem = PageItemData;
-		CurrentPage->PageItemCount++;
-		LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
+		//CurrentPage->PageItemCount++;
+		//LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
 		LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
-		Log::LogInt("Page Item Shape Start", LoadedShape.PageItem.ShapeStart);
+		//CurrentPage->CurrentPageItemCount++;
+		//CurrentPage->CurrentPageItem = CurrentPage->CurrentPageItemCount;
+		CurrentPage->CurrentShape = 0;
 	}
 }
 
@@ -42,10 +53,12 @@ PageGroupItem::PageGroupItem(Page& Page, ShapeData& FullShape)
 		CurrentPage = &Page;
 		LoadedShape = FullShape;
 		//Book Keeping
-		CurrentPage->PageItemCount++;
-		LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
+		//CurrentPage->PageItemCount++;
+		//LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
 		LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
-		
+		//CurrentPage->CurrentPageItemCount++;
+		//CurrentPage->CurrentPageItem = CurrentPage->CurrentPageItemCount;
+		CurrentPage->CurrentShape = 0;
 	}
 }
 
@@ -59,7 +72,9 @@ PageGroupItem::PageGroupItem(Page& Page, int ID)
 		if (ID != -1)
 		{
 			LoadedShape = Page.GetShapeDataR(ID);
-			ShapeToGroup(LoadedShape);
+			CurrentPage->CurrentPageItem = LoadedShape.PageItem.ID;
+			CurrentPage->CurrentShapeGroup = 0;
+			CurrentPage->CurrentShape = 0;
 		}
 		else
 		{
@@ -326,6 +341,7 @@ int PageGroupItem::FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape)
 
 int PageGroupItem::GetShapeGroup(int ChildGroupID)
 {
+	if (Initialized != true) { Log::LogString("GetShapeGroup Failed:: ShapeGroup Not Initialized"); return -1; }
 	ReCalibrateID();
 	int CurrentID = LoadedShape.PageItem.ShapeStart;
 	bool Found = false;
@@ -334,9 +350,10 @@ int PageGroupItem::GetShapeGroup(int ChildGroupID)
 	//Found
 	while (RetreivedShape->PageItem.ID == LoadedShape.PageItem.ID)
 	{
-		if (RetreivedShape->ID == ChildGroupID)
+		cout << "Checking..." << RetreivedShape->ShapeGroup.ID  << " == " << ChildGroupID << endl;
+		if (RetreivedShape->ShapeGroup.ID == ChildGroupID)
 		{
-			cout << " ShapeGroup: " << RetreivedShape->ID << " Match Found!" << endl;
+			cout << " ShapeGroup: " << RetreivedShape->ShapeGroup.ID << " Match Found!" << endl;
 			cout << " ShapeGroup Start : " << CurrentID - RetreivedShape->ShapeGroup.ShapeOffset << endl;
 			cout << "--------" << endl;
 			return CurrentID - RetreivedShape->ShapeGroup.ShapeOffset;

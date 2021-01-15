@@ -456,9 +456,21 @@ public:
 	int MaxVertexCount;
 	int MaxTextures = 8;
 
-	int ShapeGroupCount = -1;
-	int PageItemCount = -1;
-	int PageGroupCount = -1;
+	int TotalShapeGroupCount = 0;
+	int TotalPageItemCount = 0;
+	int TotalPageGroupCount = 0;
+	int TotalShapeCount = 0;
+
+	//Editing variables
+	int CurrentPageGroup = 0;
+	int CurrentPageItem = 0;
+	int CurrentShapeGroup = 0;
+	int CurrentShape = -1;
+
+	//int CurrentPageGroupCount = 0;
+	//int CurrentPageItemCount = 0;
+	//int CurrentShapeGroupCount = 0;
+	//int CurrentShapeCount = -1;
 
 	static GLuint WhiteTexture;
 
@@ -503,6 +515,9 @@ public:
 	size_t ShapeDataSize;
     int PageShapeCount;
     int PageIndexCount;
+
+
+
 	//static int TotalIndexCount;
 	//static int TotalShapeDataCount;
 
