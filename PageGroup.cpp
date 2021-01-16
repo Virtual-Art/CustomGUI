@@ -12,17 +12,26 @@ PageGroup::PageGroup(Page& Page)
 	{
 		Initialized = true;
 		CurrentPage = &Page;
-		CurrentPage->TotalPageGroupCount++;
+		//if (Page.CurrentShape > 0)
+		//{
+		//	cout << "Page group not added because there was nothing in the previous one" << endl;
+			CurrentPage->TotalPageGroupCount++;
+			CurrentPage->CurrentShapeGroupShapeCount = 0;
+		//}
 		Page.CurrentPageGroup = Page.TotalPageGroupCount;
-		Page.CurrentPageItem = 0;
-		Page.CurrentShapeGroup = 0;
-		Page.CurrentShape = 0;
-		Log::LogString("-------Shape Added--------");
-		Log::LogInt("CurrentShape     ", Page.CurrentShape);
-		Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
-		Log::LogInt("CurrentPageItem  ", Page.CurrentPageItem);
-		Log::LogInt("CurrentPageGroup ", Page.CurrentPageGroup);
-		Log::LogString(" ");
+		Page.CurrentPageItem = -1;
+		Page.CurrentShapeGroup = -1;
+		Page.CurrentShape = -1;
+		Page.CurrentPageGroupShapeCount = -1;
+		//LoadedShape.PageGroup.ID = Page.TotalPageGroupCount;
+		LoadedShape.PageGroup.ShapeStart = Page.ShapeAmount();
+		LoadedShape.PageGroup.ShapeOffset = Page.TotalPageGroupCount;
+		//Log::LogString("-------Shape Added--------");
+		//Log::LogInt("CurrentShape     ", Page.CurrentShape);
+		//Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
+		//Log::LogInt("CurrentPageItem  ", Page.CurrentPageItem);
+		//Log::LogInt("CurrentPageGroup ", Page.CurrentPageGroup);
+		//Log::LogString(" ");
 	}
 }
 
@@ -32,13 +41,19 @@ PageGroup::PageGroup(Page& Page, PageGroupData& PageGroup)
 	{
 		Initialized = true;
 		CurrentPage = &Page;
-		LoadedShape.PageGroup = PageGroup;
-		//CurrentPage->PageItemCount++;
-		//LoadedShape.PageItem.ID = CurrentPage->PageItemCount;
-		Page.CurrentPageGroup = Page.TotalPageItemCount;
+		if (Page.CurrentShape > 0)
+		{
+			cout << "Page group not added because there was nothing in the previous one" << endl;
+			CurrentPage->TotalPageGroupCount++;
+		}
+		Page.CurrentPageGroup = Page.TotalPageGroupCount;
 		Page.CurrentPageItem = 0;
 		Page.CurrentShapeGroup = 0;
 		Page.CurrentShape = 0;
+		LoadedShape.PageGroup = PageGroup;
+		//LoadedShape.PageGroup.ID = Page.TotalPageGroupCount;
+		LoadedShape.PageGroup.ShapeStart = Page.ShapeAmount();
+		LoadedShape.PageGroup.ShapeOffset = Page.TotalPageGroupCount;
 	}
 	//;
 }
@@ -49,12 +64,19 @@ PageGroup::PageGroup(Page& Page, ShapeData& ShapeData)
 	{
 		Initialized = true;
 		CurrentPage = &Page;
-		LoadedShape = ShapeData;
-		//CurrentPage->PageItemCount++;
-		//Page.CurrentPageGroup = Page.PageItemCount;
+		if (Page.CurrentShape > 0)
+		{
+			cout << "Page group not added because there was nothing in the previous one" << endl;
+			CurrentPage->TotalPageGroupCount++;
+		}
+		Page.CurrentPageGroup = Page.TotalPageGroupCount;
 		Page.CurrentPageItem = 0;
 		Page.CurrentShapeGroup = 0;
 		Page.CurrentShape = 0;
+		LoadedShape = ShapeData;
+		//LoadedShape.PageGroup.ID = Page.TotalPageGroupCount;
+		LoadedShape.PageGroup.ShapeStart = Page.ShapeAmount();
+		LoadedShape.PageGroup.ShapeOffset = Page.TotalPageGroupCount;
 	}
 	//CurrentPageItem.GroupID = CurrentPageItem.Page->PageItemCount;
 }

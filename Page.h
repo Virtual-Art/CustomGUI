@@ -47,7 +47,7 @@ struct PageGroupData
 	//PageGroup
 	//Page* Page;
 	int ID = -1;
-	int ShapeStart = -1;     //Lowest level //EX: PageItem Starts at Shape 120
+	int ShapeStart = 0;     //Lowest level //EX: PageItem Starts at Shape 120
 	int ShapeCount = -1;  //Lowest level //EX: PageItem owns 40 Shapes 
 	int ShapeOffset = -1;      //Lowest level //EX: This Shape is 10 Shapes from PageItem start Shape (120)
 	int Type = 0;
@@ -72,7 +72,7 @@ struct PageItemData
     //PageItem
 	//Page* Page;
 	int ID = -1;
-	int ShapeStart = -1;  
+	int ShapeStart = 0;  
 	int ShapeCount = -1;  
 	int ShapeOffset = -1; 
 	int Type = 0;
@@ -96,7 +96,7 @@ struct ShapeGroupData
 	//ShapeGroup
 	//Page* Page;
 	int ID = -1;
-	int ShapeStart = -1;
+	int ShapeStart = 0;
 	int ShapeOffset = -1;
 	int ShapeCount = -1;
 	int Type = 0;
@@ -456,21 +456,23 @@ public:
 	int MaxVertexCount;
 	int MaxTextures = 8;
 
+	//For Stats
 	int TotalShapeGroupCount = 0;
 	int TotalPageItemCount = 0;
 	int TotalPageGroupCount = 0;
 	int TotalShapeCount = 0;
 
-	//Editing variables
-	int CurrentPageGroup = 0;
-	int CurrentPageItem = 0;
-	int CurrentShapeGroup = 0;
+	//For IDs
+	int CurrentPageGroup = -1;
+	int CurrentPageItem = -1;
+	int CurrentShapeGroup = -1;
 	int CurrentShape = -1;
 
-	//int CurrentPageGroupCount = 0;
-	//int CurrentPageItemCount = 0;
-	//int CurrentShapeGroupCount = 0;
-	//int CurrentShapeCount = -1;
+	//For Shape Offsets
+	int CurrentPageGroupShapeCount = -1; 
+	int CurrentPageItemShapeCount = -1;
+	int CurrentShapeGroupShapeCount = -1; //there might be 10 shape groups but the 10th group might have 100 shapes in it
+	int CurrentShapeCount = -1;
 
 	static GLuint WhiteTexture;
 
@@ -589,7 +591,7 @@ public:
 
 		if (CurrentShapeData.ShapeGroup.ShapeStart == CurrentShapeData.ID)
 		{
-			cout << "Group Start: {STARTS AT THIS SHAPE}" << endl;
+			cout << "ShapeGroup Start: {STARTS AT THIS SHAPE}" << endl;
 		}
 		else
 		{
@@ -601,10 +603,19 @@ public:
 		}
 		else
 		{
-			cout << "PageItem Start: {" << CurrentShapeData.PageItem.ShapeStart << "}" << endl;
+			cout << "PageGroup Start: {" << CurrentShapeData.PageItem.ShapeStart << "}" << endl;
+		}
+		if (CurrentShapeData.PageGroup.ShapeStart == CurrentShapeData.ID)
+		{
+			cout << "PageItem Start: {STARTS AT THIS SHAPE}" << endl;
+		}
+		else
+		{
+			cout << "PageItem Start: {" << CurrentShapeData.PageGroup.ShapeStart << "}" << endl;
 		}
 		cout << "---ShapeGroup- "<< "(" << CurrentShapeData.ShapeGroup.ID << ")" << " Shape (" << CurrentShapeData.ShapeGroup.ShapeOffset << "/"<< CurrentShapeData.ShapeGroup.ShapeCount << ")----" << endl;
 		cout << "---PageItem- " << "(" << CurrentShapeData.PageItem.ID << ")" << " Shape (" << CurrentShapeData.PageItem.ShapeOffset << "/" << CurrentShapeData.PageItem.ShapeCount << ")----" << endl;
+		cout << "---PageGroup- " << "(" << CurrentShapeData.PageGroup.ID << ")" << " Shape (" << CurrentShapeData.PageGroup.ShapeOffset << "/" << CurrentShapeData.PageGroup.ShapeCount << ")----" << endl;
 		cout << "------" << endl;
 
 		cout << "ShapeTop: " << CurrentShapeData.Top << endl;

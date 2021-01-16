@@ -644,6 +644,7 @@ int main(int argc, char** argv)
 	PageItem_FirstSlider.Position = { 0.0, -0.5 };
 	Slider FirstSlider3(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
 	
+	
 	Quad FontReference(MainBook.Page[0]);
 	FontReference.SetColor(PageCreator::Purple);
 	FontReference.SetSize(FontReference.ApplySizeConversion({ 1, 4000 }, S_PIXEL_TO_COMPUTER));
@@ -707,19 +708,20 @@ int main(int argc, char** argv)
 	//Square.SetPosition({-0.5, 0.0});
 
 	Log::LogString("Before Slider editing");
-	FirstSlider1.SetPosition({ 0.4, 0.3 });
-	FirstSlider2.SetPosition({ -0.4, 0.3 });
+	//FirstSlider1.SetPosition({ 0.4, 0.3 });
+	//FirstSlider2.SetPosition({ -0.4, 0.3 });
 	//FirstSlider3.SetPosition({ 0.4, -0.3 });
 
 	//FirstSlider0.PrintGroupShapes();
 	Log::LogString("Before Copy");
-	Slider CopySlider(MainBook.Page[0], 22);
+	//Slider CopySlider(MainBook.Page[0], 22);
 	
 	//CopySlider.SetPosition({ 0.4, 0.3 });
 	//MasterElement& TheMaster = Square;
 
 	cout << "Look here! " << endl;
-
+	Slider UnusedSlider(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
+	UnusedSlider.PrintGroupShapes();
 
 
 	typedef void(*Master_P)();

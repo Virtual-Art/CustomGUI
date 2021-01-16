@@ -13,11 +13,18 @@ ShapeGroup::ShapeGroup(Page& Page)
 	{
 		Initialized = true;
 		CurrentPage = &Page;
+		//if (CurrentPage->CurrentShape > 0)
+		//{
+			//cout << "Shape Group  not added because there was nothing in the previous one" << endl;
+			
+		//}
 		CurrentPage->TotalShapeGroupCount++;
 		CurrentPage->CurrentShapeGroup++;
 		CurrentPage->CurrentShape = 0;
-		LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
+		CurrentPage->CurrentShapeGroupShapeCount = 0;
+		//LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
 		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+		LoadedShape.ShapeGroup.ShapeOffset = CurrentPage->CurrentShape;
 		Log::LogString("-------Shape Added--------");
 		Log::LogInt("CurrentShape     ", Page.CurrentShape);
 		Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
@@ -35,8 +42,15 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData)
 	if (&Page != nullptr)
 	{
 		Initialized = true;
-		LoadedShape.ShapeGroup = ShapeGroupData;
 		CurrentPage = &Page;
+		CurrentPage->TotalShapeGroupCount++;
+		CurrentPage->CurrentShapeGroup++;
+		CurrentPage->CurrentShape = -1;
+		CurrentPage->CurrentShapeGroupShapeCount = -1;
+		LoadedShape.ShapeGroup = ShapeGroupData;
+		//LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
+		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+		//LoadedShape.ShapeGroup.ShapeOffset = CurrentPage->CurrentShape;
 		//CurrentPage->ShapeGroupCount++;
 	}
 	//LoadedShape.ShapeGroup.ID = LoadedShape.ShapeGroup.Page->ShapeGroup.ShapeCount;
@@ -49,8 +63,16 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeData& ShapeData)
 	if (&Page != nullptr)
 	{
 		Initialized = true;
-		LoadedShape = ShapeData;
 		CurrentPage = &Page;
+		CurrentPage->TotalShapeGroupCount++;
+		CurrentPage->CurrentShapeGroup++;
+		CurrentPage->CurrentShape = -1;
+		CurrentPage->CurrentShapeGroupShapeCount = -1;
+		LoadedShape = ShapeData;
+		//LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
+		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+		//LoadedShape.ShapeGroup.ShapeOffset = CurrentPage->CurrentShape;
+
 		//CurrentPage->ShapeGroupCount++;
 	}
 	//LoadedShape.ShapeGroup.ID = LoadedShape.ShapeGroup.Page->ShapeGroup.ShapeCount;

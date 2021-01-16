@@ -105,18 +105,11 @@ public:
 
 	void PrintGroupShapes()
 	{
-		if (Initialized == false)
-		{
-			Log::LogString("Cannot Print Shapes:: PageItem Not Initialized"); 
-			return;
-		}
-		else
-		{
-			Log::LogString("NO SHAPE WAS INITIALIZED");
-		}
+		if (Initialized == false) {Log::LogString("Cannot Print Shapes:: PageItem Not Initialized"); return;}
+
 		//ReCalibrateID();
-		//cout << "Printing Starting from: " << LoadedShape.PageItem.ShapeStartID << endl;
-		//cout << "For the count: " << LoadedShape.PageItem.ShapeCount << endl;
+		cout << "Printing Starting from: " << LoadedShape.PageItem.ShapeStart << endl;
+		cout << "For the count: " << LoadedShape.PageItem.ShapeCount << endl;
 		for (int i = LoadedShape.PageItem.ShapeStart; i < LoadedShape.PageItem.ShapeStart + LoadedShape.PageItem.ShapeCount + 1; i++)
 		{
 			
