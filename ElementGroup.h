@@ -82,15 +82,29 @@ class ShapeGroup : public MasterElement
 	void Add_Duplicate() override {};
 	void Add_Insert() override {};
 	void Delete() override {};
-	void Switch(Page& Page, int RequstedShapeID) override {};
-	void Switch(int ShapeID) override
+	ShapeData& Switch(Page& Page, int RequstedShapeID) override { return LoadedShape; };
+	ShapeData& Switch(int ShapeID) override
 	{
-		if (Initialized == false) Log::LogString("Switch Error:: Shape Group Not Initialized");  return;
-		if (IsInBounds(ShapeID) == false) Log::LogString("Switch Error:: ID out of bounds");
-		if (SetInStone != true)
+		if (Initialized == true)
 		{
-			LoadedShape = CurrentPage->GetShapeDataR(ShapeID);
+			if (IsInBounds(ShapeID) == true) 
+			{
+				if (SetInStone != true)
+				{
+					LoadedShape = CurrentPage->GetShapeDataR(ShapeID);
+					return LoadedShape;
+				}
+			}
+			else
+			{
+				Log::LogString("Switch Error:: ID out of bounds");
+			}
 		}
+		else
+		{
+			Log::LogString("Switch Error:: Shape Group Not Initialized");
+		}
+		return LoadedShape;
 	}
 	void PrintGroupShapes();
 	int GetCount();

@@ -595,7 +595,7 @@ public:
 		}
 		else
 		{
-			cout << "Group Start: {" << CurrentShapeData.ShapeGroup.ShapeStart << "}" << endl;
+			cout << "ShapeGroup Start: {" << CurrentShapeData.ShapeGroup.ShapeStart << "}" << endl;
 		}
 		if (CurrentShapeData.PageItem.ShapeStart == CurrentShapeData.ID)
 		{
@@ -603,15 +603,15 @@ public:
 		}
 		else
 		{
-			cout << "PageGroup Start: {" << CurrentShapeData.PageItem.ShapeStart << "}" << endl;
+			cout << "PageItem Start: {" << CurrentShapeData.PageItem.ShapeStart << "}" << endl;
 		}
 		if (CurrentShapeData.PageGroup.ShapeStart == CurrentShapeData.ID)
 		{
-			cout << "PageItem Start: {STARTS AT THIS SHAPE}" << endl;
+			cout << "PageGroup Start: {STARTS AT THIS SHAPE}" << endl;
 		}
 		else
 		{
-			cout << "PageItem Start: {" << CurrentShapeData.PageGroup.ShapeStart << "}" << endl;
+			cout << "PageGroup Start: {" << CurrentShapeData.PageGroup.ShapeStart << "}" << endl;
 		}
 		cout << "---ShapeGroup- "<< "(" << CurrentShapeData.ShapeGroup.ID << ")" << " Shape (" << CurrentShapeData.ShapeGroup.ShapeOffset << "/"<< CurrentShapeData.ShapeGroup.ShapeCount << ")----" << endl;
 		cout << "---PageItem- " << "(" << CurrentShapeData.PageItem.ID << ")" << " Shape (" << CurrentShapeData.PageItem.ShapeOffset << "/" << CurrentShapeData.PageItem.ShapeCount << ")----" << endl;

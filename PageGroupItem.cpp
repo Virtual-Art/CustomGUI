@@ -1,83 +1,77 @@
 #include "PageGroupItem.h"
 
+//Uninitialized PageItem
 PageGroupItem::PageGroupItem()
 {
 	CurrentPage = nullptr;
 }
 
+//New Page Item with data provided by derived class
 PageGroupItem::PageGroupItem(Page& Page)
 {
 	if (&Page != nullptr)
 	{
+		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
-		//if (CurrentPage->CurrentShape > 0)
-		//{
-			//cout << "Page item not added because there was nothing in the previous one" << endl;
-			CurrentPage->TotalPageItemCount++;
-			CurrentPage->CurrentPageItem++;
-		//}
-		CurrentPage->CurrentShapeGroup = -1;
-		CurrentPage->CurrentPageGroupShapeCount = -1;
-		CurrentPage->CurrentShape = -1;
-		//LoadedShape.PageItem.ID = CurrentPage->CurrentPageItem;
 		LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
-		//LoadedShape.PageItem.ShapeOffset = CurrentPage->CurrentPageItem;
-		//Log::LogString("-------Shape Added--------");
-		//Log::LogInt("CurrentShape     ", Page.CurrentShape);
-		//Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
-		//Log::LogInt("CurrentPageItem  ", Page.CurrentPageItem);
-		//Log::LogInt("CurrentPageGroup ", Page.CurrentPageGroup);
-		//Log::LogString(" ");
+
+		//Track Counts
+		CurrentPage->CurrentPageItem++;
+		CurrentPage->TotalPageItemCount++;
+
+		//Reset Child Group Counts / Shape Counts
+		CurrentPage->CurrentShapeGroup = 0;
+		CurrentPage->CurrentShape = -1;
+		CurrentPage->CurrentPageItemShapeCount = -1;
+		CurrentPage->CurrentShapeGroupShapeCount = -1;
 	}
 }
 
-//Create a grid that is already set up & can be changed
-//Group can't be switched with another
+//New PageItem initialized by group data
 PageGroupItem::PageGroupItem(Page& Page, PageItemData& PageItemData)
 {
 	if (&Page != nullptr)
 	{
+		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
-	//	if (CurrentPage->CurrentShape > 0)
-		//{
+		LoadedShape.PageItem = PageItemData;
+		LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
+
+		//Track Counts
+        CurrentPage->CurrentPageItem++;
 		CurrentPage->TotalPageItemCount++;
-		CurrentPage->CurrentPageItem++;
-		cout << " CurrentPageItem UP TO:: " << CurrentPage->CurrentPageItem << endl;
-		//}
-		CurrentPage->CurrentPageItemShapeCount = -1;
-		CurrentPage->CurrentShapeGroupShapeCount = -1;
+
+		//Reset Child Group Counts / Shape Counts
 		CurrentPage->CurrentShapeGroup = 0;
 		CurrentPage->CurrentShape = -1;
-		LoadedShape.PageItem = PageItemData;
-		//LoadedShape.PageItem.ID = CurrentPage->CurrentPageItem;
-		LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
-		//LoadedShape.PageItem.ShapeOffset = CurrentPage->CurrentShape;
+		CurrentPage->CurrentPageItemShapeCount = -1;
+		CurrentPage->CurrentShapeGroupShapeCount = -1;
 	}
 }
 
+//New Page Item initialized by FullShape Data
 PageGroupItem::PageGroupItem(Page& Page, ShapeData& FullShape)
 {
-	
 	if (&Page != nullptr)
 	{
+		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
-		
-	//	if (CurrentPage->CurrentShape > 0)
-	//	{
-			cout << "Page item not added because there was nothing in the previous one" << endl;
-			CurrentPage->TotalPageItemCount++;
-			CurrentPage->CurrentPageItem++;
-	///	}
-		CurrentPage->CurrentPageItemShapeCount = -1;
-		CurrentPage->CurrentShapeGroup = -1;
-		CurrentPage->CurrentShape = -1;
 		LoadedShape = FullShape;
-		LoadedShape.PageItem.ID = CurrentPage->CurrentPageItem;
 		LoadedShape.PageItem.ShapeStart = Page.ShapeAmount();
-		//LoadedShape.PageItem.ShapeOffset = CurrentPage->CurrentPageItem;
+		
+		//Track Counts
+		CurrentPage->TotalPageItemCount++;
+		CurrentPage->CurrentPageItem++;
+
+		//Reset Child Group Counts
+		CurrentPage->CurrentShapeGroup = 0;
+		CurrentPage->CurrentShape = -1;
+		CurrentPage->CurrentPageItemShapeCount = -1;
+		CurrentPage->CurrentShapeGroupShapeCount = -1;
+
 	}
 }
 
@@ -177,22 +171,30 @@ void PageGroupItem::Delete()
 
 }
 
-void PageGroupItem::Switch(int RequstedShapeID)
+ShapeData& PageGroupItem::Switch(int RequstedShapeID)
 {
-	if (RequstedShapeID != -1 && RequstedShapeID < CurrentPage->ShapeAmount())
+	if (Initialized == true)
 	{
-		LoadedShape = CurrentPage->GetShapeDataR(RequstedShapeID);
-		ShapeToGroup(LoadedShape);
+		if (IsInBounds(RequstedShapeID) == true)
+		{
+		     LoadedShape = CurrentPage->GetShapeDataR(RequstedShapeID);
+		     return LoadedShape;
+		}
+		else
+		{
+			Log::LogString("Switch Error:: ID out of bounds");
+		}
 	}
 	else
 	{
-		cout << "ERROR::Could Not Switch To PageItem.::ID not valid" << endl;
+		Log::LogString("Switch Error:: Page Item Not Initialized");
 	}
+	return LoadedShape;
 }
 
-void PageGroupItem::Switch(Page& Page, int RequstedShapeID)
+ShapeData& PageGroupItem::Switch(Page& Page, int RequstedShapeID)
 {
-
+	return LoadedShape;
 }
 
 void PageGroupItem::SetPageItem(ShapeData& ShapeData)
@@ -246,6 +248,7 @@ void PageGroupItem::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int Po
 
 void PageGroupItem::ReCalibrateID()
 {
+	if (Initialized == false) { Log::LogString("ReCalibrateID Failed:: ShapeGroup Not Initialized"); return; };
 	cout << "Recalibrating Group (" << LoadedShape.PageItem.ID << ") " << endl;
 
 	int CurrentID = 0;
@@ -253,13 +256,13 @@ void PageGroupItem::ReCalibrateID()
 
 	//Maintenance
 	//BoundsChecks()
-	if (LoadedShape.PageItem.ShapeStart < CurrentPage->ShapeAmount())
+	if (IsInBounds(LoadedShape.PageItem.ShapeStart) == true)
 	{
 		//in range
 		CurrentID = LoadedShape.PageItem.ShapeStart;
 		GroupStart = LoadedShape.PageItem.ShapeStart;
 	}
-	if (LoadedShape.PageItem.ShapeStart > CurrentPage->ShapeAmount())
+	if (IsInBounds(LoadedShape.PageItem.ShapeStart) == false)
 	{
 		//out of range
 		CurrentID  = CurrentPage->ShapeAmount();
@@ -292,17 +295,25 @@ void PageGroupItem::ReCalibrateID()
 			//if(RetreivedShape->PageGroupID <CurrentGroupData.GroupID)
 			if (RetreivedShape->PageItem.ID < LoadedShape.PageItem.ID)
 			{
-				LoadedShape.PageItem.ShapeStart = FindNextGroup(CurrentID, RetreivedShape);
-				RetreivedShape->PageItem.ShapeStart = LoadedShape.PageItem.ShapeStart;
-				return;
+				int Result = FindNextGroup(CurrentID, RetreivedShape);
+				if (Result != -1)
+				{
+					RetreivedShape->PageItem.ShapeStart = LoadedShape.PageItem.ShapeStart;
+					return;
+				}
+				Log::LogString("FindNextGroupError:: Returned -1"); return;
 			}
 
 			//GO down
 			if (RetreivedShape->PageItem.ID > LoadedShape.PageItem.ID)
 			{
-				LoadedShape.PageItem.ShapeStart = FindPreviousGroup(CurrentID, RetreivedShape);
-				RetreivedShape->PageItem.ShapeStart = LoadedShape.PageItem.ShapeStart;
-				return;
+				int Result = FindPreviousGroup(CurrentID, RetreivedShape);
+				if (Result != -1)
+				{
+					RetreivedShape->PageItem.ShapeStart = LoadedShape.PageItem.ShapeStart;
+					return;
+				}
+				Log::LogString("FindPreviousGroupError:: Returned -1"); return;
 			}
 		}
 	}
@@ -311,6 +322,7 @@ void PageGroupItem::ReCalibrateID()
 //Returns the ID of the first shape in the group
 int PageGroupItem::FindNextGroup(int CurrentID, ShapeData* RetreivedShape)
 {
+	if (RetreivedShape == nullptr) return -1;
 	//Found
 	if (RetreivedShape->PageItem.ID == LoadedShape.PageItem.ID)
 	{
@@ -322,13 +334,10 @@ int PageGroupItem::FindNextGroup(int CurrentID, ShapeData* RetreivedShape)
 
 	//Set up next group 
 	cout << " Group: " << RetreivedShape->PageItem.ID << " No Match" << endl;
-	cout << "Trying Shape ID: " << RetreivedShape->ID  << endl;
 	int NextGroupID = RetreivedShape->PageItem.ShapeCount - RetreivedShape->PageItem.ShapeOffset + 1;
-	Log::LogInt("Shape Count", RetreivedShape->PageItem.ShapeCount);
-	Log::LogInt("Page Group Item Offset", RetreivedShape->PageItem.ShapeOffset);
-	cout << "Shapes to hop: " << NextGroupID << endl;
 	RetreivedShape += NextGroupID;
 	CurrentID += NextGroupID;
+	if (NextGroupID == 0) Log::LogString("FindNextGroup Error:: Cancelled Bootloop"); return -1;
 
 	//Check Next Group
 	int FoundID = FindNextGroup(CurrentID, RetreivedShape);

@@ -11,26 +11,18 @@ ShapeGroup::ShapeGroup(Page& Page)
 {
 	if (&Page != nullptr)
 	{
+		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
-		//if (CurrentPage->CurrentShape > 0)
-		//{
-			//cout << "Shape Group  not added because there was nothing in the previous one" << endl;
-			
-		//}
+		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+
+		//Track Counts
 		CurrentPage->TotalShapeGroupCount++;
 		CurrentPage->CurrentShapeGroup++;
-		CurrentPage->CurrentShape = 0;
-		CurrentPage->CurrentShapeGroupShapeCount = 0;
-		//LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
-		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
-		LoadedShape.ShapeGroup.ShapeOffset = CurrentPage->CurrentShape;
-		Log::LogString("-------Shape Added--------");
-		Log::LogInt("CurrentShape     ", Page.CurrentShape);
-		Log::LogInt("CurrentShapeGroup", Page.CurrentShapeGroup);
-		Log::LogInt("CurrentPageItem  ", Page.CurrentPageItem);
-		Log::LogInt("CurrentPageGroup ", Page.CurrentPageGroup);
-		Log::LogString(" ");
+
+		//Reset Lower Level Group Count / ShapeCount
+		CurrentPage->CurrentShape = -1;
+		CurrentPage->CurrentShapeGroupShapeCount = -1;
 	}
 }
 
@@ -41,19 +33,20 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData)
 {
 	if (&Page != nullptr)
 	{
+		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
+		LoadedShape.ShapeGroup = ShapeGroupData;
+		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+
+		//Track Counts
 		CurrentPage->TotalShapeGroupCount++;
 		CurrentPage->CurrentShapeGroup++;
+
+		//Reset Child Group Count / Shape Counts
 		CurrentPage->CurrentShape = -1;
 		CurrentPage->CurrentShapeGroupShapeCount = -1;
-		LoadedShape.ShapeGroup = ShapeGroupData;
-		//LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
-		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
-		//LoadedShape.ShapeGroup.ShapeOffset = CurrentPage->CurrentShape;
-		//CurrentPage->ShapeGroupCount++;
 	}
-	//LoadedShape.ShapeGroup.ID = LoadedShape.ShapeGroup.Page->ShapeGroup.ShapeCount;
 }
 
 //New 
@@ -62,20 +55,20 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeData& ShapeData)
 {
 	if (&Page != nullptr)
 	{
+		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
+		LoadedShape = ShapeData;
+		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+
+		//Track Counts
 		CurrentPage->TotalShapeGroupCount++;
 		CurrentPage->CurrentShapeGroup++;
+
+		//Reset Child Group Count/ Shape Count
 		CurrentPage->CurrentShape = -1;
 		CurrentPage->CurrentShapeGroupShapeCount = -1;
-		LoadedShape = ShapeData;
-		//LoadedShape.ShapeGroup.ID = CurrentPage->CurrentShapeGroup;
-		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
-		//LoadedShape.ShapeGroup.ShapeOffset = CurrentPage->CurrentShape;
-
-		//CurrentPage->ShapeGroupCount++;
 	}
-	//LoadedShape.ShapeGroup.ID = LoadedShape.ShapeGroup.Page->ShapeGroup.ShapeCount;
 }
 
 //Group can be changed for another

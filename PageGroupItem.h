@@ -88,8 +88,8 @@ public:
 
 	//ShapeData Editing
 
-	void Switch(int RequstedShapeID);
-	void Switch(Page& Page, int RequstedShapeID);
+	ShapeData& Switch(int RequstedShapeID);
+	ShapeData& Switch(Page& Page, int RequstedShapeID);
 	void SetPageItem(ShapeData& ShapeData);
 	void SetPageItem(ShapeData& ShapeData, glm::vec2 PSConversions);
 	void SetPosition(glm::vec2 Position);

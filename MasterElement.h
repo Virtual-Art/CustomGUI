@@ -35,8 +35,8 @@ public:
 	virtual void Add_Duplicate() {}; 
 	virtual void Add_Insert() {};
 	virtual void Delete() {};
-	virtual void Switch(int RequstedShapeID) {};
-	virtual void Switch(Page& Page, int RequstedShapeID) {};
+	virtual ShapeData& Switch(int RequstedShapeID) { return LoadedShape; };
+	virtual ShapeData& Switch(Page& Page, int RequstedShapeID) { return LoadedShape; };
 	//virtual void SetShape(ShapeData& ShapeData) {};
 	//virtual void SetShape(ShapeData& ShapeData, glm::vec2 PSConversions) {};
 	virtual void SetPosition(glm::vec2 Position) {};                     //Set All

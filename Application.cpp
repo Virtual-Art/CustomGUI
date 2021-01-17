@@ -708,9 +708,9 @@ int main(int argc, char** argv)
 	//Square.SetPosition({-0.5, 0.0});
 
 	Log::LogString("Before Slider editing");
-	//FirstSlider1.SetPosition({ 0.4, 0.3 });
-	//FirstSlider2.SetPosition({ -0.4, 0.3 });
-	//FirstSlider3.SetPosition({ 0.4, -0.3 });
+	FirstSlider1.SetPosition({ 0.4, 0.3 });
+	FirstSlider2.SetPosition({ -0.4, 0.3 });
+	FirstSlider3.SetPosition({ 0.4, -0.3 });
 
 	//FirstSlider0.PrintGroupShapes();
 	Log::LogString("Before Copy");
@@ -722,6 +722,9 @@ int main(int argc, char** argv)
 	cout << "Look here! " << endl;
 	Slider UnusedSlider(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
 	UnusedSlider.PrintGroupShapes();
+
+	UnusedSlider.SetPosition({ 0.6, -0.7 });
+	UnusedSlider.SetDescription("what the fuck");
 
 
 	typedef void(*Master_P)();
