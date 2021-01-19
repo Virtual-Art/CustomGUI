@@ -45,7 +45,7 @@ public:
 
 	//PageGroupData LoadedShape.PageGroup;
 	//PageGroupItemData CurrentPageItem;
-	//GroupData CurrentShapeGroup;
+	PageGroupData CurrentPageGroup;
 	TextData CurrentText;
 	SliderData CurrentSliderData; //?
 

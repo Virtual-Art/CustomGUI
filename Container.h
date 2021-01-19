@@ -266,6 +266,7 @@ public:
 
 	bool CheckBounds(int RequestedSpot)
 	{
+		if (RequestedSpot == -1) return false;
 		//InBounds
 		if (StartOfContainer + RequestedSpot >= StartOfContainer && StartOfContainer + RequestedSpot < EndOfContainer)
 		{

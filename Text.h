@@ -37,7 +37,8 @@ public:
 
 	//Basic Text Constructors
 	Text(Page& Page);
-	Text(Page& Page, GroupData& GroupData, TextData& TextData);
+	Text(Page& Page, ShapeGroupData& ShapeGroupData, TextData& TextData);
+	Text(Page& Page, ShapeData& ShapeData, TextData& TextData);
 	Text(Page& Page, int GroupID);
 
 	//Simple
@@ -46,17 +47,48 @@ public:
 
 	//Single Value Text Constructors
 	Text(Page& Page, int Integer, string Description, glm::vec2 Position);
-	Text(Page& Page, GroupData& GroupData, TextData& TextData, int Integer, string Description);
+	//Text(Page& Page, GroupData& GroupData, TextData& TextData, int Integer, string Description);
 	Text(Page& Page, int GroupID, int Integer, string Description);
 
 	void ShapeToGroup(ShapeData& ShapeData);
 	void Init(Page& Page, string Text, glm::vec2 Position);
 
-	//Text Vector Consturctors
+	
+	//Retreives the last state of the ShapeGroup and loads the object
+	ShapeData& Switch(int ShapeID) override
+	{
+		if (Initialized == true)
+		{
+			if (IsInBounds(ShapeID) == true)
+			{
+				if (SetInStone != true)
+				{
+					LoadedShape = CurrentPage->GetShapeDataR(ShapeID);
+					CurrentShapeGroup = LoadedShape.ShapeGroup;
+					Log::LogString("Setting phrase to: " + LoadedShape.Text);
+					CurrentTextData.Phrase = LoadedShape.Text;
+					CurrentTextData.Centered = LoadedShape.TextCentered;
+					CurrentTextData.EndStart = LoadedShape.EndStart;
+					return LoadedShape;
+				}
+			}
+			else
+			{
+				Log::LogString("Switch Error:: ID out of bounds");
+			}
+		}
+		else
+		{
+			Log::LogString("Switch Error:: Shape Group Not Initialized");
+		}
+		return LoadedShape;
+	}
 
 	//Create
 	void SetShape();
-	void SetTextGroup(GroupData& GroupData, TextData& TextData);
+	void SetTextGroup(ShapeData& ShapeData, TextData& TextData);
+	void SetTextGroup(ShapeGroupData& ShapeGroup, TextData& TextData);
+	
 	void CreateText();
 	void AddText();
 
@@ -79,13 +111,7 @@ private:
 	//Private Functions
 	void SetTextSize();
 
-	void SwitchToShape(int ShapeID)
-	{
-		if (SetInStone != true)
-		{
-			CurrentShape = CurrentGroupData.Page->GetShapeDataR(ShapeID);
-		}
-	}
+
 
 	bool QueryLineRestart(glm::vec2 CursorPosition, float MaxLine);
 	float AdvanceCursor(CharacterData& CharacterData, TextData& TextData);

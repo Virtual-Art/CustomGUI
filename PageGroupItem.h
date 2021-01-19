@@ -63,8 +63,10 @@ class PageGroupItem : public MasterElement
 {
 public:
 
-	//PageGroupItemData LoadedShape.PageItem;
+	//PageGroupItemData CurrentPageItem;
 	//GroupData CurrentShapeGroup;
+	PageItemData CurrentPageItem;
+	ShapeGroupData CurrentShapeGroup;
 	TextData CurrentText;
 	ShapeData CurrentShape;
 
@@ -79,12 +81,27 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
-	virtual void Update() {};
+	virtual void Update() = 0;
 	void ReCalibrateID();
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 	void ShapeToGroup(ShapeData& ShapeData);
 	//void SwitchToPageItem(int ShapeID);
+
+
+	void SetPageGroupOffsets() 
+	{
+		//Setup
+		CurrentPage->CurrentPageGroupShapeCount = -1;
+
+		//Set PageGroup Offset
+		for (int i = CurrentPageItem.PageGroup.ShapeStart; i < CurrentPageItem.PageGroup.ShapeStart + CurrentPageItem.PageGroup.ShapeCount; i++)
+		{
+			CurrentPageItem = CurrentPage->GetShapeDataR(i).ShapeGroup.PageItem;
+			CurrentPage->CurrentPageGroupShapeCount++;
+			CurrentPageItem.PageGroup.ShapeOffset = CurrentPage->CurrentPageGroupShapeCount;
+		}
+	};
 
 	//ShapeData Editing
 
@@ -108,9 +125,9 @@ public:
 		if (Initialized == false) {Log::LogString("Cannot Print Shapes:: PageItem Not Initialized"); return;}
 
 		//ReCalibrateID();
-		cout << "Printing Starting from: " << LoadedShape.PageItem.ShapeStart << endl;
-		cout << "For the count: " << LoadedShape.PageItem.ShapeCount << endl;
-		for (int i = LoadedShape.PageItem.ShapeStart; i < LoadedShape.PageItem.ShapeStart + LoadedShape.PageItem.ShapeCount + 1; i++)
+		cout << "Printing Starting from: " << CurrentPageItem.ShapeStart << endl;
+		cout << "For the count: " << CurrentPageItem.ShapeCount << endl;
+		for (int i = CurrentPageItem.ShapeStart; i < CurrentPageItem.ShapeStart + CurrentPageItem.ShapeCount + 1; i++)
 		{
 			
 			CurrentPage->PrintShape(i);
@@ -125,9 +142,10 @@ public:
 			CurrentPage = &Page;
 			if (QuadID != -1)
 			{
-				LoadedShape = Page.GetShapeDataR(QuadID);
+				CurrentPageItem = Page.GetShapeDataR(QuadID).ShapeGroup.PageItem;
+				
 			}
-			LoadedShape.PageItem.Position = { 0.0, 0.0 };
+			CurrentPageItem.Position = { 0.0, 0.0 };
 			Add_Default();
 		}
 	};

@@ -14,11 +14,13 @@ ShapeGroup::ShapeGroup(Page& Page)
 		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
-		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+		CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
 
 		//Track Counts
 		CurrentPage->TotalShapeGroupCount++;
 		CurrentPage->CurrentShapeGroup++;
+
+		CurrentShapeGroup.ID = CurrentPage->CurrentShapeGroup;
 
 		//Reset Lower Level Group Count / ShapeCount
 		CurrentPage->CurrentShape = -1;
@@ -36,12 +38,14 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData)
 		//Setup
 		Initialized = true;
 		CurrentPage = &Page;
-		LoadedShape.ShapeGroup = ShapeGroupData;
-		LoadedShape.ShapeGroup.ShapeStart = Page.ShapeAmount();
+		CurrentShapeGroup = ShapeGroupData;
+		CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
 
 		//Track Counts
 		CurrentPage->TotalShapeGroupCount++;
 		CurrentPage->CurrentShapeGroup++;
+
+		CurrentShapeGroup.ID = CurrentPage->CurrentShapeGroup;
 
 		//Reset Child Group Count / Shape Counts
 		CurrentPage->CurrentShape = -1;
@@ -77,9 +81,13 @@ ShapeGroup::ShapeGroup(Page& Page, int& ID)
 {
 	if (&Page != nullptr)
 	{
-		Initialized = true;
-		CurrentPage = &Page;
-		LoadedShape = Page.GetShapeDataR(ID);
+		if (IsInBounds(ID) == true)
+		{
+			Initialized = true;
+			CurrentPage = &Page;
+			CurrentPage->CurrentShapeGroupShapeCount = 0;
+			LoadedShape = Page.GetShapeDataR(ID);
+		}
 	}
 }
 
@@ -91,7 +99,7 @@ void ShapeGroup::SetGroup(ShapeData& ShapeData)
 }
 void ShapeGroup::SetPosition(glm::vec2 Position)
 {
-	this->LoadedShape.ShapeGroup.Position = Position;
+	this->CurrentShapeGroup.Position = Position;
 //	ReCalibrateID();
 	this->Update();
 }
@@ -99,11 +107,11 @@ void ShapeGroup::SetPosition(glm::vec2 Position, glm::vec2 bools)
 {
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[0] = Position[0];
+		this->CurrentShapeGroup.Position[0] = Position[0];
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[1] = Position[1];
+		this->CurrentShapeGroup.Position[1] = Position[1];
 	}
 	ReCalibrateID();
 	Update();
@@ -114,7 +122,7 @@ void ShapeGroup::SetPosition(glm::vec2 Position, int Conversion)
 {
 	//Position Converstion
 	Position = ApplyPositionConversion(Position, Conversion);
-	this->LoadedShape.ShapeGroup.Position = Position;
+	this->CurrentShapeGroup.Position = Position;
 	ReCalibrateID();
 	this->Update();
 }
@@ -126,11 +134,11 @@ void ShapeGroup::SetPosition(glm::vec2 Position, glm::vec2 bools, int Conversion
 
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[0] = Position[0];
+		this->CurrentShapeGroup.Position[0] = Position[0];
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[1] = Position[1];
+		this->CurrentShapeGroup.Position[1] = Position[1];
 	}
 	ReCalibrateID();
 	Update();
@@ -138,7 +146,7 @@ void ShapeGroup::SetPosition(glm::vec2 Position, glm::vec2 bools, int Conversion
 
 void ShapeGroup::SetSize(glm::vec2 Size)
 {
-	this->LoadedShape.ShapeGroup.Size = Size;
+	this->CurrentShapeGroup.Size = Size;
 	ReCalibrateID();
 	Update();
 }
@@ -147,11 +155,11 @@ void ShapeGroup::SetSize(glm::vec2 Size, glm::vec2 bools)
 {
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Size[0] = Size[0];
+		this->CurrentShapeGroup.Size[0] = Size[0];
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Size[1] = Size[1];
+		this->CurrentShapeGroup.Size[1] = Size[1];
 	}
 	ReCalibrateID();
 	Update();
@@ -159,7 +167,7 @@ void ShapeGroup::SetSize(glm::vec2 Size, glm::vec2 bools)
 
 void ShapeGroup::SetColor(glm::vec4 Color)
 {
-	this->LoadedShape.ShapeGroup.Color = Color;
+	this->CurrentShapeGroup.Color = Color;
 	ReCalibrateID();
 	Update();
 }
@@ -167,20 +175,20 @@ void ShapeGroup::SetColor(glm::vec4 Color, glm::vec4 bools)
 {
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[0] = Color[0];
+		this->CurrentShapeGroup.Color[0] = Color[0];
 
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[1] = Color[1];
+		this->CurrentShapeGroup.Color[1] = Color[1];
 	}
 	if (bools[2] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[2] = Color[2];
+		this->CurrentShapeGroup.Color[2] = Color[2];
 	}
 	if (bools[3] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[3] = Color[3];
+		this->CurrentShapeGroup.Color[3] = Color[3];
 	}
 	ReCalibrateID();
 	Update();
@@ -189,7 +197,7 @@ void ShapeGroup::SetColor(glm::vec4 Color, glm::vec4 bools)
 
 void ShapeGroup::OffsetPosition(glm::vec2 Position)
 {
-	this->LoadedShape.ShapeGroup.Position += Position;
+	this->CurrentShapeGroup.Position += Position;
 	ReCalibrateID();
 	Update();
 }
@@ -198,18 +206,18 @@ void ShapeGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[0] += Position[0];
+		this->CurrentShapeGroup.Position[0] += Position[0];
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[1] += Position[1];
+		this->CurrentShapeGroup.Position[1] += Position[1];
 	}
 	ReCalibrateID();
 	Update();
 }
 void ShapeGroup::OffsetSize(glm::vec2 Size)
 {
-	this->LoadedShape.ShapeGroup.Size += Size;
+	this->CurrentShapeGroup.Size += Size;
 	ReCalibrateID();
 	Update();
 }
@@ -217,11 +225,11 @@ void ShapeGroup::OffsetSize(glm::vec2 Size, glm::vec2 bools)
 {
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Size[0] += Size[0];
+		this->CurrentShapeGroup.Size[0] += Size[0];
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Size[1] += Size[1];
+		this->CurrentShapeGroup.Size[1] += Size[1];
 	}
 	ReCalibrateID();
 	Update();
@@ -229,7 +237,7 @@ void ShapeGroup::OffsetSize(glm::vec2 Size, glm::vec2 bools)
 
 void ShapeGroup::OffsetColor(glm::vec4 Color)
 {
-	this->LoadedShape.ShapeGroup.Color += Color;
+	this->CurrentShapeGroup.Color += Color;
 	ReCalibrateID();
 	Update();
 }
@@ -237,20 +245,20 @@ void ShapeGroup::OffsetColor(glm::vec4 Color, glm::vec4 bools)
 {
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[0] += Color[0];
+		this->CurrentShapeGroup.Color[0] += Color[0];
 
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[1] += Color[1];
+		this->CurrentShapeGroup.Color[1] += Color[1];
 	}
 	if (bools[2] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[2] += Color[2];
+		this->CurrentShapeGroup.Color[2] += Color[2];
 	}
 	if (bools[3] == true)
 	{
-		this->LoadedShape.ShapeGroup.Color[3] += Color[3];
+		this->CurrentShapeGroup.Color[3] += Color[3];
 	}
 	ReCalibrateID();
 	Update();
@@ -260,7 +268,7 @@ void ShapeGroup::OffsetColor(glm::vec4 Color, glm::vec4 bools)
 void ShapeGroup::OffsetPosition(glm::vec2 Position, int Conversion)
 {
 	Position = ApplySizeConversion(Position, Conversion);
-	this->LoadedShape.ShapeGroup.Position += Position;
+	this->CurrentShapeGroup.Position += Position;
 	ReCalibrateID();
 	Update();
 }
@@ -270,11 +278,11 @@ void ShapeGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools, int Convers
 
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[0] += Position[0];
+		this->CurrentShapeGroup.Position[0] += Position[0];
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Position[1] += Position[1];
+		this->CurrentShapeGroup.Position[1] += Position[1];
 	}
 	ReCalibrateID();
 	Update();
@@ -283,7 +291,7 @@ void ShapeGroup::OffsetSize(glm::vec2 Size, int Conversion)
 {
 	//Size Conversion
 	Size = ApplySizeConversion(Size, Conversion);
-	this->LoadedShape.ShapeGroup.Size += Size;
+	this->CurrentShapeGroup.Size += Size;
 	ReCalibrateID();
 	Update();
 }
@@ -293,11 +301,11 @@ void ShapeGroup::OffsetSize(glm::vec2 Size, glm::vec2 bools, int Conversion)
 	Size = ApplySizeConversion(Size, Conversion);
 	if (bools[0] == true)
 	{
-		this->LoadedShape.ShapeGroup.Size[0] += Size[0];
+		this->CurrentShapeGroup.Size[0] += Size[0];
 	}
 	if (bools[1] == true)
 	{
-		this->LoadedShape.ShapeGroup.Size[1] += Size[1];
+		this->CurrentShapeGroup.Size[1] += Size[1];
 	}
 	ReCalibrateID();
 	Update();
@@ -346,19 +354,19 @@ void ShapeGroup::ReCalibrateID()
 {
 	if (Initialized == false) { Log::LogString("ReCalibrateID Failed:: ShapeGroup Not Initialized"); return; };
 
-	cout << "Recalibrating Group (" << LoadedShape.ShapeGroup.ID << ") " << endl;
+	cout << "Recalibrating Group (" << CurrentShapeGroup.ID << ") " << endl;
 
 	int CurrentID = 0;
 	int GroupStart = 0;
 
 	//Maintenance
-	if (IsInBounds(LoadedShape.ShapeGroup.ShapeStart) == true) // LoadedShape.ShapeGroup.ShapeStart < LoadedShape.ShapeGroup.Page->ShapeAmount())
+	if (IsInBounds(CurrentShapeGroup.ShapeStart) == true) // LoadedShape.ShapeGroup.ShapeStart < LoadedShape.ShapeGroup.Page->ShapeAmount())
 	{
 		//in range
-		CurrentID = LoadedShape.ShapeGroup.ShapeStart;
-		GroupStart = LoadedShape.ShapeGroup.ShapeStart;
+		CurrentID = CurrentShapeGroup.ShapeStart;
+		GroupStart = CurrentShapeGroup.ShapeStart;
 	}
-	if (IsInBounds(LoadedShape.ShapeGroup.ShapeStart) == false)
+	if (IsInBounds(CurrentShapeGroup.ShapeStart) == false)
 	{
 		//out of range
 		CurrentID = CurrentPage->ShapeAmount();
@@ -372,10 +380,10 @@ void ShapeGroup::ReCalibrateID()
 		ShapeData* RetreivedShape = CurrentPage->GetShapeDataP(CurrentID);
 
 		//Group Calibrated
-		if (RetreivedShape->ID == LoadedShape.ShapeGroup.ID)
+		if (RetreivedShape->ID == CurrentShapeGroup.ID)
 		{
 			//Set the ID
-			LoadedShape.ShapeGroup.ShapeStart = CurrentID - RetreivedShape->ShapeGroup.ShapeOffset;
+			CurrentShapeGroup.ShapeStart = CurrentID - RetreivedShape->ShapeGroup.ShapeOffset;
 			cout << " Group: " << RetreivedShape->ID << " Match Found!" << endl;
 			cout << "Group Start : " << CurrentID - RetreivedShape->ShapeGroup.ShapeOffset << endl;
 			cout << "--------" << endl;
@@ -384,16 +392,16 @@ void ShapeGroup::ReCalibrateID()
 
 		//Group UnCalibrated
 		//if (RetreivedShape->PageID != LoadedShape.ShapeGroup.ID)
-		if (RetreivedShape->ID != LoadedShape.ShapeGroup.ID)
+		if (RetreivedShape->ID != CurrentShapeGroup.ID)
 		{
 			//Go up
 			//if(RetreivedShape->PageID <LoadedShape.ShapeGroup.ID)
-			if (RetreivedShape->ID < LoadedShape.ShapeGroup.ID)
+			if (RetreivedShape->ID < CurrentShapeGroup.ID)
 			{
 				int Result = FindNextGroup(CurrentID, RetreivedShape);
 				if (Result != -1)
 				{
-					LoadedShape.ShapeGroup.ShapeStart = Result;
+					CurrentShapeGroup.ShapeStart = Result;
 					RetreivedShape->ShapeGroup.ShapeStart = Result;
 					return;
 				}
@@ -401,13 +409,13 @@ void ShapeGroup::ReCalibrateID()
 			}
 
 			//GO down
-			if (RetreivedShape->ID > LoadedShape.ShapeGroup.ID)
+			if (RetreivedShape->ID > CurrentShapeGroup.ID)
 			{
 				int Result = FindPreviousGroup(CurrentID, RetreivedShape);
 				if (Result != -1)
 				{
-					LoadedShape.ShapeGroup.ShapeStart = Result;
-					RetreivedShape->ShapeGroup.ShapeStart = LoadedShape.ShapeGroup.ShapeStart;
+					CurrentShapeGroup.ShapeStart = Result;
+					RetreivedShape->ShapeGroup.ShapeStart = CurrentShapeGroup.ShapeStart;
 					return;
 				}
 				Log::LogString("FindPreviousGroupError:: Returned -1"); return;
@@ -421,7 +429,7 @@ int ShapeGroup::FindNextGroup(int CurrentID, ShapeData* RetreivedShape)
 {
 	if (RetreivedShape == nullptr) return -1;
 	//Found
- 	if (RetreivedShape->ID == LoadedShape.ShapeGroup.ID) 
+ 	if (RetreivedShape->ID == CurrentShapeGroup.ID) 
 	{
 		cout << " Group: " << RetreivedShape->ID << " Match Found!" << endl;
 		cout << " Group Start : " << CurrentID - RetreivedShape->ShapeGroup.ShapeOffset << endl; 
@@ -446,7 +454,7 @@ int ShapeGroup::FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape)
 {
 	if (RetreivedShape == nullptr) return -1;
 	//Found
-	if (RetreivedShape->ID = LoadedShape.ShapeGroup.ID)
+	if (RetreivedShape->ID = CurrentShapeGroup.ID)
 	{
 		cout << " Group: " << RetreivedShape->ID << " Match Found!" << endl;
 		cout << " Group Start : " << CurrentID - RetreivedShape->ShapeGroup.ShapeOffset << endl;
@@ -471,7 +479,7 @@ void ShapeGroup::SetMouseAccess()
 {
 	if (Initialized == false) { Log::LogString("SetMouseAccess Failed:: ShapeGroup Not Initialized"); return; };
 
-	if (LoadedShape.ShapeGroup.MouseAccess == true)
+	if (CurrentShapeGroup.MouseAccess == true)
 	{
 	
 		//this->CurrentShape.ShapeGroup.Top = (LoadedShape.ShapeGroup.Position[1] + (LoadedShape.ShapeGroup.Size[1] / 2));
@@ -479,50 +487,50 @@ void ShapeGroup::SetMouseAccess()
 		//this->CurrentShape.ShapeGroup.Left = (LoadedShape.ShapeGroup.Position[0] - (LoadedShape.ShapeGroup.Size[0] / 2));
 		//this->CurrentShape.ShapeGroup.Right = (LoadedShape.ShapeGroup.Position[0] + (LoadedShape.ShapeGroup.Size[0] / 2));
 
-		for (int i = LoadedShape.ShapeGroup.ShapeStart; i < LoadedShape.ShapeGroup.ShapeStart + LoadedShape.ShapeGroup.ShapeCount; i++)
+		for (int i = CurrentShapeGroup.ShapeStart; i < CurrentShapeGroup.ShapeStart + CurrentShapeGroup.ShapeCount; i++)
 		{
 			if(IsInBounds(i) != true) { Log::LogString("SetMouseAccess Failed:: ID out of bounds"); return; };
 
 			//Set entire shape group 
 			ShapeData& RetreivedShape = CurrentPage->GetShapeDataR(i);
-			RetreivedShape.ShapeGroup.Top = LoadedShape.ShapeGroup.Top;
-			RetreivedShape.ShapeGroup.Bottom = LoadedShape.ShapeGroup.Bottom;
-			RetreivedShape.ShapeGroup.Left = LoadedShape.ShapeGroup.Left;
-			RetreivedShape.ShapeGroup.Right = LoadedShape.ShapeGroup.Right;
+			RetreivedShape.ShapeGroup.Top = CurrentShapeGroup.Top;
+			RetreivedShape.ShapeGroup.Bottom = CurrentShapeGroup.Bottom;
+			RetreivedShape.ShapeGroup.Left = CurrentShapeGroup.Left;
+			RetreivedShape.ShapeGroup.Right = CurrentShapeGroup.Right;
 
-			LoadedShape.ShapeGroup.Size[0] = LoadedShape.ShapeGroup.Right - LoadedShape.ShapeGroup.Left;
-			LoadedShape.ShapeGroup.Size[1] = LoadedShape.ShapeGroup.Top - LoadedShape.ShapeGroup.Bottom;
+			CurrentShapeGroup.Size[0] = CurrentShapeGroup.Right - CurrentShapeGroup.Left;
+			CurrentShapeGroup.Size[1] = CurrentShapeGroup.Top - CurrentShapeGroup.Bottom;
 		}
 	}
 }
 
 void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)
 {
-	if (LoadedShape.ShapeGroup.MouseAccess == false) return;
+	if (CurrentShapeGroup.MouseAccess == false) return;
 
 	float Left = Position[0] - (Size[0] / 2);
 	float Right = Position[0] + (Size[0] / 2);
 	float Top = Position[1] + (Size[1] / 2);
 	float Bottom = Position[1] - (Size[1] / 2);
 
-	if (Left < LoadedShape.ShapeGroup.Left || LoadedShape.ShapeGroup.Left == -3)
+	if (Left < CurrentShapeGroup.Left || CurrentShapeGroup.Left == -3)
 	{
-		LoadedShape.ShapeGroup.Left = Left;
+		CurrentShapeGroup.Left = Left;
 	}
 
-	if (Right > LoadedShape.ShapeGroup.Right || LoadedShape.ShapeGroup.Right == -3)
+	if (Right > CurrentShapeGroup.Right || CurrentShapeGroup.Right == -3)
 	{
-		LoadedShape.ShapeGroup.Right = Right;
+		CurrentShapeGroup.Right = Right;
 	}
 
-	if (Top > LoadedShape.ShapeGroup.Top || LoadedShape.ShapeGroup.Top == -3)
+	if (Top > CurrentShapeGroup.Top || CurrentShapeGroup.Top == -3)
 	{
-		LoadedShape.ShapeGroup.Top = Top;
+		CurrentShapeGroup.Top = Top;
 	}
 
-	if (Bottom < LoadedShape.ShapeGroup.Bottom || LoadedShape.ShapeGroup.Bottom == -3)
+	if (Bottom < CurrentShapeGroup.Bottom || CurrentShapeGroup.Bottom == -3)
 	{
-		LoadedShape.ShapeGroup.Bottom = Bottom;
+		CurrentShapeGroup.Bottom = Bottom;
 	}
 
 }
@@ -531,7 +539,7 @@ void ShapeGroup::PrintGroupShapes()
 {
 	if (Initialized == false) return;
 	
-	for (int i = LoadedShape.ShapeGroup.ShapeStart; i < LoadedShape.ShapeGroup.ShapeStart + LoadedShape.ShapeGroup.ShapeCount - 1; i++)
+	for (int i = CurrentShapeGroup.ShapeStart; i < CurrentShapeGroup.ShapeStart + CurrentShapeGroup.ShapeCount - 1; i++)
 	{
 		if (IsInBounds(i) == false) return;
 		CurrentPage->PrintShape(i);
@@ -540,5 +548,5 @@ void ShapeGroup::PrintGroupShapes()
 
 int ShapeGroup::GetCount()
 {
-	return LoadedShape.ShapeGroup.ShapeCount;
+	return CurrentShapeGroup.ShapeCount;
 }

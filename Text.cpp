@@ -7,42 +7,45 @@ Text::Text(Page& Page)
 	CurrentTextData.Phrase = "TEXT";
 
 	//Group Setup
-	this->CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-	this->CurrentGroupData.Count = CurrentTextData.Phrase.size();
-
-	//Out Of Bounds Check
-	if (Page.InBounds(Page.ShapeAmount() + CurrentGroupData.Count))
-	{
-		this->CurrentGroupData.NextGroup = Page.GetNextShapeAddress(4);
-	} //Default +4
+	this->CurrentShapeGroup.ShapeCount = CurrentTextData.Phrase.size();
 
     //Attribute Setup
-	this->CurrentGroupData.Color = { 1.0, 1.0, 1.0, 1.0 };
-	this->CurrentGroupData.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
-	this->CurrentGroupData.Position = { 0.0, 0.0 };
-	this->CurrentGroupData.MouseAccess = true;
-	this->CurrentGroupData.Highlighted = false;
-	this->CurrentGroupData.Centered = false;
+	this->CurrentShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 };
+	this->CurrentShapeGroup.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
+	this->CurrentShapeGroup.Position = { 0.0, 0.0 };
+	this->CurrentShapeGroup.MouseAccess = true;
+	this->CurrentShapeGroup.Highlighted = false;
+	this->CurrentShapeGroup.Centered = false;
 
-	this->CurrentGroupData.XYShapesPerRow = { 2.0, 2.0 }; // Can use without
-	this->CurrentGroupData.ShapeDataSize = { 0.8, 0.8 };  // Can use without
+	this->CurrentShapeGroup.XYShapePerRow = { 2.0, 2.0 }; // Can use without
+	this->CurrentShapeGroup.ShapeSize = { 0.8, 0.8 };  // Can use without
+	CurrentShapeGroup.Type = TYPE_TEXT;
 
 	AddText();
 }
 
 //using this one in application.cpp
-Text::Text(Page& Page, GroupData& GroupData, TextData& TextData)
-	: ShapeGroup{ Page, GroupData}
+Text::Text(Page& Page, ShapeGroupData& ShapeGroupData, TextData& TextData)
+	: ShapeGroup{ Page, ShapeGroupData}
 {
 	CurrentTextData = TextData;
-	this->CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-	this->CurrentGroupData.Count = TextData.Phrase.size();
-	this->CurrentShape.ShapeGroupStart = CurrentGroupData.ShapeStartID;
-	this->CurrentShape.ShapeGroupCount = CurrentGroupData.Count;
+	CurrentShapeGroup.ShapeCount = TextData.Phrase.size() - 1;
+	CurrentShapeGroup.Type = TYPE_TEXT;
+	
 	AddText();
-	Log::LogVec2("RatioSize grey", GroupData.Size);
-	Log::LogVec2("RatioSize white", CurrentGroupData.Size);
-	GroupData.Size = CurrentGroupData.Size;
+	ShapeGroupData.Size = CurrentShapeGroup.Size;
+}
+
+//using this one in application.cpp
+Text::Text(Page& Page, ShapeData& ShapeData, TextData& TextData)
+	: ShapeGroup{ Page, ShapeData }
+{
+	CurrentTextData = TextData;
+	this->CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
+	this->CurrentShapeGroup.ShapeCount = TextData.Phrase.size() - 1;
+	CurrentShapeGroup.Type = TYPE_TEXT;
+	AddText();
+	ShapeData.ShapeGroup.Size = CurrentShapeGroup.Size;
 }
 
 
@@ -57,23 +60,23 @@ Text::Text(Page& Page, string Text, glm::vec2 Position)
 		CurrentTextData.Centered = false;
 
 		//Set Group Data
-		this->CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-		this->CurrentGroupData.Count = CurrentTextData.Phrase.size();
+		this->CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
+		this->CurrentShapeGroup.ShapeCount = CurrentTextData.Phrase.size() - 1;
 
 		//Set Shape Data
-		this->CurrentShape.ShapeGroupStart = CurrentGroupData.ShapeStartID;
-		this->CurrentShape.ShapeGroupCount = CurrentGroupData.Count;
+		this->CurrentShapeGroup.ShapeStart = CurrentShapeGroup.ShapeStart;
+		this->CurrentShapeGroup.ShapeCount = CurrentShapeGroup.ShapeCount;
 
 		//Attribute Setup
-		this->CurrentGroupData.Color = { 1.0, 1.0, 1.0, 1.0 };
-		this->CurrentGroupData.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
-		this->CurrentGroupData.Position = Position;
-		this->CurrentGroupData.MouseAccess = true;
-		this->CurrentGroupData.Highlighted = false;
-		this->CurrentGroupData.Centered = false;
+		this->CurrentShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 };
+		this->CurrentShapeGroup.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
+		this->CurrentShapeGroup.Position = Position;
+		this->CurrentShapeGroup.MouseAccess = true;
+		this->CurrentShapeGroup.Highlighted = false;
+		this->CurrentShapeGroup.Centered = false;
 
-		this->CurrentGroupData.XYShapesPerRow = { 2.0, 2.0 }; // Can use without
-		this->CurrentGroupData.ShapeDataSize = { 0.8, 0.8 };  // Can use without
+		this->CurrentShapeGroup.XYShapePerRow = { 2.0, 2.0 }; // Can use without
+		this->CurrentShapeGroup.ShapeSize = { 0.8, 0.8 };  // Can use without
 
 		//Create
 		AddText();
@@ -87,32 +90,44 @@ Text::Text(Page& Page, string Text, glm::vec2 Position)
 
 		//Set Group Data
 
-		this->CurrentGroupData.Count = CurrentTextData.Phrase.size();
+		this->CurrentShapeGroup.ShapeCount = CurrentTextData.Phrase.size() - 1;
 
 		//Set Shape Data
 
-		this->CurrentShape.ShapeGroupCount = CurrentGroupData.Count;
+		this->CurrentShapeGroup.ShapeCount = CurrentShapeGroup.ShapeCount;
 	}
 }
 
 Text::Text(Page& Page, int GroupID)
 	: ShapeGroup( Page, GroupID )
 {
-	//Set 1st shape of group
-	CurrentShape = Page.GetShapeDataR(GroupID);
-	cout << "CurrentShape.GroupCount: "<< CurrentShape.ShapeGroupCount<< endl;
-	//SetGroupData
-	if (CurrentShape.ShapeDataType == TYPE_TEXT)
+	if (&Page != nullptr)
 	{
-		ShapeToGroup(CurrentShape);
-		CurrentTextData.Phrase   = CurrentShape.Text;
-		CurrentTextData.Centered = CurrentShape.TextCentered;
-		CurrentTextData.EndStart = CurrentShape.EndStart;
+		CurrentPage = &Page;
+		Initialized = true;
+		//Set 1st shape of group
+		if (IsInBounds(GroupID) == true)
+		{
+			//if (CurrentShapeGroup.Type == TYPE_TEXT)
+			//{
+			CurrentTextData.Phrase   = LoadedShape.Text;
+			CurrentTextData.Centered = LoadedShape.TextCentered;
+			CurrentTextData.EndStart = LoadedShape.EndStart;
+			//}
+			//else
+			//{
+			//	cout << "NEWTEXT::ERROR::Shape is not part of text " << endl;
+			//	//Currentreset();
+			//}
+		}
+		else
+		{
+			//Log::LogString("Text ID out of bounds");
+		}
 	}
 	else
 	{
-		cout << "NEWTEXT::ERROR::Shape is not part of text " << endl;
-		CurrentShape.reset();
+		Log::LogString("Text Suspended");
 	}
 }
 
@@ -125,42 +140,42 @@ Text::Text(Page& Page, int Integer, string Description, glm::vec2 Position)
 	CurrentTextData.Phrase = FinalPhrase;
 
 	//Group Setup
-	this->CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-	this->CurrentGroupData.Count = CurrentTextData.Phrase.size();
+	this->CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
+	this->CurrentShapeGroup.ShapeCount = CurrentTextData.Phrase.size();
 
 	//Out Of Bounds Check
-	if (Page.InBounds(Page.ShapeAmount() + CurrentGroupData.Count))
+	if (Page.InBounds(Page.ShapeAmount() + CurrentShapeGroup.ShapeCount))
 	{
-		this->CurrentGroupData.NextGroup = Page.GetNextShapeAddress(4);
+		//this->CurrentShapeGroup.NextGroup = Page.GetNextShapeAddress(4);
 	} //Default +4
 
 	//Attribute Setup
-	this->CurrentGroupData.Color = { 1.0, 1.0, 1.0, 1.0 };
-	this->CurrentGroupData.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
-	this->CurrentGroupData.Position = Position;
-	this->CurrentGroupData.MouseAccess = true;
-	this->CurrentGroupData.Highlighted = false;
-	this->CurrentGroupData.Centered = false;
+	this->CurrentShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 };
+	this->CurrentShapeGroup.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
+	this->CurrentShapeGroup.Position = Position;
+	this->CurrentShapeGroup.MouseAccess = true;
+	this->CurrentShapeGroup.Highlighted = false;
+	this->CurrentShapeGroup.Centered = false;
 
-	this->CurrentGroupData.XYShapesPerRow = { 2.0, 2.0 }; // Can use without
-	this->CurrentGroupData.ShapeDataSize = { 0.8, 0.8 };  // Can use without
+	this->CurrentShapeGroup.XYShapePerRow = { 2.0, 2.0 }; // Can use without
+	this->CurrentShapeGroup.ShapeSize = { 0.8, 0.8 };  // Can use without
 
 	AddText();
 }
 
-Text::Text(Page& Page, GroupData& GroupData, TextData& TextData, int Integer, string Description)
-	: ShapeGroup{ Page, GroupData }
-{
-	CurrentTextData = TextData;
-	CurrentTextData.Phrase = Description + " " + to_string(Integer);
-	this->CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-	this->CurrentGroupData.Count = TextData.Phrase.size();
-	this->CurrentShape.ShapeGroupStart = CurrentGroupData.ShapeStartID;
-	this->CurrentShape.ShapeGroupCount = CurrentGroupData.Count;
-	AddText();
-	GroupData.Size = CurrentGroupData.Size;
-}
-
+//Text::Text(Page& Page, GroupData& GroupData, TextData& TextData, int Integer, string Description)
+//	: ShapeGroup{ Page, GroupData }
+//{
+//	CurrentTextData = TextData;
+//	CurrentTextData.Phrase = Description + " " + to_string(Integer);
+//	this->CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
+//	this->CurrentShapeGroup.ShapeCount = TextData.Phrase.size();
+//	this->CurrentShapeGroup.ShapeStart = CurrentShapeGroup.ShapeStart;
+//	this->CurrentShapeGroup.ShapeCount = CurrentShapeGroup.ShapeCount;
+//	AddText();
+//	GroupData.Size = CurrentShapeGroup.Size;
+//}
+//
 Text::Text() {};
 
 Text::Text(Page& Page, int GroupID, int Integer, string Description)
@@ -171,9 +186,9 @@ Text::Text(Page& Page, int GroupID, int Integer, string Description)
 
 void Text::Init(Page& Page, string Text, glm::vec2 Position)
 {
-	CurrentGroupData.Page = &Page;
-	CurrentGroupData.Page->ShapeGroupCount++;
-	CurrentGroupData.GroupID = CurrentGroupData.Page->ShapeGroupCount;
+	CurrentPage = &Page;
+	CurrentPage->TotalShapeGroupCount++;
+	CurrentShapeGroup.ID = CurrentPage->TotalShapeGroupCount;
 
 	//Set TextData
 	CurrentTextData.Phrase = Text;
@@ -181,31 +196,29 @@ void Text::Init(Page& Page, string Text, glm::vec2 Position)
 	//CurrentTextData.Centered = true;
 
 	//Set Group Data
-	this->CurrentGroupData.ShapeStartID = Page.ShapeAmount();
-	this->CurrentGroupData.Count = CurrentTextData.Phrase.size();
+	this->CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
+	this->CurrentShapeGroup.ShapeCount = CurrentTextData.Phrase.size();
 
 	//Set Shape Data
-	this->CurrentShape.ShapeGroupStart = CurrentGroupData.ShapeStartID;
-	this->CurrentShape.ShapeGroupCount = CurrentGroupData.Count;
+	//this->CurrentShapeGroup.ShapeStart = CurrentShapeGroup.ShapeStart;
+	//this->CurrentShapeGroup.ShapeCount = CurrentShapeGroup.ShapeCount;
 
 	//Attribute Setup
-	this->CurrentGroupData.Color = { 1.0, 1.0, 1.0, 1.0 };
-	this->CurrentGroupData.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
-	this->CurrentGroupData.Position = Position;
-	this->CurrentGroupData.MouseAccess = true;
-	this->CurrentGroupData.Highlighted = false;
-	this->CurrentGroupData.Centered = false;
+	this->CurrentShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 };
+	this->CurrentShapeGroup.Size = { 0.0, 0.0 }; // all of the xadvances of all the text
+	this->CurrentShapeGroup.Position = Position;
+	this->CurrentShapeGroup.MouseAccess = true;
+	this->CurrentShapeGroup.Highlighted = false;
+	this->CurrentShapeGroup.Centered = false;
 
-	this->CurrentGroupData.XYShapesPerRow = { 2.0, 2.0 }; // Can use without
-	this->CurrentGroupData.ShapeDataSize = { 0.8, 0.8 };  // Can use without
+	this->CurrentShapeGroup.XYShapePerRow = { 2.0, 2.0 }; // Can use without
+	this->CurrentShapeGroup.ShapeSize = { 0.8, 0.8 };  // Can use without
 
 	AddText();
 }
 
 void Text::AddText()
 {
-	//Set's the groupdata to the shape
-	SetShape();
 	CreateText();
 	SetMouseAccess();
 }
@@ -214,39 +227,38 @@ void Text::AddText()
 void Text::SetShape()
 {
 	//Group Details
-	CurrentShape.ShapeGroupStart = this->CurrentGroupData.ShapeStartID;
-	CurrentShape.GroupID = CurrentGroupData.GroupID;
-	
-	CurrentShape.ShapeGroupCount = CurrentGroupData.Count -1;
-	CurrentShape.ShapeGroupPosition = this->CurrentGroupData.Position;
-	CurrentShape.ShapeGroupSize = this->CurrentGroupData.Size;
-	CurrentShape.ShapeGroupColor = this->CurrentGroupData.Color;
-	CurrentShape.ShapeGroupMouseAccess = this->CurrentGroupData.MouseAccess;
-	CurrentShape.ShapeGroupCentered = this->CurrentGroupData.Centered;
+	//CurrentShapeGroup.ShapeStart = this->CurrentShapeGroup.ShapeStart;
+	//CurrentGroupID = CurrentShapeGroup.GroupID;
+	//
+	//CurrentShapeGroup.ShapeCount = CurrentShapeGroup.ShapeCount -1;
+	//CurrentShapeGroupPosition = this->CurrentShapeGroup.Position;
+	//CurrentShapeGroupSize = this->CurrentShapeGroup.Size;
+	//CurrentShapeGroupColor = this->CurrentShapeGroup.Color;
+	//CurrentShapeGroupMouseAccess = this->CurrentShapeGroup.MouseAccess;
+	//CurrentShapeGroupCentered = this->CurrentShapeGroup.Centered;
+	//
+	//CurrentPageGroupItemPosition = CurrentShapeGroup.PageItemPosition;
+	//CurrentPageGroupItemPosition = CurrentShapeGroup.PageItemSize;
+	//CurrentPageGroupItemShapeCount = CurrentShapeGroup.PageItemShapeCount;
+	//CurrentPageGroupItemID = CurrentShapeGroup.PageItemID;
+	//CurrentPageGroupItemShapeOffset = CurrentShapeGroup.PageItemShapeOffset;
+	//CurrentPageItem.ShapeStart = CurrentPageItem.ShapeStart;
 
-	CurrentShape.PageGroupItemPosition = CurrentGroupData.PageItemPosition;
-	CurrentShape.PageGroupItemPosition = CurrentGroupData.PageItemSize;
-	CurrentShape.PageGroupItemShapeCount = CurrentGroupData.PageItemShapeCount;
-	CurrentShape.PageGroupItemID = CurrentGroupData.PageItemID;
-	CurrentShape.PageGroupItemShapeOffset = CurrentGroupData.PageItemShapeOffset;
-	CurrentShape.PageGroupItemShapeStartID = CurrentGroupData.PageItemShapeStartID;
-
-	//CurrentShape.ShapeGroupRight = CurrentGroupData.Position[0] + CurrentGroupData.Size[0]/2;
-	//CurrentShape.ShapeGroupLeft = CurrentGroupData.Position[0] - CurrentGroupData.Size[0] / 2;
-	//CurrentShape.ShapeGroupTop = CurrentGroupData.Position[1] + CurrentGroupData.Size[1] / 2;
-	//CurrentShape.ShapeGroupBottom = CurrentGroupData.Position[1] - CurrentGroupData.Size[1] / 2;
+	//CurrentShapeGroupRight = CurrentShapeGroup.Position[0] + CurrentShapeGroup.Size[0]/2;
+	//CurrentShapeGroupLeft = CurrentShapeGroup.Position[0] - CurrentShapeGroup.Size[0] / 2;
+	//CurrentShapeGroupTop = CurrentShapeGroup.Position[1] + CurrentShapeGroup.Size[1] / 2;
+	//CurrentShapeGroupBottom = CurrentShapeGroup.Position[1] - CurrentShapeGroup.Size[1] / 2;
 
 	//Shape Details
-	CurrentShape.PartOfGroup = true;
-	CurrentShape.Color = CurrentGroupData.Color;
-	CurrentShape.ActiveTexture = CurrentTextData.FontSlot;
-	CurrentShape.ShapeDataType = TYPE_TEXT;
+	LoadedShape.PartOfGroup = true;
+	LoadedShape.Color = CurrentShapeGroup.Color;
+	LoadedShape.ActiveTexture = CurrentTextData.FontSlot;
 
 	//Text Details
-	CurrentShape.Text = CurrentTextData.Phrase;
-	CurrentShape.ShapeDataType = TYPE_TEXT;
-	CurrentShape.TextCentered = CurrentTextData.Centered;
-	CurrentShape.EndStart = CurrentTextData.EndStart;
+	LoadedShape.Text = CurrentTextData.Phrase;
+	LoadedShape.ShapeGroup.Type = TYPE_TEXT;
+	LoadedShape.TextCentered = CurrentTextData.Centered;
+	LoadedShape.EndStart = CurrentTextData.EndStart;
 }
 
 bool Text::QueryLineRestart(glm::vec2 CursorPosition, float MaxLine)
@@ -351,7 +363,7 @@ void Text::CreateText()
 	int ShapeOffset = 0;
 	bool LineRestart = true;
 	float Maxline = 1.0;
-	glm::vec2 StartPosition = CurrentGroupData.Position;
+	glm::vec2 StartPosition = CurrentShapeGroup.Position;
 	
 	////////////////////////////////////
 	ShapeData TempShapex;
@@ -373,15 +385,15 @@ void Text::CreateText()
 
 	if (CurrentTextData.EndStart != true && CurrentTextData.Centered == true )
 	{
-		StartPosition[0] -= CurrentGroupData.Size[0] / 2;
+		StartPosition[0] -= CurrentShapeGroup.Size[0] / 2;
 	}
 
 	if (CurrentTextData.EndStart == true && CurrentTextData.Centered != true)
 	{
-		StartPosition[0] -= CurrentGroupData.Size[0];
+		StartPosition[0] -= CurrentShapeGroup.Size[0];
 	}
 
-
+	LoadedShape.ShapeGroup = CurrentShapeGroup;
 	CurrentTextData.CursorPosition = ApplyPositionConversion(StartPosition, P_COMPUTER_TO_PIXEL);
 
 	glm::vec4 CharLineColor = {0.3, 0.5, 0.4, 1.0};
@@ -393,40 +405,51 @@ void Text::CreateText()
 
 		CurrentCharacterData = NewCharacter::GetCharacter(CurrentChar);
 		//Retreives Character information from file
-		CurrentShape.GroupID = CurrentGroupData.GroupID;
-		CurrentShape.Ascii = CurrentChar;
-		CurrentShape.Position = GetCharacterPosition(CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, LineRestart);
-		CurrentShape.Size     = GetCharacterSize(CurrentCharacterData, CurrentShape.Position, SCR_HEIGHT, SCR_WIDTH, CurrentTextData.FontSize);
-
-		// Debug Suggestion
-		//CurrentShape.Position = ApplyPositionConversion(CurrentShape.Position, P_TOP_LEFT_TO_MIDDLE, CurrentShape.Size);
+		//CurrentShapeGroup.ID = CurrentShapeGroup.ID;
+	    LoadedShape.Ascii = CurrentChar;
+	    LoadedShape.Position = GetCharacterPosition(CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, LineRestart);
+	    LoadedShape.Size     = GetCharacterSize(CurrentCharacterData, LoadedShape.Position, SCR_HEIGHT, SCR_WIDTH, CurrentTextData.FontSize);
 
 		//Apply Conversions
-		CurrentShape.Position = ApplyPositionConversion(CurrentShape.Position, P_PIXEL_TO_COMPUTER);
-		CurrentShape.Size = ApplySizeConversion(CurrentShape.Size, S_PIXEL_TO_COMPUTER);
-		CurrentShape.ShapeGroupOffset = ShapeOffset;
-		CurrentShape.PageGroupItemShapeOffset = CurrentGroupData.PageItemShapeOffset++;
+		LoadedShape.Position = ApplyPositionConversion(LoadedShape.Position, P_PIXEL_TO_COMPUTER);
+		LoadedShape.Size = ApplySizeConversion(LoadedShape.Size, S_PIXEL_TO_COMPUTER);
+		//CurrentShapeGroup.ShapeOffset = ShapeOffset;
+				//Shape Details
+		LoadedShape.PartOfGroup = true;
+		LoadedShape.Color = CurrentShapeGroup.Color;
+		LoadedShape.ActiveTexture = CurrentTextData.FontSlot;
+		LoadedShape.ShapeGroup.ShapeCount = CurrentTextData.Phrase.size() - 1;
+
+		//Text Details
+		LoadedShape.Text = CurrentTextData.Phrase;
+		LoadedShape.ShapeGroup.Type = TYPE_TEXT;
+		LoadedShape.TextCentered = CurrentTextData.Centered;
+		LoadedShape.EndStart = CurrentTextData.EndStart;
 
 		//Char Position
-		TempShapeX.Position = CurrentShape.Position;
-		TempShapeY.Position = CurrentShape.Position;
+		TempShapeX.Position = LoadedShape.Position;
+		TempShapeY.Position = LoadedShape.Position;
 		//CharLineColor[2] += 0.25;
 		TempShapeX.Color = {0.0, 1.0, 0.0, 1.0 }; //Green
 		TempShapeY.Color = {0.0, 1.0, 0.0, 1.0 }; //Green
-	    //Quad CharPositionX(*CurrentGroupData.Page, TempShapeX);
-	    //Quad CharPositionY(*CurrentGroupData.Page, TempShapeY);
+	    //Quad CharPositionX(*CurrentShapeGroup.Page, TempShapeX);
+	    //Quad CharPositionY(*CurrentShapeGroup.Page, TempShapeY);
 		
-
+		
 		//Cursor Position
 		TempShapex.Position = ApplyPositionConversion(CurrentTextData.CursorPosition, P_PIXEL_TO_COMPUTER);
+		
 		TempShapey.Position = ApplyPositionConversion(CurrentTextData.CursorPosition, P_PIXEL_TO_COMPUTER);
+		
 		TempShapex.Color = { 0.5, 0.0, 1.0, 1.0 }; //Purple
 		TempShapey.Color = { 0.5, 0.0, 1.0, 1.0 }; //Purple
-		//Quad CursorX(*CurrentGroupData.Page, TempShapex);
-		//Quad CursorY(*CurrentGroupData.Page, TempShapey);
-		UpdateMouseAccess(CurrentShape.Position, CurrentShape.Size);
-		NewCharacter Char_Text(*CurrentGroupData.Page, CurrentShape);
-	
+		//Quad CursorX(*CurrentShapeGroup.Page, TempShapex);
+		//Quad CursorY(*CurrentShapeGroup.Page, TempShapey);
+		
+		UpdateMouseAccess(LoadedShape.Position, LoadedShape.Size);
+		NewCharacter Char_Text(*CurrentPage, LoadedShape);
+		//CurrentPageItem.ShapeOffset++;
+		
 		//Cursor Position is still in pixel space
 	
 		//////Checks if line needs to be returned 
@@ -435,16 +458,16 @@ void Text::CreateText()
 		//Cusror still in pixels
 
 	    //In pixels
-	//	CurrentGroupData.Size[0] += AdvanceCursor(CurrentCharacterData, CurrentTextData);
+	//	CurrentShapeGroup.Size[0] += AdvanceCursor(CurrentCharacterData, CurrentTextData);
 		AdvanceCursor(CurrentCharacterData, CurrentTextData);
-	//	CurrentGroupData.Size[1] = CurrentTextData.FontSize / CurrentCharacterData.LineHeight;
+	//	CurrentShapeGroup.Size[1] = CurrentTextData.FontSize / CurrentCharacterData.LineHeight;
 		
 		//LineRestart = QueryLineRestart(CurrentTextData.CursorPosition, Maxline);
 		//if (CurrentTextData.List == false)
 		//{
 		//	if (LineRestart == true)
 		//	{   ////Move CursorPosition to the next line
-		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.CharSpacing, CurrentGroupData.Position[0]);
+		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.CharSpacing, CurrentShapeGroup.Position[0]);
 		//	}
 		//}
 		//else
@@ -452,44 +475,49 @@ void Text::CreateText()
 		//	//Next Line if Space
 		//	if (FullTextString[n - 1] == ' ' && FullTextString[n] == ' ' && FullTextString[n + 1] != ' ')
 		//	{   ////Move CursorPosition to the next line
-		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.LineSpacing, CurrentGroupData.Position[0]);
+		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.LineSpacing, CurrentShapeGroup.Position[0]);
 		//	}
 		//}
-		ShapeOffset++;
+		//ShapeOffset++;
 	}
-
-
 }
 
 void Text::NewReplaceText()
 {
-	//cout << "REPLACE COLOR " << CurrentGroupData.Color[0] << " , " << CurrentGroupData.Color[1] << " , " << CurrentGroupData.Color[2] << " , " << CurrentGroupData.Color[3] << " , " << endl;
+	//cout << "REPLACE COLOR " << CurrentShapeGroup.Color[0] << " , " << CurrentShapeGroup.Color[1] << " , " << CurrentShapeGroup.Color[2] << " , " << CurrentShapeGroup.Color[3] << " , " << endl;
 	int SCR_HEIGHT = 600;
 	int SCR_WIDTH = 1200;
-	int CurrentID = CurrentGroupData.ShapeStartID;
+	int CurrentID = CurrentShapeGroup.ShapeStart;
+	int PageItemOffset = CurrentPage->CurrentPageItemShapeCount;
 	int ShapeOffset = 0;
-	glm::vec2 StartPosition = CurrentGroupData.Position;
+	glm::vec2 StartPosition = CurrentShapeGroup.Position;
 
 	bool LineRestart = true;
 	float Maxline;
 
 	const char* FullTextString = CurrentTextData.Phrase.c_str();
 
+
 	SetTextSize();
 
 	if (CurrentTextData.Centered == true && CurrentTextData.EndStart != true)
 	{
-		StartPosition[0] -= CurrentGroupData.Size[0] / 2;
+		StartPosition[0] -= CurrentShapeGroup.Size[0] / 2;
 	}
 
 	if (CurrentTextData.EndStart == true && CurrentTextData.Centered != true)
 	{
-		StartPosition[0] -= CurrentGroupData.Size[0];
+		StartPosition[0] -= CurrentShapeGroup.Size[0];
 	}
 
 	CurrentTextData.CursorPosition = ApplyPositionConversion(StartPosition, P_COMPUTER_TO_PIXEL);
 
-	NewCharacter TextCharacter(*CurrentGroupData.Page, CurrentID);
+	//CurrentShape.ShapeGroup = CurrentShapeGroup;
+	LoadedShape.ShapeGroup = CurrentShapeGroup;
+
+	//
+
+	NewCharacter TextCharacter(*CurrentPage, CurrentID);
 	//Text Loop
 	for (int n = 0; n < CurrentTextData.Phrase.size(); n++)
 	{
@@ -497,32 +525,55 @@ void Text::NewReplaceText()
 		CurrentCharacterData = NewCharacter::GetCharacter(CurrentChar);
 		
 		//Retreives Character information from file
-		TextCharacter.SwitchToShape(CurrentID); // Working
-		CurrentShape.ID = CurrentID;
-		CurrentShape.Ascii = CurrentChar;
-		CurrentShape.Position = GetCharacterPosition(CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, LineRestart);
-		CurrentShape.Size = GetCharacterSize(CurrentCharacterData, CurrentShape.Position, SCR_HEIGHT, SCR_WIDTH, CurrentTextData.FontSize);
+		//if i load shape here it just overrides what i put through slider
+		Log::LogInt("Editing" , CurrentID);
+		TextCharacter.Switch(CurrentID); // Working
+		LoadedShape.Ascii = CurrentChar;
+		LoadedShape.Position = GetCharacterPosition(CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, LineRestart);
+		LoadedShape.Size = GetCharacterSize(CurrentCharacterData, LoadedShape.Position, SCR_HEIGHT, SCR_WIDTH, CurrentTextData.FontSize);
+		
 
-		CurrentShape.Position = ApplyPositionConversion(CurrentShape.Position, P_PIXEL_TO_COMPUTER);
-		CurrentShape.Size = ApplySizeConversion(CurrentShape.Size, S_PIXEL_TO_COMPUTER);
-		CurrentShape.ShapeGroupOffset = ShapeOffset;
-		CurrentShape.PageGroupItemShapeOffset = CurrentGroupData.PageItemShapeOffset++;
-		cout << "ReplacedColor: " << CurrentShape.Color[0] << " , " << CurrentShape.Color[1] << " , " << CurrentShape.Color[2] << " , "<< CurrentShape.Color[3] << " , " << endl;
-		UpdateMouseAccess(CurrentShape.Position, CurrentShape.Size);
-		TextCharacter.SetShape(CurrentShape);
+		LoadedShape.Position = ApplyPositionConversion(LoadedShape.Position, P_PIXEL_TO_COMPUTER);
+		LoadedShape.Size = ApplySizeConversion(LoadedShape.Size, S_PIXEL_TO_COMPUTER);
+
+		Log::LogFloat("Shape Position  y", LoadedShape.Position[1]);
+
+		PageItemOffset++;
+		LoadedShape.ShapeGroup.PageItem.ShapeOffset = PageItemOffset;
+		LoadedShape.ShapeGroup.ShapeOffset = ShapeOffset;
+
+		//Shape Details
+		LoadedShape.PartOfGroup = true;
+		LoadedShape.Color = CurrentShapeGroup.Color;
+		LoadedShape.ActiveTexture = CurrentTextData.FontSlot;
+		LoadedShape.ShapeGroup.ShapeCount = CurrentTextData.Phrase.size() - 1;
+
+		//Text Details
+		LoadedShape.Text = CurrentTextData.Phrase;
+		LoadedShape.ShapeGroup.Type = TYPE_TEXT;
+		LoadedShape.TextCentered = CurrentTextData.Centered;
+		LoadedShape.EndStart = CurrentTextData.EndStart;
+
+		
+
+		UpdateMouseAccess(LoadedShape.Position, LoadedShape.Size);
+		TextCharacter.SetShape(LoadedShape);
+
+	    Log::LogString("Text in TextData: " + CurrentTextData.Phrase);
+		Log::LogString("Text in Shape   : " + LoadedShape.Text);
 
 		////Checks if line needs to be returned 
 		//LineRestart = QueryLineRestart(CurrentTextData.CursorPosition, Maxline);
 
-		//CurrentGroupData.Size[0] += AdvanceCursor(CurrentCharacterData, CurrentTextData);
+		//CurrentShapeGroup.Size[0] += AdvanceCursor(CurrentCharacterData, CurrentTextData);
 		AdvanceCursor(CurrentCharacterData, CurrentTextData);
-		//CurrentGroupData.Size[1] = CurrentTextData.FontSize / CurrentCharacterData.LineHeight;
+		//CurrentShapeGroup.Size[1] = CurrentTextData.FontSize / CurrentCharacterData.LineHeight;
 		//LineRestart = QueryLineRestart(CurrentTextData.CursorPosition, Maxline);
 		//if (CurrentTextData.List == false)
 		//{
 		//	if (LineRestart == true)
 		//	{   ////Move CursorPosition to the next line
-		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.CharSpacing, CurrentGroupData.Position[0]);
+		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.CharSpacing, CurrentShapeGroup.Position[0]);
 		//	}
 		//}
 		//else
@@ -530,7 +581,7 @@ void Text::NewReplaceText()
 		//	//Next Line if Space
 		//	if (FullTextString[n - 1] == ' ' && FullTextString[n] == ' ' && FullTextString[n + 1] != ' ')
 		//	{   ////Move CursorPosition to the next line
-		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.LineSpacing, CurrentGroupData.Position[0]);
+		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.LineSpacing, CurrentShapeGroup.Position[0]);
 		//	}
 		//}
 		ShapeOffset++;
@@ -542,9 +593,9 @@ void Text::SetText(string Text)
 {
 	//ReCalibrateID();
 
-	int NewCount = Text.size();
+	int NewCount = Text.size() - 1; //-1 added fyi
 	
-	int OldCount = CurrentGroupData.Count;
+	int OldCount = CurrentShapeGroup.ShapeCount;
 	
 	int NumShapesToAlter = NewCount - OldCount;
 	cout << "-----------------------" << endl;
@@ -552,18 +603,18 @@ void Text::SetText(string Text)
 	cout << "Old Count: " << OldCount << endl;
 	cout << "Num Shapes to alter: " << NumShapesToAlter << endl;
 	cout << "-----------------------" << endl;
-	CurrentGroupData.Count = NewCount;
+	CurrentShapeGroup.ShapeCount = NewCount;
 	CurrentTextData.Phrase = Text;
 
 	//Add More Shapes
 	if (NumShapesToAlter > 0)
 	{
-		CurrentGroupData.Page->InsertShapeArray(CurrentGroupData.ShapeStartID, NumShapesToAlter);
+		CurrentPage->InsertShapeArray(CurrentShapeGroup.ShapeStart, NumShapesToAlter);
 	}
 	//RemoveShapes
 	else if (NumShapesToAlter < 0)
 	{
-		CurrentGroupData.Page->DeleteShapeArray(CurrentGroupData.ShapeStartID, (NumShapesToAlter * -1));
+		CurrentPage->DeleteShapeArray(CurrentShapeGroup.ShapeStart, (NumShapesToAlter * -1));
 	}
 	Update();
 }
@@ -586,6 +637,7 @@ void Text::OffsetFont(int FontSize)
 
 void Text::Update()
 {
+	if (Initialized == false) return Log::LogString("Text Update Error:: Group Not Initialized");
 	SetShape();
 	NewReplaceText();
 	SetMouseAccess();
@@ -604,47 +656,109 @@ void Text::SetTextSize()
 		TextWidth += AdvanceWidth;
 	}
 	
-	CurrentGroupData.Size = ApplySizeConversion({TextWidth, CurrentTextData.FontSize }, S_PIXEL_TO_COMPUTER);
-	CurrentShape.ShapeGroupSize = CurrentGroupData.Size;
+	CurrentShapeGroup.Size = ApplySizeConversion({TextWidth, CurrentTextData.FontSize }, S_PIXEL_TO_COMPUTER);
 }
 
 //GroupData must have an initialized ID
-void Text::SetTextGroup(GroupData& GroupData, TextData& TextData)
+void Text::SetTextGroup(ShapeData& ShapeData, TextData& TextData)
 {
 	////for some reason if you put > -1 instead of != -1 it doesnt work 
-	if (GroupData.ShapeStartID != -1 && GroupData.ShapeStartID < CurrentGroupData.Page->ShapeAmount())
+	if (ShapeData.ShapeGroup.ShapeStart != -1 && ShapeData.ShapeGroup.ShapeStart < CurrentPage->ShapeAmount())
 	{
-		SetText(TextData.Phrase);
-		CurrentGroupData = GroupData;
+
+		int NewCount = TextData.Phrase.size() - 1; //-1 added fyi
+
+		int OldCount = CurrentTextData.Phrase.size() - 1;// CurrentShapeGroup.ShapeCount;
+
+		int NumShapesToAlter = NewCount - OldCount;
+		cout << "-----------------------" << endl;
+		cout << "New Count: " << NewCount << endl;
+		cout << "Old Count: " << OldCount << endl;
+		cout << "Num Shapes to alter: " << NumShapesToAlter << endl;
+		cout << "-----------------------" << endl;
+
+
+		//Add More Shapes
+		if (NumShapesToAlter > 0)
+		{
+			CurrentPage->InsertShapeArray(CurrentShapeGroup.ShapeStart, NumShapesToAlter);
+		}
+		//RemoveShapes
+		else if (NumShapesToAlter < 0)
+		{
+			CurrentPage->DeleteShapeArray(CurrentShapeGroup.ShapeStart, (NumShapesToAlter * -1));
+		}
+
+		LoadedShape = ShapeData;
+		//SetText(TextData.Phrase);
 		CurrentTextData = TextData;
-		CurrentGroupData.Count = CurrentTextData.Phrase.size();
+		CurrentShapeGroup.ShapeCount = NewCount;
 		Update();
 	}
 	else
 	{
-		cout << "ERROR::SETTEXTGROUP()::ID not set " << GroupData.ShapeStartID << endl;
+		cout << "ERROR::SETTEXTGROUP()::ID not set " << ShapeData.ShapeGroup.ShapeStart << endl;
+	}
+}
+
+void Text::SetTextGroup(ShapeGroupData& ShapeGroup, TextData& TextData)
+{
+	////for some reason if you put > -1 instead of != -1 it doesnt work 
+	if (ShapeGroup.ShapeStart != -1 && ShapeGroup.ShapeStart < CurrentPage->ShapeAmount())
+	{
+		CurrentShapeGroup = ShapeGroup;
+		int NewCount = TextData.Phrase.size() - 1; //-1 added fyi
+		int OldCount = CurrentTextData.Phrase.size() - 1;// CurrentShapeGroup.ShapeCount;
+
+		int NumShapesToAlter = NewCount - OldCount;
+		cout << "-----------------------" << endl;
+		cout << "New Count: " << NewCount << endl;
+		cout << "Old Count: " << OldCount << endl;
+		cout << "Num Shapes to alter: " << NumShapesToAlter << endl;
+		cout << "-----------------------" << endl;
+
+
+		//Add More Shapes
+		if (NumShapesToAlter > 0)
+		{
+			CurrentPage->InsertShapeArray(CurrentShapeGroup.ShapeStart, NumShapesToAlter);
+		}
+		//RemoveShapes
+		else if (NumShapesToAlter < 0)
+		{
+			CurrentPage->DeleteShapeArray(CurrentShapeGroup.ShapeStart, (NumShapesToAlter * -1));
+		}
+		
+		//SetText(TextData.Phrase);
+		CurrentTextData = TextData;
+		CurrentShapeGroup.ShapeCount = NewCount;
+		Update();
+	}
+	else
+	{
+		cout << "ERROR::SETTEXTGROUP()::ID not set " << ShapeGroup.ShapeStart << endl;
 	}
 }
 
 void Text::ShapeToGroup(ShapeData& ShapeData)
 {
-	CurrentGroupData.ShapeStartID = ShapeData.ID;
-	CurrentGroupData.GroupID = ShapeData.GroupID;
-	CurrentGroupData.Count = ShapeData.ShapeGroupCount + 1;
-	CurrentGroupData.XYShapesPerRow = ShapeData.ShapeGroupXYShapePerRow;
-	CurrentGroupData.ShapeDataSize = ShapeData.ShapeGroupShapeSize;
-	CurrentGroupData.Position = ShapeData.ShapeGroupPosition;
-	CurrentGroupData.Size = ShapeData.ShapeGroupSize;
-	CurrentGroupData.Color = ShapeData.ShapeGroupColor;
-	CurrentGroupData.MouseAccess = ShapeData.ShapeGroupMouseAccess;
-	CurrentGroupData.Centered = ShapeData.ShapeGroupCentered;
-	CurrentGroupData.Highlighted = ShapeData.ShapeGroupHighlighted;
-	CurrentGroupData.ShapeType = ShapeData.ShapeDataType;
-
-	CurrentGroupData.PageItemID = ShapeData.PageGroupItemID;
-	CurrentGroupData.PageItemShapeCount = ShapeData.PageGroupItemShapeCount;
-	CurrentGroupData.PageItemShapeOffset = ShapeData.PageGroupItemShapeOffset;
-	CurrentGroupData.PageItemShapeStartID = ShapeData.PageGroupItemShapeStartID;
+	//CurrentShapeGroup.ShapeStart = ShapeData.ID;
+	//CurrentShapeGroup.GroupID = ShapeData.GroupID;
+	//CurrentShapeGroup.ShapeCount = ShapeData.ShapeGroup.ShapeCount + 1;
+	//CurrentShapeGroup.XYShapesPerRow = ShapeData.ShapeGroupXYShapePerRow;
+	//CurrentShapeGroup.ShapeDataSize = ShapeData.ShapeGroupShapeSize;
+	//CurrentShapeGroup.Position = ShapeData.ShapeGroupPosition;
+	//CurrentShapeGroup.Size = ShapeData.ShapeGroupSize;
+	//CurrentShapeGroup.Color = ShapeData.ShapeGroupColor;
+	//CurrentShapeGroup.MouseAccess = ShapeData.ShapeGroupMouseAccess;
+	//CurrentShapeGroup.Centered = ShapeData.ShapeGroupCentered;
+	//CurrentShapeGroup.Highlighted = ShapeData.ShapeGroupHighlighted;
+	//CurrentShapeGroup.ShapeType = ShapeData.ShapeDataType;
+	//
+	//CurrentShapeGroup.PageItemID = ShapeData.PageGroupItemID;
+	//CurrentShapeGroup.PageItemShapeCount = ShapeData.PageGroupItemShapeCount;
+	//CurrentShapeGroup.PageItemShapeOffset = ShapeData.PageGroupItemShapeOffset;
+	//CurrentPageItem.ShapeStart = ShapeData.PageItem.ShapeStart;
 
 
 }

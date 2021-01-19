@@ -68,7 +68,7 @@ class ShapeGroup : public MasterElement
 
  public:
 
-
+	ShapeGroupData CurrentShapeGroup;
 	const bool SetInStone; //class cannot switch to another Shape 
 
 	ShapeGroup();
@@ -109,6 +109,37 @@ class ShapeGroup : public MasterElement
 	void PrintGroupShapes();
 	int GetCount();
 
+	void SetPageItemOffsets()
+	{
+		//Iteration Setup
+		int PageItemID = CurrentShapeGroup.PageItem.ID;
+		int PageGroupStart = CurrentShapeGroup.PageItem.PageGroup.ShapeStart;
+		int PageGroupCount = CurrentShapeGroup.PageItem.PageGroup.ShapeStart + CurrentShapeGroup.PageItem.PageGroup.ShapeCount;
+		
+		//Reset Group Counts
+		CurrentPage->CurrentPageGroupShapeCount = -1;
+		CurrentPage->CurrentPageItemShapeCount = -1;
+		CurrentPage->CurrentPageItem = 0;
+
+		//Set Offsets
+		for (int i = PageGroupStart; i < PageGroupCount; i++)
+		{
+			//Set PageGroup Offsets
+			LoadedShape = CurrentPage->GetShapeDataR(i);
+			CurrentPage->CurrentPageGroupShapeCount++;
+			CurrentShapeGroup.PageItem.PageGroup.ShapeOffset = CurrentPage->CurrentPageItemShapeCount;
+
+			//Set PageItem Offsets
+			if (CurrentShapeGroup.PageItem.ID == PageItemID)
+			{ 
+				CurrentPage->CurrentPageItemShapeCount++;
+				CurrentShapeGroup.PageItem.ShapeOffset = CurrentPage->CurrentPageItemShapeCount;
+				Log::LogString("How many you see is page item count");
+			}
+		}
+	};
+
+
 	// Basic
 	void SetPosition(glm::vec2 Position) override;                    
 	void SetSize(glm::vec2 Size) override;                            
@@ -141,7 +172,7 @@ class ShapeGroup : public MasterElement
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 
 protected:
-	virtual void Update() {};
+	virtual void Update() = 0;
 	void ReCalibrateID();
 	//void ShapeToGroup(ShapeData& ShapeData);
 	//void GroupToShape(GroupData& GroupData);

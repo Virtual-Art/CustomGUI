@@ -627,22 +627,22 @@ int main(int argc, char** argv)
 	Slider_FirstSlider.Description = " Hello";
 	//Slider_FirstSlider.Ratio = "14.32";
 //	Slider FirstSlider(GUI);
-	Slider FirstSlider0(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
+	//Slider FirstSlider0(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
 
 	Slider_FirstSlider.Description = " Hello";
 	//Slider_FirstSlider.Ratio = "14.35";
 	PageItem_FirstSlider.Position = { 0.0, -0.3 };
-	Slider FirstSlider1(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
+	//Slider FirstSlider1(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
 	
 	Slider_FirstSlider.Description = " Hello";
 	//Slider_FirstSlider.Ratio = "14.37";
 	PageItem_FirstSlider.Position = { 0.0, -0.4 };
-	Slider FirstSlider2(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
+	//Slider FirstSlider2(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
 	
 	Slider_FirstSlider.Description = " Hello";
 	//Slider_FirstSlider.Ratio = "14.38";
 	PageItem_FirstSlider.Position = { 0.0, -0.5 };
-	Slider FirstSlider3(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
+	//Slider FirstSlider3(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
 	
 	
 	Quad FontReference(MainBook.Page[0]);
@@ -708,9 +708,9 @@ int main(int argc, char** argv)
 	//Square.SetPosition({-0.5, 0.0});
 
 	Log::LogString("Before Slider editing");
-	FirstSlider1.SetPosition({ 0.4, 0.3 });
-	FirstSlider2.SetPosition({ -0.4, 0.3 });
-	FirstSlider3.SetPosition({ 0.4, -0.3 });
+	//FirstSlider1.SetPosition({ 0.4, 0.3 });
+	//FirstSlider2.SetPosition({ -0.4, 0.3 });
+	//FirstSlider3.SetPosition({ 0.4, -0.3 });
 
 	//FirstSlider0.PrintGroupShapes();
 	Log::LogString("Before Copy");
@@ -720,11 +720,38 @@ int main(int argc, char** argv)
 	//MasterElement& TheMaster = Square;
 
 	cout << "Look here! " << endl;
+	PageItem_FirstSlider.Position = { 0.0, -0.9 };
+	Log::LogInt("unused slider start id", MainBook.Page[0].ShapeAmount());
 	Slider UnusedSlider(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
-	UnusedSlider.PrintGroupShapes();
-
+	
 	UnusedSlider.SetPosition({ 0.6, -0.7 });
-	UnusedSlider.SetDescription("what the fuck");
+	//UnusedSlider.SetDescription("what the fuck");
+	//UnusedSlider.PrintGroupShapes();
+	//UnusedSlider.ReCalibrateID();
+	ShapeGroupData Debug_Shape;
+	Debug_Shape.Position = {-0.5, -0.5};
+	Debug_Shape.Size = {0.35, 0.25};
+
+
+	lPageGroup l_PageGroup;
+	lPageItem RetreivePageItem;
+	lShapeGroup l_ShapeGroup;
+	lShapeData ShapeDataHolder;
+
+	lPageItem NewPageItem;
+	NewPageItem.Position = 4;
+
+
+	//LoadedShape = ShapeGroup.Switch(i);
+	//CurrentShapeGroup.Position = 10;
+	//CurrentShapeGroup.Size = 43;
+	//CurrentShapeGroup.Color = 35;
+	//LoadedShape.ShapeGroup.PageItem = CurrentPageItem;
+	//ShapeGroup.SetShapeGroup(CurrentPageItem);
+
+
+
+
 
 
 	typedef void(*Master_P)();
@@ -754,20 +781,23 @@ int main(int argc, char** argv)
 			Quad Shape_0(GUI);
 		}
 
+	//	UnusedSlider.SetPosition({Mouse.xPos, Mouse.yPos});
+
 		if (KeyState.Key1 == GUI_2_CLICKED)
 		{
-			ShapeGroup ShapeGroup_0(GUI);
+			//ShapeGroup ShapeGroup_0(GUI);
 		}
 
 		if (KeyState.Key1 == GUI_3_CLICKED)
 		{
-			PageGroupItem PageItem_0(GUI);
+			//PageGroupItem PageItem_0(GUI);
 		}
 
 		if (KeyState.Key1 == GUI_4_CLICKED)
 		{
-			PageGroup PageGroup_0(GUI);
+			//PageGroup PageGroup_0(GUI);
 		}
+
 		
 		//FirstSlider0.SetPosition({Mouse.xPos,Mouse.yPos});
 
