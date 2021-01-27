@@ -27,7 +27,8 @@ public:
 	SliderData CurrentSliderData;
 
 	Slider(Page& Page);
-	Slider(Page& Page, PageGroupItemData& PageGroupItemData, SliderData& SliderData);
+	Slider(Page& Page, PageItemData& PageItemData, SliderData& SliderData);
+	Slider(Page& Page, ShapeData& LoadedShape, SliderData& SliderData);
 	Slider(Page& Page, int PageItemID);
 
 
@@ -39,8 +40,6 @@ public:
 		return GetShapeGroup(Index);
 	}
 	
-	
-
 	void Update();
 	void AddSlider();
 	void SetShapeGroup();

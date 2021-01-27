@@ -5,7 +5,7 @@
 #include <string>
 #include "Page.h"
 
-
+//CreateGrid_Act[SIZE][1] = &MyAction;
 using namespace std;
 
 class Book : Page

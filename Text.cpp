@@ -488,7 +488,6 @@ void Text::NewReplaceText()
 	int SCR_HEIGHT = 600;
 	int SCR_WIDTH = 1200;
 	int CurrentID = CurrentShapeGroup.ShapeStart;
-	int PageItemOffset = CurrentPage->CurrentPageItemShapeCount;
 	int ShapeOffset = 0;
 	glm::vec2 StartPosition = CurrentShapeGroup.Position;
 
@@ -517,7 +516,7 @@ void Text::NewReplaceText()
 
 	//
 
-	NewCharacter TextCharacter(*CurrentPage, CurrentID);
+	NewCharacter TextCharacter(*CurrentPage, 0);
 	//Text Loop
 	for (int n = 0; n < CurrentTextData.Phrase.size(); n++)
 	{
@@ -528,6 +527,7 @@ void Text::NewReplaceText()
 		//if i load shape here it just overrides what i put through slider
 		Log::LogInt("Editing" , CurrentID);
 		TextCharacter.Switch(CurrentID); // Working
+		LoadedShape.ID = CurrentID;
 		LoadedShape.Ascii = CurrentChar;
 		LoadedShape.Position = GetCharacterPosition(CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, LineRestart);
 		LoadedShape.Size = GetCharacterSize(CurrentCharacterData, LoadedShape.Position, SCR_HEIGHT, SCR_WIDTH, CurrentTextData.FontSize);
@@ -536,10 +536,12 @@ void Text::NewReplaceText()
 		LoadedShape.Position = ApplyPositionConversion(LoadedShape.Position, P_PIXEL_TO_COMPUTER);
 		LoadedShape.Size = ApplySizeConversion(LoadedShape.Size, S_PIXEL_TO_COMPUTER);
 
-		Log::LogFloat("Shape Position  y", LoadedShape.Position[1]);
+		Log::LogVec2("Shape Position  y", LoadedShape.Position);
 
-		PageItemOffset++;
-		LoadedShape.ShapeGroup.PageItem.ShapeOffset = PageItemOffset;
+		CurrentPage->CurrentPageItemShapeCount++;
+		LoadedShape.ShapeGroup.PageItem.ShapeOffset = CurrentPage->CurrentPageItemShapeCount;
+		CurrentPage->CurrentPageGroupShapeCount++;
+		LoadedShape.ShapeGroup.PageItem.PageGroup.ShapeOffset = CurrentPage->CurrentPageGroupShapeCount;
 		LoadedShape.ShapeGroup.ShapeOffset = ShapeOffset;
 
 		//Shape Details

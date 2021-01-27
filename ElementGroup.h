@@ -75,7 +75,7 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page);
 	ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData);
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
-	ShapeGroup(Page& Page, int& GroupID);
+	ShapeGroup(Page& Page, int GroupID);
 	void Init(Page& Page, int GroupID) {};
 
 	void Add_Default() override {};
@@ -91,6 +91,7 @@ class ShapeGroup : public MasterElement
 			{
 				if (SetInStone != true)
 				{
+					//CurrentPage->CurrentShapeGroupShapeCount = -1;
 					LoadedShape = CurrentPage->GetShapeDataR(ShapeID);
 					return LoadedShape;
 				}

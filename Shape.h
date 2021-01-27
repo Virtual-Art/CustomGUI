@@ -9,6 +9,7 @@
 #include <iostream>
 #include "MasterElement.h"
 #include "Page.h"
+#include "Log.h"
 
 using namespace std;
 
@@ -29,82 +30,119 @@ class Shape : public MasterElement
 {
 
 public:
-
-	Shape(Page& Page);                       //New Shape
-	Shape(Page& Page, ShapeData& ShapeData); //New Shape with existing Data
-	Shape(Page& Page, int ShapeDataID);      //Existing Shape
-	~Shape();
-
-	void Init(Page& Page, int QuadID)
-	{
-		this->CurrentPage = &Page;
-		if (QuadID != -1)
-		{
-			CurrentShapeData = Page.GetShapeDataR(QuadID);
-		}
-		cout << "Quad Selected ID: " << QuadID << endl;
-		CurrentShapeData.Position = {0.0, 0.0};
-		CurrentShapeData.Size = {0.5, 0.5};
-		Add_Default();
-	};
-
-
 	glm::vec2 TopRightXYRatio;
 	glm::vec2 BottomRightXYRatio;
 	glm::vec2 BottomLeftXYRatio;
 	glm::vec2 TopLeftXYRatio;
 
-	Page* CurrentPage;
 	ShapeData CurrentShapeData;
+	llShapeData* CurrentllShape;
+	
+	llVertexData* VertexTopRight;
+	llVertexData* VertexBottomRight;
+	llVertexData* VertexBottomLeft;
+	llVertexData* VertexTopLeft;
+
 	const bool SetInStone; //class cannot switch to another Shape 
 
-    //Shape Creation functions
+	Shape(llBookData* llBookData);
+	Shape(llBookData* llBookData, llShapeData* llShapeData);
+	Shape(llShapeData* llShapeData);
+	Shape(Page& Page);                       //New Shape
+	Shape(Page& Page, ShapeData& ShapeData); //New Shape with existing Data
+	Shape(Page& Page, int ShapeDataID);      //Existing Shape
+	void Init(Page& Page, int QuadID);
+	~Shape();
 
-	virtual void Update() = 0; // All
-	virtual void SetAction(int ShapeDataActionID ) = 0;
-	virtual void SetShapeRatios() = 0;
-	virtual void BuildShapeVertices() = 0;
-	
-	void PrintShape()
-	{
-		CurrentPage->PrintShape(CurrentShapeData.ID);
-	}
+	////Shape Editing////
 
-	void UpdateMouseAccess();
-
-	//ShapeData Editing
+	//Creator Functions
 	void Add_Default() override; //Editor/None Set in Stone
 	void Add_Duplicate() override; //Editor/None Set in Stone
 	void Add_Insert() override; //Editor/None Set in Stone
-	void DeleteShape() override;
-	void SwitchToShape(int RequstedShapeID) override;
-	void SwitchToShape(Page& Page, int RequstedShapeID);
-	void SetShape(ShapeData& ShapeData);
-	void SetShape(ShapeData& ShapeData, glm::vec2 PSConversions);
+	void Delete() override;
+	ShapeData& Switch(int RequstedShapeID) override;
+	ShapeData& Switch(Page& Page, int RequstedShapeID) override;
+	void PrintShape();
+
+	void PrintllVertices()
+	{
+		Log::LogString("Trying to print llShapes");
+		llVertexData* WorkingVertex = CurrentllShape->Vertexx;
+		while (WorkingVertex != nullptr)
+		{
+			Log::LogVec4( "llShape: ", WorkingVertex->Color);
+			WorkingVertex = WorkingVertex->Next;
+		}
+	}
+
+	void SetShapeGroupOffsets()
+	{
+
+		//Iteration Setup
+		int PageItemID = LoadedShape.ShapeGroup.PageItem.ID;
+		int ShapeGroupID = LoadedShape.ShapeGroup.ID;
+		int PageGroupStart = LoadedShape.ShapeGroup.PageItem.PageGroup.ShapeStart;
+		int PageGroupCount = LoadedShape.ShapeGroup.PageItem.PageGroup.ShapeStart + LoadedShape.ShapeGroup.PageItem.PageGroup.ShapeCount;
+
+		//Resetting Group Counts
+		CurrentPage->CurrentPageGroupShapeCount = -1;
+		CurrentPage->CurrentPageItemShapeCount = -1;
+		CurrentPage->CurrentShapeGroupShapeCount = -1;
+		CurrentPage->CurrentShapeGroup = 0;
+
+		//Setting Offsets
+		for (int i = PageGroupStart; i < PageGroupCount; i++)
+		{
+			//PageGroup Offsets
+			LoadedShape = CurrentPage->GetShapeDataR(i);
+			CurrentPage->CurrentPageGroupShapeCount++;
+			LoadedShape.ShapeGroup.PageItem.PageGroup.ShapeOffset = CurrentPage->CurrentPageItemShapeCount;
+
+			//PageItem Offsets
+			if (LoadedShape.ShapeGroup.PageItem.ID == PageItemID)
+			{ 
+				CurrentPage->CurrentPageItemShapeCount++;
+				LoadedShape.ShapeGroup.PageItem.ShapeOffset = CurrentPage->CurrentPageItemShapeCount;
+				Log::LogString("How many you see is page item count");
+
+				//ShapeGroup Offsets
+				if (LoadedShape.ShapeGroup.ID == PageItemID)
+				{
+					CurrentPage->CurrentShapeGroupShapeCount++;
+					LoadedShape.ShapeGroup.ShapeOffset = CurrentPage->CurrentShapeGroupShapeCount;
+				}
+			}
+		}
+	};
+
+
+	// Basic
 	void SetPosition(glm::vec2 Position) override;                     //Set All
-	void SetPosition(glm::vec2 Position, glm::vec2 bools) override;    //Set all with true boolean(s)
 	void SetSize(glm::vec2 Size) override;                             //Set All
-	void SetSize(glm::vec2 Size, glm::vec2 bools) override;            //Set all with true boolean(s)
 	void SetColor(glm::vec4 Color) override;                           //..
-	void SetColor(glm::vec4 Color, glm::vec4 bools) override;          //...
-
-	// W/ Conversions
-	void SetPosition(glm::vec2 Position, int Conversion);                     //Set All
-	void SetPosition(glm::vec2 Position, glm::vec2 bools, int Conversion);    //Set all with true boolean(s)
-	void SetSize(glm::vec2 Size, int Conversion);                             //Set All
-	void SetSize(glm::vec2 Size, glm::vec2 bools, int Conversion);            //Set all with true boolean(s)
-
-	void OffsetPosition(glm::vec2 Position);                  //..
-	void OffsetPosition(glm::vec2 Position, glm::vec2 bools); //...
+	void OffsetPosition(glm::vec2 Position);                           //..
 	void OffsetSize(glm::vec2 Size);                          //..
-	void OffsetSize(glm::vec2 Size, glm::vec2 bools);         //...
 	void OffsetColor(glm::vec4 Color);                        //..
+	void SetPosition(glm::vec2 Position, glm::vec2 bools) override;    //Set all with true boolean(s)
+	void SetSize(glm::vec2 Size, glm::vec2 bools) override;            //Set all with true boolean(s)
+	
+	// Basic + boolean
+	void SetColor(glm::vec4 Color, glm::vec4 bools) override;          //...
+	void OffsetPosition(glm::vec2 Position, glm::vec2 bools); //...
+	void OffsetSize(glm::vec2 Size, glm::vec2 bools);         //...
 	void OffsetColor(glm::vec4 Color, glm::vec4 bools);       //...
 
-	// W/ Conversions
+	// Basic + Conversions
+	void SetPosition(glm::vec2 Position, int Conversion);                     //Set All
+	void SetSize(glm::vec2 Size, int Conversion);                             //Set All
 	void OffsetPosition(glm::vec2 Position, int Conversion);                  //..
-	void OffsetPosition(glm::vec2 Position, glm::vec2 bools, int Conversion); //...
 	void OffsetSize(glm::vec2 Size, int Conversion);                          //..
+
+	// Basic + Conversions + boolean
+	void SetPosition(glm::vec2 Position, glm::vec2 bools, int Conversion);    //Set all with true boolean(s)
+	void SetSize(glm::vec2 Size, glm::vec2 bools, int Conversion);            //Set all with true boolean(s)
+	void OffsetPosition(glm::vec2 Position, glm::vec2 bools, int Conversion); //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools, int Conversion);         //...
 
 	//Vertex Editing
@@ -114,44 +152,33 @@ public:
 	void SetVertexGuiAction(int Index, int& Action);
 	void SetVertexCentralPoint(int Index, glm::vec2& CentralPoint);
 	void SetVertexTextureIndex(int Index, float& TextureIndex);
-
 	void OffsetVertexPosition(int Index, glm::vec2& Position);
 	void OffsetVertexColor(int Index, glm::vec4& Color);
 	void OffsetVertexTexCoords(int Index, glm::vec2& TextureCoordinates);
 	void OffsetVertexGuiAction(int Index, int& Action);
 	void OffsetVertexCentralPoint(int Index, glm::vec2& CentralPoint);
 	void OffsetVertexTextureIndex(int Index, float& TextureIndex);
-	
-	Shape* ShapeDataPosToMousePos(Shape* ShapeData, glm::vec2 MousePosition, bool Centered);
-
-	glm::vec2 ApplyPositionConversion(glm::vec2 Position, int Conversion);
-	glm::vec2 ApplySizeConversion(glm::vec2 Position, int Conversion);
-
-	//Position TopLeft/BottomLeft Conversions 
-	glm::vec2 PTLPixelToComputer(glm::vec2 Position); //Working
-	glm::vec2 PBLPixelToComputer(glm::vec2 Position); //Working
-	glm::vec2 PMiddleToTopLeft(glm::vec2 Position, glm::vec2 Size);
-
-	glm::vec2 PComputerToTLPixel(glm::vec2 Position); //Working
-	glm::vec2 PComputerToBLPixel(glm::vec2 Position); //Working
-    
-
-	//SizeConversions
-	glm::vec2 SPixelToComputer(glm::vec2 Size); //Working
-	glm::vec2 SOneToComputer(glm::vec2 Size);   //Working
-
-	glm::vec2 SComputerToPixel(glm::vec2 Size); //Working
-	glm::vec2 SComputerToOne(glm::vec2 Size);   //Working
 
 
-private:
+	virtual void Update() = 0; // All
+	virtual void SetAction(int ShapeDataActionID) = 0;
+	virtual void SetShapeRatios() = 0;
+	virtual void BuildShapeVertices() = 0;
+	void UpdateMouseAccess();
+	void UpdatellMouseAccess();
+	void SetShape(ShapeData& ShapeData);
+	void SetShape(ShapeData& ShapeData, glm::vec2 PSConversions);
+
+protected:
+
+	//Shape* ShapeDataPosToMousePos(Shape* ShapeData, glm::vec2 MousePosition, bool Centered);
 };
 
 
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////HIGHLIGHT FUNCTIONS DONT DELETE/////////////////////////////////////////////////////
+///////////////////////HIGHLIGHT FUNCTIONS DONT DELETE////////////YOU WILL NEED IT IN YOUR LIFE////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //int* FindMultiSelect(int Layer, ShapeData MultiSelect, bool Print, int* ShapeDatasSelected, int SelectionLimit);

@@ -76,16 +76,16 @@ ShapeGroup::ShapeGroup(Page& Page, ShapeData& ShapeData)
 }
 
 //Group can be changed for another
-ShapeGroup::ShapeGroup(Page& Page, int& ID)
+ShapeGroup::ShapeGroup(Page& Page, int ID)
 	: SetInStone(false)
 {
 	if (&Page != nullptr)
 	{
-		if (IsInBounds(ID) == true)
+		if (IsInBounds(ID) != false || ID != -1)
 		{
 			Initialized = true;
 			CurrentPage = &Page;
-			CurrentPage->CurrentShapeGroupShapeCount = 0;
+			//CurrentPage->CurrentShapeGroupShapeCount = -1;
 			LoadedShape = Page.GetShapeDataR(ID);
 		}
 	}

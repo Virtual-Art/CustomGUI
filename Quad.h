@@ -13,6 +13,11 @@ class Quad : public Shape
 {
 public:
 
+	//Linked List Constructors
+	Quad(llBookData* llBook);
+	Quad(llBookData* llBook, llShapeData* llShape);
+	Quad(llShapeData* llShape);
+
 	//Constructors
 	Quad(Page& Page);                         //New Shape
 	Quad(Page& Page, ShapeData& ShapeData);   //New Shape with existing Data
@@ -22,6 +27,8 @@ public:
 
 	//PureVirtual Functions
 	void Update();
+	void SetllQuad();
+
 	void BuildShapeVertices();
 	void SetShapeRatios();
 	void SetAction(int ShapeDataActionID);

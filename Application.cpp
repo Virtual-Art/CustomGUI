@@ -49,8 +49,8 @@
 #include "PageGroup.h"
 #include "MasterElement.h"
 
-string ProcessInputString(GLFWwindow* window);
-void MouseCallback(GLFWwindow* window, double xPos, double yPos);
+//string ProcessInputString(GLFWwindow* window);
+//void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 using namespace std;
@@ -139,11 +139,11 @@ int main(int argc, char** argv)
 	PageItem_FirstSlider.Position = { 0.0, -0.5 };
 	Slider FirstSlider3(MainBook.Page[0], PageItem_FirstSlider, Slider_FirstSlider);
 
-	
+	PageItem_FirstSlider.Position = { 0.0, -0.6 };
 	Slider UnusedSlider(GUI, PageItem_FirstSlider, Slider_FirstSlider);
-	UnusedSlider.SetPosition({ 0.6, -0.7 });
-	UnusedSlider.SetPosition({ 0.6, -0.7 }); // Slider Replace adds 10 shape offset every replace
-	UnusedSlider.SetPosition({ 0.6, -0.7 }); // to fix this we need to have the slider shape group count go back to it's spot in the shape group
+	//UnusedSlider.SetPosition({ 0.6, -0.7 });
+	//UnusedSlider.SetPosition({ 0.6, -0.7 }); // Slider Replace adds 10 shape offset every replace
+	//UnusedSlider.SetPosition({ 0.6, -0.7 }); // to fix this we need to have the slider shape group count go back to it's spot in the shape group
 	UnusedSlider.SetSize({ 0.2, 0.1 });
 	UnusedSlider.SetDescription("HelloWorld");
 	UnusedSlider.PrintGroupShapes();
@@ -153,6 +153,42 @@ int main(int argc, char** argv)
 	float PreviousTime;
 	unsigned int EditorShapeDataHovered;
 	unsigned int GUIShapeDataHovered;
+
+	llBookData Gamee;
+
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::AddPageToBook(&Gamee);
+	//MasterElement::PrintBook(&Gamee);
+	//
+	////Gamee would keep track of the counts 
+	////As well as the current element it's on regardless on insertion and deletion
+	//Slider llSlider(&Gamee);
+
+	llShapeData Gamee_Shape;
+
+	Gamee_Shape.Position = {0.765, 0.765};
+		
+	Quad llQuad0(&Gamee, &Gamee_Shape);
+	Quad llQuad1(&Gamee);
+	Quad llQuad2(&Gamee);
+	Quad llQuad3(&Gamee);
+
+	llQuad0.PrintllVertices();
+	llQuad1.PrintllVertices();
+	llQuad2.PrintllVertices();
+	llQuad3.PrintllVertices();
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
