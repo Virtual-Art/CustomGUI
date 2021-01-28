@@ -8,10 +8,10 @@
 
 #include <iostream>
 #include "MasterElement.h"
-#include "ElementGroup.h"
-#include "Text.h"
-#include "Grid.h"
-#include "Log.h"
+#include "ElementGroup.h" //Parent
+#include "Text.h" //Child
+#include "Grid.h" //Child
+#include "Log.h" //Child
 
 using namespace std;
 
@@ -67,8 +67,16 @@ public:
 	//GroupData CurrentShapeGroup;
 	PageItemData CurrentPageItem;
 	ShapeGroupData CurrentShapeGroup;
+
+	llPageItemData* CurrentllPageItem;
+	llShapeGroupData CurrentllShapeGroup;
+
 	TextData CurrentText;
 	ShapeData CurrentShape;
+
+	PageGroupItem(llBookData* llBookData);
+	PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem);
+	PageGroupItem(llPageItemData* llPageItem);
 
 	PageGroupItem();
 	PageGroupItem(Page& Page);
@@ -88,6 +96,10 @@ public:
 	void ShapeToGroup(ShapeData& ShapeData);
 	//void SwitchToPageItem(int ShapeID);
 
+	void PrintllShapes()
+	{
+		PrintPageItemShapes(CurrentllPageItem);
+	}
 
 	void SetPageGroupOffsets() 
 	{
@@ -114,6 +126,7 @@ public:
 	void OffsetPosition(glm::vec2 PositionOffset, glm::vec2 bools);
 
 	void UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion);
+	void UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion);
 	void SetMouseAccess();
 	glm::vec2 ConvertEndToMiddle(glm::vec2 Position, glm::vec2 Size);
 	glm::vec2 ConvertBeginningToMiddle(glm::vec2 Position, glm::vec2 Size);
@@ -125,13 +138,13 @@ public:
 		if (Initialized == false) {Log::LogString("Cannot Print Shapes:: PageItem Not Initialized"); return;}
 
 		//ReCalibrateID();
-		cout << "Printing Starting from: " << CurrentPageItem.ShapeStart << endl;
-		cout << "For the count: " << CurrentPageItem.ShapeCount << endl;
+		//CurrentPageItem.ShapeCount -= 10;
 		for (int i = CurrentPageItem.ShapeStart; i < CurrentPageItem.ShapeStart + CurrentPageItem.ShapeCount + 1; i++)
 		{
-			
 			CurrentPage->PrintShape(i);
 		}
+		cout << "Printing Starting from: " << CurrentPageItem.ShapeStart << endl;
+		cout << "For the count: " << CurrentPageItem.ShapeCount << endl;
 	}
 
 	void Init(Page& Page, int QuadID)

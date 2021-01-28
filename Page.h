@@ -42,6 +42,12 @@ struct ShapeVertex
 	//glm::vec2 XYRatio = { 0.0, 0.0 };
 };
 
+
+struct PageData
+{
+
+};
+
 struct PageGroupData
 {
 	//PageGroup
@@ -51,8 +57,8 @@ struct PageGroupData
 	int ShapeCount = -1;  //Lowest level //EX: PageItem owns 40 Shapes 
 	int ShapeOffset = -1;      //Lowest level //EX: This Shape is 10 Shapes from PageItem start Shape (120)
 	int Type = 0;
-	glm::vec2 Position = {0.0, 0.0};
-	glm::vec2 Size = {0.0, 0.0};
+	glm::vec2 Position = { 0.0, 0.0 };
+	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
@@ -64,21 +70,22 @@ struct PageGroupData
 	float Bottom = -3;
 	float Left = -3;
 	float Right = -3;
-	
+
 };
+
 
 struct PageItemData
 {
-    //PageItem
+	//PageItem
 	int ID = -1;
-	int ShapeStart = 0;  
-	int ShapeCount = -1;  
-	int ShapeOffset = -1; 
+	int ShapeStart = 0;
+	int ShapeCount = -1;
+	int ShapeOffset = -1;
 	int Type = 0;
-	glm::vec2 Position = {0.0, 0.0};
-	glm::vec2 Size = {0.0, 0.0};
+	glm::vec2 Position = { 0.0, 0.0 };
+	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
-	glm::vec2 XYShapePerRow = {-1.0, -1.0};
+	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
 	bool Centered = false;
 	bool Highlighted = false;
@@ -90,6 +97,7 @@ struct PageItemData
 	PageGroupData PageGroup;
 };
 
+
 struct ShapeGroupData
 {
 	///////////////////////////////////
@@ -100,11 +108,11 @@ struct ShapeGroupData
 	int ShapeOffset = -1;
 	int ShapeCount = -1;
 	int Type = 0;
-	glm::vec2 XYShapePerRow = {-1.0, -1.0};
+	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
-	glm::vec4 Color = {1.0, 1.0, 1.0, 1.0};
+	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
@@ -129,9 +137,9 @@ struct ShapeData
 	int Action = -1;
 	int Layer;
 	int Type = 0;
-	glm::vec2 Position = {0.0, 0.0};
-	glm::vec2 Size = {0.25, 0.5};
-	glm::vec4 Color = {1.0, 1.0, 1.0, 1.0};
+	glm::vec2 Position = { 0.0, 0.0 };
+	glm::vec2 Size = { 0.25, 0.5 };
+	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
 	glm::vec2 HighlightPosition = Position;
 	glm::vec2 HighlightSize = { this->Size[0] + 0.0135, this->Size[1] + 0.025 };
 	glm::vec4 HighlightColor;
@@ -150,6 +158,10 @@ struct ShapeData
 	ShapeVertex Vertex[4];
 	ShapeGroupData ShapeGroup;
 };
+
+
+
+
 
 
 struct CShapeData
@@ -575,26 +587,25 @@ public:
 		{ cout << "Print Shape Error::ID Out Of Bounds" << endl; return; }
 
 		ShapeData& CurrentShapeData = GetShapeDataR(ID);
+		cout << "------------PageGroup-Data (" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.ID << ")------------------" << endl;
+		cout << "Position: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Position[0] << " , " << CurrentShapeData.Position[1] << "}" << endl;
+		cout << "Size: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Size[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Size[1] << "}" << endl;
+		cout << "Color: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[1] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[2] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[3] << "}" << endl;
 		
-		cout << "------------ShapeData-Data (" << CurrentShapeData.ID << ")------------------" << endl;
-		cout << "Position: {" << CurrentShapeData.Position[0] << " , " << CurrentShapeData.Position[1] << "}" << endl;
-		cout << "Size: {" << CurrentShapeData.Size[0] << " , " << CurrentShapeData.Size[1] << "}" << endl;
-		cout << "Color: {" << CurrentShapeData.Color[0] << " , " << CurrentShapeData.Color[1] << " , " << CurrentShapeData.Color[2] << " , " << CurrentShapeData.Color[3] << "}" << endl;
+	    cout << "------------PageItem-Data (" << CurrentShapeData.ShapeGroup.PageItem.ID << ")------------------" << endl;
+		cout << "Position: {" << CurrentShapeData.ShapeGroup.PageItem.Position[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.Position[1] << "}" << endl;
+		cout << "Size: {" << CurrentShapeData.ShapeGroup.PageItem.Size[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.Size[1] << "}" << endl;
+		cout << "Color: {" << CurrentShapeData.ShapeGroup.PageItem.Color[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.Color[1] << " , " << CurrentShapeData.ShapeGroup.PageItem.Color[2] << " , " << CurrentShapeData.ShapeGroup.PageItem.Color[3] << "}" << endl;
 		
 		cout << "------------ShapeGroup-Data (" << CurrentShapeData.ShapeGroup.ID << ")------------------" << endl;
 		cout << "Position: {" << CurrentShapeData.ShapeGroup.Position[0] << " , " << CurrentShapeData.ShapeGroup.Position[1] << "}" << endl;
 		cout << "Size: {" << CurrentShapeData.ShapeGroup.Size[0] << " , " << CurrentShapeData.ShapeGroup.Size[1] << "}" << endl;
 		cout << "Color: {" << CurrentShapeData.ShapeGroup.Color[0] << " , " << CurrentShapeData.ShapeGroup.Color[1] << " , " << CurrentShapeData.ShapeGroup.Color[2] << " , " << CurrentShapeData.ShapeGroup.Color[3] << "}" << endl;
 
-	    cout << "------------PageItem-Data (" << CurrentShapeData.ShapeGroup.PageItem.ID << ")------------------" << endl;
-		cout << "Position: {" << CurrentShapeData.ShapeGroup.PageItem.Position[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.Position[1] << "}" << endl;
-		cout << "Size: {" << CurrentShapeData.ShapeGroup.PageItem.Size[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.Size[1] << "}" << endl;
-		cout << "Color: {" << CurrentShapeData.ShapeGroup.PageItem.Color[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.Color[1] << " , " << CurrentShapeData.ShapeGroup.PageItem.Color[2] << " , " << CurrentShapeData.ShapeGroup.PageItem.Color[3] << "}" << endl;
-
-		cout << "------------PageGroup-Data (" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.ID << ")------------------" << endl;
-		cout << "Position: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Position[0] << " , " << CurrentShapeData.Position[1] << "}" << endl;
-		cout << "Size: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Size[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Size[1] << "}" << endl;
-		cout << "Color: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[0] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[1] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[2] << " , " << CurrentShapeData.ShapeGroup.PageItem.PageGroup.Color[3] << "}" << endl;
+		cout << "------------ShapeData-Data (" << CurrentShapeData.ID << ")------------------" << endl;
+		cout << "Position: {" << CurrentShapeData.Position[0] << " , " << CurrentShapeData.Position[1] << "}" << endl;
+		cout << "Size: {" << CurrentShapeData.Size[0] << " , " << CurrentShapeData.Size[1] << "}" << endl;
+		cout << "Color: {" << CurrentShapeData.Color[0] << " , " << CurrentShapeData.Color[1] << " , " << CurrentShapeData.Color[2] << " , " << CurrentShapeData.Color[3] << "}" << endl;
 
 		//cout << "ActiveTexture: {" << CurrentShapeData.ActiveTexture << "}" << endl;
 		//cout << "Action: {" << CurrentShapeData.Action << "}" << endl;
@@ -605,6 +616,23 @@ public:
 		cout << "Text: " << CurrentShapeData.Text << endl;
 		cout << "Ascii: " << char(CurrentShapeData.Ascii) << endl;
 		cout << "------" << endl;
+		if (CurrentShapeData.ShapeGroup.PageItem.PageGroup.ShapeStart == CurrentShapeData.ID)
+		{
+			cout << "PageGroup Start: {STARTS AT THIS SHAPE}" << endl;
+		}
+		else
+		{
+			cout << "PageGroup Start: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.ShapeStart << "}" << endl;
+		}
+
+		if (CurrentShapeData.ShapeGroup.PageItem.ShapeStart == CurrentShapeData.ID)
+		{
+			cout << "PageItem Start: {STARTS AT THIS SHAPE}" << endl;
+		}
+		else
+		{
+			cout << "PageItem Start: {" << CurrentShapeData.ShapeGroup.PageItem.ShapeStart << "}" << endl;
+		}
 
 		if (CurrentShapeData.ShapeGroup.ShapeStart == CurrentShapeData.ID)
 		{
@@ -614,41 +642,25 @@ public:
 		{
 			cout << "ShapeGroup Start: {" << CurrentShapeData.ShapeGroup.ShapeStart << "}" << endl;
 		}
-		if (CurrentShapeData.ShapeGroup.PageItem.ShapeStart == CurrentShapeData.ID)
-		{
-			cout << "PageItem Start: {STARTS AT THIS SHAPE}" << endl;
-		}
-		else
-		{
-			cout << "PageItem Start: {" << CurrentShapeData.ShapeGroup.PageItem.ShapeStart << "}" << endl;
-		}
-		if (CurrentShapeData.ShapeGroup.PageItem.PageGroup.ShapeStart == CurrentShapeData.ID)
-		{
-			cout << "PageGroup Start: {STARTS AT THIS SHAPE}" << endl;
-		}
-		else
-		{
-			cout << "PageGroup Start: {" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.ShapeStart << "}" << endl;
-		}
-		cout << "---ShapeGroup- "<< "(" << CurrentShapeData.ShapeGroup.ID << ")" << " Shape (" << CurrentShapeData.ShapeGroup.ShapeOffset << "/"<< CurrentShapeData.ShapeGroup.ShapeCount << ")----" << endl;
-		cout << "---PageItem- " << "(" << CurrentShapeData.ShapeGroup.PageItem.ID << ")" << " Shape (" << CurrentShapeData.ShapeGroup.PageItem.ShapeOffset << "/" << CurrentShapeData.ShapeGroup.PageItem.ShapeCount << ")----" << endl;
 		cout << "---PageGroup- " << "(" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.ID << ")" << " Shape (" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.ShapeOffset << "/" << CurrentShapeData.ShapeGroup.PageItem.PageGroup.ShapeCount << ")----" << endl;
+		cout << "---PageItem- " << "(" << CurrentShapeData.ShapeGroup.PageItem.ID << ")" << " Shape (" << CurrentShapeData.ShapeGroup.PageItem.ShapeOffset << "/" << CurrentShapeData.ShapeGroup.PageItem.ShapeCount << ")----" << endl;
+		cout << "---ShapeGroup- "<< "(" << CurrentShapeData.ShapeGroup.ID << ")" << " Shape (" << CurrentShapeData.ShapeGroup.ShapeOffset << "/"<< CurrentShapeData.ShapeGroup.ShapeCount << ")----" << endl;
 		cout << "------" << endl;
 
-		cout << "ShapeTop: " << CurrentShapeData.Top << endl;
-		cout << "ShapeBottom: " << CurrentShapeData.Bottom << endl;
-		cout << "ShapeLeft: " << CurrentShapeData.Left << endl;
-		cout << "ShapeRight: " << CurrentShapeData.Right << endl;
-		cout << "------" << endl;
-		cout << "ShapeGroup Top: " << CurrentShapeData.ShapeGroup.Top << endl;
-		cout << "ShapeGroup Bottom: " << CurrentShapeData.ShapeGroup.Bottom << endl;
-		cout << "ShapeGroup Left: " << CurrentShapeData.ShapeGroup.Left << endl;
-		cout << "ShapeGroup Right: " << CurrentShapeData.ShapeGroup.Right << endl;
-		cout << "------" << endl;
-		cout << "PageItem Top: " << CurrentShapeData.ShapeGroup.PageItem.Top << endl;
-		cout << "PageItem Bottom: " << CurrentShapeData.ShapeGroup.PageItem.Bottom << endl;
-		cout << "PageItem Left: " << CurrentShapeData.ShapeGroup.PageItem.Left << endl;
-		cout << "PageItem Right: " << CurrentShapeData.ShapeGroup.PageItem.Right << endl;
+		//cout << "ShapeTop: " << CurrentShapeData.Top << endl;
+		//cout << "ShapeBottom: " << CurrentShapeData.Bottom << endl;
+		//cout << "ShapeLeft: " << CurrentShapeData.Left << endl;
+		//cout << "ShapeRight: " << CurrentShapeData.Right << endl;
+		//cout << "------" << endl;
+		//cout << "ShapeGroup Top: " << CurrentShapeData.ShapeGroup.Top << endl;
+		//cout << "ShapeGroup Bottom: " << CurrentShapeData.ShapeGroup.Bottom << endl;
+		//cout << "ShapeGroup Left: " << CurrentShapeData.ShapeGroup.Left << endl;
+		//cout << "ShapeGroup Right: " << CurrentShapeData.ShapeGroup.Right << endl;
+		//cout << "------" << endl;
+		//cout << "PageItem Top: " << CurrentShapeData.ShapeGroup.PageItem.Top << endl;
+		//cout << "PageItem Bottom: " << CurrentShapeData.ShapeGroup.PageItem.Bottom << endl;
+		//cout << "PageItem Left: " << CurrentShapeData.ShapeGroup.PageItem.Left << endl;
+		//cout << "PageItem Right: " << CurrentShapeData.ShapeGroup.PageItem.Right << endl;
 		cout << "------------------------------------------------------------------------------------------------" << endl;
 	};
 

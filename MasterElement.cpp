@@ -1,5 +1,101 @@
 #include "MasterElement.h"
 
+void MasterElement::PrintPageItemShapes(llPageItemData* llPageItem)
+{
+	cout << "----------------------Trying To Print PageItem Shapes..-------------------------" << endl;
+	int ShapeCount = 0;
+	llShapeGroupData* CurrentShapeGroup = llPageItem->ShapeGroup;
+
+	if (CurrentShapeGroup == nullptr) { Log::LogString(" is empty"); return; };
+
+	//Find Head Shape
+	while (CurrentShapeGroup->Previous != nullptr)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Previous;
+	}
+
+	//Print All Shapes
+	while (CurrentShapeGroup != nullptr)
+	{
+		PrintShapeGroupShapes(CurrentShapeGroup);
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+		ShapeCount++;
+	}
+}
+
+void MasterElement::PrintShapeGroupShapes(llShapeGroupData* llShapeGroup)
+{
+	cout << "------------Trying To Print Group Shapes..------------" << endl;
+	int ShapeCount = 0;
+	llShapeData* CurrentShape = llShapeGroup->Shape;
+
+	if (CurrentShape == nullptr) { Log::LogString("ShapeGroup is empty"); return; };
+
+	//Find Head Shape
+	while (CurrentShape->Previous != nullptr)
+	{
+		CurrentShape = CurrentShape->Previous;
+	}
+
+	//Print All Shapes
+	while (CurrentShape != nullptr)
+	{
+		
+		PrintllShape(CurrentShape, ShapeCount);
+		CurrentShape = CurrentShape->Next;
+		ShapeCount++;
+	}
+}
+
+void MasterElement::PrintllShape(llShapeData* llShape)
+{
+	Log::LogString("Trying To Print llShape");
+	cout << "------------ShapeData-Data (" << llShape << ")------------------" << endl;
+	Log::LogVec2("Position: ", llShape->Position);
+	Log::LogVec2("Size: ", llShape->Size);
+	Log::LogVec4("Color: ", llShape->Color);
+
+
+	cout << "-------" << endl;
+	Log::LogString("Text: " + llShape->Text);
+	cout << "Ascii: " << char(llShape->Ascii) << endl;
+	Log::LogString("------");
+	Log::LogFloat("ShapeTop: ", llShape->Top);
+	Log::LogFloat("ShapeBottom: ", llShape->Bottom);
+	Log::LogFloat("ShapeLeft: ", llShape->Left);
+	Log::LogFloat("ShapeRight: ", llShape->Right);
+	Log::LogString("-------------------------------------------------");
+	//cout << "ActiveTexture: {" << CurrentShapeData.ActiveTexture << "}" << endl;
+	//cout << "Action: {" << CurrentShapeData.Action << "}" << endl;
+	//cout << "MouseAccess: {" << CurrentShapeData.MouseAccess << "}" << endl;
+	//cout << "Centered: {" << CurrentShapeData.Centered << "}" << endl;
+	//cout << "Highlighted: {" << CurrentShapeData.Highlighted << "}" << endl;
+}
+
+void MasterElement::PrintllShape(llShapeData* llShape, int Offset)
+{
+	Log::LogString("Trying To Print llShape");
+	cout << "------------ShapeData-Data (" << llShape << ") [" << Offset << "] ------------------" << endl;
+	Log::LogVec2("Position: ", llShape->Position);
+	Log::LogVec2("Size: ", llShape->Size);
+	Log::LogVec4("Color: ", llShape->Color);
+
+
+	cout << "-------" << endl;
+	Log::LogString("Text: " + llShape->Text);
+	cout << "Ascii: " << char(llShape->Ascii) << endl;
+	Log::LogString("------");
+	Log::LogFloat("ShapeTop: ", llShape->Top);
+	Log::LogFloat("ShapeBottom: ", llShape->Bottom);
+	Log::LogFloat("ShapeLeft: ", llShape->Left);
+	Log::LogFloat("ShapeRight: ", llShape->Right);
+	Log::LogString("-------------------------------------------------");
+	//cout << "ActiveTexture: {" << CurrentShapeData.ActiveTexture << "}" << endl;
+	//cout << "Action: {" << CurrentShapeData.Action << "}" << endl;
+	//cout << "MouseAccess: {" << CurrentShapeData.MouseAccess << "}" << endl;
+	//cout << "Centered: {" << CurrentShapeData.Centered << "}" << endl;
+	//cout << "Highlighted: {" << CurrentShapeData.Highlighted << "}" << endl;
+}
 
 
 bool MasterElement::IsInitialized()
@@ -13,7 +109,7 @@ bool MasterElement::IsInBounds(int ID)
 	{
 		return CurrentPage->InBounds(ID);
 	}
-    Log::LogString("Bounds Error:: Element Not Initialized"); return false;
+   // Log::LogString("Bounds Error:: Element Not Initialized"); return false;
 }
 
 

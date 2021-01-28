@@ -55,6 +55,10 @@ public:
 	static CharacterData FindCharacter(string& File, int ASCII); //Finds Character in Font File
 	static CharacterData& GetCharacter(int Ascii); //Returns Chosen Character's Data
 
+	NewCharacter(llBookData* llBook);                       //New Shape
+	NewCharacter(llBookData* llBook, llShapeData* llShape); //New Shape with existing Data
+	NewCharacter(llShapeData* llShape);                     //Existing Shape
+
     //Constructors
 	NewCharacter(Page& Page);                       //New Shape
 	NewCharacter(Page& Page, ShapeData& ShapeData); //New Shape with existing Data
@@ -67,18 +71,20 @@ public:
 	//PureVirtuals
 
 	void Update();
+	void llUpdate();
 	void SetAction(int ShapeDataActionID);
 	void BuildShapeVertices();
 	void SetShapeRatios();
+	void CreatellCharacter();
 
 	//NewCharacter Functions
 	void SetShape(ShapeData& ShapeData);
+	void SetllShape(llShapeData* llShapeData);
 	void SetCharacter(int Ascii);
+	void SetllCharacter(int Ascii);
 	//void SetCharacterSize(int FontSize);
 	void PrintCharacter();
 	static void PrintCharacter(int Ascii);
-
-
 
 private:
 

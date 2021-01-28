@@ -3,6 +3,28 @@
 CharacterData NewCharacter::AllCharacters[94];
 bool NewCharacter::FirstCreation = true;
 
+NewCharacter::NewCharacter(llBookData* llBook)
+	: Shape(llBook)
+{
+	SetllCharacter('T');
+	CreatellCharacter();
+	UpdatellMouseAccess();
+}
+
+NewCharacter::NewCharacter(llBookData* llBook, llShapeData* llShape)
+	: Shape(llBook, llShape)
+{
+	SetllCharacter(llShape->Ascii);
+	CreatellCharacter();
+	UpdatellMouseAccess();
+}
+
+NewCharacter::NewCharacter(llShapeData* llShape)
+	: Shape(llShape)
+{
+	CreatellCharacter();
+}
+
 //This one is used in Text.cpp
 //this should be initialized with set size/Position
 NewCharacter::NewCharacter(Page& Page) // WORKING
@@ -248,6 +270,27 @@ void NewCharacter::SetShape(ShapeData& ShapeData)
 	}
 }
 
+//ShapeData needs to have ID initialized.
+void NewCharacter::SetllShape(llShapeData* llShapeData)
+{
+	if (llShapeData != nullptr)
+	{
+		*CurrentllShape = *llShapeData;
+		llUpdate();
+	}
+	else
+	{
+		cout << "ERROR::SETSHAPE():: ShapeData was nullptr" << endl;
+	}
+}
+
+void NewCharacter::SetllCharacter(int Ascii)
+{
+	this->CurrentCharacter = NewCharacter::AllCharacters[Ascii - 32];
+	CurrentllShape->Ascii = Ascii;
+	
+}
+
 void NewCharacter::SetCharacter(int Ascii)
 {
 	this->CurrentCharacter = NewCharacter::AllCharacters[Ascii - 32];
@@ -256,6 +299,44 @@ void NewCharacter::SetCharacter(int Ascii)
 }
 
 void NewCharacter::SetAction(int ShapeDataActionID){};
+
+
+void NewCharacter::CreatellCharacter()
+{
+	TopRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / 2 };
+	BottomRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / -2 };
+	BottomLeftXYRatio = { CurrentllShape->Size[0] / -2, CurrentllShape->Size[1] / -2 };
+	TopLeftXYRatio = { CurrentllShape->Size[0] / -2, CurrentllShape->Size[1] / 2 };
+
+	llVertexData* CurrentVertex = VertexTopLeft;
+
+	while (CurrentVertex->Next != nullptr)
+	{
+		//Set Data
+		CurrentVertex->Color = CurrentllShape->Color;
+		CurrentVertex->TexIndex = 1;
+		CurrentVertex->CentralPoint = { CurrentllShape->Position[0] + (CurrentllShape->Size[0] / 2), CurrentllShape->Position[1] - (CurrentllShape->Size[1] / 2) };
+		CurrentVertex->GUIAction = CurrentllShape->Action;
+		CurrentVertex = CurrentVertex->Next;
+	}
+
+	//Set Vertex Position
+	VertexTopRight->Position = CurrentllShape->Position + TopRightXYRatio;
+	VertexBottomRight->Position = CurrentllShape->Position + BottomRightXYRatio;
+	VertexBottomLeft->Position = CurrentllShape->Position + BottomLeftXYRatio;
+	VertexTopLeft->Position = CurrentllShape->Position + TopLeftXYRatio;
+
+	//Set Vertex TexCoords
+	//TopRight
+	VertexTopRight->TexCoords = { CurrentCharacter.CharxPos + (CurrentCharacter.CharWidth / CurrentCharacter.AtlasWidth), CurrentCharacter.CharyPos };
+	//BottomRight
+	VertexBottomRight->TexCoords = { CurrentCharacter.CharxPos + (CurrentCharacter.CharWidth / CurrentCharacter.AtlasWidth), CurrentCharacter.CharyPos + (CurrentCharacter.CharHeight / CurrentCharacter.AtlasWidth) };
+	//BottomLeft
+	VertexBottomLeft->TexCoords = { CurrentCharacter.CharxPos, CurrentCharacter.CharyPos + (CurrentCharacter.CharHeight / CurrentCharacter.AtlasWidth) };
+	//TopLeft
+	VertexTopLeft->TexCoords = { CurrentCharacter.CharxPos, CurrentCharacter.CharyPos };
+
+}
 
 //Makeup of a Square
 void NewCharacter::SetShapeRatios()
@@ -299,6 +380,13 @@ void NewCharacter::BuildShapeVertices()
 //	int ySizeInPixels = CurrentCharacter.ySizePercentage * FontSize;
 //	this->LoadedShape.Size = ConvertPixelSize({ xSizeInPixels, ySizeInPixels });
 //}
+
+void NewCharacter::llUpdate()
+{
+	CurrentCharacter = GetCharacter(CurrentllShape->Ascii);
+	CreatellCharacter();
+	UpdatellMouseAccess();
+}
 
 void NewCharacter::Update()
 {

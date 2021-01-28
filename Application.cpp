@@ -175,20 +175,48 @@ int main(int argc, char** argv)
 	////Gamee would keep track of the counts 
 	////As well as the current element it's on regardless on insertion and deletion
 	//Slider llSlider(&Gamee);
-
-	llShapeData Gamee_Shape;
-
-	Gamee_Shape.Position = {0.765, 0.765};
-		
-	Quad llQuad0(&Gamee, &Gamee_Shape);
+	TextData yaat_t;
+	yaat_t.Phrase = "Walmart";
+	llShapeGroupData yaat;
+	yaat.Position = { 0.0, 0.0 };
+	Quad llQuad0(&Gamee);
 	Quad llQuad1(&Gamee);
-	Quad llQuad2(&Gamee);
 	Quad llQuad3(&Gamee);
+	Quad llQuad2(&Gamee);
+	Text llText0(&Gamee, &yaat, yaat_t);
+	Text llText1(&Gamee, &yaat, yaat_t);
 
-	llQuad0.PrintllVertices();
-	llQuad1.PrintllVertices();
-	llQuad2.PrintllVertices();
-	llQuad3.PrintllVertices();
+	SliderData llSD;
+	llSD.Description = "Desp";
+	llSD.Ratio = "34.3";
+	llPageItemData PID;
+	PID.Position = {0.3, 0.3};
+
+	Slider llSlider(&Gamee, &PID, llSD);
+
+	Quad llQuadEX(&Gamee);
+	Text llText8(&Gamee);
+
+	llSlider.PrintllShapes();
+
+	llPageItemData* CurrentWorkingPageItem = Gamee.Page->PageGroup->PageItem;
+
+	//Print As Second
+	//MasterElement::PrintShapeGroupShapes(CurrentWorkingShapeGroup);
+
+	//Find Head
+	while (CurrentWorkingPageItem->Previous != nullptr)
+	{
+		CurrentWorkingPageItem = CurrentWorkingPageItem->Previous;
+	}
+	int ShapeGroupCount = 0;
+	//Print to tail
+	while (CurrentWorkingPageItem != nullptr)
+	{
+		//MasterElement::PrintPageItemShapes(CurrentWorkingPageItem);
+		CurrentWorkingPageItem = CurrentWorkingPageItem->Next;
+		cout << ShapeGroupCount++ << endl;
+	}
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))

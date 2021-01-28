@@ -69,13 +69,20 @@ class ShapeGroup : public MasterElement
  public:
 
 	ShapeGroupData CurrentShapeGroup;
+
+	llShapeGroupData* CurrentllShapeGroup;
 	const bool SetInStone; //class cannot switch to another Shape 
+
+	ShapeGroup(llBookData* llBook);
+	ShapeGroup(llBookData* llBook, llShapeGroupData* ShapeGroup);
+	ShapeGroup(llShapeGroupData* ShapeGroup);
 
 	ShapeGroup();
 	ShapeGroup(Page& Page);
 	ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData);
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
+
 	void Init(Page& Page, int GroupID) {};
 
 	void Add_Default() override {};
@@ -179,7 +186,9 @@ protected:
 	//void GroupToShape(GroupData& GroupData);
 	void SetGroup(ShapeData& ShapeData);
 	void SetMouseAccess();
+	void SetllMouseAccess();
 	void UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size);
+	void UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size);
 
 private:
 

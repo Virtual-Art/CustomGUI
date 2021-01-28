@@ -6,6 +6,112 @@ PageGroupItem::PageGroupItem()
 	CurrentPage = nullptr;
 }
 
+PageGroupItem::PageGroupItem(llBookData* llBook)
+{
+	if (llBook->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		llBook->Page = CreatedPage;
+		llBook->Page->PageGroup = CreatedPageGroup;
+	}
+
+	CurrentllPageItem = new llPageItemData;
+	CurrentllPageItem->ShapeGroup = new llShapeGroupData;
+
+	llPageItemData* TestingPageItem = llBook->Page->PageGroup->PageItem;
+
+	//Completely new object
+	if (TestingPageItem == nullptr)
+	{
+		Log::LogString("No PageItem Found In PageGroup, New PageItem; Set!");
+		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+	}
+	else //Shapes already created
+	{
+		Log::LogString("Existing PageItem Found");
+		llPageItemData* FoundTail = TestingPageItem;
+
+		//Find tail then add
+		while (FoundTail->Next != nullptr)
+		{
+			Log::LogString("Finding Tail..");
+			FoundTail = FoundTail->Next;
+		}
+		Log::LogString("Set");
+		FoundTail->Next = CurrentllPageItem;
+		CurrentllPageItem->Previous = FoundTail;
+		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+	}
+
+
+	LoadedBook = llBook;
+}
+
+PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
+{
+	Log::LogString("Shape Creation Request with data");
+	//If it exists
+	if (llPageItem != nullptr)
+	{
+		if (llBookData->Page == nullptr)
+		{
+			Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+
+			llBookData->Page = CreatedPage;
+			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+		}
+
+		CurrentllPageItem = new llPageItemData;
+		*CurrentllPageItem = *llPageItem;
+
+		llPageItemData* TestingPageItem = llBookData->Page->PageGroup->PageItem;
+
+		//Completely new shapegroup object
+		if (TestingPageItem == nullptr)
+		{
+			Log::LogString("This Page Item is Brand new");
+			llBookData->Page->PageGroup->PageItem = TestingPageItem;
+		}
+		else //Shape groups already created
+		{
+			Log::LogString("this Page Item already contains a ShapeGroup");
+			llPageItemData* FoundTail = TestingPageItem;
+
+			//Find tail then add
+			while (FoundTail->Next != nullptr)
+			{
+				Log::LogString("Finding Tail..");
+				FoundTail = FoundTail->Next;
+			}
+
+			Log::LogString("Set");
+			FoundTail->Next = CurrentllPageItem;
+			CurrentllPageItem->Previous = FoundTail;
+			//We are setting the book to point to this new shape group because that's where we want to load shapes
+			//however the previous group is not lost because we set the next and previous
+			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
+		}
+
+		LoadedBook = llBookData;
+	}
+	else
+	{
+		Log::LogString("Sorry llShape was nullptr");
+	}
+}
+
+PageGroupItem::PageGroupItem(llPageItemData* llPageItem)
+{
+
+}
+
 //New Page Item with data provided by derived class
 PageGroupItem::PageGroupItem(Page& Page)
 {
@@ -91,7 +197,7 @@ PageGroupItem::PageGroupItem(Page& Page, int ID)
 			CurrentPage->CurrentPageItem = CurrentPageItem.ID;
 			CurrentPage->CurrentShapeGroup = 0;
 			CurrentPage->CurrentShape = 0;
-			CurrentPage->CurrentPageItemShapeCount = 0;
+			CurrentPage->CurrentPageItemShapeCount = -1;
 		}
 		else
 		{
@@ -181,6 +287,7 @@ ShapeData& PageGroupItem::Switch(int RequstedShapeID)
 	{
 		if (IsInBounds(RequstedShapeID) == true)
 		{
+			 //CurrentPage->CurrentPageGroupShapeCount = -1;
 		     LoadedShape = CurrentPage->GetShapeDataR(RequstedShapeID);
 			 CurrentPageItem = LoadedShape.ShapeGroup.PageItem;
 		     return LoadedShape;
@@ -247,6 +354,45 @@ void PageGroupItem::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int Po
 	if (Bottom < CurrentPageItem.Bottom || CurrentPageItem.Bottom == -3.0)
 	{
 		CurrentPageItem.Bottom = Bottom;
+	}
+
+}
+
+void PageGroupItem::UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion)
+{
+	switch (PositionConversion)
+	{
+	case 1:
+		Position = ConvertEndToMiddle(Position, Size);
+		break;
+	case 2:
+		Position = ConvertBeginningToMiddle(Position, Size);
+		break;
+	}
+
+	float Left = Position[0] - (Size[0] / 2);
+	float Right = Position[0] + (Size[0] / 2);
+	float Top = Position[1] + (Size[1] / 2);
+	float Bottom = Position[1] - (Size[1] / 2);
+
+	if (Left < CurrentllPageItem->Left || CurrentllPageItem->Left == -3.0)
+	{
+		CurrentllPageItem->Left = Left;
+	}
+
+	if (Right > CurrentllPageItem->Right || CurrentllPageItem->Right == -3.0)
+	{
+		CurrentllPageItem->Right = Right;
+	}
+
+	if (Top > CurrentllPageItem->Top || CurrentllPageItem->Top == -3.0)
+	{
+		CurrentllPageItem->Top = Top;
+	}
+
+	if (Bottom < CurrentllPageItem->Bottom || CurrentllPageItem->Bottom == -3.0)
+	{
+		CurrentllPageItem->Bottom = Bottom;
 	}
 
 }

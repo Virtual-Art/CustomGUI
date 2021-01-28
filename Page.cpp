@@ -95,7 +95,6 @@ void Page::Init(ShaderProgram ShaderProgram)
     glEnableVertexAttribArray(5);
 	glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const void*)offsetof(ShapeVertex, GUIAction));
 
-	
 	GLsizeiptr LastSize = 0;
 	uint32_t offset = 0;
 
@@ -1226,9 +1225,11 @@ void Page::UnHideShapeData(int Spot, float AlphaChannel, bool MouseAccess)
 //Returns the ShapeData from the container
 ShapeData& Page::GetShapeDataR(int Spot)
 {
+
 	ShapeData& ShapeData = ShapeContainer.RetrieveDataR(Spot);
 	ShapeData.ID = Spot;
 	return ShapeData;
+
 }
 
 //Retreived Data returns ShapeData with accurate ID

@@ -6,6 +6,126 @@ ShapeGroup::ShapeGroup()
 	CurrentPage = nullptr;
 }
 
+
+ShapeGroup::ShapeGroup(llBookData* llBook)
+	:SetInStone(true)
+{
+	if (llBook->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		llBook->Page = CreatedPage;
+		llBook->Page->PageGroup = CreatedPageGroup;
+		llBook->Page->PageGroup->PageItem = CreatedPageItem;
+	}
+
+	CurrentllShapeGroup = new llShapeGroupData;
+
+	llShapeGroupData* TestingShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
+
+	//Completely new object
+	if (TestingShapeGroup == nullptr)
+	{
+		Log::LogString("No ShapeGroup Found In PageItem, New ShapeGroup; Set!");
+		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+	}
+	else //Shapes already created
+	{
+		Log::LogString("Existing ShapeGroup Found");
+		llShapeGroupData* FoundTail = TestingShapeGroup;
+
+		//Find tail then add
+		while (FoundTail->Next != nullptr)
+		{
+			Log::LogString("Finding Tail..");
+			FoundTail = FoundTail->Next;
+		}
+		Log::LogString("Set");
+		FoundTail->Next = CurrentllShapeGroup;
+		CurrentllShapeGroup->Previous = FoundTail;
+		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+	}
+
+	LoadedBook = llBook;
+}
+
+ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
+	:SetInStone(true)
+{
+	Log::LogString("Shape Creation Request with data");
+	//If it exists
+	if (llShapeGroup != nullptr)
+	{
+		if (llBookData->Page == nullptr)
+		{
+			Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+
+			llBookData->Page = CreatedPage;
+			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+		}
+
+		CurrentllShapeGroup = new llShapeGroupData;
+		*CurrentllShapeGroup = *llShapeGroup;
+
+		llShapeGroupData* TestingShapeGroup = llBookData->Page->PageGroup->PageItem->ShapeGroup;
+
+		//Completely new shapegroup object
+		if (TestingShapeGroup == nullptr)
+		{
+			Log::LogString("This Page Item is Brand new");
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		}
+		else //Shape groups already created
+		{
+		    Log::LogString("this Page Item already contains a ShapeGroup");
+			llShapeGroupData* FoundTail = TestingShapeGroup;
+
+			//Find tail then add
+			while (FoundTail->Next != nullptr)
+			{
+				Log::LogString("Finding Tail..");
+				FoundTail = FoundTail->Next;
+			}
+
+			Log::LogString("Set");
+			FoundTail->Next = CurrentllShapeGroup;
+			CurrentllShapeGroup->Previous = FoundTail;
+			//We are setting the book to point to this new shape group because that's where we want to load shapes
+			//however the previous group is not lost because we set the next and previous
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		}
+
+		LoadedBook = llBookData;
+	}
+	else
+	{
+		Log::LogString("Sorry llShape was nullptr");
+	}
+}
+
+ShapeGroup::ShapeGroup(llShapeGroupData* ShapeGroup)
+	:SetInStone(true)
+{
+	//If it exists
+	if (ShapeGroup != nullptr && ShapeGroup->Shape != nullptr)
+	{
+		Log::LogString("Existing ShapeGroup change requested");
+
+		CurrentllShapeGroup = ShapeGroup;
+	}
+	else
+	{
+		Log::LogString("Sorry llShapeGroup was nullptr or doesnt contain shapes");
+	}
+}
+
 ShapeGroup::ShapeGroup(Page& Page)
 	:SetInStone(true)
 {
@@ -504,6 +624,35 @@ void ShapeGroup::SetMouseAccess()
 	}
 }
 
+void ShapeGroup::SetllMouseAccess()
+{
+	if (Initialized == false) { Log::LogString("SetMouseAccess Failed:: ShapeGroup Not Initialized"); return; };
+
+	//if (CurrentllShapeGroup->MouseAccess == true)
+	//{
+	//
+	//	//this->CurrentShape.ShapeGroup.Top = (LoadedShape.ShapeGroup.Position[1] + (LoadedShape.ShapeGroup.Size[1] / 2));
+	//	//this->CurrentShape.ShapeGroup.Bottom = (LoadedShape.ShapeGroup.Position[1] - (LoadedShape.ShapeGroup.Size[1] / 2));
+	//	//this->CurrentShape.ShapeGroup.Left = (LoadedShape.ShapeGroup.Position[0] - (LoadedShape.ShapeGroup.Size[0] / 2));
+	//	//this->CurrentShape.ShapeGroup.Right = (LoadedShape.ShapeGroup.Position[0] + (LoadedShape.ShapeGroup.Size[0] / 2));
+	//
+	//	for (int i = CurrentShapeGroup.ShapeStart; i < CurrentShapeGroup.ShapeStart + CurrentShapeGroup.ShapeCount; i++)
+	//	{
+	//		if (IsInBounds(i) != true) { Log::LogString("SetMouseAccess Failed:: ID out of bounds"); return; };
+	//
+	//		//Set entire shape group 
+	//		ShapeData& RetreivedShape = CurrentPage->GetShapeDataR(i);
+	//		RetreivedShape.ShapeGroup.Top = CurrentShapeGroup.Top;
+	//		RetreivedShape.ShapeGroup.Bottom = CurrentShapeGroup.Bottom;
+	//		RetreivedShape.ShapeGroup.Left = CurrentShapeGroup.Left;
+	//		RetreivedShape.ShapeGroup.Right = CurrentShapeGroup.Right;
+	//
+	//		CurrentShapeGroup.Size[0] = CurrentShapeGroup.Right - CurrentShapeGroup.Left;
+	//		CurrentShapeGroup.Size[1] = CurrentShapeGroup.Top - CurrentShapeGroup.Bottom;
+	//	}
+	//}
+}
+
 void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)
 {
 	if (CurrentShapeGroup.MouseAccess == false) return;
@@ -531,6 +680,37 @@ void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)
 	if (Bottom < CurrentShapeGroup.Bottom || CurrentShapeGroup.Bottom == -3)
 	{
 		CurrentShapeGroup.Bottom = Bottom;
+	}
+
+}
+
+void ShapeGroup::UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size)
+{
+	if (CurrentllShapeGroup->MouseAccess == false) return;
+
+	float Left = Position[0] - (Size[0] / 2);
+	float Right = Position[0] + (Size[0] / 2);
+	float Top = Position[1] + (Size[1] / 2);
+	float Bottom = Position[1] - (Size[1] / 2);
+
+	if (Left < CurrentllShapeGroup->Left || CurrentllShapeGroup->Left == -3)
+	{
+		CurrentllShapeGroup->Left = Left;
+	}
+
+	if (Right > CurrentllShapeGroup->Right || CurrentllShapeGroup->Right == -3)
+	{
+		CurrentllShapeGroup->Right = Right;
+	}
+
+	if (Top > CurrentllShapeGroup->Top || CurrentllShapeGroup->Top == -3)
+	{
+		CurrentllShapeGroup->Top = Top;
+	}
+
+	if (Bottom < CurrentllShapeGroup->Bottom || CurrentllShapeGroup->Bottom == -3)
+	{
+		CurrentllShapeGroup->Bottom = Bottom;
 	}
 
 }

@@ -6,6 +6,11 @@ void Log::LogInt(string Description, int Int)
 	cout << Description << ": " << Int << endl;
 }
 
+void Log::LogChar(string Description, char Char)
+{
+	cout << Description << ": " << Char << endl;
+}
+
 void Log::LogFloat(string Description, float Float)
 {
 	cout << Description << ": " << Float << endl;
