@@ -20,6 +20,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 	CurrentllPageItem = new llPageItemData;
 	CurrentllPageItem->ShapeGroup = new llShapeGroupData;
+	//CurrentllShapeGroup = CurrentllPageItem->ShapeGroup;
 
 	llPageItemData* TestingPageItem = llBook->Page->PageGroup->PageItem;
 
@@ -53,49 +54,58 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 {
 	Log::LogString("Shape Creation Request with data");
-	//If it exists
-	if (llPageItem != nullptr)
+
+	//Make sure we are provided with data
+	if (llPageItem != nullptr && llBookData != nullptr)
 	{
+		//Look at the book, is there a Page in the book? no?
 		if (llBookData->Page == nullptr)
 		{
+			//Create a new Page & PageGroup for the PageItem we are about to create
 			Log::LogString("Book Is Brand New");
 			llPageData* CreatedPage = new llPageData;
 			llPageGroupData* CreatedPageGroup = new llPageGroupData;
-			llPageItemData* CreatedPageItem = new llPageItemData;
 
+			//Link the Created groups to the book we are looking at
 			llBookData->Page = CreatedPage;
 			llBookData->Page->PageGroup = CreatedPageGroup;
-			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
 		}
 
+		//Create a new PageItem & Copy the provided data
 		CurrentllPageItem = new llPageItemData;
 		*CurrentllPageItem = *llPageItem;
+		CurrentllPageItem->ShapeGroup = new llShapeGroupData;
 
+		//Take a look at the current PageItem in the current PageGroup
 		llPageItemData* TestingPageItem = llBookData->Page->PageGroup->PageItem;
 
-		//Completely new shapegroup object
+		//The book doesn't have a PageItem in the current PageGroup
 		if (TestingPageItem == nullptr)
 		{
+			//Set the book to include and point to the newly created PageItem
 			Log::LogString("This Page Item is Brand new");
-			llBookData->Page->PageGroup->PageItem = TestingPageItem;
+			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
 		}
-		else //Shape groups already created
+		else //A Page Item already exists in the current Page Group
 		{
-			Log::LogString("this Page Item already contains a ShapeGroup");
+			Log::LogString("this Page Item already contains a Page Item");
 			llPageItemData* FoundTail = TestingPageItem;
 
-			//Find tail then add
+			//Find the last PageItem in the current PageGroup
 			while (FoundTail->Next != nullptr)
 			{
 				Log::LogString("Finding Tail..");
 				FoundTail = FoundTail->Next;
 			}
 
-			Log::LogString("Set");
+			//When we find the last PageItem in the PageGroup, attach the newly create PageItem next to it and
+			// link both PageItems together
 			FoundTail->Next = CurrentllPageItem;
 			CurrentllPageItem->Previous = FoundTail;
-			//We are setting the book to point to this new shape group because that's where we want to load shapes
-			//however the previous group is not lost because we set the next and previous
+
+
+			
+			//Then set the book to point to the new PageItem we created
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
 		}
 
@@ -657,4 +667,18 @@ void SwithToPageItem(int ShapeID)
 	//{
 	//	this->LoadedShapeData = CurrentPage->GetShapeDataR(ShapeID);
 	//}
+}
+void PageGroupItem::llSwitch(int Offset)
+{
+	for (int i = 0; i < Offset; i++)
+	{
+		if (Offset > 0)
+		{
+			CurrentllPageItem = CurrentllPageItem->Next;
+		}
+		else if (Offset < 0)
+		{
+			CurrentllPageItem = CurrentllPageItem->Previous;
+		}
+	}
 }

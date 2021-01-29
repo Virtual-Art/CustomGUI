@@ -424,11 +424,13 @@ void PageCreator::Insert()
 void PageCreator::Next()
 {
 	Element_Selected->Switch(ShapeSelected->CurrentShapeData.ID + 1);
+	//Element_Selected->llSwitch(++);
 }
 
 void PageCreator::Previous()
 {
 	Element_Selected->Switch(ShapeSelected->CurrentShapeData.ID - 1);
+	//Element_Selected->llSwitch(--);
 }
 
 

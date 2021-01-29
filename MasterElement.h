@@ -218,8 +218,18 @@ public:
 	//	}
 	//}
 
+	//Print Group Shapes
 	static void PrintPageItemShapes(llPageItemData* llShapeGroup);
 	static void PrintShapeGroupShapes(llShapeGroupData* llShapeGroup);
+	
+	//Print Sub Groups
+	static void PrintPageItemShapeGroups(llPageItemData* llShapeGroup);
+
+	//Print ShapeGorup
+	static void PrintllShapeGroup(llShapeGroupData* llShapeGroup);
+	static void PrintllShapeGroup(llShapeGroupData* llShapeGroup, int Offset);
+
+	//Print Shape
 	static void PrintllShape(llShapeData* llShape);
 	static void PrintllShape(llShapeData* llShape, int Offset);
 
@@ -230,6 +240,8 @@ public:
 	virtual void Add_Duplicate() {}; 
 	virtual void Add_Insert() {};
 	virtual void Delete() {};
+
+	virtual void llSwitch(int Offset) {};
 	virtual ShapeData& Switch(int RequstedShapeID) { return LoadedShape; };
 	virtual ShapeData& Switch(Page& Page, int RequstedShapeID) { return LoadedShape; };
 	//virtual void SetShape(ShapeData& ShapeData) {};

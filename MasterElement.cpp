@@ -23,6 +23,69 @@ void MasterElement::PrintPageItemShapes(llPageItemData* llPageItem)
 	}
 }
 
+void MasterElement::PrintPageItemShapeGroups(llPageItemData* llPageItem)
+{
+	cout << "------------Trying To Print Group Shapes..------------" << endl;
+	int ShapeCount = 0;
+	llShapeGroupData* CurrentShapeGroup = llPageItem->ShapeGroup;
+
+	if (CurrentShapeGroup == nullptr) { Log::LogString("ShapeGroup is empty"); return; };
+
+	//Find Head Shape
+	while (CurrentShapeGroup->Previous != nullptr)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Previous;
+	}
+
+	//Print All Shapes
+	while (CurrentShapeGroup != nullptr)
+	{
+		PrintllShapeGroup(CurrentShapeGroup, ShapeCount);
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+		ShapeCount++;
+	}
+}
+
+void MasterElement::PrintllShapeGroup(llShapeGroupData* llShapeGroup)
+{
+	cout <<  "------------ShapeGroup (" << llShapeGroup << ")------------------" << endl;
+	Log::LogVec2("Position: ", llShapeGroup->Position);
+	Log::LogVec2("Size: ", llShapeGroup->Size);
+	Log::LogVec4("Color: ", llShapeGroup->Color);
+
+	Log::LogString("------");
+	Log::LogFloat("ShapeTop: ", llShapeGroup->Top);
+	Log::LogFloat("ShapeBottom: ", llShapeGroup->Bottom);
+	Log::LogFloat("ShapeLeft: ", llShapeGroup->Left);
+	Log::LogFloat("ShapeRight: ", llShapeGroup->Right);
+	Log::LogString("----------------------------------------------------------------");
+	//cout << "ActiveTexture: {" << CurrentShapeData.ActiveTexture << "}" << endl;
+	//cout << "Action: {" << CurrentShapeData.Action << "}" << endl;
+	//cout << "MouseAccess: {" << CurrentShapeData.MouseAccess << "}" << endl;
+	//cout << "Centered: {" << CurrentShapeData.Centered << "}" << endl;
+	//cout << "Highlighted: {" << CurrentShapeData.Highlighted << "}" << endl;
+}
+
+void MasterElement::PrintllShapeGroup(llShapeGroupData* llShapeGroup, int Offset)
+{
+	cout << "------------ShapeGroup (" << llShapeGroup << ")[" << Offset << "]------------------" << endl;
+	Log::LogVec2("Position: ", llShapeGroup->Position);
+	Log::LogVec2("Size: ", llShapeGroup->Size);
+	Log::LogVec4("Color: ", llShapeGroup->Color);
+
+	Log::LogString("------");
+	Log::LogFloat("ShapeTop: ", llShapeGroup->Top);
+	Log::LogFloat("ShapeBottom: ", llShapeGroup->Bottom);
+	Log::LogFloat("ShapeLeft: ", llShapeGroup->Left);
+	Log::LogFloat("ShapeRight: ", llShapeGroup->Right);
+	Log::LogString("----------------------------------------------------------------");
+	//cout << "ActiveTexture: {" << CurrentShapeData.ActiveTexture << "}" << endl;
+	//cout << "Action: {" << CurrentShapeData.Action << "}" << endl;
+	//cout << "MouseAccess: {" << CurrentShapeData.MouseAccess << "}" << endl;
+	//cout << "Centered: {" << CurrentShapeData.Centered << "}" << endl;
+	//cout << "Highlighted: {" << CurrentShapeData.Highlighted << "}" << endl;
+}
+
 void MasterElement::PrintShapeGroupShapes(llShapeGroupData* llShapeGroup)
 {
 	cout << "------------Trying To Print Group Shapes..------------" << endl;

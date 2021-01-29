@@ -730,3 +730,32 @@ int ShapeGroup::GetCount()
 {
 	return CurrentShapeGroup.ShapeCount;
 }
+
+void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
+{
+	//If it exists
+	if (llShapeGroup != nullptr)
+	{
+		Log::LogString("Existing Shape change requested");
+		CurrentllShapeGroup = llShapeGroup;
+	}
+	else
+	{
+		Log::LogString("Sorry llShapeGroup was nullptr or does not contain existing vertices");
+	}
+}
+
+void ShapeGroup::llSwitch(int Offset)
+{
+	for (int i = 0; i <Offset; i++)
+	{
+		if (Offset > 0)
+		{
+			CurrentllShapeGroup = CurrentllShapeGroup->Next;
+		}
+		else if(Offset < 0)
+		{
+			CurrentllShapeGroup = CurrentllShapeGroup->Previous;
+		}
+	}
+}

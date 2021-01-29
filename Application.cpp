@@ -156,6 +156,8 @@ int main(int argc, char** argv)
 
 	llBookData Gamee;
 
+	
+
 	//MasterElement::AddPageToBook(&Gamee);
 	//MasterElement::AddPageToBook(&Gamee);
 	//MasterElement::AddPageToBook(&Gamee);
@@ -186,6 +188,10 @@ int main(int argc, char** argv)
 	Text llText0(&Gamee, &yaat, yaat_t);
 	Text llText1(&Gamee, &yaat, yaat_t);
 
+	//llText1.SetllPosition({ 0.0, -0.888 });
+
+	MasterElement::PrintShapeGroupShapes(*llText1);
+
 	SliderData llSD;
 	llSD.Description = "Desp";
 	llSD.Ratio = "34.3";
@@ -194,15 +200,14 @@ int main(int argc, char** argv)
 
 	Slider llSlider(&Gamee, &PID, llSD);
 
-	Quad llQuadEX(&Gamee);
-	Text llText8(&Gamee);
-
-	llSlider.PrintllShapes();
+	NewCharacter SwitchChar(llText1.GetShapeGroup()->Shape);
+	
 
 	llPageItemData* CurrentWorkingPageItem = Gamee.Page->PageGroup->PageItem;
 
 	//Print As Second
-	//MasterElement::PrintShapeGroupShapes(CurrentWorkingShapeGroup);
+	//MasterElement::PrintPageItemShapeGroups(llSlider.GetPageItem());
+	//MasterElement::PrintPageItemShapes(llSlider.GetPageItem());
 
 	//Find Head
 	while (CurrentWorkingPageItem->Previous != nullptr)

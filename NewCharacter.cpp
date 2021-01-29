@@ -502,3 +502,4 @@ int NewCharacter::OffsetFromMiddle(CharacterData& CharacterData)
 {
 	return CharacterData.yOffset;
 }
+

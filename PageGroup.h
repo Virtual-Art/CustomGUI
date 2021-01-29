@@ -46,6 +46,8 @@ public:
 	//PageGroupData LoadedShape.PageGroup;
 	//PageGroupItemData CurrentPageItem;
 	PageGroupData CurrentPageGroup;
+
+	llPageGroupData* CurrentllPageGroup;
 	TextData CurrentText;
 	SliderData CurrentSliderData; //?
 
@@ -61,6 +63,8 @@ public:
 	void Delete() {};
 
 	void ReCalibrateID();
+
+	void llSwitch(int Offset) override;
 
 	//PageGroupItemData CurrentPageItem;
 	//GroupData CurrentShapeGroup;

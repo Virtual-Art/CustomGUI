@@ -83,12 +83,33 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
 
+	llShapeGroupData* operator*()
+	{
+		return CurrentllShapeGroup;
+	}
+
+	llShapeGroupData* GetShapeGroup()
+	{
+		return CurrentllShapeGroup;
+	}
+
 	void Init(Page& Page, int GroupID) {};
 
 	void Add_Default() override {};
 	void Add_Duplicate() override {};
 	void Add_Insert() override {};
 	void Delete() override {};
+
+	void llSwitch(llShapeGroupData* llShapeGroup);
+	void llSwitch(int Offset);
+
+	void SetllPosition(glm::vec2 Position)
+	{
+		CurrentllShapeGroup->Position = Position;
+		llUpdate();
+	}
+
+
 	ShapeData& Switch(Page& Page, int RequstedShapeID) override { return LoadedShape; };
 	ShapeData& Switch(int ShapeID) override
 	{
@@ -181,6 +202,7 @@ class ShapeGroup : public MasterElement
 
 protected:
 	virtual void Update() = 0;
+	virtual void llUpdate() = 0;
 	void ReCalibrateID();
 	//void ShapeToGroup(ShapeData& ShapeData);
 	//void GroupToShape(GroupData& GroupData);

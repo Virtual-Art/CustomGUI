@@ -69,7 +69,7 @@ public:
 	ShapeGroupData CurrentShapeGroup;
 
 	llPageItemData* CurrentllPageItem;
-	llShapeGroupData CurrentllShapeGroup;
+	llShapeGroupData* CurrentllShapeGroup; // for reference quad group
 
 	TextData CurrentText;
 	ShapeData CurrentShape;
@@ -84,6 +84,11 @@ public:
 	PageGroupItem(Page& Page, ShapeData& LoadedShape);
 	PageGroupItem(Page& Page, int GroupID);
 
+	llPageItemData* GetPageItem()
+	{
+		return CurrentllPageItem;
+	}
+
 	void Add_Default() override; //Editor/None Set in Stone
 	void Add_Duplicate() override; //Editor/None Set in Stone
 	void Add_Insert() override; //Editor/None Set in Stone
@@ -95,6 +100,8 @@ public:
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 	void ShapeToGroup(ShapeData& ShapeData);
 	//void SwitchToPageItem(int ShapeID);
+
+	void llSwitch(int Offset) override;
 
 	void PrintllShapes()
 	{
