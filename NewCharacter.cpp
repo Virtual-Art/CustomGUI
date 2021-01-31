@@ -6,6 +6,7 @@ bool NewCharacter::FirstCreation = true;
 NewCharacter::NewCharacter(llBookData* llBook)
 	: Shape(llBook)
 {
+	CurrentllShape->Type = TYPE_CHARACTER;
 	SetllCharacter('T');
 	CreatellCharacter();
 	UpdatellMouseAccess();
@@ -14,6 +15,7 @@ NewCharacter::NewCharacter(llBookData* llBook)
 NewCharacter::NewCharacter(llBookData* llBook, llShapeData* llShape)
 	: Shape(llBook, llShape)
 {
+	CurrentllShape->Type = TYPE_CHARACTER;
 	SetllCharacter(llShape->Ascii);
 	CreatellCharacter();
 	UpdatellMouseAccess();

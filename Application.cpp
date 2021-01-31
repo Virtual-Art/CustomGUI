@@ -199,15 +199,15 @@ int main(int argc, char** argv)
 	PID.Position = {0.3, 0.3};
 
 	Slider llSlider(&Gamee, &PID, llSD);
+	llSlider.SetllPosition({ - 0.7, 0.7, });
 
-	NewCharacter SwitchChar(llText1.GetShapeGroup()->Shape);
-	
+	//NewCharacter SwitchChar(llText1.GetShapeGroup()->Shape);
 
 	llPageItemData* CurrentWorkingPageItem = Gamee.Page->PageGroup->PageItem;
 
 	//Print As Second
 	//MasterElement::PrintPageItemShapeGroups(llSlider.GetPageItem());
-	//MasterElement::PrintPageItemShapes(llSlider.GetPageItem());
+	MasterElement::PrintPageItemShapes(llSlider.GetPageItem());
 
 	//Find Head
 	while (CurrentWorkingPageItem->Previous != nullptr)

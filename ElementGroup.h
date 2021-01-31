@@ -11,8 +11,8 @@
 #include "Quad.h"
 #include "CustomShape.h"
 //---------------------|
-
-
+#define TYPE_CUSTOM 0
+#define TYPE_TEXT 1
 
 using namespace std;
 
@@ -202,6 +202,7 @@ class ShapeGroup : public MasterElement
 
 protected:
 	virtual void Update() = 0;
+	void NewllUpdate();
 	virtual void llUpdate() = 0;
 	void ReCalibrateID();
 	//void ShapeToGroup(ShapeData& ShapeData);

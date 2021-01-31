@@ -49,6 +49,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 	}
 
+	CurrentllShapeGroup->Type = TYPE_CUSTOM;
 	LoadedBook = llBook;
 }
 
@@ -103,6 +104,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 		}
 
 		LoadedBook = llBookData;
+		CurrentllShapeGroup->Type = TYPE_CUSTOM;
 	}
 	else
 	{
@@ -756,6 +758,40 @@ void ShapeGroup::llSwitch(int Offset)
 		else if(Offset < 0)
 		{
 			CurrentllShapeGroup = CurrentllShapeGroup->Previous;
+		}
+	}
+}
+
+void ShapeGroup::NewllUpdate()
+{
+	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+	llShapeData* NullShape = nullptr;
+	llShapeData UpdatedShape = *CurrentShape;
+	Quad QuadRef(NullShape);
+	NewCharacter CharRef(NullShape);
+
+	while (CurrentShape->Next != nullptr)
+	{
+		UpdatedShape = *CurrentShape;
+		UpdatedShape.Position = CurrentllShapeGroup->Position - CurrentShape->PositionOffset;
+		UpdatedShape.Size = CurrentllShapeGroup->Size - CurrentShape->SizeOffset;
+		UpdatedShape.Color = CurrentllShapeGroup->Color -  CurrentShape->ColorOffset;
+
+		switch (CurrentShape->Type)
+		{
+		case TYPE_QUAD:
+			QuadRef.llSwitch(CurrentShape);
+			QuadRef.SetllShape(&UpdatedShape);
+			break;
+
+		case TYPE_CHARACTER:
+			CharRef.llSwitch(CurrentShape);
+			CharRef.SetllShape(&UpdatedShape);
+			break;
+		case TYPE_CUSTOM:
+			//CustomRef.llSwitch(CurrentShape);
+			//CustomRef.SetllShape(&UpdatedShape);
+			break;
 		}
 	}
 }

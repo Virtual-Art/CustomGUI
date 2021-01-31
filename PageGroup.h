@@ -6,6 +6,8 @@
 #include "PageGroupItem.h"
 #include "Slider.h"
 #include "MasterElement.h"
+
+#define TYPE_CUSTOM
 //#include "ProgressBar.h"
 
 //struct CPageGroupData

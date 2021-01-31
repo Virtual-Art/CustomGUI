@@ -13,6 +13,10 @@
 #include "Grid.h" //Child
 #include "Log.h" //Child
 
+#define TYPE_CUSTOM 0
+#define TYPE_SLIDER 1
+
+
 using namespace std;
 
 //struct PageGroupItemData

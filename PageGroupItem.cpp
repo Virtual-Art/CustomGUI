@@ -47,7 +47,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
 	}
 
-
+	CurrentllPageItem->Type = TYPE_CUSTOM;
 	LoadedBook = llBook;
 }
 
@@ -109,6 +109,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
 		}
 
+		CurrentllPageItem->Type = TYPE_CUSTOM;
 		LoadedBook = llBookData;
 	}
 	else

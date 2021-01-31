@@ -51,6 +51,9 @@ struct llShapeData
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.25, 0.5 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
+	glm::vec2 PositionOffset = { 0.0, 0.0 };
+	glm::vec2 SizeOffset = { 0.0, 0.0 };
+	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
 	glm::vec2 HighlightPosition = Position;
 	glm::vec2 HighlightSize = { this->Size[0] + 0.0135, this->Size[1] + 0.025 };
 	glm::vec4 HighlightColor;
@@ -88,6 +91,9 @@ struct llShapeGroupData
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
+	glm::vec2 PositionOffset = { 0.0, 0.0 };
+	glm::vec2 SizeOffset = { 0.0, 0.0 };
+	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
@@ -112,6 +118,9 @@ struct llPageItemData
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
+	glm::vec2 PositionOffset = { 0.0, 0.0 };
+	glm::vec2 SizeOffset = { 0.0, 0.0 };
+	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
 	bool Centered = false;
