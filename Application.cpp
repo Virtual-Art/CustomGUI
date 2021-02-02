@@ -48,6 +48,7 @@
 #include "PageCreator.h"
 #include "PageGroup.h"
 #include "MasterElement.h"
+#include "NewPage.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -146,7 +147,7 @@ int main(int argc, char** argv)
 	//UnusedSlider.SetPosition({ 0.6, -0.7 }); // to fix this we need to have the slider shape group count go back to it's spot in the shape group
 	UnusedSlider.SetSize({ 0.2, 0.1 });
 	UnusedSlider.SetDescription("HelloWorld");
-	UnusedSlider.PrintGroupShapes();
+//	UnusedSlider.PrintGroupShapes();
 	//UnusedSlider.ReCalibrateID();
 
 	float Time;
@@ -157,7 +158,7 @@ int main(int argc, char** argv)
 	llBookData Gamee;
 
 	
-
+	NewPage(&Gamee, &ShapeShader);
 	//MasterElement::AddPageToBook(&Gamee);
 	//MasterElement::AddPageToBook(&Gamee);
 	//MasterElement::AddPageToBook(&Gamee);
@@ -190,7 +191,7 @@ int main(int argc, char** argv)
 
 	//llText1.SetllPosition({ 0.0, -0.888 });
 
-	MasterElement::PrintShapeGroupShapes(*llText1);
+	//MasterElement::PrintShapeGroupShapes(*llText1);
 
 	SliderData llSD;
 	llSD.Description = "Desp";
@@ -199,7 +200,10 @@ int main(int argc, char** argv)
 	PID.Position = {0.3, 0.3};
 
 	Slider llSlider(&Gamee, &PID, llSD);
-	llSlider.SetllPosition({ - 0.7, 0.7, });
+
+	////////Last Spot//////////
+	//llSlider.SetllPosition({ - 0.7, 0.7, });
+	///////////////////////////
 
 	//NewCharacter SwitchChar(llText1.GetShapeGroup()->Shape);
 
@@ -207,7 +211,7 @@ int main(int argc, char** argv)
 
 	//Print As Second
 	//MasterElement::PrintPageItemShapeGroups(llSlider.GetPageItem());
-	MasterElement::PrintPageItemShapes(llSlider.GetPageItem());
+	//MasterElement::PrintPageItemShapes(llSlider.GetPageItem());
 
 	//Find Head
 	while (CurrentWorkingPageItem->Previous != nullptr)
@@ -222,6 +226,8 @@ int main(int argc, char** argv)
 		CurrentWorkingPageItem = CurrentWorkingPageItem->Next;
 		cout << ShapeGroupCount++ << endl;
 	}
+
+	MasterElement::PrintBookStats(&Gamee);
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))

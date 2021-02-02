@@ -579,6 +579,7 @@ public:
 
 	void DeletePage();
 	void Init(ShaderProgram ShaderProgram);
+	//void llCreate(llBookData* llBook, ShaderProgram ShaderProgram) {};
 	void IncreaseShapeDataCount();
 
 	void PrintShape(int ID)

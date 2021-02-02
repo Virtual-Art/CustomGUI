@@ -66,7 +66,7 @@ public:
 
 	void ReCalibrateID();
 
-	void llSwitch(int Offset) override;
+	//void llSwitch(int Offset) override;
 
 	//PageGroupItemData CurrentPageItem;
 	//GroupData CurrentShapeGroup;

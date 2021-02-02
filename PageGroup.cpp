@@ -344,17 +344,18 @@ float PageGroup::SetMouseAccess(glm::vec2 Position, glm::vec2 Size)
 	}
 }
 
-void PageGroup::llSwitch(int Offset)
-{
-	for (int i = 0; i < Offset; i++)
-	{
-		if (Offset > 0)
-		{
-			CurrentllPageGroup = CurrentllPageGroup->Next;
-		}
-		else if (Offset < 0)
-		{
-			CurrentllPageGroup = CurrentllPageGroup->Previous;
-		}
-	}
-}
+//void PageGroup::llSwitch(int Offset)
+//{
+//	for (int i = 0; i < Offset; i++)
+//	{
+//		if (Offset > 0)
+//		{
+//			CurrentllPageGroup = CurrentllPageGroup->Next;
+//		}
+//		else if (Offset < 0)
+//		{
+//			CurrentllPageGroup = CurrentllPageGroup->Previous;
+//		}
+//	}
+//}
+//

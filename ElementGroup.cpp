@@ -18,8 +18,13 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 		llPageItemData* CreatedPageItem = new llPageItemData;
 
 		llBook->Page = CreatedPage;
+		llBook->PageHead = CreatedPage;
+
 		llBook->Page->PageGroup = CreatedPageGroup;
+		llBook->Page->PageGroupHead = CreatedPageGroup;
+
 		llBook->Page->PageGroup->PageItem = CreatedPageItem;
+		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
 	}
 
 	CurrentllShapeGroup = new llShapeGroupData;
@@ -31,6 +36,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 	{
 		Log::LogString("No ShapeGroup Found In PageItem, New ShapeGroup; Set!");
 		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 	}
 	else //Shapes already created
 	{
@@ -68,8 +74,13 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 			llPageItemData* CreatedPageItem = new llPageItemData;
 
 			llBookData->Page = CreatedPage;
+			llBookData->PageHead = CreatedPage;
+
 			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroupHead = CreatedPageGroup;
+
 			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
 		}
 
 		CurrentllShapeGroup = new llShapeGroupData;
@@ -82,6 +93,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 		{
 			Log::LogString("This Page Item is Brand new");
 			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 		}
 		else //Shape groups already created
 		{
@@ -747,20 +759,20 @@ void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
 	}
 }
 
-void ShapeGroup::llSwitch(int Offset)
-{
-	for (int i = 0; i <Offset; i++)
-	{
-		if (Offset > 0)
-		{
-			CurrentllShapeGroup = CurrentllShapeGroup->Next;
-		}
-		else if(Offset < 0)
-		{
-			CurrentllShapeGroup = CurrentllShapeGroup->Previous;
-		}
-	}
-}
+//void ShapeGroup::llSwitch(int Offset)
+//{
+//	for (int i = 0; i <Offset; i++)
+//	{
+//		if (Offset > 0)
+//		{
+//			CurrentllShapeGroup = CurrentllShapeGroup->Next;
+//		}
+//		else if(Offset < 0)
+//		{
+//			CurrentllShapeGroup = CurrentllShapeGroup->Previous;
+//		}
+//	}
+//}
 
 void ShapeGroup::NewllUpdate()
 {
@@ -780,12 +792,12 @@ void ShapeGroup::NewllUpdate()
 		switch (CurrentShape->Type)
 		{
 		case TYPE_QUAD:
-			QuadRef.llSwitch(CurrentShape);
+			//QuadRef.llSwitch(CurrentShape);
 			QuadRef.SetllShape(&UpdatedShape);
 			break;
 
 		case TYPE_CHARACTER:
-			CharRef.llSwitch(CurrentShape);
+			//CharRef.llSwitch(CurrentShape);
 			CharRef.SetllShape(&UpdatedShape);
 			break;
 		case TYPE_CUSTOM:

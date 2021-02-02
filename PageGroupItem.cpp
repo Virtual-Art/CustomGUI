@@ -15,7 +15,10 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 		llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
 		llBook->Page = CreatedPage;
+		llBook->PageHead = CreatedPage;
+
 		llBook->Page->PageGroup = CreatedPageGroup;
+		llBook->Page->PageGroupHead = CreatedPageGroup;
 	}
 
 	CurrentllPageItem = new llPageItemData;
@@ -29,6 +32,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 	{
 		Log::LogString("No PageItem Found In PageGroup, New PageItem; Set!");
 		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+		llBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
 	}
 	else //Shapes already created
 	{
@@ -68,7 +72,10 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 
 			//Link the Created groups to the book we are looking at
 			llBookData->Page = CreatedPage;
+			llBookData->PageHead = CreatedPage;
+
 			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroupHead = CreatedPageGroup;
 		}
 
 		//Create a new PageItem & Copy the provided data
@@ -85,6 +92,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			//Set the book to include and point to the newly created PageItem
 			Log::LogString("This Page Item is Brand new");
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CurrentllPageItem;
 		}
 		else //A Page Item already exists in the current Page Group
 		{
@@ -669,17 +677,17 @@ void SwithToPageItem(int ShapeID)
 	//	this->LoadedShapeData = CurrentPage->GetShapeDataR(ShapeID);
 	//}
 }
-void PageGroupItem::llSwitch(int Offset)
-{
-	for (int i = 0; i < Offset; i++)
-	{
-		if (Offset > 0)
-		{
-			CurrentllPageItem = CurrentllPageItem->Next;
-		}
-		else if (Offset < 0)
-		{
-			CurrentllPageItem = CurrentllPageItem->Previous;
-		}
-	}
-}
+//void PageGroupItem::llSwitch(int Offset)
+//{
+//	for (int i = 0; i < Offset; i++)
+//	{
+//		if (Offset > 0)
+//		{
+//			CurrentllPageItem = CurrentllPageItem->Next;
+//		}
+//		else if (Offset < 0)
+//		{
+//			CurrentllPageItem = CurrentllPageItem->Previous;
+//		}
+//	}
+//}

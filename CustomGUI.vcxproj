@@ -160,6 +160,7 @@
     <ClCompile Include="MemoryManagement.cpp" />
     <ClCompile Include="MouseManager.cpp" />
     <ClCompile Include="NewCharacter.cpp" />
+    <ClCompile Include="NewPage.cpp" />
     <ClCompile Include="NewRender.cpp" />
     <ClCompile Include="Oscillation.cpp" />
     <ClCompile Include="Page.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="MemoryManagement.h" />
     <ClInclude Include="MouseManager.h" />
     <ClInclude Include="NewCharacter.h" />
+    <ClInclude Include="NewPage.h" />
     <ClInclude Include="NewRender.h" />
     <ClInclude Include="Oscillation.h" />
     <ClInclude Include="Page.h" />

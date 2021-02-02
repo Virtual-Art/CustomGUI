@@ -105,7 +105,7 @@ public:
 	void ShapeToGroup(ShapeData& ShapeData);
 	//void SwitchToPageItem(int ShapeID);
 
-	void llSwitch(int Offset) override;
+	//void llSwitch(int Offset) override;
 
 	void PrintllShapes()
 	{

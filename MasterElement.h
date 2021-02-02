@@ -73,6 +73,7 @@ struct llShapeData
 	llShapeData* Next = nullptr;
 	llShapeData* Previous = nullptr;
 	llVertexData* Vertexx = nullptr; // Child
+	llVertexData* VertexxHead = nullptr; // Child
 	
 };
 
@@ -104,6 +105,7 @@ struct llShapeGroupData
 	llShapeGroupData* Next = nullptr;
 	llShapeGroupData* Previous = nullptr;
 	llShapeData* Shape = nullptr; // Child
+	llShapeData* ShapeHead = nullptr; // Child
 	///////////////////////////////////
 };
 
@@ -133,6 +135,7 @@ struct llPageItemData
 	llPageItemData* Next = nullptr;
 	llPageItemData* Previous = nullptr;
 	llShapeGroupData* ShapeGroup = nullptr; // Child
+	llShapeGroupData* ShapeGroupHead = nullptr; // Child
 };
 
 struct llPageGroupData
@@ -160,20 +163,151 @@ struct llPageGroupData
 	llPageGroupData* Next = nullptr;
 	llPageGroupData* Previous = nullptr;
 	llPageItemData* PageItem = nullptr; // Child
+	llPageItemData* PageItemHead = nullptr; // Child
 };
 
 struct llPageData
 {
+	bool PageReady = false;
+	llVertexData* VertexContainer = nullptr;
+	int* IndexContainer = nullptr;
 	llPageData* Next = nullptr;
 	llPageData* Previous = nullptr;
 	llPageGroupData* PageGroup = nullptr; // Child
+	llPageGroupData* PageGroupHead = nullptr; // Child
+
+
+	GLuint VA;
+	GLuint VB;
+	GLuint IB;
+	GLuint WhiteTexture;
+	int MaxTextures = 8;
+	int MaxShapeCount = 10000; // 10,000 Shapes
+	int MaxVertexCount = MaxShapeCount * 4;
+	int MaxIndexCount = MaxShapeCount * 6;
+	array<uint32_t, 16> TextureSlots;
+	uint32_t TextureSlotIndex = 1;
+
+	void CreateContainer()
+	{
+		VertexContainer = new llVertexData[MaxVertexCount];
+		IndexContainer = new int[MaxIndexCount];
+	}
+
+	void DeleteContainer()
+	{
+		delete VertexContainer;
+		delete IndexContainer;
+
+		VertexContainer = nullptr;
+		IndexContainer = nullptr;
+		PageReady = false;
+	}
+
+	void LoadPage()
+	{
+		int VertexIndex = 0;
+		int PageGroupCount = -1;
+		int PageItemCount = -1;
+		int ShapeGroupCount = -1;
+		int ShapeCount = -1;
+		int VertexCount = -1;
+
+		//Page Group
+		llPageGroupData* CurrentPageGroup = PageGroup;
+		//Set PageGroup Beginning
+		/////////////////////////////////////////////////////
+		while (CurrentPageGroup->Previous != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Previous;
+		}
+		/////////////////////////////////////////////////////
+
+		while (CurrentPageGroup != nullptr)
+		{
+			PageGroupCount++;
+			//PageItem
+			llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
+			//Set PageItem Beginning
+			/////////////////////////////////////////////////////
+			while (CurrentPageItem->Previous != nullptr)
+			{
+				CurrentPageItem = CurrentPageItem->Previous;
+			}
+			/////////////////////////////////////////////////////
+
+			while (CurrentPageItem != nullptr)
+			{
+				PageItemCount++;
+				//ShapeGroup
+				llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+				//Set ShapeGroup to beginning
+				/////////////////////////////////////////////////////
+				while (CurrentShapeGroup->Previous != nullptr)
+				{
+					CurrentShapeGroup = CurrentShapeGroup->Previous;
+				}
+				/////////////////////////////////////////////////////
+
+				while (CurrentShapeGroup != nullptr)
+				{
+					ShapeGroupCount++;
+					//Shape
+					llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+					//Set shape to beginning
+					/////////////////////////////////////////////////////
+					while (CurrentShape->Previous != nullptr)
+					{
+						CurrentShape = CurrentShape->Previous;
+					}
+					/////////////////////////////////////////////////////
+
+					while (CurrentShape != nullptr)
+					{
+						ShapeCount++;
+						//PrintllShape(CurrentShape);
+						//Vertex
+						llVertexData* CurrentVertex = CurrentShape->Vertexx;
+						/////////////////////////////////////////////////////
+						while (CurrentVertex->Previous != nullptr)
+						{
+							CurrentVertex = CurrentVertex->Previous;
+						}
+						/////////////////////////////////////////////////////
+						while (CurrentVertex != nullptr)
+						{
+							VertexCount++;
+							//cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | V:"  << VertexCount << endl;
+							VertexContainer[VertexIndex] = *CurrentVertex;
+							VertexIndex++;
+							CurrentVertex = CurrentVertex->Next;
+						}
+						VertexCount = -1;
+						CurrentShape = CurrentShape->Next;
+					}
+					ShapeCount = -1;
+					CurrentShapeGroup = CurrentShapeGroup->Next;
+				}
+				ShapeGroupCount = -1;
+				CurrentPageItem = CurrentPageItem->Next;
+			}
+			PageItemCount = -1;
+			CurrentPageGroup = CurrentPageGroup->Next;
+		}
+	}
+
+
+
+
 };
 
 struct llBookData
 {
+
 	llBookData* Next = nullptr;
 	llBookData* Previous = nullptr;
 	llPageData* Page = nullptr; // = nullptr; // Child
+	llPageData* PageHead = nullptr;
 };
 
 
@@ -227,6 +361,10 @@ public:
 	//	}
 	//}
 
+	//Print Book
+	static void PrintBookStats(llBookData* llBook);
+	static void PrintBook(llBookData* llBook);
+
 	//Print Group Shapes
 	static void PrintPageItemShapes(llPageItemData* llShapeGroup);
 	static void PrintShapeGroupShapes(llShapeGroupData* llShapeGroup);
@@ -242,6 +380,10 @@ public:
 	static void PrintllShape(llShapeData* llShape);
 	static void PrintllShape(llShapeData* llShape, int Offset);
 
+	static int GetShapeCount(llShapeGroupData* llShapeGroup);
+	static int GetShapeGroupCount(llPageItemData* llShapeGroupData);
+	static int GetPageItemCount(llPageGroupData* llShapeGroupData);
+
 	virtual void Add_Default()
 	{
 	
@@ -250,7 +392,7 @@ public:
 	virtual void Add_Insert() {};
 	virtual void Delete() {};
 
-	virtual void llSwitch(int Offset) {};
+	//virtual void llSwitch(int Offset) {};
 	virtual ShapeData& Switch(int RequstedShapeID) { return LoadedShape; };
 	virtual ShapeData& Switch(Page& Page, int RequstedShapeID) { return LoadedShape; };
 	//virtual void SetShape(ShapeData& ShapeData) {};

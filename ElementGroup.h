@@ -101,7 +101,7 @@ class ShapeGroup : public MasterElement
 	void Delete() override {};
 
 	void llSwitch(llShapeGroupData* llShapeGroup);
-	void llSwitch(int Offset);
+	//void llSwitch(int Offset);
 
 	void SetllPosition(glm::vec2 Position)
 	{
