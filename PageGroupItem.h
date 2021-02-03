@@ -78,15 +78,18 @@ public:
 	TextData CurrentText;
 	ShapeData CurrentShape;
 
+	PageGroupItem() {};
 	PageGroupItem(llBookData* llBookData);
 	PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem);
 	PageGroupItem(llPageItemData* llPageItem);
 
-	PageGroupItem();
 	PageGroupItem(Page& Page);
 	PageGroupItem(Page& Page, PageItemData& PageItemData);
 	PageGroupItem(Page& Page, ShapeData& LoadedShape);
 	PageGroupItem(Page& Page, int GroupID);
+	void llInit(llBookData* llBook) {};
+
+	virtual llPageItemData* GetData() {};
 
 	llPageItemData* GetPageItem()
 	{
@@ -98,7 +101,7 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
-	virtual void Update() = 0;
+	virtual void Update() {};
 	void ReCalibrateID();
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
@@ -127,7 +130,7 @@ public:
 	};
 
 	//ShapeData Editing
-
+	llPageItemData* llSwitch(llPageItemData* llPageItem) {};
 	ShapeData& Switch(int RequstedShapeID);
 	ShapeData& Switch(Page& Page, int RequstedShapeID);
 	void SetPageItem(ShapeData& ShapeData);

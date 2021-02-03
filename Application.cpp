@@ -158,7 +158,8 @@ int main(int argc, char** argv)
 	llBookData Gamee;
 
 	
-	NewPage(&Gamee, &ShapeShader);
+	NewPage FistPage(&Gamee, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
+
 	//MasterElement::AddPageToBook(&Gamee);
 	//MasterElement::AddPageToBook(&Gamee);
 	//MasterElement::AddPageToBook(&Gamee);
@@ -227,11 +228,12 @@ int main(int argc, char** argv)
 		cout << ShapeGroupCount++ << endl;
 	}
 
-	MasterElement::PrintBookStats(&Gamee);
+	//MasterElement::PrintBookStats(&Gamee);
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
+		glm::vec2 MousePosition = {Mouse.xPos, Mouse.yPos};
 		Time = glfwGetTime();
 		PreviousTime = glfwGetTime();
 		glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -243,9 +245,17 @@ int main(int argc, char** argv)
 		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(Mouse.xPos, Mouse.yPos, false);
 		GUIShapeDataHovered = GUI.FindShapeData(Mouse.xPos, Mouse.yPos, false);
 
-	
-		Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, GUI);
-		Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, *PageSelected);
+		PageCreator::OnUpdate(KeyState, MouseState);
+
+		llSlider.SetllPosition(MousePosition);
+
+		PageGroupItem* jaj = &llSlider;
+		Slider Complex(jaj->GetData());
+
+		FistPage.DrawPage();
+
+		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, GUI);
+		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, *PageSelected);
 
 		Mouse.GetMousePosition(window);
 		glfwSwapBuffers(window);

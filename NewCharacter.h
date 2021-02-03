@@ -55,10 +55,11 @@ public:
 	static CharacterData FindCharacter(string& File, int ASCII); //Finds Character in Font File
 	static CharacterData& GetCharacter(int Ascii); //Returns Chosen Character's Data
 
+	NewCharacter() {};
 	NewCharacter(llBookData* llBook);                       //New Shape
 	NewCharacter(llBookData* llBook, llShapeData* llShape); //New Shape with existing Data
 	NewCharacter(llShapeData* llShape);                     //Existing Shape
-
+	void llInit(llBookData* llBook) {};
     //Constructors
 	NewCharacter(Page& Page);                       //New Shape
 	NewCharacter(Page& Page, ShapeData& ShapeData); //New Shape with existing Data

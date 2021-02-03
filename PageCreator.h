@@ -2,7 +2,9 @@
 #define PAGECREATOR
 
 #include <iostream>
+#include <string>
 #include "MasterElement.h"
+#include "NewPage.h"
 #include "PageGroup.h"
 #include "Slider.h"
 #include "MouseManager.h"
@@ -11,6 +13,7 @@
 
 using namespace std;
 
+//Level
 #define LEVEL_VERTEX 0
 #define LEVEL_SHAPE 1
 #define LEVEL_SHAPEGROUP 2
@@ -19,6 +22,19 @@ using namespace std;
 #define LEVEL_PAGE 5
 #define LEVEL_BOOK 6
 
+//Level Type
+#define TYPE_VERTEX 0 
+#define TYPE_SHAPE 0
+#define TYPE_SHAPE_QUAD 1
+#define TYPE_SHAPE_CHARACTER 2
+#define TYPE_SHAPEGROUP 0
+#define TYPE_SHAPEGROUP_TEXT 1
+#define TYPE_PAGEITEM 0
+#define TYPE_PAGEITEM_SLIDER 1
+#define TYPE_PAGEGROUP 0
+#define TYPE_PAGE 0
+
+//Level Type Function
 #define FUNCTION_POSITION  0
 #define FUNCTION_SIZE  1
 #define FUNCTION_COLOR_R  2
@@ -30,11 +46,27 @@ using namespace std;
 #define MAINFUNCTION_8  8
 #define MAINFUNCTION_9  9
 
+#define FUNCTION_SET_TEXT 6
+
 #define ARROW_UP 0
 #define ARROW_DOWN 1
 #define ARROW_RIGHT 2
 #define ARROW_LEFT 3
 
+//Can Edit all objects
+//Restricted to only Position maybe size
+struct GUIEditor
+{
+	MasterElement* AnyEditor;
+	GUIEditor* Parent;
+	GUIEditor* Child;
+	GUIEditor* Next;
+	GUIEditor* Previous;
+};
+
+
+//We are going to need to store functions for specific functions inside objects
+//Only these objects can call these functions
 
 namespace PageCreator
 {
@@ -67,18 +99,31 @@ namespace PageCreator
 	const glm::vec4 Transparent = { 0.0, 0.0, 0.0, 0.0 };
 
 	// Table of Creator Functions
-	static KeyFunction*** CreatorFunction;
+	static KeyFunction**** CreatorFunction;
 
 	//Creator Variables
 	const int OnePixel = 0.00166; //1 Pixel
 	static glm::vec4 PreviousColor = {0.0, 0.0, 0.0, 1.0};
 	static int PixelOffset = 5;
-	static int CurrentLevel = 1; //Shape
-	static int CurrentFunction = 0; //Position
+
 	static Page* CreatorPage = nullptr;
 	static Page* GUIPage = nullptr;
-	static Book* CurrentBook = nullptr;
+	//static Book* CurrentBook = nullptr;
 	static FileSystem Filesystem;
+	static string CurrentText;
+	static bool EnableKeyBoard = false;
+
+	static llShapeData* CurrentShape;
+	static llShapeGroupData* CurrentShapeGroup;
+	static llPageItemData* CurrentPageItem;
+	static llPageGroupData* CurrentPageGroup;
+	static llPageData* CurrentPage;
+	static llBookData* CurrentBook;
+	
+	//These variables dictate what function we are going to call
+	static int CurrentLevel = 1; //Shape
+	static int CurrentType = 0;
+	static int CurrentFunction = 0; //Position
 
 	//Helper Objects
 
@@ -88,24 +133,33 @@ namespace PageCreator
 	static Text Text_CurrentLevel;// (*GUIPage, "Shape ", { -0.75, 1.0 });
 	static Text Text_CurrentFunction;// (*GUIPage, "Position", { -0.25, 1.0 });
 
-	//Selected
-	static Shape* ShapeSelected;
-	//static ShapeGroup* ShapeGroupSelected;
-	static PageGroupItem* PageItemSelected;
-	//static PageGroup* PageGroupSelected;
+	//Rememeber we are not ever using a pointer to point to data in the book
+    //The Editor Objects edit all the books and switch between books on their own
+
+	//This points to every type of object we can edit
 	static MasterElement* Element_Selected;
+	static int CurrentMouseState;
+	static KeyResult* CurrentKeyResult;
 
-	static Quad QuadSelected(*CreatorPage, -1);
-	//static Text TextSelected(*CreatorPage, -1);
-	static Slider SliderSelected(*CreatorPage, -1);
+	//Defaults
+	static Shape ShapeSelected;
+	static ShapeGroup ShapeGroupSelected;
+	static PageGroupItem PageItemSelected;
+	static PageGroup PageGroupSelected;
+	static NewPage PageSelected; //Maybe no constructor is what we want
+
+	//Presets
+	static Quad QuadSelected;
+	static NewCharacter CharacterSelected;
+	static Text TextSelected;
+	static Slider SliderSelected;
 	
-
-
-
+	void OnUpdate(KeyResult& KeyState, int MouseState);
 	void Init(Page& Creatorpage, Page& GUIPage, Book& Book);
+	void llInit(llBookData* CurrentBook);
     void CreateFunctionContainer();
 	void SetCreatorFunctions();
-
+	void CreateGUIObjects();
 	///////////////////////////////////////////////KEYBOARD FUNCTIONS////////////////////////////////
 
 	void SetKeyboardKeys();
@@ -133,15 +187,30 @@ namespace PageCreator
 	void ArrowKeyRight();
 	void ArrowKeyLeft();
 
-	//Arrow Key with Alt
-	void AlternateUp(); // Alternate between Hierarchy
-	void AlternateDown(); // Alternate between Hierarchy
-	//void AlternateRight();//Right //Switch between Derived'
-	//void AlternateLeft();//Down  //Switch between Derived'
+	//BOOK TRAVERSING FUNCTIONS
+	void DataRight();   //Shift + Right
+	void DataLeft();    //Shift + Left
 
-	//Arrow Keys with Shift
-	void ShiftUp(); //Shift through functions
-	void ShiftDown(); //Shift through functions
+	//BOOK/TYPE TRAVERSING FUNCTIONS
+	void LevelUp();     //Shift + Up
+	void LevelDown();   //Shift + Down
+
+	//TYPE TRAVERSING FUNCTIONS
+	void TypeRight();   //Alt + Right
+	void TypeLeft();    //Alt + Left
+
+	//OPTION TRAVERSING FUNCTIONS
+	void OptionsUp();   //Alt + Up
+	void OptionsDown(); //Alt + Down
+
+	void SetShapeType();
+	void SetShapeGroupType();
+	void SetPageItemType();
+	void SetPageGroupType();
+	void SetPageType();
+
+	void AddLetter();
+	void BackSpace();
 
 
 	//Make Sure these functions work on ALL levels not just shape
@@ -149,8 +218,8 @@ namespace PageCreator
 	void Duplicate(); //Ctrl + d
 	void Insert(); //Insert Key
 	void Delete(); // Delete key
-	void Previous();
-	void Next();
+	//void Next();
+	//void Previous();
 
 	void SetQuadSelected(int MouseState, int ShapeHovered);
 
@@ -182,6 +251,9 @@ namespace PageCreator
 	void ColorBDown();
 	void ColorAUp();
 	void ColorADown();
+
+	//Specific Functions
+	void SetText();
 }
 
 #endif

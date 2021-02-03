@@ -312,7 +312,7 @@ void NewCharacter::CreatellCharacter()
 
 	llVertexData* CurrentVertex = VertexTopLeft;
 
-	while (CurrentVertex->Next != nullptr)
+	while (CurrentVertex != nullptr)
 	{
 		//Set Data
 		CurrentVertex->Color = CurrentllShape->Color;

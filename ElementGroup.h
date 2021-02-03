@@ -73,15 +73,17 @@ class ShapeGroup : public MasterElement
 	llShapeGroupData* CurrentllShapeGroup;
 	const bool SetInStone; //class cannot switch to another Shape 
 
+	ShapeGroup() : SetInStone(true) {};
 	ShapeGroup(llBookData* llBook);
 	ShapeGroup(llBookData* llBook, llShapeGroupData* ShapeGroup);
 	ShapeGroup(llShapeGroupData* ShapeGroup);
 
-	ShapeGroup();
 	ShapeGroup(Page& Page);
 	ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData);
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
+	void llInit(llBookData* llBook) {};
+	llShapeGroupData* GetData() { return CurrentllShapeGroup; };
 
 	llShapeGroupData* operator*()
 	{

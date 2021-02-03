@@ -130,7 +130,6 @@ ShapeGroup::ShapeGroup(llShapeGroupData* ShapeGroup)
 	//If it exists
 	if (ShapeGroup != nullptr && ShapeGroup->Shape != nullptr)
 	{
-		Log::LogString("Existing ShapeGroup change requested");
 
 		CurrentllShapeGroup = ShapeGroup;
 	}
@@ -750,7 +749,6 @@ void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
 	//If it exists
 	if (llShapeGroup != nullptr)
 	{
-		Log::LogString("Existing Shape change requested");
 		CurrentllShapeGroup = llShapeGroup;
 	}
 	else

@@ -176,7 +176,8 @@ struct llPageData
 	llPageGroupData* PageGroup = nullptr; // Child
 	llPageGroupData* PageGroupHead = nullptr; // Child
 
-
+	GLsizeiptr MaxSize;
+	GLsizeiptr CurrentSize;
 	GLuint VA;
 	GLuint VB;
 	GLuint IB;
@@ -185,6 +186,7 @@ struct llPageData
 	int MaxShapeCount = 10000; // 10,000 Shapes
 	int MaxVertexCount = MaxShapeCount * 4;
 	int MaxIndexCount = MaxShapeCount * 6;
+	int VertexIndex = 0;
 	array<uint32_t, 16> TextureSlots;
 	uint32_t TextureSlotIndex = 1;
 
@@ -206,7 +208,7 @@ struct llPageData
 
 	void LoadPage()
 	{
-		int VertexIndex = 0;
+		VertexIndex = 0;
 		int PageGroupCount = -1;
 		int PageItemCount = -1;
 		int ShapeGroupCount = -1;
@@ -277,7 +279,6 @@ struct llPageData
 						while (CurrentVertex != nullptr)
 						{
 							VertexCount++;
-							//cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | V:"  << VertexCount << endl;
 							VertexContainer[VertexIndex] = *CurrentVertex;
 							VertexIndex++;
 							CurrentVertex = CurrentVertex->Next;
@@ -294,9 +295,23 @@ struct llPageData
 			PageItemCount = -1;
 			CurrentPageGroup = CurrentPageGroup->Next;
 		}
+
 	}
 
+	GLsizeiptr GetCurrentSize()
+	{
+		llVertexData* UsagePointer = VertexContainer + VertexIndex;
 
+		CurrentSize = (uint8_t*)UsagePointer - (uint8_t*)VertexContainer;
+		return CurrentSize;
+	}
+
+	GLsizeiptr GetMaxSize()
+	{
+		llVertexData* UsagePointer = VertexContainer + MaxVertexCount;
+		MaxSize = (uint8_t*)UsagePointer - (uint8_t*)VertexContainer;
+		return MaxSize;
+	}
 
 
 };
@@ -392,7 +407,7 @@ public:
 	virtual void Add_Insert() {};
 	virtual void Delete() {};
 
-	//virtual void llSwitch(int Offset) {};
+	virtual void lllSwitch(int Offset) {};
 	virtual ShapeData& Switch(int RequstedShapeID) { return LoadedShape; };
 	virtual ShapeData& Switch(Page& Page, int RequstedShapeID) { return LoadedShape; };
 	//virtual void SetShape(ShapeData& ShapeData) {};

@@ -149,7 +149,6 @@ void Page::Init(ShaderProgram ShaderProgram)
 		
 	}
 	
-
 	glGenBuffers(1, &this->IB);
 	glBindBuffer(GL_Element_ARRAY_BUFFER, this->IB);
 	glBufferData(GL_Element_ARRAY_BUFFER, IndexContainer.CurrentSize +2, IndexContainer.StartOfContainer, GL_STATIC_DRAW);

@@ -39,14 +39,10 @@ struct ShapeVertex
 	float TexIndex = 0.0;
 	glm::vec2 CentralPoint = { 0.0, 0.0 };
 	int GUIAction = 0;
-	//glm::vec2 XYRatio = { 0.0, 0.0 };
+	glm::vec2 XYRatio = { 0.0, 0.0 };
 };
 
 
-struct PageData
-{
-
-};
 
 struct PageGroupData
 {
@@ -158,11 +154,6 @@ struct ShapeData
 	ShapeVertex Vertex[4];
 	ShapeGroupData ShapeGroup;
 };
-
-
-
-
-
 
 struct CShapeData
 {

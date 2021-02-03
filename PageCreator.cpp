@@ -1,35 +1,75 @@
 #include "PageCreator.h"
 
 
-void PageCreator::Init(Page& Creatorpage, Page& GUIpage, Book& Book)
+
+void PageCreator::llInit(llBookData* CurrentBook)
 {
-	CreatorPage = &Creatorpage;
-	GUIPage = &GUIpage;
-	CurrentBook = &Book;
-	QuadSelected.Init(Creatorpage, -1);
-	//TextSelected.Init(Creatorpage, -1);
-	SliderSelected.Init(Creatorpage, -1);
-	ShapeSelected = &QuadSelected; //To Start off
-	PageItemSelected = &SliderSelected;
-	Element_Selected = &QuadSelected;
+	//Setup all Editor Objects to get ready to create/edit the book provided either new or used
 
-	CreateFunctionContainer(); //Build "Creator" Function Table
-	SetCreatorFunctions();     //Set Functions To Function Table
-	SetKeyboardKeys();
-	
-	//Current Level
-	NewCharacter Initilization(*GUIPage, "Resources/segoe.fnt");
+	//Defaults
+	ShapeSelected.llInit(CurrentBook);
+	ShapeGroupSelected.llInit(CurrentBook);
+	PageItemSelected.llInit(CurrentBook);
+	PageGroupSelected.llInit(CurrentBook);
+	PageSelected.llInit(CurrentBook);
 
-	//Current Level
-	Text_CurrentLevel_Label.Init(*GUIPage, "Current Level: ", { -0.95, 0.8 });
-	Text_CurrentLevel.Init(*GUIPage, " Shape ", { -0.95, 0.7 });
-	Text_CurrentLevel.SetColor(Purple);
+	//Presets
+	QuadSelected.llInit(CurrentBook);
+	CharacterSelected.llInit(CurrentBook);
+	TextSelected.llInit(CurrentBook);
+	SliderSelected.llInit(CurrentBook);
 
-	//Current Function
-	Text_CurrentFunction_Label.Init(*GUIPage, "Current Function: ", { -0.95, 0.6 });
-	Text_CurrentFunction.Init(*GUIPage, " Position ", { -0.95, 0.5 });
-	Text_CurrentFunction.SetColor(Orange);
+
+
 }
+
+void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
+{
+	CurrentKeyResult = &KeyState;
+	CurrentMouseState = MouseState;
+
+	if (EnableKeyBoard == true && KeyState.CurrentAscii != -1 && KeyState.Key1 != 0)
+	{
+		CurrentText += KeyState.CurrentAscii;
+		TextSelected.SetText(CurrentText);
+	}
+
+	if (KeyState.Key1 == GUI_BACKSPACE_CLICKED || KeyState.Key1 == GUI_BACKSPACE_PRESSED)
+	{
+		CurrentText.erase(CurrentText.size() - 2);
+		TextSelected.SetText(CurrentText);
+	}
+}
+
+//void PageCreator::Init(Page& Creatorpage, Page& GUIpage, Book& Book)
+//{
+//	CreatorPage = &Creatorpage;
+//	GUIPage = &GUIpage;
+//	CurrentBook = &Book;
+//	QuadSelected.Init(Creatorpage, -1);
+//	//TextSelected.Init(Creatorpage, -1);
+//	SliderSelected.Init(Creatorpage, -1);
+//	ShapeSelected = &QuadSelected; //To Start off
+//	PageItemSelected = &SliderSelected;
+//	Element_Selected = &QuadSelected;
+//
+//	CreateFunctionContainer(); //Build "Creator" Function Table
+//	SetCreatorFunctions();     //Set Functions To Function Table
+//	SetKeyboardKeys();
+//	
+//	//Current Level
+//	NewCharacter Initilization(*GUIPage, "Resources/segoe.fnt");
+//
+//	//Current Level
+//	Text_CurrentLevel_Label.Init(*GUIPage, "Current Level: ", { -0.95, 0.8 });
+//	Text_CurrentLevel.Init(*GUIPage, " Shape ", { -0.95, 0.7 });
+//	Text_CurrentLevel.SetColor(Purple);
+//
+//	//Current Function
+//	Text_CurrentFunction_Label.Init(*GUIPage, "Current Function: ", { -0.95, 0.6 });
+//	Text_CurrentFunction.Init(*GUIPage, " Position ", { -0.95, 0.5 });
+//	Text_CurrentFunction.SetColor(Orange);
+//}
 
 // ArrowButtonFunctions[Level][MainFunction][SubFunction];
 //PageCreator::~PageCreator()
@@ -50,26 +90,24 @@ void PageCreator::Init(Page& Creatorpage, Page& GUIpage, Book& Book)
 
 void PageCreator::CreateFunctionContainer()
 {
-    CreatorFunction = new KeyFunction**[7];
+    CreatorFunction = new KeyFunction***[7];
 
+	//Vertex
 	for (int Level = 0; Level < 7; Level++)
 	{
-		//Every Level has 10 Main Functions
-		CreatorFunction[Level] = new KeyFunction *[10];
-		for (int MainFunction = 0; MainFunction < 10; MainFunction++)
-		{
-			//Every Main Function has 4 sub functions (for our "up to 4" arrow keys)
-			CreatorFunction[Level][MainFunction] = new KeyFunction[4];
-		}
-	}
+		CreatorFunction[Level] = new KeyFunction**[3];
 
-	for (int i = 0; i < 7; i++)
-	{
-		for (int j = 0; j < 10; j++)
+		for (int Element_Type = 0; Element_Type < 4; Element_Type++)
 		{
-			for (int k = 0; k < 4; k++)
+			CreatorFunction[Level][Element_Type] = new KeyFunction * [10];
+
+			for (int Function = 0; Function < 10; Function++)
 			{
-				CreatorFunction[i][j][k] = Empty;
+				CreatorFunction[Level][Element_Type][Function] = new KeyFunction[3];
+				for (int Arrow = 0; Arrow < 3; Arrow++)
+				{
+					CreatorFunction[Level][Element_Type][Function][Arrow] = Empty;
+				}
 			}
 		}
 	}
@@ -78,92 +116,46 @@ void PageCreator::CreateFunctionContainer()
 ////Called Once on Creation
 void PageCreator::SetCreatorFunctions()
 {
-	//Position
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_UP]    = PositionUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_DOWN]  = PositionDown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_RIGHT] = PositionRight;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_POSITION][ARROW_LEFT]  = PositionLeft;
+	//All Levels and types will be given the same "function" Functions
+	for (int Level = 0; Level < 7; Level++)
+	{
+		for (int Type = 0; Type < 3; Type++)
+		{
+			CreatorFunction[Level][Type][FUNCTION_POSITION][ARROW_UP] = PositionUp;
+			CreatorFunction[Level][Type][FUNCTION_POSITION][ARROW_DOWN] = PositionDown;
+			CreatorFunction[Level][Type][FUNCTION_POSITION][ARROW_RIGHT] = PositionRight;
+			CreatorFunction[Level][Type][FUNCTION_POSITION][ARROW_LEFT] = PositionLeft;
 
-	//Size
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_UP]    = SizeUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_DOWN]  = SizeDown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_RIGHT] = SizeRight;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_SIZE][ARROW_LEFT]  = SizeLeft;
+			CreatorFunction[Level][Type][FUNCTION_SIZE][ARROW_UP]     = SizeUp;
+			CreatorFunction[Level][Type][FUNCTION_SIZE][ARROW_DOWN]   = SizeDown;
+			CreatorFunction[Level][Type][FUNCTION_SIZE][ARROW_RIGHT]  = SizeRight;
+			CreatorFunction[Level][Type][FUNCTION_SIZE][ARROW_LEFT]   = SizeLeft;
 
-	//R
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_UP]    = ColorRUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_DOWN]  = ColorRDown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_RIGHT] = Empty;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_R][ARROW_LEFT]  = Empty;
+			//R
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_UP]    = ColorRUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_DOWN]  = ColorRDown;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_RIGHT] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_LEFT]  = Empty;
 
-	//G
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_UP]   = ColorGUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_DOWN] = ColorGDown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_RIGHT] = Empty;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_G][ARROW_LEFT]  = Empty;
+			//G
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_UP]    = ColorGUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_DOWN]  = ColorGDown;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_RIGHT] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_LEFT]  = Empty;
 
-	//B
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_UP]   = ColorBUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_DOWN] = ColorBDown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_RIGHT] = Empty;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_B][ARROW_LEFT] = Empty;
+			//B
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_UP] = ColorBUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_DOWN] = ColorBDown;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_RIGHT] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_LEFT] = Empty;
 
-	//A
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_UP]   = ColorAUp;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_DOWN] = ColorADown;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_RIGHT] = Empty;
-	CreatorFunction[LEVEL_SHAPE][FUNCTION_COLOR_A][ARROW_LEFT] = Empty;
-
-	/////////////SHAPEGROUP//////////////////
-
-	////Position
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_UP]    = PositionUp;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_DOWN]  = PositionDown;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_RIGHT] = PositionRight;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_POSITION][ARROW_LEFT]  = PositionLeft;
-	//														
-	////Size													
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_UP]    = SizeUp;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_DOWN]  = SizeDown;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_RIGHT] = SizeRight;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_SIZE][ARROW_LEFT]  = SizeLeft;
-	//																  
-	////R																  
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_UP]     = ColorRUp;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_DOWN]   = ColorRDown;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_RIGHT]  = Empty;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_R][ARROW_LEFT]   = Empty;
-	//														
-	////G														
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_UP]     = ColorGUp;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_DOWN]   = ColorGDown;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_RIGHT]  = Empty;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_G][ARROW_LEFT]   = Empty;
-	//																 
-	////B																 
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_UP]     = ColorBUp;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_DOWN]   = ColorBDown;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_RIGHT]  = Empty;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_B][ARROW_LEFT]   = Empty;
-	//																  
-	////A																  
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_UP]     = ColorAUp;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_DOWN]   = ColorADown;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_RIGHT]  = Empty;
-	//CreatorFunction[LEVEL_SHAPEGROUP][FUNCTION_COLOR_A][ARROW_LEFT]   = Empty;
-	//
-	////																  
-	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_UP] = Empty;
-	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_DOWN] = Empty;
-	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_RIGHT] = Empty;
-	//CreatorFunction[LEVEL_SHAPEGROUP][MAINFUNCTION_6][ARROW_LEFT] = Empty;
-	//
-	//
-	//// Page Item Group
-	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_UP]    = PageItemPositionUp;
-	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_DOWN]  = PageItemPositionDown;
-	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_RIGHT] = PageItemPositionRight;
-	//CreatorFunction[LEVEL_PAGEITEM][FUNCTION_POSITION][ARROW_LEFT]  = PageItemPositionLeft;
+			//A
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_UP] = ColorAUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_DOWN] = ColorADown;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_RIGHT] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_LEFT] = Empty;
+		}
+	}
 }
 
 void PageCreator::SetArrowKeys()
@@ -179,32 +171,52 @@ void PageCreator::SetArrowKeys()
 	Keyboard::KeyButton[GUI_RIGHT_PRESSED][WITH_DEFAULT] = ArrowKeyRight;
 	Keyboard::KeyButton[GUI_LEFT_PRESSED][WITH_DEFAULT]  = ArrowKeyLeft;
 	// CreatorFunction[CurrentLevel][CurrentFunction][ARROW_UP];
+
+	//50 - 101
+
+	//Should actually almost every default key and + caps + shft
+	for (int CharKey = 50; CharKey < 102; CharKey++)
+	{
+		Keyboard::KeyButton[CharKey][WITH_DEFAULT] = AddLetter;
+	}
+
+	Keyboard::KeyButton[GUI_BACKSPACE_PRESSED][WITH_DEFAULT] = BackSpace;
+}
+
+void PageCreator::AddLetter()
+{
+	if (CurrentKeyResult->CurrentAscii != -1 && CurrentKeyResult->Key1 != 0)
+	{
+		CurrentText += CurrentKeyResult->CurrentAscii;
+	}
+}
+
+void PageCreator::BackSpace()
+{
+	CurrentText.erase(CurrentText.size() - 1);
 }
 
 //Play Creator Function when Clicked/Pressed
 void PageCreator::ArrowKeyUp()
 {
-	//Play
-	CreatorFunction[CurrentLevel][CurrentFunction][ARROW_UP]();
-
+	CreatorFunction[CurrentLevel][CurrentType][CurrentFunction][ARROW_UP]();
 }
- 
+
 void PageCreator::ArrowKeyDown()
 {
-	//Play
-	CreatorFunction[CurrentLevel][CurrentFunction][ARROW_DOWN]();
+	CreatorFunction[CurrentLevel][CurrentType][CurrentFunction][ARROW_DOWN]();
 }
 
 void PageCreator::ArrowKeyRight()
 {
 	//Play
-	CreatorFunction[CurrentLevel][CurrentFunction][ARROW_RIGHT]();
+	CreatorFunction[CurrentLevel][CurrentType][CurrentFunction][ARROW_RIGHT]();
 }
 
 void PageCreator::ArrowKeyLeft()
 {
 	//Play
-	CreatorFunction[CurrentLevel][CurrentFunction][ARROW_LEFT]();
+	CreatorFunction[CurrentLevel][CurrentType][CurrentFunction][ARROW_LEFT]();
 }
 
 
@@ -212,11 +224,13 @@ void PageCreator::ArrowKeyLeft()
 //Arrow Keys with Shift
 void PageCreator::SetShift()
 {
-	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_SHIFT] = ShiftUp;
-	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_SHIFT] = ShiftDown;
+	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_SHIFT] = LevelUp;
+	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_SHIFT] = LevelDown;
+	Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_SHIFT] = DataRight;
+	Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_SHIFT] = DataLeft;
 }
 
-void PageCreator::ShiftUp()
+void PageCreator::OptionsUp()
 {
 	if (CurrentFunction < MaxFunction)
 	{
@@ -265,7 +279,7 @@ void PageCreator::ShiftUp()
 	cout << "CurrentFunction: " << CurrentFunction << endl;
 }
 
-void PageCreator::ShiftDown()
+void PageCreator::OptionsDown()
 {
 	//Shift Down
 	if (CurrentFunction > MinFunction)
@@ -317,128 +331,436 @@ void PageCreator::ShiftDown()
 	cout << "CurrentFunction: " << CurrentFunction << endl;
 }
 
+void PageCreator::TypeRight()
+{
+	switch (CurrentLevel)
+	{
+	case LEVEL_VERTEX:
+		//Element_Selected = &Vertex_Selected;
+		break;
+	case LEVEL_SHAPE:
+		if (CurrentType < 2)
+		{
+			CurrentType++;
+
+			switch (CurrentType)
+			{
+			case TYPE_SHAPE:
+				Element_Selected = &ShapeSelected;
+				break;
+			case TYPE_SHAPE_QUAD:
+				Element_Selected = &QuadSelected;
+				break;
+			case TYPE_SHAPE_CHARACTER:
+				Element_Selected = &CharacterSelected;
+				break;
+			}
+		}
+		break;
+	case LEVEL_SHAPEGROUP:
+		if (CurrentType < 1)
+		{
+			CurrentType++;
+			switch (CurrentType)
+			{
+			case TYPE_SHAPEGROUP:
+				Element_Selected = &ShapeGroupSelected;
+				break;
+			case TYPE_SHAPEGROUP_TEXT:
+				Element_Selected = &TextSelected;
+				break;
+			}
+		}
+		break;
+	case LEVEL_PAGEITEM:
+		if (CurrentType < 1)
+		{
+			CurrentType++;
+			switch (CurrentType)
+			{
+			case TYPE_PAGEITEM:
+				Element_Selected = &PageItemSelected;
+				break;
+			case TYPE_PAGEITEM_SLIDER:
+				Element_Selected = &SliderSelected;
+				break;
+			}
+		}
+		break;
+	case LEVEL_PAGEGROUP:
+		//Only One Type
+		break;
+	case LEVEL_PAGE:
+		//Only one type
+		break;
+	}
+}
+
+void PageCreator::TypeLeft()
+{
+	switch (CurrentLevel)
+	{
+	case LEVEL_VERTEX:
+		//Element_Selected = &Vertex_Selected;
+		break;
+	case LEVEL_SHAPE:
+		if (CurrentType > 0)
+		{
+			CurrentType--;
+			switch (CurrentType)
+			{
+			case TYPE_SHAPE:
+				Element_Selected = &ShapeSelected;
+				break;
+			case TYPE_SHAPE_QUAD:
+				Element_Selected = &QuadSelected;
+				break;
+			case TYPE_SHAPE_CHARACTER:
+				Element_Selected = &CharacterSelected;
+				break;
+			}
+			break;
+	case LEVEL_SHAPEGROUP:
+		if (CurrentType > 0)
+		{
+			CurrentType--;
+			switch (CurrentType)
+			{
+			case TYPE_SHAPEGROUP:
+				Element_Selected = &ShapeGroupSelected;
+				break;
+			case TYPE_SHAPEGROUP_TEXT:
+				Element_Selected = &TextSelected;
+				break;
+			}
+		}
+		break;
+	case LEVEL_PAGEITEM:
+		if (CurrentType > 0)
+		{
+			CurrentType--;
+			switch (CurrentType)
+			{
+			case TYPE_PAGEITEM:
+				Element_Selected = &PageItemSelected;
+				break;
+			case TYPE_PAGEITEM_SLIDER:
+				Element_Selected = &SliderSelected;
+				break;
+			}
+		}
+		break;
+	case LEVEL_PAGEGROUP:
+		//Only One Type
+		break;
+	case LEVEL_PAGE:
+		//Only one type
+		break;
+		}
+	}
+}
+
+void PageCreator::DataRight()
+{
+	//We don't know how many functions each level has, however each level has one function, so set it to the first
+	CurrentFunction = 0;
+
+	switch (CurrentLevel)
+	{
+	case LEVEL_VERTEX:
+		//Element_Selected = &Vertex_Selected;
+		break;
+	case LEVEL_SHAPE:
+		
+		if (CurrentShape->Next != nullptr)
+		{
+			CurrentShape = CurrentShape->Next;
+			CurrentType = CurrentShape->Type;
+			SetShapeType();
+		}
+		break;
+
+	case LEVEL_SHAPEGROUP:
+		
+		if (CurrentShapeGroup->Next != nullptr)
+		{
+			CurrentShapeGroup = CurrentShapeGroup->Next;
+			CurrentType = CurrentShapeGroup->Type;
+			SetShapeGroupType();
+		}
+		break;
+
+	case LEVEL_PAGEITEM:
+
+		if (CurrentPageItem->Next != nullptr)
+		{
+			CurrentPageItem = CurrentPageItem->Next;
+			CurrentType = CurrentPageItem->Type;
+			SetPageItemType();
+		}
+	    break;
+
+	case LEVEL_PAGEGROUP:
+
+		if (CurrentPageGroup->Next != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Next;
+			SetPageGroupType();
+		}
+		break;
+
+	case LEVEL_PAGE:
+		if (CurrentPage->Next != nullptr)
+		{
+			CurrentPage = CurrentPage->Next;
+			SetPageType();
+		}
+		break;
+	}
+}
+
+void PageCreator::DataLeft()
+{
+	//We don't know how many functions each level has, however each level has one function, so set it to the first
+	CurrentFunction = 0;
+
+	switch (CurrentLevel)
+	{
+	case LEVEL_VERTEX:
+		//Element_Selected = &Vertex_Selected;
+		break;
+	case LEVEL_SHAPE:
+
+		if (CurrentShape->Previous != nullptr)
+		{
+			CurrentShape = CurrentShape->Previous;
+			SetPageGroupType();
+		}
+		break;
+
+	case LEVEL_SHAPEGROUP:
+
+		if (CurrentShapeGroup->Previous != nullptr)
+		{
+			CurrentShapeGroup = CurrentShapeGroup->Previous;
+			SetPageGroupType();
+		}
+		break;
+
+	case LEVEL_PAGEITEM:
+
+		if (CurrentPageItem->Previous != nullptr)
+		{
+			CurrentPageItem = CurrentPageItem->Previous;
+			SetPageGroupType();
+		}
+		break;
+
+	case LEVEL_PAGEGROUP:
+
+		if (CurrentPageGroup->Previous != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Previous;
+			SetPageGroupType();
+		}
+		break;
+
+	case LEVEL_PAGE:
+		if (CurrentPage->Previous != nullptr)
+		{
+			CurrentPage = CurrentPage->Previous;
+			SetPageGroupType();
+		}
+		break;
+	}
+}
+
+void PageCreator::SetShapeType()
+{
+	switch (CurrentType)
+	{
+	case TYPE_SHAPE:
+		Element_Selected = &ShapeSelected;
+		break;
+	case TYPE_SHAPE_QUAD:
+		Element_Selected = &QuadSelected;
+		break;
+	case TYPE_SHAPE_CHARACTER:
+		Element_Selected = &CharacterSelected;
+		break;
+	}
+}
+
+void PageCreator::SetShapeGroupType()
+{
+	switch (CurrentType)
+	{
+	case TYPE_SHAPEGROUP:
+		Element_Selected = &ShapeGroupSelected;
+		break;
+	case TYPE_SHAPEGROUP_TEXT:
+		Element_Selected = &TextSelected;
+		break;
+	}
+}
+
+void PageCreator::SetPageItemType()
+{
+	switch (CurrentType)
+	{
+	case TYPE_PAGEITEM:
+		Element_Selected = &PageItemSelected;
+		break;
+	case TYPE_PAGEITEM_SLIDER:
+		Element_Selected = &SliderSelected;
+		break;
+	}
+}
+
+void PageCreator::SetPageGroupType()
+{
+	switch (CurrentType)
+	{
+	case TYPE_PAGEGROUP:
+		Element_Selected = &PageGroupSelected;
+		break;
+	}
+}
+
+void PageCreator::SetPageType()
+{
+	switch (CurrentType)
+	{
+	case TYPE_PAGE:
+		Element_Selected = &PageSelected;
+		break;
+	}
+}
+
 //Arrow Key with Alt
 void PageCreator::SetAlternate()
 {
-	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_ALT] = AlternateUp;
-	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_ALT] = AlternateDown;
+	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_ALT] = OptionsUp;
+	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_ALT] = OptionsDown;
 }
 
 
-void PageCreator::AlternateUp()
+void PageCreator::LevelUp()
 {
 	if (CurrentLevel < MaxLevel)
 	{
 		CurrentLevel++;
 	}
-	if (CurrentLevel == 0)
+	
+	switch (CurrentLevel)
 	{
-		Text_CurrentLevel.SetText("Vertex");
+	case LEVEL_VERTEX:
+		//Element_Selected = &Vertex_Selected;
+		break;
+	case LEVEL_SHAPE:
+		CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+		ShapeSelected.llSwitch(CurrentShape);
+		CurrentType = CurrentShape->Type; 
+		Element_Selected = &ShapeSelected; //Supposed to set type here, won't always be basic type
+		break;
+	case LEVEL_SHAPEGROUP:
+		CurrentShapeGroup = CurrentBook->Page->PageGroup->PageItem->ShapeGroup;
+		ShapeGroupSelected.llSwitch(CurrentShapeGroup);
+		CurrentType = CurrentShapeGroup->Type; 
+		Element_Selected = &ShapeGroupSelected; //Supposed to set type here, won't always be basic type
+		break;
+	case LEVEL_PAGEITEM:
+		CurrentPageItem = CurrentBook->Page->PageGroup->PageItem;
+		PageItemSelected.llSwitch(CurrentPageItem);
+		CurrentType = CurrentPageItem->Type; 
+		Element_Selected = &PageItemSelected; //Supposed to set type here, won't always be basic type
+		break;
+	case LEVEL_PAGEGROUP:
+		CurrentPageGroup = CurrentBook->Page->PageGroup;
+		PageGroupSelected.llSwitch(CurrentPageGroup);
+		CurrentType = CurrentPageGroup->Type;
+		Element_Selected = &PageGroupSelected; //Supposed to set type here, won't always be basic type
+		break;
+	case LEVEL_PAGE:
+		CurrentPage = CurrentBook->Page;
+		PageSelected.llSwitch(CurrentPage);
+		CurrentType = 0;
+		Element_Selected = &PageSelected;//Supposed to set type here, won't always be basic type
+		break;
 	}
-	if (CurrentLevel == 1)
-	{
-		Text_CurrentLevel.SetText("Shape");
-
-	}
-	if (CurrentLevel == 2)
-	{
-		Text_CurrentLevel.SetText("ShapeGroup");
-	}
-	if (CurrentLevel == 3)
-	{
-		Text_CurrentLevel.SetText("PageItem");
-	}
-	if (CurrentLevel == 4)
-	{
-		Text_CurrentLevel.SetText("PageGroup");
-	}
-	if (CurrentLevel == 5)
-	{
-		Text_CurrentLevel.SetText("Page");
-	}
-	if (CurrentLevel == 6)
-	{
-		Text_CurrentLevel.SetText("Book");
-	}
-	cout << "CurrentLevel: " << CurrentLevel << endl;
 }
 
-void PageCreator::AlternateDown()
+void PageCreator::LevelDown()
 {
 	if (CurrentLevel > MinLevel)
 	{
 		CurrentLevel--;
 	}
-	if (CurrentLevel == 0)
+	switch (CurrentLevel)
 	{
-		Text_CurrentLevel.SetText("Vertex");
+	case LEVEL_VERTEX:
+		//Element_Selected = &Vertex_Selected;
+		break;
+	case LEVEL_SHAPE:
+		Element_Selected = &ShapeSelected;
+		break;
+	case LEVEL_SHAPEGROUP:
+		Element_Selected = &ShapeGroupSelected;
+		break;
+	case LEVEL_PAGEITEM:
+		Element_Selected = &PageItemSelected;
+		break;
+	case LEVEL_PAGEGROUP:
+		Element_Selected = &PageGroupSelected;
+		break;
+	case LEVEL_PAGE:
+		Element_Selected = &PageSelected;
+		break;
 	}
-	if (CurrentLevel == 1)
-	{
-		Text_CurrentLevel.SetText("Shape");
-	}
-	if (CurrentLevel == 2)
-	{
-		Text_CurrentLevel.SetText("ShapeGroup");
-	}
-	if (CurrentLevel == 3)
-	{
-		Text_CurrentLevel.SetText("PageGroup");
-	}
-	if (CurrentLevel == 4)
-	{
-		Text_CurrentLevel.SetText("Page");
-	}
-	if (CurrentLevel == 5)
-	{
-		Text_CurrentLevel.SetText("Book");
-	}
-	cout << "CurrentLevel: " << CurrentLevel << endl;
 }
+
 
 
 
 void PageCreator::Add()
 {
-	//ShapeSelected->Add_Default();
-	//CurrentFunction = 0;
 	Element_Selected->Add_Default();
 	CurrentFunction = 0;
 }
 
 void PageCreator::Duplicate()
 {
-	//ShapeSelected->Add_Duplicate();
-	//CurrentFunction = 0;
 	Element_Selected->Add_Duplicate();
 	CurrentFunction = 0;
 }
 
 void PageCreator::Insert()
 {
-	//ShapeSelected->Add_Insert();
 	Element_Selected->Add_Insert();
 	CurrentFunction = 0;
 }
 
-void PageCreator::Next()
-{
-	Element_Selected->Switch(ShapeSelected->CurrentShapeData.ID + 1);
-	//Element_Selected->llSwitch(++);
-}
-
-void PageCreator::Previous()
-{
-	Element_Selected->Switch(ShapeSelected->CurrentShapeData.ID - 1);
-	//Element_Selected->llSwitch(--);
-}
+//void PageCreator::Next()
+//{
+//	Element_Selected->llSwitch(1);
+//}
+//
+//void PageCreator::Previous()
+//{
+//	Element_Selected->llSwitch(-11);
+//	Element_Selected->GetType;
+//	if (Type == Text)
+//	{
+//		Element_Selected = &TextSelected;
+//	}
+//}
 
 
 void PageCreator::Delete()
 {
-	int PreviousShape = ShapeSelected->CurrentShapeData.ID - 1;
+	//int PreviousShape = ShapeSelected->CurrentShapeData.ID - 1;
 	Element_Selected->Delete();
-	Element_Selected->Switch(PreviousShape);
+	//Element_Selected->Switch(PreviousShape);
 }
 
 void PageCreator::SetQuadSelected(int MouseState, int ShapeHovered)
@@ -447,12 +769,7 @@ void PageCreator::SetQuadSelected(int MouseState, int ShapeHovered)
 	{
 		if (QuadSelected.CurrentShapeData.ID > -1)
 		{
-			//ShapeSelected->SetColor(PreviousColor);
 			Element_Selected->Switch(ShapeHovered);
-			//PreviousColor = ShapeSelected->CurrentShapeData.Color;
-			//ShapeSelected->SetColor({ 0.0, 1.0, 0.0, 1.0 });
-			//cout << "ShapeHovered: " << ShapeHovered << endl;
-			//cout << "QuadSelectedID: " << QuadSelected.CurrentShapeData.ID << endl;
 		}
 	}
 
@@ -464,8 +781,8 @@ void PageCreator::SetEraseKey() { Keyboard::KeyButton[GUI_E_CLICKED][WITH_CTRL] 
 void PageCreator::SetSaveKey() { Keyboard::KeyButton[GUI_S_CLICKED][WITH_CTRL] = SavePage; }
 void PageCreator::SetKeyDuplicate() { Keyboard::KeyButton[GUI_D_CLICKED][WITH_CTRL] = Duplicate; }
 void PageCreator::SetDeleteKey() { Keyboard::KeyButton[GUI_DELETE_CLICKED][WITH_DEFAULT] = Delete; }
-void PageCreator::SetKeyNext() { Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_CTRL] = Next; }
-void PageCreator::SetKeyPrevious() { Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_CTRL] = Previous; }
+//void PageCreator::SetKeyNext() { Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_CTRL] = Next; }
+//void PageCreator::SetKeyPrevious() { Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_CTRL] = Previous; }
 
 
 void PageCreator::SetPixelOffsetKeys()
@@ -499,7 +816,7 @@ void PageCreator::ErasePage()
 
 void PageCreator::SavePage()
 {
-	Filesystem.SaveBook(*CurrentBook);
+	//Filesystem.SaveBook(*CurrentBook);
 }
 
 void PageCreator::SetKeyboardKeys()
@@ -621,4 +938,9 @@ void PageCreator::ColorADown()
 	}
 }
 
+void PageCreator::SetText()
+{
+	string GetString = "";
+	TextSelected.SetText(GetString);
 
+}

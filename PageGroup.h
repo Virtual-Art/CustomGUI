@@ -7,7 +7,7 @@
 #include "Slider.h"
 #include "MasterElement.h"
 
-#define TYPE_CUSTOM
+#define TYPE_CUSTOM = 0;
 //#include "ProgressBar.h"
 
 //struct CPageGroupData
@@ -51,13 +51,16 @@ public:
 
 	llPageGroupData* CurrentllPageGroup;
 	TextData CurrentText;
-	SliderData CurrentSliderData; //?
+	//SliderData CurrentSliderData; //?
 
-	PageGroup();
+	PageGroup() {};
 	PageGroup(Page& Page);
 	PageGroup(Page& Page, PageGroupData& PageGroup);
 	PageGroup(Page& Page, ShapeData& ShapeData);
 	PageGroup(Page& Page, int ID);
+	void llInit(llBookData* llBook) {};
+	llPageGroupData* llSwitch(llPageGroupData* llPageGroup);
+	llPageGroupData* GetData() { return CurrentllPageGroup; };
 
 	void Add_Default() {}; //Editor/None Set in Stone
 	void Add_Duplicate() {}; //Editor/None Set in Stone
