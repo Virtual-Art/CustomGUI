@@ -1,5 +1,16 @@
 #include "NewPage.h"
 
+void NewPage::llInit(llBookData* llBookData)
+{
+	LoadedBook = llBookData;
+}
+
+NewPage::NewPage()
+{
+	LoadedBook = nullptr;
+	CurrentllPage = nullptr;
+}
+
 NewPage::NewPage(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2)
 {
 	CurrentShader = ShaderProgram;

@@ -16,9 +16,9 @@ class NewPage : public MasterElement
 {
    public:
 
-	   NewPage() {};
+	   NewPage();
 	   NewPage(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
-	   void llInit(llBookData* llBook) {};
+	   void llInit(llBookData* llBook);
 	   llPageData* GetData() { return CurrentllPage; };
 
 	   llPageData* llSwitch(llPageData* llPage);

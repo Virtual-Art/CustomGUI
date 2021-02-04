@@ -1,6 +1,18 @@
 #ifndef MASTERELEMENT
 #define MASTERELEMENT
 
+//Level Type
+#define TYPE_VERTEX 0 
+#define TYPE_SHAPE 0
+#define TYPE_SHAPE_QUAD 1
+#define TYPE_SHAPE_CHARACTER 2
+#define TYPE_SHAPEGROUP 0
+#define TYPE_SHAPEGROUP_TEXT 1
+#define TYPE_PAGEITEM 0
+#define TYPE_PAGEITEM_SLIDER 1
+#define TYPE_PAGEGROUP 0
+#define TYPE_PAGE 0
+
 //Position Conversions
 #define P_PIXEL_TO_COMPUTER 1
 #define MIDDLE_TO_TOPLEFT 2

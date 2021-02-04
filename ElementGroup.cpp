@@ -1,5 +1,17 @@
 #include "ElementGroup.h"
 
+void ShapeGroup::llInit(llBookData* llBook)
+{
+	LoadedBook = llBook;
+}
+
+ShapeGroup::ShapeGroup()
+	:SetInStone(true)
+{
+	LoadedBook = nullptr;
+	CurrentllShapeGroup = nullptr;
+}
+
 ShapeGroup::ShapeGroup()
 	:SetInStone(true)
 {
@@ -220,6 +232,66 @@ ShapeGroup::ShapeGroup(Page& Page, int ID)
 			CurrentPage = &Page;
 			//CurrentPage->CurrentShapeGroupShapeCount = -1;
 			LoadedShape = Page.GetShapeDataR(ID);
+		}
+	}
+}
+
+
+void ShapeGroup::SetllShapeGroup(llShapeGroupData* llShapeGroup)
+{
+	if (llShapeGroup != nullptr)
+	{
+		*CurrentllShapeGroup = *llShapeGroup;
+		llUpdate();
+	}
+}
+
+
+// This shape group may have quads, characters, custom shapes
+void ShapeGroup::llUpdate()
+{
+	if (CurrentllShapeGroup != nullptr && LoadedBook != nullptr)
+	{
+		llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+
+		while (CurrentShape->Previous != nullptr)
+		{
+			CurrentShape = CurrentShape->Previous;
+		}
+
+		//Main Loop
+		while (CurrentShape != nullptr)
+		{
+			CurrentShape->Position = CurrentllShapeGroup->Position - CurrentShape->PositionOffset;
+			CurrentShape->Size = CurrentllShapeGroup->Size - CurrentShape->SizeOffset;
+			CurrentShape->Color = CurrentllShapeGroup->Color - CurrentShape->ColorOffset;
+
+			switch (CurrentShape->Type)
+			{
+			case TYPE_SHAPE:
+			{
+				Shape ShapeSelected(CurrentShape);
+				ShapeSelected.SetllShape(CurrentShape);
+				break;
+			}
+			case TYPE_QUAD:
+			{
+				Quad QuadSelected(CurrentShape);
+				QuadSelected.SetllShape(CurrentShape);
+				break;
+			}
+			case TYPE_CHARACTER:
+			{
+				NewCharacter CharSelected(CurrentShape);
+				CharSelected.SetllShape(CurrentShape);
+				break;
+			}
+			CurrentShape = CurrentShape->Next;
+			
+
+			//Edit Position
+			//Edit Size
+			//Edit Color
 		}
 	}
 }

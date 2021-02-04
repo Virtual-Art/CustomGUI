@@ -22,17 +22,7 @@ using namespace std;
 #define LEVEL_PAGE 5
 #define LEVEL_BOOK 6
 
-//Level Type
-#define TYPE_VERTEX 0 
-#define TYPE_SHAPE 0
-#define TYPE_SHAPE_QUAD 1
-#define TYPE_SHAPE_CHARACTER 2
-#define TYPE_SHAPEGROUP 0
-#define TYPE_SHAPEGROUP_TEXT 1
-#define TYPE_PAGEITEM 0
-#define TYPE_PAGEITEM_SLIDER 1
-#define TYPE_PAGEGROUP 0
-#define TYPE_PAGE 0
+
 
 //Level Type Function
 #define FUNCTION_POSITION  0

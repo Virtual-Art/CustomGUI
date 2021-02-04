@@ -53,12 +53,12 @@ public:
 	TextData CurrentText;
 	//SliderData CurrentSliderData; //?
 
-	PageGroup() {};
+	PageGroup();
 	PageGroup(Page& Page);
 	PageGroup(Page& Page, PageGroupData& PageGroup);
 	PageGroup(Page& Page, ShapeData& ShapeData);
 	PageGroup(Page& Page, int ID);
-	void llInit(llBookData* llBook) {};
+	void llInit(llBookData* llBook);
 	llPageGroupData* llSwitch(llPageGroupData* llPageGroup);
 	llPageGroupData* GetData() { return CurrentllPageGroup; };
 
@@ -68,6 +68,7 @@ public:
 	void Delete() {};
 
 	void ReCalibrateID();
+	void SetllPageGroup(llPageGroupData* PageGroup);
 
 	//void llSwitch(int Offset) override;
 
@@ -78,6 +79,7 @@ public:
 
 	//SetPosition();
 	//SetSize();
+	virtual void llUpdate();
 	void ShapeToGroup(ShapeData& ShapeData);
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);

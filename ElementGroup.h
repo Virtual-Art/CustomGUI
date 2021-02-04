@@ -16,64 +16,16 @@
 
 using namespace std;
 
-//struct GroupData
-//{
-//	Page* Page;
-//	unsigned int ShapeStartID;
-//	int GroupID;
-//	int ShapeOffset; //Offset from start ID
-//	unsigned int Count;
-//	ShapeData* NextGroup;
-//
-//	int CellOffset;
-//
-//	glm::vec2 Position;
-//	glm::vec2 Size;
-//	glm::vec4 Color;
-//
-//	bool MouseAccess = true;
-//	bool Centered;
-//	bool Highlighted;
-//	int ShapeType;
-//
-//	float Left = -3.0;
-//	float Right = -3.0;
-//	float Top = -3.0;
-//	float Bottom = -3.0;
-//
-//	glm::vec2 XYShapesPerRow;
-//	glm::vec2 ShapeDataSize;
-//
-//	//PageItem
-//	glm::vec2 PageItemPosition;
-//	glm::vec2 PageItemSize;
-//	int PageItemID;
-//	int PageItemShapeCount;
-//	int PageItemShapeOffset;
-//	int PageItemShapeStartID;
-//
-//	//PageGroup
-//	glm::vec2 PageGroupPosition;
-//	glm::vec2 PageGroupSize;
-//	int PageGroupID;
-//	int PageGroupShapeCount;
-//	int PageGroupShapeOffset;
-//	int PageGroupShapeStartID;
-//
-//};
-
-
 class ShapeGroup : public MasterElement
 {
 
  public:
 
 	ShapeGroupData CurrentShapeGroup;
-
 	llShapeGroupData* CurrentllShapeGroup;
 	const bool SetInStone; //class cannot switch to another Shape 
 
-	ShapeGroup() : SetInStone(true) {};
+	ShapeGroup();
 	ShapeGroup(llBookData* llBook);
 	ShapeGroup(llBookData* llBook, llShapeGroupData* ShapeGroup);
 	ShapeGroup(llShapeGroupData* ShapeGroup);
@@ -201,11 +153,12 @@ class ShapeGroup : public MasterElement
 
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
+	void SetllShapeGroup(llShapeGroupData* llShapeGroup);
 
 protected:
-	virtual void Update() = 0;
+	virtual void Update() {};
 	void NewllUpdate();
-	virtual void llUpdate() = 0;
+	virtual void llUpdate();
 	void ReCalibrateID();
 	//void ShapeToGroup(ShapeData& ShapeData);
 	//void GroupToShape(GroupData& GroupData);

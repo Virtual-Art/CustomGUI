@@ -1,9 +1,14 @@
 #include "PageGroup.h"
 
+void PageGroup::llInit(llBookData* llBook)
+{
+	LoadedBook = llBook;
+}
+
 PageGroup::PageGroup()
 {
-	Initialized = false;
-	CurrentPage = nullptr;
+	LoadedBook = nullptr;
+	CurrentllPageGroup = nullptr;
 }
 
 PageGroup::PageGroup(Page& Page)
@@ -81,6 +86,12 @@ PageGroup::PageGroup(Page& Page, ShapeData& ShapeData)
 		CurrentPageGroup.ShapeOffset = Page.TotalPageGroupCount;
 	}
 	//CurrentPageItem.GroupID = CurrentPageItem.Page->PageItemCount;
+}
+
+void PageGroup::SetllPageGroup(llPageGroupData* PageGroup)
+{
+	*CurrentllPageGroup = *PageGroup;
+	llUpdate();
 }
 
 void PageGroup::ShapeToGroup(ShapeData& ShapeData)
@@ -359,3 +370,42 @@ float PageGroup::SetMouseAccess(glm::vec2 Position, glm::vec2 Size)
 //	}
 //}
 //
+
+
+void PageGroup::llUpdate()
+{
+	if (CurrentllPageGroup != nullptr && LoadedBook != nullptr)
+	{
+		llPageItemData* CurrentPageItem = CurrentllPageGroup->PageItem;
+
+		while (CurrentPageItem->Previous != nullptr)
+		{
+			CurrentPageItem = CurrentPageItem->Previous;
+		}
+
+		//Main Loop
+		while (CurrentPageItem != nullptr)
+		{
+			CurrentPageItem->Position = CurrentllPageGroup->Position - CurrentPageItem->PositionOffset;
+			CurrentPageItem->Size = CurrentllPageGroup->Size - CurrentPageItem->SizeOffset;
+			CurrentPageItem->Color = CurrentllPageGroup->Color - CurrentPageItem->ColorOffset;
+
+			switch (CurrentPageItem->Type)
+			{
+			case TYPE_PAGEITEM:
+			{
+				PageGroupItem PageItemSelected(CurrentPageItem);
+				PageItemSelected.SetllPageItem(CurrentPageItem);
+				break;
+			}
+			case TYPE_PAGEITEM_SLIDER:
+			{
+				Slider SliderSelected(CurrentPageItem);
+				SliderSelected.SetllPageItem(CurrentPageItem);
+				break;
+			}
+			CurrentPageItem = CurrentPageItem->Next;
+			}
+		}
+	}
+}

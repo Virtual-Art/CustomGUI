@@ -1,5 +1,16 @@
 #include "PageGroupItem.h"
 
+void PageGroupItem::llInit(llBookData* llBook)
+{
+	LoadedBook = llBook;
+}
+
+PageGroupItem::PageGroupItem()
+{
+	LoadedBook = nullptr;
+	CurrentllPageItem = nullptr;
+}
+
 //Uninitialized PageItem
 PageGroupItem::PageGroupItem()
 {
@@ -228,6 +239,58 @@ PageGroupItem::PageGroupItem(Page& Page, int ID)
 		cout << "PageGroup Not Ready:: error page is nullptr" << endl;
 	}
 
+}
+
+
+void PageGroupItem::SetllPageItem(llPageItemData* llPageItem)
+{
+	if (llPageItem != nullptr)
+	{
+		*CurrentllPageItem = *llPageItem;
+		llUpdate();
+	}
+}
+
+
+
+void PageGroupItem::llUpdate()
+{
+	if (CurrentllPageItem != nullptr && LoadedBook != nullptr)
+	{
+		llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+
+		while (CurrentShapeGroup->Previous != nullptr)
+		{
+			CurrentShapeGroup = CurrentShapeGroup->Previous;
+		}
+
+		//Main Loop
+		while (CurrentShapeGroup != nullptr)
+		{
+			CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+			CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+			CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+
+			switch (CurrentShapeGroup->Type)
+			{
+			case TYPE_SHAPEGROUP:
+			{
+				ShapeGroup ShapeGroupSelected(CurrentShapeGroup);
+				ShapeGroupSelected.SetllShapeGroup(CurrentShapeGroup);
+				break;
+			}
+			case TYPE_SHAPEGROUP_TEXT:
+			{
+				TextData INCOMPLETE;
+				Text QuadSelected(CurrentShapeGroup);
+				QuadSelected.SetllTextGroup(CurrentShapeGroup, INCOMPLETE);
+				break;
+			}
+			CurrentShapeGroup = CurrentShapeGroup->Next;
+			}
+
+		}
+	}
 }
 
 void PageGroupItem::SetPosition(glm::vec2 Position)
