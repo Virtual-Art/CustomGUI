@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 	Page GUI(4000);
 	GUI.Init(ShapeShader);
 
-	PageCreator::Init(MainBook.Page[0], GUI, MainBook);
+	llBookData EditorBook;
 
 	FileSystem.LoadBook(MainBook, ShapeShader);
 
@@ -116,7 +116,10 @@ int main(int argc, char** argv)
 
 	Page* PageSelected = &MainBook.Page[0];
 
-	
+	NewPage EditorPage(&EditorBook, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
+	PageCreator::llInit(&EditorBook);
+
+
 
 	PageItemData PageItem_FirstSlider;
 	SliderData Slider_FirstSlider;
@@ -213,6 +216,7 @@ int main(int argc, char** argv)
 	//Print As Second
 	//MasterElement::PrintPageItemShapeGroups(llSlider.GetPageItem());
 	//MasterElement::PrintPageItemShapes(llSlider.GetPageItem());
+	MasterElement::PrintBookStats(&Gamee);
 
 	//Find Head
 	while (CurrentWorkingPageItem->Previous != nullptr)
@@ -247,13 +251,13 @@ int main(int argc, char** argv)
 
 		PageCreator::OnUpdate(KeyState, MouseState);
 
-		llSlider.SetllPosition(MousePosition);
+		//llSlider.SetllPosition(MousePosition);
 
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
 
 		FistPage.DrawPage();
-
+		//EditorPage.DrawPage();
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, GUI);
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, *PageSelected);
 

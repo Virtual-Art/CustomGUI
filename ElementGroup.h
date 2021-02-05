@@ -34,7 +34,8 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData);
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
-	void llInit(llBookData* llBook) {};
+	void llInit(llBookData* llBook);
+	void llShapeGroupInit(llBookData* llBook, llShapeGroupData* ShapeGroup);
 	llShapeGroupData* GetData() { return CurrentllShapeGroup; };
 
 	llShapeGroupData* operator*()

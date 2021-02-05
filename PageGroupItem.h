@@ -91,7 +91,7 @@ public:
 
 	void SetllPageItem(llPageItemData* llPageItem);
 
-	virtual llPageItemData* GetData() {};
+	virtual llPageItemData* GetData() { return CurrentllPageItem; };
 
 	llPageItemData* GetPageItem()
 	{

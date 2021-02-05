@@ -2,24 +2,48 @@
 
 
 
-void PageCreator::llInit(llBookData* CurrentBook)
+void PageCreator::llInit(llBookData* llBook)
 {
-	//Setup all Editor Objects to get ready to create/edit the book provided either new or used
+	TextData Text_Details;
+	llShapeGroupData ShapeGroup_Details;
 
 	//Defaults
-	ShapeSelected.llInit(CurrentBook);
-	ShapeGroupSelected.llInit(CurrentBook);
-	PageItemSelected.llInit(CurrentBook);
-	PageGroupSelected.llInit(CurrentBook);
-	PageSelected.llInit(CurrentBook);
+	ShapeSelected.llInit(llBook);
+	ShapeGroupSelected.llInit(llBook);
+	PageItemSelected.llInit(llBook);
+	PageGroupSelected.llInit(llBook);
+	PageSelected.llInit(llBook);
 
 	//Presets
-	QuadSelected.llInit(CurrentBook);
-	CharacterSelected.llInit(CurrentBook);
-	TextSelected.llInit(CurrentBook);
-	SliderSelected.llInit(CurrentBook);
+	QuadSelected.llInit(llBook);
+	CharacterSelected.llInit(llBook);
+	TextSelected.llInit(llBook);
+	SliderSelected.llInit(llBook);
 
+	//Current Level
+	//Label
+	Text_Details.Phrase = "Current Level: ";
+	ShapeGroup_Details.Position = { -0.95, 0.8 };
+	Text_CurrentLevel_Label.llInit(llBook, &ShapeGroup_Details, Text_Details);
 
+	//Level
+	Text_Details.Phrase = "Shape ";
+	ShapeGroup_Details.Position = { -0.95, 0.7 };
+	ShapeGroup_Details.Color = Purple;
+	Text_CurrentLevel.llInit(llBook, &ShapeGroup_Details, Text_Details);
+
+	//Current Function
+	//Label
+	Text_Details.Phrase = "Current Function: ";
+	ShapeGroup_Details.Position = { -0.95, 0.6 };
+	ShapeGroup_Details.Color = White;
+	Text_CurrentFunction_Label.llInit(llBook, &ShapeGroup_Details, Text_Details);
+
+	//Options
+	Text_Details.Phrase = "Position ";
+	ShapeGroup_Details.Position = { -0.95, 0.5 };
+	ShapeGroup_Details.Color = Orange;
+	Text_CurrentFunction.llInit(llBook, &ShapeGroup_Details, Text_Details);
 
 }
 
@@ -831,8 +855,8 @@ void PageCreator::SetKeyboardKeys()
 	SetEraseKey();
 	SetSaveKey();
 	SetInsertKey();
-	SetKeyNext(); 
-	SetKeyPrevious(); 
+	//SetKeyNext(); 
+	//SetKeyPrevious(); 
 }
 
 void PageCreator::Empty()

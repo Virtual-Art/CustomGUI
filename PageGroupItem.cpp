@@ -11,12 +11,6 @@ PageGroupItem::PageGroupItem()
 	CurrentllPageItem = nullptr;
 }
 
-//Uninitialized PageItem
-PageGroupItem::PageGroupItem()
-{
-	CurrentPage = nullptr;
-}
-
 PageGroupItem::PageGroupItem(llBookData* llBook)
 {
 	if (llBook->Page == nullptr)
@@ -33,30 +27,30 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 	}
 
 	CurrentllPageItem = new llPageItemData;
-	CurrentllPageItem->ShapeGroup = new llShapeGroupData;
-	//CurrentllShapeGroup = CurrentllPageItem->ShapeGroup;
+	//Log::LogString("PageItem Created and Shape Group?");
 
 	llPageItemData* TestingPageItem = llBook->Page->PageGroup->PageItem;
 
 	//Completely new object
 	if (TestingPageItem == nullptr)
 	{
-		Log::LogString("No PageItem Found In PageGroup, New PageItem; Set!");
+		Log::LogString("PageGroup Empty. PageItem Head Linked");
 		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
 		llBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
 	}
 	else //Shapes already created
 	{
-		Log::LogString("Existing PageItem Found");
 		llPageItemData* FoundTail = TestingPageItem;
+		int LinkCount = 0;
 
 		//Find tail then add
+		//Log::LogString("Finding Tail..");
 		while (FoundTail->Next != nullptr)
 		{
-			Log::LogString("Finding Tail..");
 			FoundTail = FoundTail->Next;
+			LinkCount++;
 		}
-		Log::LogString("Set");
+		Log::LogString("Page Item Created");
 		FoundTail->Next = CurrentllPageItem;
 		CurrentllPageItem->Previous = FoundTail;
 		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
@@ -68,7 +62,6 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 {
-	Log::LogString("Shape Creation Request with data");
 
 	//Make sure we are provided with data
 	if (llPageItem != nullptr && llBookData != nullptr)
@@ -92,7 +85,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 		//Create a new PageItem & Copy the provided data
 		CurrentllPageItem = new llPageItemData;
 		*CurrentllPageItem = *llPageItem;
-		CurrentllPageItem->ShapeGroup = new llShapeGroupData;
+		//Log::LogString("PageItem Created and ShapeGroup Created?");
 
 		//Take a look at the current PageItem in the current PageGroup
 		llPageItemData* TestingPageItem = llBookData->Page->PageGroup->PageItem;
@@ -101,24 +94,25 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 		if (TestingPageItem == nullptr)
 		{
 			//Set the book to include and point to the newly created PageItem
-			Log::LogString("This Page Item is Brand new");
+			Log::LogString("PageGroup Empty. PageItem Head Linked");
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CurrentllPageItem;
 		}
 		else //A Page Item already exists in the current Page Group
 		{
-			Log::LogString("this Page Item already contains a Page Item");
 			llPageItemData* FoundTail = TestingPageItem;
+			int LinkCount = 0;
 
 			//Find the last PageItem in the current PageGroup
+			//Log::LogString("Finding Tail..");
 			while (FoundTail->Next != nullptr)
 			{
-				Log::LogString("Finding Tail..");
 				FoundTail = FoundTail->Next;
+				LinkCount++;
 			}
 
 			//When we find the last PageItem in the PageGroup, attach the newly create PageItem next to it and
-			// link both PageItems together
+			Log::LogString("PageItem Created");
 			FoundTail->Next = CurrentllPageItem;
 			CurrentllPageItem->Previous = FoundTail;
 

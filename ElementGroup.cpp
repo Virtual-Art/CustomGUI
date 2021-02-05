@@ -12,11 +12,6 @@ ShapeGroup::ShapeGroup()
 	CurrentllShapeGroup = nullptr;
 }
 
-ShapeGroup::ShapeGroup()
-	:SetInStone(true)
-{
-	CurrentPage = nullptr;
-}
 
 
 ShapeGroup::ShapeGroup(llBookData* llBook)
@@ -39,29 +34,59 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
 	}
 
+	if (llBook->Page->PageGroup == nullptr)
+	{
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		llBook->Page->PageGroup = CreatedPageGroup;
+		llBook->Page->PageGroupHead = CreatedPageGroup;
+
+		llBook->Page->PageGroup->PageItem = CreatedPageItem;
+		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		llBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+	}
+
+	if (llBook->Page->PageGroup->PageItem == nullptr)
+	{
+		llPageItemData* CreatedPageItem = new llPageItemData;
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		llBook->Page->PageGroup->PageItem = CreatedPageItem;
+		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		llBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+	}
+
 	CurrentllShapeGroup = new llShapeGroupData;
+	//Log::LogString("Shape Group Created");
 
 	llShapeGroupData* TestingShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
 
 	//Completely new object
 	if (TestingShapeGroup == nullptr)
 	{
-		Log::LogString("No ShapeGroup Found In PageItem, New ShapeGroup; Set!");
+		Log::LogString("PageItem Empty. ShapeGroup Head Created");
 		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 	}
 	else //Shapes already created
 	{
-		Log::LogString("Existing ShapeGroup Found");
 		llShapeGroupData* FoundTail = TestingShapeGroup;
+		int LinkCount = 1;
 
 		//Find tail then add
+		//Log::LogString("Finding Tail..");
 		while (FoundTail->Next != nullptr)
 		{
-			Log::LogString("Finding Tail..");
 			FoundTail = FoundTail->Next;
+			LinkCount++;
 		}
-		Log::LogString("Set");
+		Log::LogString("Shape Group Created");
 		FoundTail->Next = CurrentllShapeGroup;
 		CurrentllShapeGroup->Previous = FoundTail;
 		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
@@ -74,7 +99,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 	:SetInStone(true)
 {
-	Log::LogString("Shape Creation Request with data");
+
 	//If it exists
 	if (llShapeGroup != nullptr)
 	{
@@ -95,31 +120,61 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
 		}
 
+		if (llBookData->Page->PageGroup == nullptr)
+		{
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroupHead = CreatedPageGroup;
+
+			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
+		if (llBookData->Page->PageGroup->PageItem == nullptr)
+		{
+			llPageItemData* CreatedPageItem = new llPageItemData;
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
 		CurrentllShapeGroup = new llShapeGroupData;
 		*CurrentllShapeGroup = *llShapeGroup;
+		//Log::LogString("Shape Group Created");
 
 		llShapeGroupData* TestingShapeGroup = llBookData->Page->PageGroup->PageItem->ShapeGroup;
 
 		//Completely new shapegroup object
 		if (TestingShapeGroup == nullptr)
 		{
-			Log::LogString("This Page Item is Brand new");
+			Log::LogString("PageItem Emtpy.");
 			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 		}
 		else //Shape groups already created
 		{
-		    Log::LogString("this Page Item already contains a ShapeGroup");
 			llShapeGroupData* FoundTail = TestingShapeGroup;
+			int LinkCount = 1;
 
 			//Find tail then add
+			//Log::LogString("Finding Tail..");
 			while (FoundTail->Next != nullptr)
 			{
-				Log::LogString("Finding Tail..");
 				FoundTail = FoundTail->Next;
+				LinkCount++;
 			}
 
-			Log::LogString("Set");
+			Log::LogInt("Shape Linked ", LinkCount);
 			FoundTail->Next = CurrentllShapeGroup;
 			CurrentllShapeGroup->Previous = FoundTail;
 			//We are setting the book to point to this new shape group because that's where we want to load shapes
@@ -236,6 +291,97 @@ ShapeGroup::ShapeGroup(Page& Page, int ID)
 	}
 }
 
+void ShapeGroup::llShapeGroupInit(llBookData* llBookData, llShapeGroupData* llShapeGroup)
+{
+	//If it exists
+	if (llShapeGroup != nullptr)
+	{
+		if (llBookData->Page == nullptr)
+		{
+			Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+
+			llBookData->Page = CreatedPage;
+			llBookData->PageHead = CreatedPage;
+
+			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroupHead = CreatedPageGroup;
+
+			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+		}
+
+		if (llBookData->Page->PageGroup == nullptr)
+		{
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroupHead = CreatedPageGroup;
+
+			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
+		if (llBookData->Page->PageGroup->PageItem == nullptr)
+		{
+			llPageItemData* CreatedPageItem = new llPageItemData;
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
+		CurrentllShapeGroup = new llShapeGroupData;
+		*CurrentllShapeGroup = *llShapeGroup;
+
+		llShapeGroupData* TestingShapeGroup = llBookData->Page->PageGroup->PageItem->ShapeGroup;
+
+		//Completely new shapegroup object
+		if (TestingShapeGroup == nullptr)
+		{
+			Log::LogString("PageItem is Empty. Head ShapeGroup Created");
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+		}
+		else //Shape groups already created
+		{
+			llShapeGroupData* FoundTail = TestingShapeGroup;
+			int LinkCount = 1;
+
+			//Find tail then add
+			//Log::LogString("Finding Tail..");
+			while (FoundTail->Next != nullptr)
+			{
+				FoundTail = FoundTail->Next;
+				LinkCount++;
+			}
+
+			Log::LogString("ShapeGroup Created");
+			FoundTail->Next = CurrentllShapeGroup;
+			CurrentllShapeGroup->Previous = FoundTail;
+			//We are setting the book to point to this new shape group because that's where we want to load shapes
+			//however the previous group is not lost because we set the next and previous
+			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		}
+
+		LoadedBook = llBookData;
+		CurrentllShapeGroup->Type = TYPE_CUSTOM;
+	}
+	else
+	{
+		Log::LogString("Text Init FAILED");
+	}
+}
 
 void ShapeGroup::SetllShapeGroup(llShapeGroupData* llShapeGroup)
 {
@@ -285,6 +431,7 @@ void ShapeGroup::llUpdate()
 				NewCharacter CharSelected(CurrentShape);
 				CharSelected.SetllShape(CurrentShape);
 				break;
+			}
 			}
 			CurrentShape = CurrentShape->Next;
 			

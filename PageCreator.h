@@ -117,11 +117,11 @@ namespace PageCreator
 
 	//Helper Objects
 
-	static Text Text_CurrentLevel_Label;// (*GUIPage, "Current Function: ", { 0.0, 1.0 });
-	static Text Text_CurrentFunction_Label;// (*GUIPage, "Current Function: ", { 0.0, 1.0 });
+	static Text Text_CurrentLevel_Label;
+	static Text Text_CurrentFunction_Label;
 	
-	static Text Text_CurrentLevel;// (*GUIPage, "Shape ", { -0.75, 1.0 });
-	static Text Text_CurrentFunction;// (*GUIPage, "Position", { -0.25, 1.0 });
+	static Text Text_CurrentLevel;
+	static Text Text_CurrentFunction;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
     //The Editor Objects edit all the books and switch between books on their own
@@ -145,11 +145,11 @@ namespace PageCreator
 	static Slider SliderSelected;
 	
 	void OnUpdate(KeyResult& KeyState, int MouseState);
-	void Init(Page& Creatorpage, Page& GUIPage, Book& Book);
+	//void Init(Page& Creatorpage, Page& GUIPage, Book& Book);
 	void llInit(llBookData* CurrentBook);
     void CreateFunctionContainer();
 	void SetCreatorFunctions();
-	void CreateGUIObjects();
+	//void CreateGUIObjects();
 	///////////////////////////////////////////////KEYBOARD FUNCTIONS////////////////////////////////
 
 	void SetKeyboardKeys();
@@ -165,8 +165,8 @@ namespace PageCreator
 	void SetSaveKey(); // Ctrl + S
 	void SetEraseKey(); // Ctrl + S
 	void SetInsertKey(); // Insert Key
-	void SetKeyNext(); // Ctrl + ->
-	void SetKeyPrevious(); // Ctrl + <-
+	//void SetKeyNext(); // Ctrl + ->
+	//void SetKeyPrevious(); // Ctrl + <-
 
 	void ErasePage();
 	void SavePage();

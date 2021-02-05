@@ -59,7 +59,7 @@ public:
 	PageGroup(Page& Page, ShapeData& ShapeData);
 	PageGroup(Page& Page, int ID);
 	void llInit(llBookData* llBook);
-	llPageGroupData* llSwitch(llPageGroupData* llPageGroup);
+	llPageGroupData* llSwitch(llPageGroupData* llPageGroup) {};
 	llPageGroupData* GetData() { return CurrentllPageGroup; };
 
 	void Add_Default() {}; //Editor/None Set in Stone
