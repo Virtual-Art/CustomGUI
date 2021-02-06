@@ -117,8 +117,11 @@ int main(int argc, char** argv)
 	Page* PageSelected = &MainBook.Page[0];
 
 	NewPage EditorPage(&EditorBook, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
+	Quad WHY(&EditorBook);
+	//Text WHYY(&EditorBook);
+	//WHYY.SetllText("WHYYYYYYYYYY");
+	//WHYY.SetllPosition({0.0, 0.9});
 	PageCreator::llInit(&EditorBook);
-
 
 
 	PageItemData PageItem_FirstSlider;
@@ -183,9 +186,9 @@ int main(int argc, char** argv)
 	////As well as the current element it's on regardless on insertion and deletion
 	//Slider llSlider(&Gamee);
 	TextData yaat_t;
-	yaat_t.Phrase = "Walmart";
+	yaat_t.Phrase = "PeeMart";
 	llShapeGroupData yaat;
-	yaat.Position = { 0.0, 0.0 };
+	yaat.Position = { 0.0, 0.9 };
 	Quad llQuad0(&Gamee);
 	Quad llQuad1(&Gamee);
 	Quad llQuad3(&Gamee);
@@ -216,7 +219,7 @@ int main(int argc, char** argv)
 	//Print As Second
 	//MasterElement::PrintPageItemShapeGroups(llSlider.GetPageItem());
 	//MasterElement::PrintPageItemShapes(llSlider.GetPageItem());
-	MasterElement::PrintBookStats(&Gamee);
+	//MasterElement::PrintBookStats(&Gamee);
 
 	//Find Head
 	while (CurrentWorkingPageItem->Previous != nullptr)
@@ -256,8 +259,12 @@ int main(int argc, char** argv)
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
 
-		FistPage.DrawPage();
-		//EditorPage.DrawPage();
+		EditorPage.DrawPage();
+		//
+		if (KeyState.Key1 == GUI_UP_CLICKED && KeyState.Shift == true)
+		{
+			//Log::LogString("Up with shift");
+		}
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, GUI);
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, *PageSelected);
 

@@ -133,7 +133,7 @@ public:
 	};
 
 	//ShapeData Editing
-	llPageItemData* llSwitch(llPageItemData* llPageItem) {};
+	llPageItemData* llSwitch(llPageItemData* llPageItem) { return CurrentllPageItem; };
 	ShapeData& Switch(int RequstedShapeID);
 	ShapeData& Switch(Page& Page, int RequstedShapeID);
 	void SetPageItem(ShapeData& ShapeData);

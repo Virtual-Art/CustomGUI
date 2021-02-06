@@ -31,22 +31,20 @@ NewPage::NewPage(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* T
 		//Completely new object
 		if (TestingPage == nullptr)
 		{
-			Log::LogString("No PageItem Found In PageGroup, New PageItem; Set!");
+			Log::LogString("New Page Linked");
 			llBook->Page = CurrentllPage;
 			llBook->PageHead = CurrentllPage;
 		}
 		else //Shapes already created
 		{
-			Log::LogString("Existing PageItem Found");
 			llPageData* FoundTail = TestingPage;
 
 			//Find tail then add
 			while (FoundTail->Next != nullptr)
 			{
-				Log::LogString("Finding Tail..");
 				FoundTail = FoundTail->Next;
 			}
-			Log::LogString("Set");
+			Log::LogString("New Page Linked");
 			FoundTail->Next = TestingPage;
 			TestingPage->Previous = FoundTail;
 			llBook->Page = CurrentllPage;

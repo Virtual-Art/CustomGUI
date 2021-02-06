@@ -21,7 +21,7 @@ class NewPage : public MasterElement
 	   void llInit(llBookData* llBook);
 	   llPageData* GetData() { return CurrentllPage; };
 
-	   llPageData* llSwitch(llPageData* llPage) {};
+	   llPageData* llSwitch(llPageData* llPage) { return CurrentllPage; };
 	   
 	   void InitiatePage(llBookData* llBook, ShaderProgram ShaderProgram);
 

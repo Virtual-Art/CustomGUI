@@ -237,7 +237,7 @@ struct llPageData
 		}
 		/////////////////////////////////////////////////////
 
-		while (CurrentPageGroup != nullptr)
+		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
 		{
 			PageGroupCount++;
 			//PageItem
@@ -250,53 +250,57 @@ struct llPageData
 			}
 			/////////////////////////////////////////////////////
 
-			while (CurrentPageItem != nullptr)
+			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
 			{
 				PageItemCount++;
 				//ShapeGroup
 				llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
 				//Set ShapeGroup to beginning
 				/////////////////////////////////////////////////////
-				while (CurrentShapeGroup->Previous != nullptr)
+				while (CurrentShapeGroup->Previous != nullptr )
 				{
 					CurrentShapeGroup = CurrentShapeGroup->Previous;
 				}
 				/////////////////////////////////////////////////////
 
-				while (CurrentShapeGroup != nullptr)
+				while (CurrentShapeGroup != nullptr && CurrentShapeGroup->Shape != nullptr)
 				{
 					ShapeGroupCount++;
 					//Shape
 					llShapeData* CurrentShape = CurrentShapeGroup->Shape;
 					//Set shape to beginning
 					/////////////////////////////////////////////////////
-					while (CurrentShape->Previous != nullptr)
+					if (CurrentShapeGroup->Shape != nullptr)
 					{
-						CurrentShape = CurrentShape->Previous;
-					}
-					/////////////////////////////////////////////////////
+						while (CurrentShape->Previous != nullptr)
+						{
+							CurrentShape = CurrentShape->Previous;
+						}
+						/////////////////////////////////////////////////////
 
-					while (CurrentShape != nullptr)
-					{
-						ShapeCount++;
-						//PrintllShape(CurrentShape);
-						//Vertex
-						llVertexData* CurrentVertex = CurrentShape->Vertexx;
-						/////////////////////////////////////////////////////
-						while (CurrentVertex->Previous != nullptr)
+						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
 						{
-							CurrentVertex = CurrentVertex->Previous;
+							//cout << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+							ShapeCount++;
+							//PrintllShape(CurrentShape);
+							//Vertex
+							llVertexData* CurrentVertex = CurrentShape->Vertexx;
+							/////////////////////////////////////////////////////
+							while (CurrentVertex->Previous != nullptr)
+							{
+								CurrentVertex = CurrentVertex->Previous;
+							}
+							/////////////////////////////////////////////////////
+							while (CurrentVertex != nullptr)
+							{
+								VertexCount++;
+								VertexContainer[VertexIndex] = *CurrentVertex;
+								VertexIndex++;
+								CurrentVertex = CurrentVertex->Next;
+							}
+							VertexCount = -1;
+							CurrentShape = CurrentShape->Next;
 						}
-						/////////////////////////////////////////////////////
-						while (CurrentVertex != nullptr)
-						{
-							VertexCount++;
-							VertexContainer[VertexIndex] = *CurrentVertex;
-							VertexIndex++;
-							CurrentVertex = CurrentVertex->Next;
-						}
-						VertexCount = -1;
-						CurrentShape = CurrentShape->Next;
 					}
 					ShapeCount = -1;
 					CurrentShapeGroup = CurrentShapeGroup->Next;

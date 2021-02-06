@@ -7,6 +7,8 @@ void PageCreator::llInit(llBookData* llBook)
 	TextData Text_Details;
 	llShapeGroupData ShapeGroup_Details;
 
+	CurrentBook = llBook;
+
 	//Defaults
 	ShapeSelected.llInit(llBook);
 	ShapeGroupSelected.llInit(llBook);
@@ -19,6 +21,10 @@ void PageCreator::llInit(llBookData* llBook)
 	CharacterSelected.llInit(llBook);
 	TextSelected.llInit(llBook);
 	SliderSelected.llInit(llBook);
+
+	CreateFunctionContainer(); //Build "Creator" Function Table
+	SetCreatorFunctions();     //Set Functions To Function Table
+	SetKeyboardKeys();
 
 	//Current Level
 	//Label
@@ -45,6 +51,7 @@ void PageCreator::llInit(llBookData* llBook)
 	ShapeGroup_Details.Color = Orange;
 	Text_CurrentFunction.llInit(llBook, &ShapeGroup_Details, Text_Details);
 
+	MasterElement::PrintBookStats(llBook);
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
@@ -366,56 +373,30 @@ void PageCreator::TypeRight()
 		if (CurrentType < 2)
 		{
 			CurrentType++;
-
-			switch (CurrentType)
-			{
-			case TYPE_SHAPE:
-				Element_Selected = &ShapeSelected;
-				break;
-			case TYPE_SHAPE_QUAD:
-				Element_Selected = &QuadSelected;
-				break;
-			case TYPE_SHAPE_CHARACTER:
-				Element_Selected = &CharacterSelected;
-				break;
-			}
+			SetShapeType();
 		}
 		break;
 	case LEVEL_SHAPEGROUP:
 		if (CurrentType < 1)
 		{
 			CurrentType++;
-			switch (CurrentType)
-			{
-			case TYPE_SHAPEGROUP:
-				Element_Selected = &ShapeGroupSelected;
-				break;
-			case TYPE_SHAPEGROUP_TEXT:
-				Element_Selected = &TextSelected;
-				break;
-			}
+			SetShapeGroupType();
 		}
 		break;
 	case LEVEL_PAGEITEM:
 		if (CurrentType < 1)
 		{
 			CurrentType++;
-			switch (CurrentType)
-			{
-			case TYPE_PAGEITEM:
-				Element_Selected = &PageItemSelected;
-				break;
-			case TYPE_PAGEITEM_SLIDER:
-				Element_Selected = &SliderSelected;
-				break;
-			}
+			SetPageItemType();
 		}
 		break;
 	case LEVEL_PAGEGROUP:
 		//Only One Type
+		SetPageGroupType();
 		break;
 	case LEVEL_PAGE:
 		//Only one type
+		SetPageType();
 		break;
 	}
 }
@@ -431,54 +412,29 @@ void PageCreator::TypeLeft()
 		if (CurrentType > 0)
 		{
 			CurrentType--;
-			switch (CurrentType)
-			{
-			case TYPE_SHAPE:
-				Element_Selected = &ShapeSelected;
-				break;
-			case TYPE_SHAPE_QUAD:
-				Element_Selected = &QuadSelected;
-				break;
-			case TYPE_SHAPE_CHARACTER:
-				Element_Selected = &CharacterSelected;
-				break;
-			}
+			SetShapeType();
 			break;
 	case LEVEL_SHAPEGROUP:
 		if (CurrentType > 0)
 		{
 			CurrentType--;
-			switch (CurrentType)
-			{
-			case TYPE_SHAPEGROUP:
-				Element_Selected = &ShapeGroupSelected;
-				break;
-			case TYPE_SHAPEGROUP_TEXT:
-				Element_Selected = &TextSelected;
-				break;
-			}
+			SetShapeGroupType();
 		}
 		break;
 	case LEVEL_PAGEITEM:
 		if (CurrentType > 0)
 		{
 			CurrentType--;
-			switch (CurrentType)
-			{
-			case TYPE_PAGEITEM:
-				Element_Selected = &PageItemSelected;
-				break;
-			case TYPE_PAGEITEM_SLIDER:
-				Element_Selected = &SliderSelected;
-				break;
-			}
+			SetPageItemType();
 		}
 		break;
 	case LEVEL_PAGEGROUP:
 		//Only One Type
+		SetPageGroupType();
 		break;
 	case LEVEL_PAGE:
 		//Only one type
+		SetPageType();
 		break;
 		}
 	}
@@ -605,12 +561,15 @@ void PageCreator::SetShapeType()
 	{
 	case TYPE_SHAPE:
 		Element_Selected = &ShapeSelected;
+		Text_CurrentLevel.SetllText("Shape");
 		break;
 	case TYPE_SHAPE_QUAD:
 		Element_Selected = &QuadSelected;
+		Text_CurrentLevel.SetllText("Quad");
 		break;
 	case TYPE_SHAPE_CHARACTER:
 		Element_Selected = &CharacterSelected;
+		Text_CurrentLevel.SetllText("Character");
 		break;
 	}
 }
@@ -621,9 +580,11 @@ void PageCreator::SetShapeGroupType()
 	{
 	case TYPE_SHAPEGROUP:
 		Element_Selected = &ShapeGroupSelected;
+		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case TYPE_SHAPEGROUP_TEXT:
 		Element_Selected = &TextSelected;
+		Text_CurrentLevel.SetllText("Text");
 		break;
 	}
 }
@@ -634,9 +595,11 @@ void PageCreator::SetPageItemType()
 	{
 	case TYPE_PAGEITEM:
 		Element_Selected = &PageItemSelected;
+		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case TYPE_PAGEITEM_SLIDER:
 		Element_Selected = &SliderSelected;
+		Text_CurrentLevel.SetllText("Slider");
 		break;
 	}
 }
@@ -647,6 +610,7 @@ void PageCreator::SetPageGroupType()
 	{
 	case TYPE_PAGEGROUP:
 		Element_Selected = &PageGroupSelected;
+		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	}
 }
@@ -657,6 +621,7 @@ void PageCreator::SetPageType()
 	{
 	case TYPE_PAGE:
 		Element_Selected = &PageSelected;
+		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
 }
@@ -671,6 +636,7 @@ void PageCreator::SetAlternate()
 
 void PageCreator::LevelUp()
 {
+	cout << "Switching level" << endl;
 	if (CurrentLevel < MaxLevel)
 	{
 		CurrentLevel++;
@@ -680,42 +646,49 @@ void PageCreator::LevelUp()
 	{
 	case LEVEL_VERTEX:
 		//Element_Selected = &Vertex_Selected;
+		Text_CurrentLevel.SetText("Vertex");
 		break;
 	case LEVEL_SHAPE:
 		CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
 		ShapeSelected.llSwitch(CurrentShape);
 		CurrentType = CurrentShape->Type; 
 		Element_Selected = &ShapeSelected; //Supposed to set type here, won't always be basic type
+		Text_CurrentLevel.SetllText("Shape");
 		break;
 	case LEVEL_SHAPEGROUP:
 		CurrentShapeGroup = CurrentBook->Page->PageGroup->PageItem->ShapeGroup;
 		ShapeGroupSelected.llSwitch(CurrentShapeGroup);
 		CurrentType = CurrentShapeGroup->Type; 
 		Element_Selected = &ShapeGroupSelected; //Supposed to set type here, won't always be basic type
+		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case LEVEL_PAGEITEM:
 		CurrentPageItem = CurrentBook->Page->PageGroup->PageItem;
 		PageItemSelected.llSwitch(CurrentPageItem);
 		CurrentType = CurrentPageItem->Type; 
 		Element_Selected = &PageItemSelected; //Supposed to set type here, won't always be basic type
+		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case LEVEL_PAGEGROUP:
 		CurrentPageGroup = CurrentBook->Page->PageGroup;
 		PageGroupSelected.llSwitch(CurrentPageGroup);
 		CurrentType = CurrentPageGroup->Type;
 		Element_Selected = &PageGroupSelected; //Supposed to set type here, won't always be basic type
+		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	case LEVEL_PAGE:
 		CurrentPage = CurrentBook->Page;
 		PageSelected.llSwitch(CurrentPage);
 		CurrentType = 0;
 		Element_Selected = &PageSelected;//Supposed to set type here, won't always be basic type
+		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
 }
 
 void PageCreator::LevelDown()
 {
+	cout << "Switching level" << endl;
 	if (CurrentLevel > MinLevel)
 	{
 		CurrentLevel--;
@@ -724,21 +697,27 @@ void PageCreator::LevelDown()
 	{
 	case LEVEL_VERTEX:
 		//Element_Selected = &Vertex_Selected;
+		Text_CurrentLevel.SetllText("Vertex");
 		break;
 	case LEVEL_SHAPE:
 		Element_Selected = &ShapeSelected;
+		Text_CurrentLevel.SetllText("Shape");
 		break;
 	case LEVEL_SHAPEGROUP:
 		Element_Selected = &ShapeGroupSelected;
+		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case LEVEL_PAGEITEM:
 		Element_Selected = &PageItemSelected;
+		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case LEVEL_PAGEGROUP:
 		Element_Selected = &PageGroupSelected;
+		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	case LEVEL_PAGE:
 		Element_Selected = &PageSelected;
+		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
 }

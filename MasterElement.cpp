@@ -2,6 +2,8 @@
 
 void MasterElement::PrintBookStats(llBookData* llBook)
 {
+
+	Log::LogString("Printing Book Stats");
 	int VertexIndex = 0;
 	int PageCount = -1;
 	int PageGroupCount = -1;
@@ -11,7 +13,7 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 	int VertexCount = -1;
 
 	//Page
-	llPageData* CurrentPage = llBook->PageHead;
+	llPageData* CurrentPage = llBook->Page;
 
 	//Set to beginning
 	while (CurrentPage->Previous != nullptr)
@@ -19,7 +21,7 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 		CurrentPage = CurrentPage->Previous;
 	}
 
-	while(CurrentPage != nullptr)
+	while(CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
 	{
 		if (PageCount == -1)
 		{
@@ -36,7 +38,7 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 		}
 		/////////////////////////////////////////////////////
 
-		while (CurrentPageGroup != nullptr)
+		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
 		{		
 			if (PageGroupCount == -1)
 			{
@@ -53,7 +55,7 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 			}
 			/////////////////////////////////////////////////////
 
-			while (CurrentPageItem != nullptr)
+			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
 			{
 				if (PageItemCount == -1)
 				{
@@ -79,44 +81,46 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 					ShapeGroupCount++;
 					//Shape
 					llShapeData* CurrentShape = CurrentShapeGroup->Shape;
-					//Set shape to beginning
-					/////////////////////////////////////////////////////
-					while (CurrentShape->Previous != nullptr)
+					if (CurrentShapeGroup->Shape != nullptr)
 					{
-						CurrentShape = CurrentShape->Previous;
-					}
-					/////////////////////////////////////////////////////
+						//Set shape to beginning
+						/////////////////////////////////////////////////////
+						while (CurrentShape->Previous != nullptr)
+						{
+							CurrentShape = CurrentShape->Previous;
+						}
+						/////////////////////////////////////////////////////
 
-					while (CurrentShape != nullptr)
-					{
-						if (ShapeCount == -1)
+						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
 						{
-							cout << "------------------------SG" << endl;
-						}
-						ShapeCount++;
-						//PrintllShape(CurrentShape);
-						//Vertex
-						llVertexData* CurrentVertex = CurrentShape->Vertexx;
-						/////////////////////////////////////////////////////
-						while (CurrentVertex->Previous != nullptr)
-						{
-							CurrentVertex = CurrentVertex->Previous;
-						}
-						/////////////////////////////////////////////////////
-						PrintllShape(CurrentShape);
-						while (CurrentVertex != nullptr)
-						{
-							if (VertexCount == -1)
+							if (ShapeCount == -1)
 							{
-								cout << "------------------------------S" << endl;
+								cout << "---------------------SG" << endl;
 							}
-							VertexCount++;
-							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | V:"  << VertexCount << endl;
-						
-							CurrentVertex = CurrentVertex->Next;
+							ShapeCount++;
+							//PrintllShape(CurrentShape);
+							//Vertex
+							llVertexData* CurrentVertex = CurrentShape->Vertexx;
+							/////////////////////////////////////////////////////
+							while (CurrentVertex->Previous != nullptr)
+							{
+								CurrentVertex = CurrentVertex->Previous;
+							}
+							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+							/////////////////////////////////////////////////////
+							while (CurrentVertex != nullptr)
+							{
+								if (VertexCount == -1)
+								{
+									//cout << "------------------------------S" << endl;
+								}
+								VertexCount++;
+
+								CurrentVertex = CurrentVertex->Next;
+							}
+							VertexCount = -1;
+							CurrentShape = CurrentShape->Next;
 						}
-						VertexCount = -1;
-						CurrentShape = CurrentShape->Next;
 					}
 					ShapeCount = -1;
 					CurrentShapeGroup = CurrentShapeGroup->Next;

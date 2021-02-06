@@ -38,7 +38,6 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 	{
 		llPageGroupData* CreatedPageGroup = new llPageGroupData;
 		llPageItemData* CreatedPageItem = new llPageItemData;
-		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
 
 		llBook->Page->PageGroup = CreatedPageGroup;
 		llBook->Page->PageGroupHead = CreatedPageGroup;
@@ -46,20 +45,15 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 		llBook->Page->PageGroup->PageItem = CreatedPageItem;
 		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
 
-		llBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
-		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
 	}
 
 	if (llBook->Page->PageGroup->PageItem == nullptr)
 	{
 		llPageItemData* CreatedPageItem = new llPageItemData;
-		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
 
 		llBook->Page->PageGroup->PageItem = CreatedPageItem;
 		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
 
-		llBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
-		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
 	}
 
 	CurrentllShapeGroup = new llShapeGroupData;
@@ -70,7 +64,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 	//Completely new object
 	if (TestingShapeGroup == nullptr)
 	{
-		Log::LogString("PageItem Empty. ShapeGroup Head Created");
+		Log::LogString("New ShapeGroup Linked");
 		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 	}
@@ -86,7 +80,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 			FoundTail = FoundTail->Next;
 			LinkCount++;
 		}
-		Log::LogString("Shape Group Created");
+		Log::LogString("New ShapeGroup Linked");
 		FoundTail->Next = CurrentllShapeGroup;
 		CurrentllShapeGroup->Previous = FoundTail;
 		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
@@ -99,7 +93,6 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 	:SetInStone(true)
 {
-
 	//If it exists
 	if (llShapeGroup != nullptr)
 	{
@@ -124,28 +117,20 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 		{
 			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 			llPageItemData* CreatedPageItem = new llPageItemData;
-			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
 
 			llBookData->Page->PageGroup = CreatedPageGroup;
 			llBookData->Page->PageGroupHead = CreatedPageGroup;
 
 			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
-
-			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
-			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
 		}
 
 		if (llBookData->Page->PageGroup->PageItem == nullptr)
 		{
 			llPageItemData* CreatedPageItem = new llPageItemData;
-			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
 
 			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
-
-			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
-			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
 		}
 
 		CurrentllShapeGroup = new llShapeGroupData;
@@ -157,7 +142,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 		//Completely new shapegroup object
 		if (TestingShapeGroup == nullptr)
 		{
-			Log::LogString("PageItem Emtpy.");
+			Log::LogString("New ShapeGroup Linked");
 			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 		}
@@ -174,7 +159,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 				LinkCount++;
 			}
 
-			Log::LogInt("Shape Linked ", LinkCount);
+			Log::LogString("New ShapeGroup Linked");
 			FoundTail->Next = CurrentllShapeGroup;
 			CurrentllShapeGroup->Previous = FoundTail;
 			//We are setting the book to point to this new shape group because that's where we want to load shapes
@@ -349,7 +334,7 @@ void ShapeGroup::llShapeGroupInit(llBookData* llBookData, llShapeGroupData* llSh
 		//Completely new shapegroup object
 		if (TestingShapeGroup == nullptr)
 		{
-			Log::LogString("PageItem is Empty. Head ShapeGroup Created");
+			Log::LogString("New ShapeGroup Linked");
 			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 		}
@@ -366,7 +351,7 @@ void ShapeGroup::llShapeGroupInit(llBookData* llBookData, llShapeGroupData* llSh
 				LinkCount++;
 			}
 
-			Log::LogString("ShapeGroup Created");
+			Log::LogString("New ShapeGroup Linked");
 			FoundTail->Next = CurrentllShapeGroup;
 			CurrentllShapeGroup->Previous = FoundTail;
 			//We are setting the book to point to this new shape group because that's where we want to load shapes

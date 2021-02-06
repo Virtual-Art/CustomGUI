@@ -13,7 +13,7 @@ int Page::PageCount = 0;
 Page::Page(int NumberOfShapeDatas)
 	:IndexContainer(MakeIndexContainer(NumberOfShapeDatas)), ShapeContainer(MakeShapeContainer(NumberOfShapeDatas)), VertexContainer(MakeVertexContainer(NumberOfShapeDatas))
 {
-	cout << "PAGE CREATED" << endl;
+	//cout << "PAGE CREATED" << endl;
 	this->MaxShapeDataCount = NumberOfShapeDatas;
 	this->MaxIndexCount = 6 * NumberOfShapeDatas;
 	this->MaxVertexCount = 4 * NumberOfShapeDatas;
@@ -45,7 +45,7 @@ Page::Page()
 	:IndexContainer(MakeIndexContainer(2000)), ShapeContainer(MakeShapeContainer(2000)), VertexContainer(MakeVertexContainer(2000)), DrawCircle{ false }
 {
 
-	cout << "PAGE CREATED" << endl;
+	//cout << "PAGE CREATED" << endl;
 	this->MaxShapeDataCount = 2000;
 	this->MaxIndexCount = 12000;
 	this->MaxVertexCount = 8000;
