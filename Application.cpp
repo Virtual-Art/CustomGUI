@@ -116,12 +116,13 @@ int main(int argc, char** argv)
 
 	Page* PageSelected = &MainBook.Page[0];
 
-	NewPage EditorPage(&EditorBook, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
-	Quad WHY(&EditorBook);
-	//Text WHYY(&EditorBook);
+	//NewPage EditorPage(&EditorBook, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
+	//Quad WHY(&EditorBook);
+	//WHY.SetPosition({-2.0, 0.0});
+	////Text WHYY(&EditorBook);
+	PageCreator::llInit(&EditorBook, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
 	//WHYY.SetllText("WHYYYYYYYYYY");
-	//WHYY.SetllPosition({0.0, 0.9});
-	PageCreator::llInit(&EditorBook);
+    //WHYY.SetllPosition({0.0, 0.9});
 
 
 	PageItemData PageItem_FirstSlider;
@@ -251,7 +252,6 @@ int main(int argc, char** argv)
 		KeyResult KeyState = Keyboard.GetKeyBoardState(window, glfwGetTime(), 0.3, 0.4);
 		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(Mouse.xPos, Mouse.yPos, false);
 		GUIShapeDataHovered = GUI.FindShapeData(Mouse.xPos, Mouse.yPos, false);
-
 		PageCreator::OnUpdate(KeyState, MouseState);
 
 		//llSlider.SetllPosition(MousePosition);
@@ -259,10 +259,11 @@ int main(int argc, char** argv)
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
 
-		EditorPage.DrawPage();
-		//
-		if (KeyState.Key1 == GUI_UP_CLICKED && KeyState.Shift == true)
+		//EditorPage.DrawPage();
+		
+		if (KeyState.Key1 == GUI_G_CLICKED )
 		{
+			MasterElement::PrintBookStats(&EditorBook);
 			//Log::LogString("Up with shift");
 		}
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, GUI);

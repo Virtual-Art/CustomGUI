@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include "ShaderProgram.h"
+#include "RawTexture.h"
 #include "MasterElement.h"
 #include "NewPage.h"
 #include "PageGroup.h"
@@ -102,6 +104,8 @@ namespace PageCreator
 	static FileSystem Filesystem;
 	static string CurrentText;
 	static bool EnableKeyBoard = false;
+	static ShaderProgram* CurrentShader;
+	static RawTexture* CurrentTextures[2];
 
 	static llShapeData* CurrentShape;
 	static llShapeGroupData* CurrentShapeGroup;
@@ -109,6 +113,7 @@ namespace PageCreator
 	static llPageGroupData* CurrentPageGroup;
 	static llPageData* CurrentPage;
 	static llBookData* CurrentBook;
+	static llBookData CreatorBook;
 	
 	//These variables dictate what function we are going to call
 	static int CurrentLevel = 1; //Shape
@@ -127,26 +132,30 @@ namespace PageCreator
     //The Editor Objects edit all the books and switch between books on their own
 
 	//This points to every type of object we can edit
-	static MasterElement* Element_Selected;
+	static MasterElement* EditorSelected;
 	static int CurrentMouseState;
 	static KeyResult* CurrentKeyResult;
 
+	//
+	static NewPage BookCreatorPage;
+
+	//For Creator
 	//Defaults
-	static Shape ShapeSelected;
-	static ShapeGroup ShapeGroupSelected;
-	static PageGroupItem PageItemSelected;
-	static PageGroup PageGroupSelected;
-	static NewPage PageSelected; //Maybe no constructor is what we want
+	static Shape ShapeEditor;
+	static ShapeGroup ShapeGroupEditor;
+	static PageGroupItem PageItemEditor;
+	static PageGroup PageGroupEditor;
+	static NewPage PageEditor; //Maybe no constructor is what we want
 
 	//Presets
-	static Quad QuadSelected;
-	static NewCharacter CharacterSelected;
-	static Text TextSelected;
-	static Slider SliderSelected;
+	static Quad QuadEditor;
+	static NewCharacter CharacterEditor;
+	static Text TextEditor;
+	static Slider SliderEditor;
 	
 	void OnUpdate(KeyResult& KeyState, int MouseState);
 	//void Init(Page& Creatorpage, Page& GUIPage, Book& Book);
-	void llInit(llBookData* CurrentBook);
+	void llInit(llBookData* CurrentBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
     void CreateFunctionContainer();
 	void SetCreatorFunctions();
 	//void CreateGUIObjects();

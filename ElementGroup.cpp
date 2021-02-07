@@ -843,7 +843,7 @@ void ShapeGroup::SetMouseAccess()
 
 void ShapeGroup::SetllMouseAccess()
 {
-	if (Initialized == false) { Log::LogString("SetMouseAccess Failed:: ShapeGroup Not Initialized"); return; };
+	//if (Initialized == false) { Log::LogString("SetMouseAccess Failed:: ShapeGroup Not Initialized"); return; };
 
 	//if (CurrentllShapeGroup->MouseAccess == true)
 	//{

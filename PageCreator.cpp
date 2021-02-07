@@ -2,73 +2,88 @@
 
 
 
-void PageCreator::llInit(llBookData* llBook)
+void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2)
 {
 	TextData Text_Details;
 	llShapeGroupData ShapeGroup_Details;
 
 	CurrentBook = llBook;
 
+	CurrentTextures[0] = Texture0;
+	CurrentTextures[1] = Texture1;
+	CurrentTextures[2] = Texture2;
+
+	CurrentShader = ShaderProgram;
+
+	//Working Book Setup
 	//Defaults
-	ShapeSelected.llInit(llBook);
-	ShapeGroupSelected.llInit(llBook);
-	PageItemSelected.llInit(llBook);
-	PageGroupSelected.llInit(llBook);
-	PageSelected.llInit(llBook);
+	ShapeEditor.llInit(CurrentBook);
+	ShapeGroupEditor.llInit(CurrentBook);
+	PageItemEditor.llInit(CurrentBook);
+	PageGroupEditor.llInit(CurrentBook);
+	PageEditor.llInit(CurrentBook, CurrentShader, Texture0, Texture1, Texture2);
 
 	//Presets
-	QuadSelected.llInit(llBook);
-	CharacterSelected.llInit(llBook);
-	TextSelected.llInit(llBook);
-	SliderSelected.llInit(llBook);
+	QuadEditor.llInit(CurrentBook);
+	CharacterEditor.llInit(CurrentBook);
+	TextEditor.llInit(CurrentBook);
+	SliderEditor.llInit(CurrentBook);
 
 	CreateFunctionContainer(); //Build "Creator" Function Table
 	SetCreatorFunctions();     //Set Functions To Function Table
 	SetKeyboardKeys();
 
+	//BookEditor Setup
+	BookCreatorPage.llInit(&CreatorBook, CurrentShader, Texture0, Texture1, Texture2);
+	Quad DeleteWhenFixed(&CreatorBook);
+	DeleteWhenFixed.SetllPosition({-2.0, 0.0});
+
+	EditorSelected = &QuadEditor;
+
 	//Current Level
 	//Label
 	Text_Details.Phrase = "Current Level: ";
 	ShapeGroup_Details.Position = { -0.95, 0.8 };
-	Text_CurrentLevel_Label.llInit(llBook, &ShapeGroup_Details, Text_Details);
+	Text_CurrentLevel_Label.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	//Level
-	Text_Details.Phrase = "Shape ";
+	Text_Details.Phrase = "Shape";
 	ShapeGroup_Details.Position = { -0.95, 0.7 };
 	ShapeGroup_Details.Color = Purple;
-	Text_CurrentLevel.llInit(llBook, &ShapeGroup_Details, Text_Details);
+	Text_CurrentLevel.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	//Current Function
 	//Label
 	Text_Details.Phrase = "Current Function: ";
 	ShapeGroup_Details.Position = { -0.95, 0.6 };
 	ShapeGroup_Details.Color = White;
-	Text_CurrentFunction_Label.llInit(llBook, &ShapeGroup_Details, Text_Details);
+	Text_CurrentFunction_Label.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	//Options
-	Text_Details.Phrase = "Position ";
+	Text_Details.Phrase = "Position";
 	ShapeGroup_Details.Position = { -0.95, 0.5 };
 	ShapeGroup_Details.Color = Orange;
-	Text_CurrentFunction.llInit(llBook, &ShapeGroup_Details, Text_Details);
-
-	MasterElement::PrintBookStats(llBook);
+	Text_CurrentFunction.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 {
+	BookCreatorPage.DrawPage();
+	PageEditor.DrawPage();
+
 	CurrentKeyResult = &KeyState;
 	CurrentMouseState = MouseState;
 
 	if (EnableKeyBoard == true && KeyState.CurrentAscii != -1 && KeyState.Key1 != 0)
 	{
 		CurrentText += KeyState.CurrentAscii;
-		TextSelected.SetText(CurrentText);
+		TextEditor.SetText(CurrentText);
 	}
 
 	if (KeyState.Key1 == GUI_BACKSPACE_CLICKED || KeyState.Key1 == GUI_BACKSPACE_PRESSED)
 	{
 		CurrentText.erase(CurrentText.size() - 2);
-		TextSelected.SetText(CurrentText);
+		TextEditor.SetText(CurrentText);
 	}
 }
 
@@ -269,43 +284,43 @@ void PageCreator::OptionsUp()
 	}
 	if (CurrentFunction == 0)
 	{
-		Text_CurrentFunction.SetText("Position");
+		Text_CurrentFunction.SetllText("Position");
 	}
 	if (CurrentFunction == 1)
 	{
-		Text_CurrentFunction.SetText("Size");
+		Text_CurrentFunction.SetllText("Size");
 	}
 	if (CurrentFunction == 2)
 	{
-		Text_CurrentFunction.SetText("R Color");
+		Text_CurrentFunction.SetllText("R Color");
 	}
 	if (CurrentFunction == 3)
 	{
-		Text_CurrentFunction.SetText("G Color");
+		Text_CurrentFunction.SetllText("G Color");
 	}
 	if (CurrentFunction == 4)
 	{
-		Text_CurrentFunction.SetText("B Color");
+		Text_CurrentFunction.SetllText("B Color");
 	}
 	if (CurrentFunction == 5)
 	{
-		Text_CurrentFunction.SetText("A Color");
+		Text_CurrentFunction.SetllText("A Color");
 	}
 	if (CurrentFunction == 6)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	if (CurrentFunction == 7)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	if (CurrentFunction == 8)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	if (CurrentFunction == 9)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	cout << "CurrentFunction: " << CurrentFunction << endl;
 }
@@ -321,49 +336,51 @@ void PageCreator::OptionsDown()
 	//Log To Screen
 	if (CurrentFunction == 0)
 	{
-		Text_CurrentFunction.SetText("Position");
+		Text_CurrentFunction.SetllText("Position");
 	}
 	if (CurrentFunction == 1)
 	{
-		Text_CurrentFunction.SetText("Size");
+		Text_CurrentFunction.SetllText("Size");
 	}
 	if (CurrentFunction == 2)
 	{
-		Text_CurrentFunction.SetText("R Color");
+		Text_CurrentFunction.SetllText("R Color");
 	}
 	if (CurrentFunction == 3)
 	{
-		Text_CurrentFunction.SetText("G Color");
+		Text_CurrentFunction.SetllText("G Color");
 	}
 	if (CurrentFunction == 4)
 	{
-		Text_CurrentFunction.SetText("B Color");
+		Text_CurrentFunction.SetllText("B Color");
 	}
 	if (CurrentFunction == 5)
 	{
-		Text_CurrentFunction.SetText("A Color");
+		Text_CurrentFunction.SetllText("A Color");
 	}
 	if (CurrentFunction == 6)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	if (CurrentFunction == 7)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	if (CurrentFunction == 8)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	if (CurrentFunction == 9)
 	{
-		Text_CurrentFunction.SetText("Function Not Set");
+		Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	cout << "CurrentFunction: " << CurrentFunction << endl;
 }
 
 void PageCreator::TypeRight()
 {
+	Log::LogInt("CurrentLevel", CurrentLevel);
+	Log::LogInt("CurrentType: ", CurrentType);
 	switch (CurrentLevel)
 	{
 	case LEVEL_VERTEX:
@@ -372,6 +389,7 @@ void PageCreator::TypeRight()
 	case LEVEL_SHAPE:
 		if (CurrentType < 2)
 		{
+	Log::LogString("Level Shape");
 			CurrentType++;
 			SetShapeType();
 		}
@@ -403,6 +421,7 @@ void PageCreator::TypeRight()
 
 void PageCreator::TypeLeft()
 {
+	Log::LogString("TypeLeft");
 	switch (CurrentLevel)
 	{
 	case LEVEL_VERTEX:
@@ -442,6 +461,7 @@ void PageCreator::TypeLeft()
 
 void PageCreator::DataRight()
 {
+	Log::LogString("Data Right");
 	//We don't know how many functions each level has, however each level has one function, so set it to the first
 	CurrentFunction = 0;
 
@@ -452,55 +472,56 @@ void PageCreator::DataRight()
 		break;
 	case LEVEL_SHAPE:
 		
-		if (CurrentShape->Next != nullptr)
-		{
-			CurrentShape = CurrentShape->Next;
-			CurrentType = CurrentShape->Type;
+		//if (CurrentShape->Next != nullptr)
+		//{
+		//	CurrentShape = CurrentShape->Next;
+		//	CurrentType = CurrentShape->Type;
 			SetShapeType();
-		}
+		//}
 		break;
 
 	case LEVEL_SHAPEGROUP:
 		
-		if (CurrentShapeGroup->Next != nullptr)
-		{
-			CurrentShapeGroup = CurrentShapeGroup->Next;
-			CurrentType = CurrentShapeGroup->Type;
+		//if (CurrentShapeGroup->Next != nullptr)
+		//{
+		//	CurrentShapeGroup = CurrentShapeGroup->Next;
+		//	CurrentType = CurrentShapeGroup->Type;
 			SetShapeGroupType();
-		}
+		//}
 		break;
 
 	case LEVEL_PAGEITEM:
 
-		if (CurrentPageItem->Next != nullptr)
-		{
-			CurrentPageItem = CurrentPageItem->Next;
-			CurrentType = CurrentPageItem->Type;
+		//if (CurrentPageItem->Next != nullptr)
+		//{
+		//	CurrentPageItem = CurrentPageItem->Next;
+		//	CurrentType = CurrentPageItem->Type;
 			SetPageItemType();
-		}
+		//}
 	    break;
 
 	case LEVEL_PAGEGROUP:
 
-		if (CurrentPageGroup->Next != nullptr)
-		{
-			CurrentPageGroup = CurrentPageGroup->Next;
+		//if (CurrentPageGroup->Next != nullptr)
+		//{
+		//	CurrentPageGroup = CurrentPageGroup->Next;
 			SetPageGroupType();
-		}
+		//}
 		break;
 
 	case LEVEL_PAGE:
-		if (CurrentPage->Next != nullptr)
-		{
-			CurrentPage = CurrentPage->Next;
+		//if (CurrentPage->Next != nullptr)
+		//{
+		//	CurrentPage = CurrentPage->Next;
 			SetPageType();
-		}
+		//}
 		break;
 	}
 }
 
 void PageCreator::DataLeft()
 {
+	Log::LogString("Data Left");
 	//We don't know how many functions each level has, however each level has one function, so set it to the first
 	CurrentFunction = 0;
 
@@ -511,46 +532,46 @@ void PageCreator::DataLeft()
 		break;
 	case LEVEL_SHAPE:
 
-		if (CurrentShape->Previous != nullptr)
-		{
-			CurrentShape = CurrentShape->Previous;
+		//if (CurrentShape->Previous != nullptr)
+		//{
+		//	CurrentShape = CurrentShape->Previous;
 			SetPageGroupType();
-		}
+		//}
 		break;
 
 	case LEVEL_SHAPEGROUP:
 
-		if (CurrentShapeGroup->Previous != nullptr)
-		{
-			CurrentShapeGroup = CurrentShapeGroup->Previous;
+		//if (CurrentShapeGroup->Previous != nullptr)
+		//{
+		//	CurrentShapeGroup = CurrentShapeGroup->Previous;
 			SetPageGroupType();
-		}
+		//}
 		break;
 
 	case LEVEL_PAGEITEM:
 
-		if (CurrentPageItem->Previous != nullptr)
-		{
-			CurrentPageItem = CurrentPageItem->Previous;
+		//if (CurrentPageItem->Previous != nullptr)
+		//{
+		//	CurrentPageItem = CurrentPageItem->Previous;
 			SetPageGroupType();
-		}
+		//}
 		break;
 
 	case LEVEL_PAGEGROUP:
 
-		if (CurrentPageGroup->Previous != nullptr)
-		{
-			CurrentPageGroup = CurrentPageGroup->Previous;
+		//if (CurrentPageGroup->Previous != nullptr)
+		//{
+		//	CurrentPageGroup = CurrentPageGroup->Previous;
 			SetPageGroupType();
-		}
+		//}
 		break;
 
 	case LEVEL_PAGE:
-		if (CurrentPage->Previous != nullptr)
-		{
-			CurrentPage = CurrentPage->Previous;
+		//if (CurrentPage->Previous != nullptr)
+		//{
+		//	CurrentPage = CurrentPage->Previous;
 			SetPageGroupType();
-		}
+		//}
 		break;
 	}
 }
@@ -560,15 +581,15 @@ void PageCreator::SetShapeType()
 	switch (CurrentType)
 	{
 	case TYPE_SHAPE:
-		Element_Selected = &ShapeSelected;
+		EditorSelected = &ShapeEditor;
 		Text_CurrentLevel.SetllText("Shape");
 		break;
 	case TYPE_SHAPE_QUAD:
-		Element_Selected = &QuadSelected;
+		EditorSelected = &QuadEditor;
 		Text_CurrentLevel.SetllText("Quad");
 		break;
 	case TYPE_SHAPE_CHARACTER:
-		Element_Selected = &CharacterSelected;
+		EditorSelected = &CharacterEditor;
 		Text_CurrentLevel.SetllText("Character");
 		break;
 	}
@@ -579,11 +600,11 @@ void PageCreator::SetShapeGroupType()
 	switch (CurrentType)
 	{
 	case TYPE_SHAPEGROUP:
-		Element_Selected = &ShapeGroupSelected;
+		EditorSelected = &ShapeGroupEditor;
 		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case TYPE_SHAPEGROUP_TEXT:
-		Element_Selected = &TextSelected;
+		EditorSelected = &TextEditor;
 		Text_CurrentLevel.SetllText("Text");
 		break;
 	}
@@ -594,11 +615,11 @@ void PageCreator::SetPageItemType()
 	switch (CurrentType)
 	{
 	case TYPE_PAGEITEM:
-		Element_Selected = &PageItemSelected;
+		EditorSelected = &PageItemEditor;
 		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case TYPE_PAGEITEM_SLIDER:
-		Element_Selected = &SliderSelected;
+		EditorSelected = &SliderEditor;
 		Text_CurrentLevel.SetllText("Slider");
 		break;
 	}
@@ -609,7 +630,7 @@ void PageCreator::SetPageGroupType()
 	switch (CurrentType)
 	{
 	case TYPE_PAGEGROUP:
-		Element_Selected = &PageGroupSelected;
+		EditorSelected = &PageGroupEditor;
 		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	}
@@ -620,7 +641,7 @@ void PageCreator::SetPageType()
 	switch (CurrentType)
 	{
 	case TYPE_PAGE:
-		Element_Selected = &PageSelected;
+		EditorSelected = &PageEditor;
 		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
@@ -631,6 +652,8 @@ void PageCreator::SetAlternate()
 {
 	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_ALT] = OptionsUp;
 	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_ALT] = OptionsDown;
+	Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_ALT] = TypeRight;
+	Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_ALT] = TypeLeft;
 }
 
 
@@ -646,41 +669,41 @@ void PageCreator::LevelUp()
 	{
 	case LEVEL_VERTEX:
 		//Element_Selected = &Vertex_Selected;
-		Text_CurrentLevel.SetText("Vertex");
+		Text_CurrentLevel.SetllText("Vertex");
 		break;
 	case LEVEL_SHAPE:
-		CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
-		ShapeSelected.llSwitch(CurrentShape);
-		CurrentType = CurrentShape->Type; 
-		Element_Selected = &ShapeSelected; //Supposed to set type here, won't always be basic type
+		//CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+		//ShapeSelected.llSwitch(CurrentShape);
+		//CurrentType = CurrentShape->Type; 
+		EditorSelected = &QuadEditor; //Supposed to set type here, won't always be basic type
 		Text_CurrentLevel.SetllText("Shape");
 		break;
 	case LEVEL_SHAPEGROUP:
-		CurrentShapeGroup = CurrentBook->Page->PageGroup->PageItem->ShapeGroup;
-		ShapeGroupSelected.llSwitch(CurrentShapeGroup);
-		CurrentType = CurrentShapeGroup->Type; 
-		Element_Selected = &ShapeGroupSelected; //Supposed to set type here, won't always be basic type
+		//CurrentShapeGroup = CurrentBook->Page->PageGroup->PageItem->ShapeGroup;
+		//ShapeGroupSelected.llSwitch(CurrentShapeGroup);
+		//CurrentType = CurrentShapeGroup->Type; 
+		EditorSelected = &ShapeGroupEditor; //Supposed to set type here, won't always be basic type
 		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case LEVEL_PAGEITEM:
-		CurrentPageItem = CurrentBook->Page->PageGroup->PageItem;
-		PageItemSelected.llSwitch(CurrentPageItem);
-		CurrentType = CurrentPageItem->Type; 
-		Element_Selected = &PageItemSelected; //Supposed to set type here, won't always be basic type
+		//CurrentPageItem = CurrentBook->Page->PageGroup->PageItem;
+		//PageItemSelected.llSwitch(CurrentPageItem);
+		//CurrentType = CurrentPageItem->Type; 
+		EditorSelected = &PageItemEditor; //Supposed to set type here, won't always be basic type
 		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case LEVEL_PAGEGROUP:
-		CurrentPageGroup = CurrentBook->Page->PageGroup;
-		PageGroupSelected.llSwitch(CurrentPageGroup);
-		CurrentType = CurrentPageGroup->Type;
-		Element_Selected = &PageGroupSelected; //Supposed to set type here, won't always be basic type
+		//CurrentPageGroup = CurrentBook->Page->PageGroup;
+		//PageGroupSelected.llSwitch(CurrentPageGroup);
+		//CurrentType = CurrentPageGroup->Type;
+		EditorSelected = &PageGroupEditor; //Supposed to set type here, won't always be basic type
 		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	case LEVEL_PAGE:
-		CurrentPage = CurrentBook->Page;
-		PageSelected.llSwitch(CurrentPage);
-		CurrentType = 0;
-		Element_Selected = &PageSelected;//Supposed to set type here, won't always be basic type
+		//CurrentPage = CurrentBook->Page;
+		//PageSelected.llSwitch(CurrentPage);
+		//CurrentType = 0;
+	    EditorSelected = &PageEditor;//Supposed to set type here, won't always be basic type
 		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
@@ -700,23 +723,23 @@ void PageCreator::LevelDown()
 		Text_CurrentLevel.SetllText("Vertex");
 		break;
 	case LEVEL_SHAPE:
-		Element_Selected = &ShapeSelected;
+		//Element_Selected = &ShapeSelected;
 		Text_CurrentLevel.SetllText("Shape");
 		break;
 	case LEVEL_SHAPEGROUP:
-		Element_Selected = &ShapeGroupSelected;
+		//Element_Selected = &ShapeGroupSelected;
 		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case LEVEL_PAGEITEM:
-		Element_Selected = &PageItemSelected;
+		//Element_Selected = &PageItemSelected;
 		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case LEVEL_PAGEGROUP:
-		Element_Selected = &PageGroupSelected;
+		//Element_Selected = &PageGroupSelected;
 		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	case LEVEL_PAGE:
-		Element_Selected = &PageSelected;
+		//Element_Selected = &PageSelected;
 		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
@@ -727,19 +750,19 @@ void PageCreator::LevelDown()
 
 void PageCreator::Add()
 {
-	Element_Selected->Add_Default();
+	EditorSelected->Add_Default();
 	CurrentFunction = 0;
 }
 
 void PageCreator::Duplicate()
 {
-	Element_Selected->Add_Duplicate();
+	EditorSelected->Add_Duplicate();
 	CurrentFunction = 0;
 }
 
 void PageCreator::Insert()
 {
-	Element_Selected->Add_Insert();
+	EditorSelected->Add_Insert();
 	CurrentFunction = 0;
 }
 
@@ -762,7 +785,7 @@ void PageCreator::Insert()
 void PageCreator::Delete()
 {
 	//int PreviousShape = ShapeSelected->CurrentShapeData.ID - 1;
-	Element_Selected->Delete();
+	EditorSelected->Delete();
 	//Element_Selected->Switch(PreviousShape);
 }
 
@@ -770,9 +793,9 @@ void PageCreator::SetQuadSelected(int MouseState, int ShapeHovered)
 {
 	if (MouseState == GUI_MOUSELEFT_CLICKED && ShapeHovered > -1 && ShapeHovered < CreatorPage->MaxShapeDataCount)
 	{
-		if (QuadSelected.CurrentShapeData.ID > -1)
+		if (QuadEditor.CurrentShapeData.ID > -1)
 		{
-			Element_Selected->Switch(ShapeHovered);
+			EditorSelected->Switch(ShapeHovered);
 		}
 	}
 
@@ -846,104 +869,104 @@ void PageCreator::Empty()
 // POSITION
 void PageCreator::PositionUp()
 {
-	Element_Selected->OffsetPosition({ 0.0, 0.00166 * PixelOffset }, OnlyY);
+	EditorSelected->OffsetPosition({ 0.0, 0.00166 * PixelOffset }, OnlyY);
 }
 void PageCreator::PositionDown()
 {
-	Element_Selected->OffsetPosition({ 0.0, -0.00166 * PixelOffset }, OnlyY);
+	EditorSelected->OffsetPosition({ 0.0, -0.00166 * PixelOffset }, OnlyY);
 }
 void PageCreator::PositionRight()
 {
-	Element_Selected->OffsetPosition({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
+	EditorSelected->OffsetPosition({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
 }
 void PageCreator::PositionLeft()
 {
-	Element_Selected->OffsetPosition({ -0.00166 * PixelOffset, 0.0 }, OnlyX);
+	EditorSelected->OffsetPosition({ -0.00166 * PixelOffset, 0.0 }, OnlyX);
 }
 
 //SIZE
 void PageCreator::SizeUp()
 {
-	Element_Selected->OffsetSize({ 0.0, 0.00166 * PixelOffset }, OnlyY);
+	EditorSelected->OffsetSize({ 0.0, 0.00166 * PixelOffset }, OnlyY);
 }
 void PageCreator::SizeDown()
 {
-	Element_Selected->OffsetSize({ 0.0, 0.00166 * -PixelOffset }, OnlyY);
+	EditorSelected->OffsetSize({ 0.0, 0.00166 * -PixelOffset }, OnlyY);
 }
 void PageCreator::SizeRight()
 {
-	Element_Selected->OffsetSize({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
+	EditorSelected->OffsetSize({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
 }
 void PageCreator::SizeLeft()
 {
-	Element_Selected->OffsetSize({ 0.00166 * -PixelOffset, 0.0}, OnlyX);
+	EditorSelected->OffsetSize({ 0.00166 * -PixelOffset, 0.0}, OnlyX);
 }
 
 // COLOR
 void PageCreator::ColorRUp()
 {
-	if (Element_Selected->GetColor()[0] < 1.0)
+	if (EditorSelected->GetColor()[0] < 1.0)
 	{
-		Element_Selected->OffsetColor({ 0.01 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
+		EditorSelected->OffsetColor({ 0.01 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
 	}
 }
 void PageCreator::ColorRDown()
 {
-	if (Element_Selected->GetColor()[1] > 1.0)
+	if (EditorSelected->GetColor()[1] > 1.0)
 	{
-		Element_Selected->OffsetColor({ 0.01 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
+		EditorSelected->OffsetColor({ 0.01 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
 	}
 }
 
 void PageCreator::ColorGUp()
 {
-	if (Element_Selected->GetColor()[1] < 1.0)
+	if (EditorSelected->GetColor()[1] < 1.0)
 	{
-		Element_Selected->OffsetColor({ 0.0, 0.01 * PixelOffset,  0.0, 0.0 }, OnlyG);
+		EditorSelected->OffsetColor({ 0.0, 0.01 * PixelOffset,  0.0, 0.0 }, OnlyG);
 	}
 }
 
 void PageCreator::ColorGDown()
 {
-	if (Element_Selected->GetColor()[1] > 0.0)
+	if (EditorSelected->GetColor()[1] > 0.0)
 	{
-		Element_Selected->OffsetColor({ 0.0, 0.01 * -PixelOffset,  0.0, 0.0 }, OnlyG);
+		EditorSelected->OffsetColor({ 0.0, 0.01 * -PixelOffset,  0.0, 0.0 }, OnlyG);
 	}
 }
 
 void PageCreator::ColorBUp()
 {
-	if (Element_Selected->GetColor()[2] < 1.0)
+	if (EditorSelected->GetColor()[2] < 1.0)
 	{
-		Element_Selected->OffsetColor({ 0.0, 0.0, 0.01 * PixelOffset, 0.0 }, OnlyB);
+		EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * PixelOffset, 0.0 }, OnlyB);
 	}
 }
 void PageCreator::ColorBDown()
 {
-	if (Element_Selected->GetColor()[2] > 1.0)
+	if (EditorSelected->GetColor()[2] > 1.0)
 	{
-		Element_Selected->OffsetColor({ 0.0, 0.0, 0.01 * -PixelOffset,  0.0 }, OnlyB);
+		EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * -PixelOffset,  0.0 }, OnlyB);
 	}
 }
 
 void PageCreator::ColorAUp()
 {
-	if (Element_Selected->GetColor()[3] < 1.0)
+	if (EditorSelected->GetColor()[3] < 1.0)
 	{
-		Element_Selected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * PixelOffset }, OnlyA);
+		EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * PixelOffset }, OnlyA);
 	}
 }
 void PageCreator::ColorADown()
 {
-	if (Element_Selected->GetColor()[3] > 1.0)
+	if (EditorSelected->GetColor()[3] > 1.0)
 	{
-		Element_Selected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * -PixelOffset }, OnlyA);
+		EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * -PixelOffset }, OnlyA);
 	}
 }
 
 void PageCreator::SetText()
 {
 	string GetString = "";
-	TextSelected.SetText(GetString);
+	TextEditor.SetText(GetString);
 
 }
