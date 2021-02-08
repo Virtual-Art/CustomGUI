@@ -59,12 +59,17 @@ public:
 	NewCharacter(llBookData* llBook);                       //New Shape
 	NewCharacter(llBookData* llBook, llShapeData* llShape); //New Shape with existing Data
 	NewCharacter(llShapeData* llShape);                     //Existing Shape
-	void llInit(llBookData* llBook) {};
+	void llInit(llBookData* llBook) { LoadedBook = llBook; };
     //Constructors
 	NewCharacter(Page& Page);                       //New Shape
 	NewCharacter(Page& Page, ShapeData& ShapeData); //New Shape with existing Data
 	NewCharacter(Page& Page, int CharacterID);                 //Existing Shape
 	NewCharacter(Page& Page, string File);                     //Initialization
+
+	//Creator Functions
+	void Add_Default() override; //Editor/None Set in Stone
+	void Add_Duplicate() override; //Editor/None Set in Stone
+	void Add_Insert() override; //Editor/None Set in Stone
 
 	//Operators
 	NewCharacter& operator[] (int InputAscii);

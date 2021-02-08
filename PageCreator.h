@@ -107,6 +107,7 @@ namespace PageCreator
 	static ShaderProgram* CurrentShader;
 	static RawTexture* CurrentTextures[2];
 
+	static llVertexData* CurrentVertex;
 	static llShapeData* CurrentShape;
 	static llShapeGroupData* CurrentShapeGroup;
 	static llPageItemData* CurrentPageItem;
@@ -187,8 +188,8 @@ namespace PageCreator
 	void ArrowKeyLeft();
 
 	//BOOK TRAVERSING FUNCTIONS
-	void DataRight();   //Shift + Right
 	void DataLeft();    //Shift + Left
+	void DataRight();   //Shift + Right
 
 	//BOOK/TYPE TRAVERSING FUNCTIONS
 	void LevelUp();     //Shift + Up
@@ -224,6 +225,8 @@ namespace PageCreator
 
 	void IncreasePixelOffset();
 	void DecreasePixelOffset();
+
+	void SetElements();
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 

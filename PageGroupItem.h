@@ -109,6 +109,10 @@ public:
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 	void ShapeToGroup(ShapeData& ShapeData);
+
+	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
+	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...
+	void OffsetColor(glm::vec4 Color, glm::vec4 bools) override;       //...
 	//void SwitchToPageItem(int ShapeID);
 
 	//void llSwitch(int Offset) override;
@@ -133,14 +137,13 @@ public:
 	};
 
 	//ShapeData Editing
-	llPageItemData* llSwitch(llPageItemData* llPageItem) { return CurrentllPageItem; };
+	void llSwitch(llPageItemData* llPageItem);
 	ShapeData& Switch(int RequstedShapeID);
 	ShapeData& Switch(Page& Page, int RequstedShapeID);
 	void SetPageItem(ShapeData& ShapeData);
 	void SetPageItem(ShapeData& ShapeData, glm::vec2 PSConversions);
 	void SetPosition(glm::vec2 Position);
 	void OffsetPosition(glm::vec2 PositionOffset);
-	void OffsetPosition(glm::vec2 PositionOffset, glm::vec2 bools);
 
 	void UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion);
 	void UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion);

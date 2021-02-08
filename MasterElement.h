@@ -61,7 +61,7 @@ struct llShapeData
 	int Layer;
 	int Type = 0;
 	glm::vec2 Position = { 0.0, 0.0 };
-	glm::vec2 Size = { 0.25, 0.5 };
+	glm::vec2 Size = { 0.05, 0.05 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
 	glm::vec2 PositionOffset = { 0.0, 0.0 };
 	glm::vec2 SizeOffset = { 0.0, 0.0 };

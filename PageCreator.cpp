@@ -1,7 +1,5 @@
 #include "PageCreator.h"
 
-
-
 void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2)
 {
 	TextData Text_Details;
@@ -13,7 +11,10 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	CurrentTextures[1] = Texture1;
 	CurrentTextures[2] = Texture2;
 
+	CurrentText = "";
+
 	CurrentShader = ShaderProgram;
+	SetElements();
 
 	//Working Book Setup
 	//Defaults
@@ -74,16 +75,29 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 	CurrentKeyResult = &KeyState;
 	CurrentMouseState = MouseState;
 
-	if (EnableKeyBoard == true && KeyState.CurrentAscii != -1 && KeyState.Key1 != 0)
+	if (CurrentLevel == LEVEL_SHAPEGROUP && CurrentType == TYPE_TEXT && KeyState.Ctrl != true && KeyState.CurrentAscii != -1 && KeyState.Key1 != 0)
 	{
-		CurrentText += KeyState.CurrentAscii;
-		TextEditor.SetText(CurrentText);
+		//CurrentText = TextEditor.GetText();
+		//if (CurrentText == "TEXT" || CurrentText == " ")
+		//{
+		//	CurrentText = "";
+		//}
+		//CurrentText += KeyState.CurrentAscii;
+		//Log::LogString(CurrentText);
+		//TextEditor.SetllText(CurrentText);
 	}
 
-	if (KeyState.Key1 == GUI_BACKSPACE_CLICKED || KeyState.Key1 == GUI_BACKSPACE_PRESSED)
+	if (CurrentLevel == LEVEL_SHAPEGROUP && CurrentType == TYPE_TEXT && KeyState.Ctrl != true &&KeyState.Key1 == GUI_BACKSPACE_CLICKED || KeyState.Key1 == GUI_BACKSPACE_PRESSED)
 	{
-		CurrentText.erase(CurrentText.size() - 2);
-		TextEditor.SetText(CurrentText);
+		if (CurrentText.size() > 1)
+		{
+			CurrentText.erase(CurrentText.size() - 1);
+		}
+		else
+		{
+			CurrentText = " ";
+		}
+		TextEditor.SetllText(CurrentText);
 	}
 }
 
@@ -472,49 +486,73 @@ void PageCreator::DataRight()
 		break;
 	case LEVEL_SHAPE:
 		
-		//if (CurrentShape->Next != nullptr)
-		//{
-		//	CurrentShape = CurrentShape->Next;
-		//	CurrentType = CurrentShape->Type;
+		if (CurrentShape->Next != nullptr)
+		{
+			CurrentShape = CurrentShape->Next;
+			CurrentType = CurrentShape->Type;
 			SetShapeType();
-		//}
+		}
+		else
+		{
+			Log::LogString("Shape Edge");
+		}
 		break;
 
 	case LEVEL_SHAPEGROUP:
 		
-		//if (CurrentShapeGroup->Next != nullptr)
-		//{
-		//	CurrentShapeGroup = CurrentShapeGroup->Next;
-		//	CurrentType = CurrentShapeGroup->Type;
+		if (CurrentShapeGroup->Next != nullptr)
+		{
+			CurrentShapeGroup = CurrentShapeGroup->Next;
+			CurrentShape = CurrentShapeGroup->Shape;
+			CurrentType = CurrentShapeGroup->Type;
 			SetShapeGroupType();
-		//}
+		}
+		else
+		{
+			Log::LogString("ShapeGroup Edge");
+		}
 		break;
 
 	case LEVEL_PAGEITEM:
 
-		//if (CurrentPageItem->Next != nullptr)
-		//{
-		//	CurrentPageItem = CurrentPageItem->Next;
-		//	CurrentType = CurrentPageItem->Type;
+		if (CurrentPageItem->Next != nullptr)
+		{
+			CurrentPageItem = CurrentPageItem->Next;
+			CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+			CurrentShape = CurrentPageItem->ShapeGroup->Shape;
+			cout << "PageItem Switching to: " << CurrentPageItem << endl;
+			CurrentType = CurrentPageItem->Type;
 			SetPageItemType();
-		//}
+		}
+		else
+		{
+			Log::LogString("PageItem Edge");
+		}
 	    break;
 
 	case LEVEL_PAGEGROUP:
 
-		//if (CurrentPageGroup->Next != nullptr)
-		//{
-		//	CurrentPageGroup = CurrentPageGroup->Next;
+		if (CurrentPageGroup->Next != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Next;
 			SetPageGroupType();
-		//}
+		}
+		else
+		{
+			Log::LogString("PageGroup Edge");
+		}
 		break;
 
 	case LEVEL_PAGE:
-		//if (CurrentPage->Next != nullptr)
-		//{
-		//	CurrentPage = CurrentPage->Next;
+		if (CurrentPage->Next != nullptr)
+		{
+			CurrentPage = CurrentPage->Next;
 			SetPageType();
-		//}
+		}
+		else
+		{
+			Log::LogString("Page Edge");
+		}
 		break;
 	}
 }
@@ -532,46 +570,73 @@ void PageCreator::DataLeft()
 		break;
 	case LEVEL_SHAPE:
 
-		//if (CurrentShape->Previous != nullptr)
-		//{
-		//	CurrentShape = CurrentShape->Previous;
-			SetPageGroupType();
-		//}
+		if (CurrentShape->Previous != nullptr)
+		{
+			CurrentShape = CurrentShape->Previous;
+			SetShapeType();
+		}
+		else
+		{
+			Log::LogString("Shape Edge");
+		}
 		break;
 
 	case LEVEL_SHAPEGROUP:
-
-		//if (CurrentShapeGroup->Previous != nullptr)
-		//{
-		//	CurrentShapeGroup = CurrentShapeGroup->Previous;
-			SetPageGroupType();
-		//}
+		if (CurrentShapeGroup->Previous != nullptr)
+		{
+			CurrentShapeGroup = CurrentShapeGroup->Previous;
+			CurrentShape = CurrentShapeGroup->Shape;
+			CurrentType = CurrentShapeGroup->Type;
+			SetShapeGroupType();
+		}
+		else
+		{
+			Log::LogString("ShapeGroup Edge");
+		}
 		break;
 
 	case LEVEL_PAGEITEM:
 
-		//if (CurrentPageItem->Previous != nullptr)
-		//{
-		//	CurrentPageItem = CurrentPageItem->Previous;
-			SetPageGroupType();
-		//}
+		if (CurrentPageItem->Previous != nullptr)
+		{
+			//Go To previous PageItem if that page item is slider go to slider editor, or if its page item go to 
+			//page item editor
+			CurrentPageItem = CurrentPageItem->Previous;
+			CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+			CurrentShape = CurrentPageItem->ShapeGroup->Shape;
+			cout << "PageItem Now:" << CurrentPageItem << endl;
+			CurrentType = CurrentPageItem->Type;
+			SetPageItemType();
+		}
+		else
+		{
+			Log::LogString("PageItem Edge");
+		}
 		break;
 
 	case LEVEL_PAGEGROUP:
 
-		//if (CurrentPageGroup->Previous != nullptr)
-		//{
-		//	CurrentPageGroup = CurrentPageGroup->Previous;
+		if (CurrentPageGroup->Previous != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Previous;
 			SetPageGroupType();
-		//}
+		}
+		else
+		{
+			Log::LogString("PageGroup Edge");
+		}
 		break;
 
 	case LEVEL_PAGE:
-		//if (CurrentPage->Previous != nullptr)
-		//{
-		//	CurrentPage = CurrentPage->Previous;
-			SetPageGroupType();
-		//}
+		if (CurrentPage->Previous != nullptr)
+		{
+			CurrentPage = CurrentPage->Previous;
+			SetPageType();
+		}
+		else
+		{
+			Log::LogString("Page Edge");
+		}
 		break;
 	}
 }
@@ -582,14 +647,22 @@ void PageCreator::SetShapeType()
 	{
 	case TYPE_SHAPE:
 		EditorSelected = &ShapeEditor;
+		//SetElements();
+		ShapeEditor.llSwitch(CurrentShape);
 		Text_CurrentLevel.SetllText("Shape");
 		break;
+
 	case TYPE_SHAPE_QUAD:
 		EditorSelected = &QuadEditor;
+		//SetElements();
+		QuadEditor.llSwitch(CurrentShape);
 		Text_CurrentLevel.SetllText("Quad");
 		break;
+
 	case TYPE_SHAPE_CHARACTER:
 		EditorSelected = &CharacterEditor;
+		//SetElements();
+		CharacterEditor.llSwitch(CurrentShape);
 		Text_CurrentLevel.SetllText("Character");
 		break;
 	}
@@ -601,10 +674,12 @@ void PageCreator::SetShapeGroupType()
 	{
 	case TYPE_SHAPEGROUP:
 		EditorSelected = &ShapeGroupEditor;
+		ShapeGroupEditor.llSwitch(CurrentShapeGroup);
 		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case TYPE_SHAPEGROUP_TEXT:
 		EditorSelected = &TextEditor;
+		TextEditor.llSwitch(CurrentShapeGroup);
 		Text_CurrentLevel.SetllText("Text");
 		break;
 	}
@@ -616,10 +691,15 @@ void PageCreator::SetPageItemType()
 	{
 	case TYPE_PAGEITEM:
 		EditorSelected = &PageItemEditor;
+		//SetElements();
+		PageItemEditor.llSwitch(CurrentPageItem);
 		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case TYPE_PAGEITEM_SLIDER:
 		EditorSelected = &SliderEditor;
+		cout << "PageItem Switching to: " << CurrentPageItem << endl;
+		//SetElements();
+		SliderEditor.llSwitch(CurrentPageItem);
 		Text_CurrentLevel.SetllText("Slider");
 		break;
 	}
@@ -631,6 +711,8 @@ void PageCreator::SetPageGroupType()
 	{
 	case TYPE_PAGEGROUP:
 		EditorSelected = &PageGroupEditor;
+		//SetElements();
+		PageGroupEditor.llSwitch(CurrentPageGroup);
 		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	}
@@ -642,6 +724,8 @@ void PageCreator::SetPageType()
 	{
 	case TYPE_PAGE:
 		EditorSelected = &PageEditor;
+		SetElements();
+		PageEditor.llSwitch(CurrentPage);
 		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
@@ -664,6 +748,8 @@ void PageCreator::LevelUp()
 	{
 		CurrentLevel++;
 	}
+
+	CurrentType = 0;
 	
 	switch (CurrentLevel)
 	{
@@ -672,25 +758,31 @@ void PageCreator::LevelUp()
 		Text_CurrentLevel.SetllText("Vertex");
 		break;
 	case LEVEL_SHAPE:
-		//CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
-		//ShapeSelected.llSwitch(CurrentShape);
-		//CurrentType = CurrentShape->Type; 
-		EditorSelected = &QuadEditor; //Supposed to set type here, won't always be basic type
+		EditorSelected = &ShapeEditor; //Supposed to set type here, won't always be basic type
+		if (CurrentShape != nullptr)
+		{
+			CurrentType = CurrentShape->Type;
+		}
 		Text_CurrentLevel.SetllText("Shape");
+		SetShapeType();
 		break;
 	case LEVEL_SHAPEGROUP:
-		//CurrentShapeGroup = CurrentBook->Page->PageGroup->PageItem->ShapeGroup;
-		//ShapeGroupSelected.llSwitch(CurrentShapeGroup);
-		//CurrentType = CurrentShapeGroup->Type; 
 		EditorSelected = &ShapeGroupEditor; //Supposed to set type here, won't always be basic type
+		if (CurrentShapeGroup != nullptr)
+		{
+			CurrentType = CurrentShapeGroup->Type;
+		}
 		Text_CurrentLevel.SetllText("ShapeGroup");
+		SetShapeGroupType();
 		break;
 	case LEVEL_PAGEITEM:
-		//CurrentPageItem = CurrentBook->Page->PageGroup->PageItem;
-		//PageItemSelected.llSwitch(CurrentPageItem);
-		//CurrentType = CurrentPageItem->Type; 
 		EditorSelected = &PageItemEditor; //Supposed to set type here, won't always be basic type
+		if (CurrentShapeGroup != nullptr)
+		{
+			CurrentType = CurrentShapeGroup->Type;
+		}
 		Text_CurrentLevel.SetllText("PageItem");
+		SetPageItemType();
 		break;
 	case LEVEL_PAGEGROUP:
 		//CurrentPageGroup = CurrentBook->Page->PageGroup;
@@ -716,6 +808,9 @@ void PageCreator::LevelDown()
 	{
 		CurrentLevel--;
 	}
+
+	CurrentType = 0;
+
 	switch (CurrentLevel)
 	{
 	case LEVEL_VERTEX:
@@ -723,16 +818,31 @@ void PageCreator::LevelDown()
 		Text_CurrentLevel.SetllText("Vertex");
 		break;
 	case LEVEL_SHAPE:
-		//Element_Selected = &ShapeSelected;
+		EditorSelected = &ShapeEditor;
+		if (CurrentShape != nullptr)
+		{
+			CurrentType = CurrentShape->Type;
+		}
 		Text_CurrentLevel.SetllText("Shape");
+		SetShapeType();
 		break;
 	case LEVEL_SHAPEGROUP:
-		//Element_Selected = &ShapeGroupSelected;
+		EditorSelected = &ShapeGroupEditor;
+		if (CurrentShapeGroup != nullptr)
+		{
+			CurrentType = CurrentShapeGroup->Type;
+		}
+		SetShapeGroupType();
 		Text_CurrentLevel.SetllText("ShapeGroup");
 		break;
 	case LEVEL_PAGEITEM:
-		//Element_Selected = &PageItemSelected;
+		EditorSelected = &PageItemEditor;
+		if (CurrentPageItem != nullptr)
+		{
+			CurrentType = CurrentPageItem->Type;
+		}
 		Text_CurrentLevel.SetllText("PageItem");
+		SetPageItemType();
 		break;
 	case LEVEL_PAGEGROUP:
 		//Element_Selected = &PageGroupSelected;
@@ -752,18 +862,21 @@ void PageCreator::Add()
 {
 	EditorSelected->Add_Default();
 	CurrentFunction = 0;
+	SetElements();
 }
 
 void PageCreator::Duplicate()
 {
 	EditorSelected->Add_Duplicate();
 	CurrentFunction = 0;
+	//SetElements();
 }
 
 void PageCreator::Insert()
 {
 	EditorSelected->Add_Insert();
 	CurrentFunction = 0;
+	//SetElements();
 }
 
 //void PageCreator::Next()
@@ -864,6 +977,103 @@ void PageCreator::SetKeyboardKeys()
 void PageCreator::Empty()
 {
 
+}
+
+void PageCreator::SetElements()
+{
+	Log::LogString("Setting Elements");
+	//Page
+	if (CurrentBook->Page != nullptr)
+	{
+		//Log::LogString("Page Set");
+		CurrentPage = CurrentBook->Page;
+		cout << "Page Set" << CurrentPage << endl;
+
+		//PageGroup
+		if (CurrentBook->Page->PageGroup != nullptr)
+		{
+			//Log::LogString("PageGroup Set");
+			CurrentPageGroup = CurrentBook->Page->PageGroup;
+			cout << "PageGroup Set" << CurrentPageGroup << endl;
+
+			//PageItem
+			if (CurrentBook->Page->PageGroup->PageItem != nullptr)
+			{
+				//Log::LogString("PageItem Set");
+				CurrentPageItem = CurrentBook->Page->PageGroup->PageItem;
+				cout << "PageItem Set" << CurrentPageItem << endl;
+			
+				//ShapeGroup
+				if (CurrentBook->Page->PageGroup->PageItem->ShapeGroup != nullptr)
+				{
+					//Log::LogString("ShapeGroup Set");
+					CurrentShapeGroup = CurrentBook->Page->PageGroup->PageItem->ShapeGroup;
+					cout << "ShapeGroup Set" << CurrentShapeGroup << endl;
+
+					//Shape
+					if (CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape != nullptr)
+					{
+						//Log::LogString("Shape Set");
+						CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+						cout << "Shape Set" << CurrentShape << endl;
+
+						//Vertex
+						if (CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx != nullptr)
+						{
+							//Log::LogString("Vertex Set");
+							CurrentVertex = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+							cout << "Vertex Set" << CurrentVertex << endl;
+						}
+						else
+						{
+							Log::LogString("Rest of Elements Empty");
+							CurrentVertex = nullptr;
+						}
+					}
+					else
+					{
+						Log::LogString("Rest of Elements Empty");
+						CurrentVertex = nullptr;
+						CurrentShape = nullptr;
+					}
+				}
+				else
+				{
+					Log::LogString("Rest of Elements Empty");
+					CurrentVertex = nullptr;
+					CurrentShape = nullptr;
+					CurrentShapeGroup = nullptr;
+				}
+			}
+			else
+			{
+				Log::LogString("Rest of Elements Empty");
+				CurrentVertex = nullptr;
+				CurrentShape = nullptr;
+				CurrentShapeGroup = nullptr;
+				CurrentPageItem = nullptr;
+			}
+		}
+		else
+		{
+			Log::LogString("Rest of Elements Empty");
+			CurrentVertex = nullptr;
+			CurrentShape = nullptr;
+			CurrentShapeGroup = nullptr;
+			CurrentPageItem = nullptr;
+			CurrentPageGroup = nullptr;
+		}
+	}
+	else
+	{
+		Log::LogString("All Elements Empty");
+		CurrentVertex = nullptr;
+		CurrentShape = nullptr;
+		CurrentShapeGroup = nullptr;
+		CurrentPageItem = nullptr;
+		CurrentPageGroup = nullptr;
+		CurrentPage = nullptr;
+	}
 }
 
 // POSITION

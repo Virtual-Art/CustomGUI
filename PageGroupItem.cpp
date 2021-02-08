@@ -26,6 +26,15 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 		llBook->Page->PageGroupHead = CreatedPageGroup;
 	}
 
+	if (llBook->Page->PageGroup == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		llBook->Page->PageGroup = CreatedPageGroup;
+		llBook->Page->PageGroupHead = CreatedPageGroup;
+	}
+
 	CurrentllPageItem = new llPageItemData;
 	//Log::LogString("PageItem Created and Shape Group?");
 
@@ -235,6 +244,68 @@ PageGroupItem::PageGroupItem(Page& Page, int ID)
 
 }
 
+void PageGroupItem::llSwitch(llPageItemData* llPageItem)
+{
+	if (llPageItem != nullptr)
+	{
+		CurrentllPageItem = llPageItem;
+	}
+	else
+	{
+		Log::LogString("ERROR:: llSwitch FAILED:: PageItem was nullptr");
+	}
+}
+
+void PageGroupItem::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
+{
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageItem nullptr"); return; };
+	if (bools[0] == true)
+	{
+		CurrentllPageItem->Position[0] += Position[0];
+	}
+	if (bools[1] == true)
+	{
+		CurrentllPageItem->Position[1] += Position[1];
+	}
+	llUpdate();
+}
+
+void PageGroupItem::OffsetSize(glm::vec2 Size, glm::vec2 bools)
+{
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: OffsetSize FAILED:: PageItem nullptr"); return; };
+	if (bools[0] == true)
+	{
+		CurrentllPageItem->Size[0] += Size[0];
+	}
+	if (bools[1] == true)
+	{
+		CurrentllPageItem->Size[1] += Size[1];
+	}
+	llUpdate();
+}
+
+void PageGroupItem::OffsetColor(glm::vec4 Color, glm::vec4 bools)
+{
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: OffsetColor FAILED:: PageItem nullptr"); return; };
+	if (bools[0] == true)
+	{
+		CurrentllPageItem->Color[0] += Color[0];
+	}
+	if (bools[1] == true)
+	{
+		CurrentllPageItem->Color[1] += Color[1];
+	}
+	if (bools[2] == true)
+	{
+		CurrentllPageItem->Color[2] += Color[2];
+	}
+	if (bools[3] == true)
+	{
+		CurrentllPageItem->Color[3] += Color[3];
+	}
+	llUpdate();
+}
+
 
 void PageGroupItem::SetllPageItem(llPageItemData* llPageItem)
 {
@@ -301,12 +372,6 @@ void PageGroupItem::OffsetPosition(glm::vec2 Position)
 	Update();
 }
 
-void PageGroupItem::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
-{
-
-	this->CurrentPageItem.Position += Position;
-	ReCalibrateID();
-}
 
 void PageGroupItem::ShapeToGroup(ShapeData& ShapeData)
 {
@@ -339,7 +404,59 @@ void PageGroupItem::ShapeToGroup(ShapeData& ShapeData)
 //ShapeData Editing
 void PageGroupItem::Add_Default()
 {
+	if (LoadedBook->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
+		LoadedBook->Page = CreatedPage;
+		LoadedBook->PageHead = CreatedPage;
+
+		LoadedBook->Page->PageGroup = CreatedPageGroup;
+		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+	}
+
+	if (LoadedBook->Page->PageGroup == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		LoadedBook->Page->PageGroup = CreatedPageGroup;
+		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+	}
+
+	CurrentllPageItem = new llPageItemData;
+	//Log::LogString("PageItem Created and Shape Group?");
+
+	llPageItemData* TestingPageItem = LoadedBook->Page->PageGroup->PageItem;
+
+	//Completely new object
+	if (TestingPageItem == nullptr)
+	{
+		Log::LogString("PageGroup Empty. First PageItem!");
+		LoadedBook->Page->PageGroup->PageItem = CurrentllPageItem;
+		LoadedBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
+	}
+	else //Shapes already created
+	{
+		llPageItemData* FoundTail = TestingPageItem;
+		int LinkCount = 0;
+
+		//Find tail then add
+		//Log::LogString("Finding Tail..");
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			LinkCount++;
+		}
+		Log::LogString("PageItem Linked");
+		FoundTail->Next = CurrentllPageItem;
+		CurrentllPageItem->Previous = FoundTail;
+		LoadedBook->Page->PageGroup->PageItem = CurrentllPageItem;
+	}
+
+	CurrentllPageItem->Type = TYPE_CUSTOM;
 }
 
 void PageGroupItem::Add_Duplicate()

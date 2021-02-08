@@ -276,6 +276,95 @@ ShapeGroup::ShapeGroup(Page& Page, int ID)
 	}
 }
 
+void ShapeGroup::Add_Default()
+{
+	if (LoadedBook->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		LoadedBook->Page = CreatedPage;
+		LoadedBook->PageHead = CreatedPage;
+
+		LoadedBook->Page->PageGroup = CreatedPageGroup;
+		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+
+		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+	}
+
+	if (LoadedBook->Page->PageGroup == nullptr)
+	{
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		LoadedBook->Page->PageGroup = CreatedPageGroup;
+		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+
+		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+	}
+
+	if (LoadedBook->Page->PageGroup->PageItem == nullptr)
+	{
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+	}
+
+	CurrentllShapeGroup = new llShapeGroupData;
+	//Log::LogString("Shape Group Created");
+
+	llShapeGroupData* TestingShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
+
+	//Completely new object
+	if (TestingShapeGroup == nullptr)
+	{
+		Log::LogString("New ShapeGroup Linked");
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+	}
+	else //Shapes already created
+	{
+		llShapeGroupData* FoundTail = TestingShapeGroup;
+		int LinkCount = 1;
+
+		//Find tail then add
+		//Log::LogString("Finding Tail..");
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			LinkCount++;
+		}
+		Log::LogString("New ShapeGroup Linked");
+		FoundTail->Next = CurrentllShapeGroup;
+		CurrentllShapeGroup->Previous = FoundTail;
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		CurrentllShapeGroup->Type = TYPE_SHAPEGROUP;
+	}
+
+}
+
+void ShapeGroup::Add_Duplicate()
+{
+
+}
+
+void ShapeGroup::Add_Insert()
+{
+
+}
+
+void ShapeGroup::Delete()
+{
+
+}
+
 void ShapeGroup::llShapeGroupInit(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 {
 	//If it exists
@@ -381,39 +470,44 @@ void ShapeGroup::SetllShapeGroup(llShapeGroupData* llShapeGroup)
 // This shape group may have quads, characters, custom shapes
 void ShapeGroup::llUpdate()
 {
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: ShapeGroup nullptr"); return; };
 	if (CurrentllShapeGroup != nullptr && LoadedBook != nullptr)
 	{
 		llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
 
+		//Go to head Shape
 		while (CurrentShape->Previous != nullptr)
 		{
 			CurrentShape = CurrentShape->Previous;
 		}
 
-		//Main Loop
+		//Set All sub group positions and call sub group functions
 		while (CurrentShape != nullptr)
 		{
-			CurrentShape->Position = CurrentllShapeGroup->Position - CurrentShape->PositionOffset;
-			CurrentShape->Size = CurrentllShapeGroup->Size - CurrentShape->SizeOffset;
-			CurrentShape->Color = CurrentllShapeGroup->Color - CurrentShape->ColorOffset;
+			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+		    CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
+		    CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
 
 			switch (CurrentShape->Type)
 			{
 			case TYPE_SHAPE:
 			{
 				Shape ShapeSelected(CurrentShape);
+				ShapeSelected.LoadedBook = LoadedBook;
 				ShapeSelected.SetllShape(CurrentShape);
 				break;
 			}
 			case TYPE_QUAD:
 			{
 				Quad QuadSelected(CurrentShape);
+				QuadSelected.LoadedBook = LoadedBook;
 				QuadSelected.SetllShape(CurrentShape);
 				break;
 			}
 			case TYPE_CHARACTER:
 			{
 				NewCharacter CharSelected(CurrentShape);
+				CharSelected.LoadedBook = LoadedBook;
 				CharSelected.SetllShape(CurrentShape);
 				break;
 			}
@@ -541,64 +635,65 @@ void ShapeGroup::OffsetPosition(glm::vec2 Position)
 
 void ShapeGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
+	Log::LogString("Offsetting Position");
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: Offset Position FAILED:: ShapeGroup nullptr"); return; };
 	if (bools[0] == true)
 	{
-		this->CurrentShapeGroup.Position[0] += Position[0];
+		CurrentllShapeGroup->Position[0] += Position[0];
 	}
 	if (bools[1] == true)
 	{
-		this->CurrentShapeGroup.Position[1] += Position[1];
+		CurrentllShapeGroup->Position[1] += Position[1];
 	}
-	ReCalibrateID();
-	Update();
+	llUpdate();
 }
 void ShapeGroup::OffsetSize(glm::vec2 Size)
 {
-	this->CurrentShapeGroup.Size += Size;
-	ReCalibrateID();
-	Update();
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetSize FAILED:: ShapeGroup nullptr"); return; };
+	CurrentllShapeGroup->Size += Size;
+	llUpdate();
 }
 void ShapeGroup::OffsetSize(glm::vec2 Size, glm::vec2 bools)
 {
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetSize w/ bools FAILED:: ShapeGroup nullptr"); return; };
 	if (bools[0] == true)
 	{
-		this->CurrentShapeGroup.Size[0] += Size[0];
+		CurrentllShapeGroup->Size[0] += Size[0];
 	}
 	if (bools[1] == true)
 	{
-		this->CurrentShapeGroup.Size[1] += Size[1];
+		CurrentllShapeGroup->Size[1] += Size[1];
 	}
-	ReCalibrateID();
-	Update();
+	llUpdate();
 }
 
 void ShapeGroup::OffsetColor(glm::vec4 Color)
 {
-	this->CurrentShapeGroup.Color += Color;
-	ReCalibrateID();
-	Update();
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetColor FAILED:: ShapeGroup nullptr"); return; };
+	CurrentllShapeGroup->Color += Color;
+	llUpdate();
 }
 void ShapeGroup::OffsetColor(glm::vec4 Color, glm::vec4 bools)
 {
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetColor w/ bools FAILED:: ShapeGroup nullptr"); return; };
 	if (bools[0] == true)
 	{
-		this->CurrentShapeGroup.Color[0] += Color[0];
+		CurrentllShapeGroup->Color[0] += Color[0];
 
 	}
 	if (bools[1] == true)
 	{
-		this->CurrentShapeGroup.Color[1] += Color[1];
+		CurrentllShapeGroup->Color[1] += Color[1];
 	}
 	if (bools[2] == true)
 	{
-		this->CurrentShapeGroup.Color[2] += Color[2];
+		CurrentllShapeGroup->Color[2] += Color[2];
 	}
 	if (bools[3] == true)
 	{
-		this->CurrentShapeGroup.Color[3] += Color[3];
+		CurrentllShapeGroup->Color[3] += Color[3];
 	}
-	ReCalibrateID();
-	Update();
+	llUpdate();
 
 }
 
@@ -957,7 +1052,7 @@ void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
 	}
 	else
 	{
-		Log::LogString("Sorry llShapeGroup was nullptr or does not contain existing vertices");
+		Log::LogString("ERROR::ShapeGroup Switch FAILED:: ShapeGroup Provided was null");
 	}
 }
 

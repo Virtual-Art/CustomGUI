@@ -24,7 +24,7 @@ NewCharacter::NewCharacter(llBookData* llBook, llShapeData* llShape)
 NewCharacter::NewCharacter(llShapeData* llShape)
 	: Shape(llShape)
 {
-	CreatellCharacter();
+	//CreatellCharacter();
 }
 
 //This one is used in Text.cpp
@@ -83,8 +83,135 @@ NewCharacter::NewCharacter(Page& Page, int CharacterID) //WORKING
 	}
 }
 
+//Creator Functions
+void NewCharacter::Add_Default() //Editor/None Set in Stone
+{
+	if (LoadedBook != nullptr)
+	{
+		//Log::LogString("Default Shape Creation Request");
+		//Create Book if not created
+		//Honestly this is what book class should do whatever it is in the future
+		if (LoadedBook->Page == nullptr)
+		{
+			//Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
 
+			LoadedBook->Page = CreatedPage;
+			LoadedBook->PageHead = CreatedPage;
 
+			LoadedBook->Page->PageGroup = CreatedPageGroup;
+			LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+
+			LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+			LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
+		if (LoadedBook->Page->PageGroup == nullptr)
+		{
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+			LoadedBook->Page->PageGroup = CreatedPageGroup;
+			LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+
+			LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+			LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
+		if (LoadedBook->Page->PageGroup->PageItem == nullptr)
+		{
+			llPageItemData* CreatedPageItem = new llPageItemData;
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+			LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+			LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
+		if (LoadedBook->Page->PageGroup->PageItem->ShapeGroup == nullptr)
+		{
+			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+		}
+
+		//Create Vertex / Shape
+		VertexTopRight = new llVertexData;
+		VertexTopLeft = new llVertexData;
+		VertexBottomRight = new llVertexData;
+		VertexBottomLeft = new llVertexData;
+		CurrentllShape = new llShapeData;
+
+		//Log::LogString("Shape Created");
+
+		//Set Next
+		VertexTopLeft->Next = VertexTopRight;
+		VertexTopRight->Next = VertexBottomRight;
+		VertexBottomRight->Next = VertexBottomLeft;
+
+		//Set Previous
+		VertexBottomLeft->Previous = VertexBottomRight;
+		VertexBottomRight->Previous = VertexTopRight;
+		VertexTopRight->Previous = VertexTopLeft;
+
+		CurrentllShape->Vertexx = VertexTopLeft;
+
+		llShapeData* TestingShape = LoadedBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+
+		//Completely new object
+		if (TestingShape == nullptr)
+		{
+			Log::LogString("New Shape Linked");
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroup->Shape = CurrentllShape;
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroup->ShapeHead = CurrentllShape;
+		}
+		else //Shapes already created
+		{
+			llShapeData* FoundTail = TestingShape;
+			int LinkCount = 1;
+
+			//Find tail then add
+			//Log::LogString("Finding Tail..");
+			while (FoundTail->Next != nullptr)
+			{
+				FoundTail = FoundTail->Next;
+				LinkCount++;
+				Log::LogChar("Finding tsail..", FoundTail->Ascii);
+			}
+			Log::LogChar("New Shape Linked", char(FoundTail->Ascii));
+			cout << FoundTail << endl;
+			FoundTail->Next = CurrentllShape;
+			CurrentllShape->Previous = FoundTail;
+		}
+
+		CurrentllShape->Type = TYPE_CHARACTER;
+		SetllCharacter('T');
+		CreatellCharacter();
+	}
+}
+
+void NewCharacter::Add_Duplicate() //Editor/None Set in Stone
+{
+
+}
+
+void NewCharacter::Add_Insert() //Editor/None Set in Stone
+{
+
+}
 
 NewCharacter& NewCharacter::operator[] (int InputAscii)
 {
@@ -305,6 +432,11 @@ void NewCharacter::SetAction(int ShapeDataActionID){};
 
 void NewCharacter::CreatellCharacter()
 {
+	//llShapeGroupData* CurrentShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
+	//CurrentllShape->PositionOffset = CurrentllShape->Position - CurrentShapeGroup->Position;
+	//CurrentllShape->SizeOffset = CurrentllShape->Size - CurrentShapeGroup->Size;
+	//CurrentllShape->ColorOffset = CurrentllShape->Color - CurrentShapeGroup->Color;
+
 	TopRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / 2 };
 	BottomRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / -2 };
 	BottomLeftXYRatio = { CurrentllShape->Size[0] / -2, CurrentllShape->Size[1] / -2 };

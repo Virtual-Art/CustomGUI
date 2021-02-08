@@ -123,8 +123,7 @@ int main(int argc, char** argv)
 	PageCreator::llInit(&EditorBook, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
 	//WHYY.SetllText("WHYYYYYYYYYY");
     //WHYY.SetllPosition({0.0, 0.9});
-
-
+	
 	PageItemData PageItem_FirstSlider;
 	SliderData Slider_FirstSlider;
 

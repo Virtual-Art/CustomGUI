@@ -34,6 +34,7 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page, ShapeGroupData& ShapeGroupData);
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
+
 	void llInit(llBookData* llBook);
 	void llShapeGroupInit(llBookData* llBook, llShapeGroupData* ShapeGroup);
 	llShapeGroupData* GetData() { return CurrentllShapeGroup; };
@@ -50,12 +51,12 @@ class ShapeGroup : public MasterElement
 
 	void Init(Page& Page, int GroupID) {};
 
-	void Add_Default() override {};
-	void Add_Duplicate() override {};
-	void Add_Insert() override {};
-	void Delete() override {};
+	void Add_Default();
+	void Add_Duplicate();
+	void Add_Insert();
+	void Delete();
 
-	void llSwitch(llShapeGroupData* llShapeGroup);
+	virtual void llSwitch(llShapeGroupData* llShapeGroup);
 	//void llSwitch(int Offset);
 
 	void SetllPosition(glm::vec2 Position)
@@ -131,14 +132,14 @@ class ShapeGroup : public MasterElement
 	void OffsetPosition(glm::vec2 Position);                          
 	void OffsetSize(glm::vec2 Size);                         
 	void OffsetColor(glm::vec4 Color);                       
+
+	// Basic + boolean //Book Creator Functions
 	void SetPosition(glm::vec2 Position, glm::vec2 bools) override;    
 	void SetSize(glm::vec2 Size, glm::vec2 bools) override;            
-
-	// Basic + boolean
 	void SetColor(glm::vec4 Color, glm::vec4 bools) override;  
-	void OffsetPosition(glm::vec2 Position, glm::vec2 bools); 
-	void OffsetSize(glm::vec2 Size, glm::vec2 bools);         
-	void OffsetColor(glm::vec4 Color, glm::vec4 bools);       
+	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; 
+	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         
+	void OffsetColor(glm::vec4 Color, glm::vec4 bools) override;       
 
 	// Basic + Conversions
 	void SetPosition(glm::vec2 Position, int Conversion);  
@@ -155,11 +156,11 @@ class ShapeGroup : public MasterElement
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 	void SetllShapeGroup(llShapeGroupData* llShapeGroup);
+	virtual void llUpdate();
 
 protected:
 	virtual void Update() {};
 	void NewllUpdate();
-	virtual void llUpdate();
 	void ReCalibrateID();
 	//void ShapeToGroup(ShapeData& ShapeData);
 	//void GroupToShape(GroupData& GroupData);
