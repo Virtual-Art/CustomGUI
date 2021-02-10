@@ -136,6 +136,155 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 	}
 }
 
+
+void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, int ElementLevel, int MouseState)
+{
+	//if (llBook->Page == nullptr) { return; };
+	//Log::LogString("Printing Book Stats");
+	int VertexIndex = 0;
+	int PageCount = 0;
+	int PageGroupCount = 0;
+	int PageItemCount = 0;
+	int ShapeGroupCount = 0;
+	int ShapeCount = 0;
+	int VertexCount = 0;
+
+	int PageSpot = 0;
+	int PageGroupSpot = 0;
+	int PageItemSpot = 0;
+	int ShapeGroupSpot = 0;
+	int ShapeSpot = 0;
+	int VertexSpot = 0;
+
+	//Page
+	llPageData* CurrentPage = llBook->Page;
+
+	//Set to beginning
+	while (CurrentPage->Previous != nullptr)
+	{
+		CurrentPage = CurrentPage->Previous;
+		PageSpot--; //if there is no previous aka first element, this doesn happen
+	}
+
+	while (CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
+	{
+		PageCount++;
+		//Page Group
+		llPageGroupData* CurrentPageGroup = CurrentPage->PageGroup;
+		//Set PageGroup Beginning
+		/////////////////////////////////////////////////////
+		while (CurrentPageGroup->Previous != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Previous;
+		
+			PageGroupSpot--;
+		}
+		/////////////////////////////////////////////////////
+		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
+		{
+			PageGroupCount++;
+			//PageItem
+			llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
+			//Set PageItem Beginning
+			/////////////////////////////////////////////////////
+			while (CurrentPageItem->Previous != nullptr)
+			{
+				CurrentPageItem = CurrentPageItem->Previous;
+				PageItemSpot--;
+			}
+			/////////////////////////////////////////////////////
+			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
+			{
+				if (ElementLevel == LEVEL_PAGEITEM)
+				{
+					if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left&& yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom)
+					{
+						cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
+					}
+				}
+
+				PageItemCount++;
+				//ShapeGroup
+				llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+				//Set ShapeGroup to beginning
+				/////////////////////////////////////////////////////
+				while (CurrentShapeGroup->Previous != nullptr)
+				{
+					CurrentShapeGroup = CurrentShapeGroup->Previous;
+					ShapeGroupSpot--;
+				}
+				/////////////////////////////////////////////////////
+				while (CurrentShapeGroup != nullptr)
+				{
+					ShapeGroupCount++;
+					//Shape
+					llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+					if (CurrentShapeGroup->Shape != nullptr)
+					{
+
+						if (xMouse < CurrentShapeGroup->Right && xMouse >  CurrentShapeGroup->Left&& yMouse < CurrentShapeGroup->Top && yMouse >  CurrentShapeGroup->Bottom)
+						{
+							if (ElementLevel == LEVEL_SHAPEGROUP)
+							{
+								cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+							}
+						}
+						//Set shape to beginning
+						/////////////////////////////////////////////////////
+						while (CurrentShape->Previous != nullptr)
+						{
+							CurrentShape = CurrentShape->Previous;
+							ShapeSpot--;
+						}
+						/////////////////////////////////////////////////////
+						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
+						{
+							ShapeCount++;
+							if (xMouse < CurrentShape->Right && xMouse >  CurrentShape->Left && yMouse < CurrentShape->Top && yMouse >  CurrentShape->Bottom)
+							{
+								if (ElementLevel == LEVEL_SHAPE)
+								{
+									//cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+									CurrentShape->ShapeButton.ProcessMouseButtons(MouseState);
+								}
+							}
+							CurrentShape = CurrentShape->Next;
+						}
+					}
+					ShapeCount = -1;
+					CurrentShapeGroup = CurrentShapeGroup->Next;
+				}
+				ShapeGroupCount = -1;
+				CurrentPageItem = CurrentPageItem->Next;
+			}
+			PageItemCount = -1;
+			CurrentPageGroup = CurrentPageGroup->Next;
+		}
+		PageGroupCount = -1;
+		CurrentPage = CurrentPage->Next;
+	}
+
+	int PageIterationsLeft = PageSpot + PageCount;
+	int PageGroupIterationsLeft = PageGroupSpot + PageGroupCount;
+	int PageItemIterationsLeft = PageItemSpot + PageItemCount;
+	int ShapeGroupIterationsLeft = ShapeGroupSpot + ShapeGroupCount;
+	int ShapeIterationsLeft = ShapeSpot + ShapeCount;
+
+
+	while (PageIterationsLeft >= 0) //The bottom is zero including 0;
+	{
+		CurrentPage = CurrentPage->Previous;
+		PageIterationsLeft--;
+	}
+
+	while (PageGroupIterationsLeft >= 0) //The bottom is zero including 0;
+	{
+		CurrentPageGroup = CurrentPageGroup->Previous;
+		PageGroupIterationsLeft--;
+	}
+
+}
+
 void MasterElement::PrintBook(llBookData* llBook)
 {
 

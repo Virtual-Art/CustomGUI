@@ -11,6 +11,9 @@
 
 using namespace std;
 
+typedef void(*ButtonFunction)();
+
+
 class Button
 {
 public:
@@ -19,11 +22,18 @@ public:
 	ElementAction*** TriggeredActions;
 	ElementAction* AutoActions;
 
+	ButtonFunction* LogicalActions;
+
+	void PlayLogicalActions();
+
+	void ProcessMouseButtons(int MouseState);
+
 	Button();
 	~Button();
 
 	void PlayActions(unsigned int MouseState);
 
+	static void Empty();
 
 };
 

@@ -146,7 +146,7 @@ public:
 	void OffsetPosition(glm::vec2 PositionOffset);
 
 	void UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion);
-	void UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion);
+	void UpdatellMouseAccess();
 	void SetMouseAccess();
 	glm::vec2 ConvertEndToMiddle(glm::vec2 Position, glm::vec2 Size);
 	glm::vec2 ConvertBeginningToMiddle(glm::vec2 Position, glm::vec2 Size);

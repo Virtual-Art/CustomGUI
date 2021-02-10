@@ -9,7 +9,6 @@ NewCharacter::NewCharacter(llBookData* llBook)
 	CurrentllShape->Type = TYPE_CHARACTER;
 	SetllCharacter('T');
 	CreatellCharacter();
-	UpdatellMouseAccess();
 }
 
 NewCharacter::NewCharacter(llBookData* llBook, llShapeData* llShape)
@@ -18,7 +17,6 @@ NewCharacter::NewCharacter(llBookData* llBook, llShapeData* llShape)
 	CurrentllShape->Type = TYPE_CHARACTER;
 	SetllCharacter(llShape->Ascii);
 	CreatellCharacter();
-	UpdatellMouseAccess();
 }
 
 NewCharacter::NewCharacter(llShapeData* llShape)
@@ -470,6 +468,11 @@ void NewCharacter::CreatellCharacter()
 	//TopLeft
 	VertexTopLeft->TexCoords = { CurrentCharacter.CharxPos, CurrentCharacter.CharyPos };
 
+	//UpdatellMouseAccess();
+	CurrentllShape->Top = (CurrentllShape->Position[Y_AXIS] + CurrentllShape->Size[Y_AXIS] / 2);
+	CurrentllShape->Bottom = (CurrentllShape->Position[Y_AXIS] - CurrentllShape->Size[Y_AXIS] / 2);
+	CurrentllShape->Left = (CurrentllShape->Position[X_AXIS] - CurrentllShape->Size[X_AXIS] / 2);
+	CurrentllShape->Right = (CurrentllShape->Position[X_AXIS] + CurrentllShape->Size[X_AXIS] / 2);
 }
 
 //Makeup of a Square
@@ -527,7 +530,7 @@ void NewCharacter::Update()
 	CurrentCharacter = GetCharacter(LoadedShape.Ascii);
 	SetShapeRatios();
 	BuildShapeVertices();
-	UpdateMouseAccess();
+	//UpdateMouseAccess();
 	CurrentPage->ReplaceShape(LoadedShape);
 }
 

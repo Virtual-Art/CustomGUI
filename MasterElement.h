@@ -1,6 +1,37 @@
 #ifndef MASTERELEMENT
 #define MASTERELEMENT
 
+//Level
+#define LEVEL_VERTEX 0
+#define LEVEL_SHAPE 1
+#define LEVEL_SHAPEGROUP 2
+#define LEVEL_PAGEITEM 3
+#define LEVEL_PAGEGROUP 4
+#define LEVEL_PAGE 5
+#define LEVEL_BOOK 6
+
+
+
+//Level Type Function
+#define FUNCTION_POSITION  0
+#define FUNCTION_SIZE  1
+#define FUNCTION_COLOR_R  2
+#define FUNCTION_COLOR_G  3
+#define FUNCTION_COLOR_B  4
+#define FUNCTION_COLOR_A  5
+#define MAINFUNCTION_6  6
+#define MAINFUNCTION_7  7
+#define MAINFUNCTION_8  8
+#define MAINFUNCTION_9  9
+
+#define FUNCTION_SET_TEXT 6
+
+#define ARROW_UP 0
+#define ARROW_DOWN 1
+#define ARROW_RIGHT 2
+#define ARROW_LEFT 3
+
+
 //Level Type
 #define TYPE_VERTEX 0 
 #define TYPE_SHAPE 0
@@ -25,12 +56,30 @@
 #define S_ONE_TO_COMPUTER 2
 #define S_COMPUTER_TO_PIXEL 3
 
+#define MIN_COLOR_VALUE 0.0
+#define MAX_COLOR_VALUE 1.0
+
+#define RED 0
+#define GREEN 1
+#define BLUE 2
+#define ALPHA 3
+
+#define X_AXIS 0
+#define Y_AXIS 1
+
+#define MIN_VALID_SIZE 0.0 
+#define MAX_VALID_SIZE 2.5
+
+#define MIN_VALID_POSITION -1.0 //-3.5 
+#define MAX_VALID_POSITION  1.0 // 3.5
+
 #include <iostream>
 #include "Page.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Log.h"
+#include "Button.h"
 
 using namespace std;
 
@@ -86,7 +135,7 @@ struct llShapeData
 	llShapeData* Previous = nullptr;
 	llVertexData* Vertexx = nullptr; // Child
 	llVertexData* VertexxHead = nullptr; // Child
-	
+	Button ShapeButton;
 };
 
 struct llShapeGroupData
@@ -400,6 +449,8 @@ public:
 	//		CurrentPage = CurrentPage->Next;
 	//	}
 	//}
+
+	static void FindShape(llBookData* llBook, float xMouse, float yMouse, int ElementLevel, int MouseState);
 
 	//Print Book
 	static void PrintBookStats(llBookData* llBook);

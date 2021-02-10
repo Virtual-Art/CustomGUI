@@ -168,7 +168,7 @@ protected:
 	void SetMouseAccess();
 	void SetllMouseAccess();
 	void UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size);
-	void UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size);
+	//void UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size);
 
 private:
 

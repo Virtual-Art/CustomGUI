@@ -39,31 +39,60 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Quad DeleteWhenFixed(&CreatorBook);
 	DeleteWhenFixed.SetllPosition({-2.0, 0.0});
 
+	//Quad Quad_Find(CurrentBook);
+	//Quad_Find.GetData()->ShapeButton.LogicalActions[0] = PointerTest;
+
+	Slider UniqueSlider(CurrentBook);
+	UniqueSlider.SetllPosition({0.5, 0.5});
+	Slider UniqueSlider1(CurrentBook);
+	UniqueSlider1.SetllPosition({0.5, -0.5});
+
 	EditorSelected = &QuadEditor;
+
+
+	Text_Details.Phrase = "Press Shift + Up/Down or Left/Right To Switch levels or Neighbour Elements";
+	Text_Details.Centered = true;
+	ShapeGroup_Details.Position = { 0.0, 0.95 };
+	ShapeGroup_Details.Color = Purple;
+	Text_Shift.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
+
+	Text_Details.Phrase = "Press Alt + Up/Down or Right/Left To Switch Options or Element Types";
+	Text_Details.Centered = true;
+	ShapeGroup_Details.Position = { 0.0, 0.85 };
+	ShapeGroup_Details.Color = Orange;
+	Text_AltRightLeft.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
+
+	Text_Details.Phrase = "Press Ctrl + A to Add and Arrow Keys to use the Option Selected";
+	Text_Details.Centered = true;
+	ShapeGroup_Details.Position = { 0.0, 0.75 };
+	ShapeGroup_Details.Color = Yellow;
+	Text_AltUpDown.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	//Current Level
 	//Label
 	Text_Details.Phrase = "Current Level: ";
+	Text_Details.Centered = false;
 	ShapeGroup_Details.Position = { -0.95, 0.8 };
+	ShapeGroup_Details.Color = { 0.171, 0.8461 , 0.95 , 1.0};
 	Text_CurrentLevel_Label.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	//Level
 	Text_Details.Phrase = "Shape";
 	ShapeGroup_Details.Position = { -0.95, 0.7 };
-	ShapeGroup_Details.Color = Purple;
+	ShapeGroup_Details.Color = Black;
 	Text_CurrentLevel.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	//Current Function
 	//Label
-	Text_Details.Phrase = "Current Function: ";
+	Text_Details.Phrase = "Current Option: ";
 	ShapeGroup_Details.Position = { -0.95, 0.6 };
-	ShapeGroup_Details.Color = White;
+	ShapeGroup_Details.Color = { 0.171, 0.8461 , 0.95 , 1.0 };
 	Text_CurrentFunction_Label.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	//Options
 	Text_Details.Phrase = "Position";
 	ShapeGroup_Details.Position = { -0.95, 0.5 };
-	ShapeGroup_Details.Color = Orange;
+	ShapeGroup_Details.Color = Black;
 	Text_CurrentFunction.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 }
 
@@ -77,14 +106,14 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 
 	if (CurrentLevel == LEVEL_SHAPEGROUP && CurrentType == TYPE_TEXT && KeyState.Ctrl != true && KeyState.CurrentAscii != -1 && KeyState.Key1 != 0)
 	{
-		//CurrentText = TextEditor.GetText();
-		//if (CurrentText == "TEXT" || CurrentText == " ")
-		//{
-		//	CurrentText = "";
-		//}
-		//CurrentText += KeyState.CurrentAscii;
-		//Log::LogString(CurrentText);
-		//TextEditor.SetllText(CurrentText);
+		CurrentText = TextEditor.GetText();
+		if (CurrentText == "TEXT" || CurrentText == " ")
+		{
+			CurrentText = "";
+		}
+		CurrentText += KeyState.CurrentAscii;
+		Log::LogString(CurrentText);
+		TextEditor.SetllText(CurrentText);
 	}
 
 	if (CurrentLevel == LEVEL_SHAPEGROUP && CurrentType == TYPE_TEXT && KeyState.Ctrl != true &&KeyState.Key1 == GUI_BACKSPACE_CLICKED || KeyState.Key1 == GUI_BACKSPACE_PRESSED)
@@ -860,6 +889,7 @@ void PageCreator::LevelDown()
 
 void PageCreator::Add()
 {
+	SetBookFromElements();
 	EditorSelected->Add_Default();
 	CurrentFunction = 0;
 	SetElements();
@@ -979,6 +1009,16 @@ void PageCreator::Empty()
 
 }
 
+void PageCreator::SetBookFromElements()
+{
+	CurrentBook->Page = CurrentPage;
+	CurrentBook->Page->PageGroup = CurrentPageGroup;
+	CurrentBook->Page->PageGroup->PageItem = CurrentPageItem;
+	CurrentBook->Page->PageGroup->PageItem->ShapeGroup = CurrentShapeGroup;
+	CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape = CurrentShape;
+	CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = CurrentShape->Vertexx;
+}
+
 void PageCreator::SetElements()
 {
 	Log::LogString("Setting Elements");
@@ -1095,11 +1135,11 @@ void PageCreator::PositionLeft()
 }
 
 //SIZE
-void PageCreator::SizeUp()
+void PageCreator::SizeDown()
 {
 	EditorSelected->OffsetSize({ 0.0, 0.00166 * PixelOffset }, OnlyY);
 }
-void PageCreator::SizeDown()
+void PageCreator::SizeUp()
 {
 	EditorSelected->OffsetSize({ 0.0, 0.00166 * -PixelOffset }, OnlyY);
 }
@@ -1115,63 +1155,39 @@ void PageCreator::SizeLeft()
 // COLOR
 void PageCreator::ColorRUp()
 {
-	if (EditorSelected->GetColor()[0] < 1.0)
-	{
-		EditorSelected->OffsetColor({ 0.01 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-	}
+	EditorSelected->OffsetColor({ 0.01 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
 }
 void PageCreator::ColorRDown()
 {
-	if (EditorSelected->GetColor()[1] > 1.0)
-	{
-		EditorSelected->OffsetColor({ 0.01 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-	}
+	EditorSelected->OffsetColor({ 0.01 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
 }
 
 void PageCreator::ColorGUp()
 {
-	if (EditorSelected->GetColor()[1] < 1.0)
-	{
-		EditorSelected->OffsetColor({ 0.0, 0.01 * PixelOffset,  0.0, 0.0 }, OnlyG);
-	}
+	EditorSelected->OffsetColor({ 0.0, 0.01 * PixelOffset,  0.0, 0.0 }, OnlyG);
 }
 
 void PageCreator::ColorGDown()
 {
-	if (EditorSelected->GetColor()[1] > 0.0)
-	{
-		EditorSelected->OffsetColor({ 0.0, 0.01 * -PixelOffset,  0.0, 0.0 }, OnlyG);
-	}
+	EditorSelected->OffsetColor({ 0.0, 0.01 * -PixelOffset,  0.0, 0.0 }, OnlyG);
 }
 
 void PageCreator::ColorBUp()
 {
-	if (EditorSelected->GetColor()[2] < 1.0)
-	{
-		EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * PixelOffset, 0.0 }, OnlyB);
-	}
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * PixelOffset, 0.0 }, OnlyB);
 }
 void PageCreator::ColorBDown()
 {
-	if (EditorSelected->GetColor()[2] > 1.0)
-	{
-		EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * -PixelOffset,  0.0 }, OnlyB);
-	}
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * -PixelOffset,  0.0 }, OnlyB);
 }
 
 void PageCreator::ColorAUp()
 {
-	if (EditorSelected->GetColor()[3] < 1.0)
-	{
-		EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * PixelOffset }, OnlyA);
-	}
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * PixelOffset }, OnlyA);
 }
 void PageCreator::ColorADown()
 {
-	if (EditorSelected->GetColor()[3] > 1.0)
-	{
-		EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * -PixelOffset }, OnlyA);
-	}
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * -PixelOffset }, OnlyA);
 }
 
 void PageCreator::SetText()
@@ -1180,3 +1196,10 @@ void PageCreator::SetText()
 	TextEditor.SetText(GetString);
 
 }
+
+
+void PageCreator::PointerTest()
+{
+	Log::LogString("Pointer Test is working");
+}
+

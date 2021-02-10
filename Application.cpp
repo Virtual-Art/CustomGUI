@@ -49,6 +49,7 @@
 #include "PageGroup.h"
 #include "MasterElement.h"
 #include "NewPage.h"
+#include "Button.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -243,7 +244,7 @@ int main(int argc, char** argv)
 		glm::vec2 MousePosition = {Mouse.xPos, Mouse.yPos};
 		Time = glfwGetTime();
 		PreviousTime = glfwGetTime();
-		glClearColor(0.1, 0.1, 0.1, 1.0);
+		glClearColor(0.091, 0.14, 0.14, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		//Setup
@@ -260,9 +261,11 @@ int main(int argc, char** argv)
 
 		//EditorPage.DrawPage();
 		
-		if (KeyState.Key1 == GUI_G_CLICKED )
+		MasterElement::FindShape(&EditorBook, Mouse.xPos, Mouse.yPos, LEVEL_PAGEITEM, MouseState);
+		if (KeyState.Key1 == GUI_G_CLICKED)
 		{
-			MasterElement::PrintBookStats(&EditorBook);
+			//MasterElement::PrintBookStats(&EditorBook);
+			//ComputerButton.PlayLogicalActions();
 			//Log::LogString("Up with shift");
 		}
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, GUI);

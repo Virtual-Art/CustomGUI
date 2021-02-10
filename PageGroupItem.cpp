@@ -551,42 +551,66 @@ void PageGroupItem::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int Po
 
 }
 
-void PageGroupItem::UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion)
+void PageGroupItem::UpdatellMouseAccess()
 {
-	switch (PositionConversion)
+	//Checks
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::ShapeGroup is null "); return; };
+	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No ShapeGroups in Pageitem"); return; };
+
+	//Setup
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+
+
+	//Go to Head Shape
+	while (CurrentShapeGroup->Previous != nullptr)
 	{
-	case 1:
-		Position = ConvertEndToMiddle(Position, Size);
-		break;
-	case 2:
-		Position = ConvertBeginningToMiddle(Position, Size);
-		break;
+		CurrentShapeGroup = CurrentShapeGroup->Previous;
 	}
 
-	float Left = Position[0] - (Size[0] / 2);
-	float Right = Position[0] + (Size[0] / 2);
-	float Top = Position[1] + (Size[1] / 2);
-	float Bottom = Position[1] - (Size[1] / 2);
+	float FurthestRight = CurrentShapeGroup->Right;
+	float FurthestLeft = CurrentShapeGroup->Left;
+	float FurthestTop = CurrentShapeGroup->Top;
+	float FurthestBottom = CurrentShapeGroup->Bottom;
 
-	if (Left < CurrentllPageItem->Left || CurrentllPageItem->Left == -3.0)
+	if (CurrentShapeGroup->Next != nullptr)
 	{
-		CurrentllPageItem->Left = Left;
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+	}
+	//Compare CurrentShape's Access variables with all other shapes
+	while (CurrentShapeGroup != nullptr)
+	{
+		//Furthest Right is the most positive number
+		if (FurthestRight < CurrentShapeGroup->Right) //
+		{
+			FurthestRight = CurrentShapeGroup->Right;
+		}
+
+		//Furthest Left is the most negative number
+		if (FurthestLeft > CurrentShapeGroup->Left) //
+		{
+			FurthestLeft = CurrentShapeGroup->Left;
+		}
+
+		//Furthest Top is the most positive number
+		if (FurthestTop < CurrentShapeGroup->Top) //
+		{
+			FurthestTop = CurrentShapeGroup->Top;
+		}
+
+		//Furthest Bottom is the most negative number
+		if (FurthestBottom > CurrentShapeGroup->Bottom) //
+		{
+			FurthestBottom = CurrentShapeGroup->Bottom;
+		}
+
+		CurrentShapeGroup = CurrentShapeGroup->Next;
 	}
 
-	if (Right > CurrentllPageItem->Right || CurrentllPageItem->Right == -3.0)
-	{
-		CurrentllPageItem->Right = Right;
-	}
-
-	if (Top > CurrentllPageItem->Top || CurrentllPageItem->Top == -3.0)
-	{
-		CurrentllPageItem->Top = Top;
-	}
-
-	if (Bottom < CurrentllPageItem->Bottom || CurrentllPageItem->Bottom == -3.0)
-	{
-		CurrentllPageItem->Bottom = Bottom;
-	}
+	//Set ShapeGroup
+	CurrentllPageItem->Right = FurthestRight;
+	CurrentllPageItem->Left = FurthestLeft;
+	CurrentllPageItem->Top = FurthestTop;
+	CurrentllPageItem->Bottom = FurthestBottom;
 
 }
 

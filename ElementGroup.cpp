@@ -938,31 +938,71 @@ void ShapeGroup::SetMouseAccess()
 
 void ShapeGroup::SetllMouseAccess()
 {
-	//if (Initialized == false) { Log::LogString("SetMouseAccess Failed:: ShapeGroup Not Initialized"); return; };
+	//Checks
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::ShapeGroup is null "); return; };
+	if (CurrentllShapeGroup->Shape == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No Shapes in ShapeGroup"); return; };
 
-	//if (CurrentllShapeGroup->MouseAccess == true)
-	//{
-	//
-	//	//this->CurrentShape.ShapeGroup.Top = (LoadedShape.ShapeGroup.Position[1] + (LoadedShape.ShapeGroup.Size[1] / 2));
-	//	//this->CurrentShape.ShapeGroup.Bottom = (LoadedShape.ShapeGroup.Position[1] - (LoadedShape.ShapeGroup.Size[1] / 2));
-	//	//this->CurrentShape.ShapeGroup.Left = (LoadedShape.ShapeGroup.Position[0] - (LoadedShape.ShapeGroup.Size[0] / 2));
-	//	//this->CurrentShape.ShapeGroup.Right = (LoadedShape.ShapeGroup.Position[0] + (LoadedShape.ShapeGroup.Size[0] / 2));
-	//
-	//	for (int i = CurrentShapeGroup.ShapeStart; i < CurrentShapeGroup.ShapeStart + CurrentShapeGroup.ShapeCount; i++)
-	//	{
-	//		if (IsInBounds(i) != true) { Log::LogString("SetMouseAccess Failed:: ID out of bounds"); return; };
-	//
-	//		//Set entire shape group 
-	//		ShapeData& RetreivedShape = CurrentPage->GetShapeDataR(i);
-	//		RetreivedShape.ShapeGroup.Top = CurrentShapeGroup.Top;
-	//		RetreivedShape.ShapeGroup.Bottom = CurrentShapeGroup.Bottom;
-	//		RetreivedShape.ShapeGroup.Left = CurrentShapeGroup.Left;
-	//		RetreivedShape.ShapeGroup.Right = CurrentShapeGroup.Right;
-	//
-	//		CurrentShapeGroup.Size[0] = CurrentShapeGroup.Right - CurrentShapeGroup.Left;
-	//		CurrentShapeGroup.Size[1] = CurrentShapeGroup.Top - CurrentShapeGroup.Bottom;
-	//	}
-	//}
+	//Setup
+	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+
+
+	//Go to Head Shape
+	while (CurrentShape->Previous != nullptr)
+	{
+		CurrentShape = CurrentShape->Previous;
+	}
+
+	float FurthestRight = CurrentShape->Right;
+	float FurthestLeft = CurrentShape->Left;
+	float FurthestTop = CurrentShape->Top;
+	float FurthestBottom = CurrentShape->Bottom;
+
+	if (CurrentShape->Next != nullptr)
+	{
+		CurrentShape = CurrentShape->Next;
+	}
+	Log::LogString("Start of MouseAccess");
+	//Compare CurrentShape's Access variables with all other shapes
+	while (CurrentShape != nullptr)
+	{
+		Log::LogFloat("Right ", CurrentllShapeGroup->Right);
+		Log::LogFloat("Left  ", CurrentllShapeGroup->Left);
+		Log::LogFloat("Top   ", CurrentllShapeGroup->Top);
+		Log::LogFloat("Bottom", CurrentllShapeGroup->Bottom);
+
+		//Furthest Right is the most positive number
+		if (FurthestRight < CurrentShape->Right) //
+		{
+			FurthestRight = CurrentShape->Right;
+		}
+
+		//Furthest Left is the most negative number
+        if (FurthestLeft > CurrentShape->Left ) //
+		{
+			FurthestLeft = CurrentShape->Left;
+		}
+
+		//Furthest Top is the most positive number
+		if (FurthestTop < CurrentShape->Top ) //
+		{
+			FurthestTop = CurrentShape->Top;
+		}
+
+		//Furthest Bottom is the most negative number
+		if (FurthestBottom > CurrentShape->Bottom ) //
+		{
+			FurthestBottom = CurrentShape->Bottom;
+		}
+
+		CurrentShape = CurrentShape->Next;
+	}
+
+	//Set ShapeGroup
+	CurrentllShapeGroup->Right  = FurthestRight;
+	CurrentllShapeGroup->Left   = FurthestLeft;
+	CurrentllShapeGroup->Top    = FurthestTop;
+	CurrentllShapeGroup->Bottom = FurthestBottom;
+
 }
 
 void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)
@@ -996,36 +1036,36 @@ void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)
 
 }
 
-void ShapeGroup::UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size)
-{
-	if (CurrentllShapeGroup->MouseAccess == false) return;
-
-	float Left = Position[0] - (Size[0] / 2);
-	float Right = Position[0] + (Size[0] / 2);
-	float Top = Position[1] + (Size[1] / 2);
-	float Bottom = Position[1] - (Size[1] / 2);
-
-	if (Left < CurrentllShapeGroup->Left || CurrentllShapeGroup->Left == -3)
-	{
-		CurrentllShapeGroup->Left = Left;
-	}
-
-	if (Right > CurrentllShapeGroup->Right || CurrentllShapeGroup->Right == -3)
-	{
-		CurrentllShapeGroup->Right = Right;
-	}
-
-	if (Top > CurrentllShapeGroup->Top || CurrentllShapeGroup->Top == -3)
-	{
-		CurrentllShapeGroup->Top = Top;
-	}
-
-	if (Bottom < CurrentllShapeGroup->Bottom || CurrentllShapeGroup->Bottom == -3)
-	{
-		CurrentllShapeGroup->Bottom = Bottom;
-	}
-
-}
+//void ShapeGroup::UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size)
+//{
+//	if (CurrentllShapeGroup->MouseAccess == false) return;
+//
+//	float Left = Position[0] - (Size[0] / 2);
+//	float Right = Position[0] + (Size[0] / 2);
+//	float Top = Position[1] + (Size[1] / 2);
+//	float Bottom = Position[1] - (Size[1] / 2);
+//
+//	if (Left < CurrentllShapeGroup->Left || CurrentllShapeGroup->Left == -3)
+//	{
+//		CurrentllShapeGroup->Left = Left;
+//	}
+//
+//	if (Right > CurrentllShapeGroup->Right || CurrentllShapeGroup->Right == -3)
+//	{
+//		CurrentllShapeGroup->Right = Right;
+//	}
+//
+//	if (Top > CurrentllShapeGroup->Top || CurrentllShapeGroup->Top == -3)
+//	{
+//		CurrentllShapeGroup->Top = Top;
+//	}
+//
+//	if (Bottom < CurrentllShapeGroup->Bottom || CurrentllShapeGroup->Bottom == -3)
+//	{
+//		CurrentllShapeGroup->Bottom = Bottom;
+//	}
+//
+//}
 
 void ShapeGroup::PrintGroupShapes()
 {

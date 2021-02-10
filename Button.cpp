@@ -10,6 +10,17 @@ Button::Button()
 		TriggeredActions[i] = new ElementAction*[5];
 	}
 
+	LogicalActions = new ButtonFunction[5];
+
+	for (int i = 0; i < 5; i++)
+	{
+		LogicalActions[i] = Empty;
+	}
+}
+
+void Button::Empty()
+{
+
 }
 
 Button::~Button()
@@ -22,6 +33,22 @@ Button::~Button()
 
 	//then delete the pointer that points to the 4 attributes
 	delete[] TriggeredActions;
+}
+
+void Button::PlayLogicalActions()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		LogicalActions[i]();
+	}
+}
+
+void Button::ProcessMouseButtons(int MouseState)
+{
+	if (MouseState == 1) //MouseLeft Clicked
+	{
+		LogicalActions[0]();
+	}
 }
 
 //Helper Function

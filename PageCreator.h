@@ -15,35 +15,6 @@
 
 using namespace std;
 
-//Level
-#define LEVEL_VERTEX 0
-#define LEVEL_SHAPE 1
-#define LEVEL_SHAPEGROUP 2
-#define LEVEL_PAGEITEM 3
-#define LEVEL_PAGEGROUP 4
-#define LEVEL_PAGE 5
-#define LEVEL_BOOK 6
-
-
-
-//Level Type Function
-#define FUNCTION_POSITION  0
-#define FUNCTION_SIZE  1
-#define FUNCTION_COLOR_R  2
-#define FUNCTION_COLOR_G  3
-#define FUNCTION_COLOR_B  4
-#define FUNCTION_COLOR_A  5
-#define MAINFUNCTION_6  6
-#define MAINFUNCTION_7  7
-#define MAINFUNCTION_8  8
-#define MAINFUNCTION_9  9
-
-#define FUNCTION_SET_TEXT 6
-
-#define ARROW_UP 0
-#define ARROW_DOWN 1
-#define ARROW_RIGHT 2
-#define ARROW_LEFT 3
 
 //Can Edit all objects
 //Restricted to only Position maybe size
@@ -83,6 +54,7 @@ namespace PageCreator
 	const glm::vec4 Green = { 0.0, 1.0, 0.0, 1.0 };
 	const glm::vec4 Blue = { 0.0, 0.0, 1.0, 1.0 };
 	const glm::vec4 White = { 1.0, 1.0, 1.0, 1.0 };
+	const glm::vec4 Black = { 0.0, 0.0, 0.0, 1.0 };
 	const glm::vec4 Yellow = { 1.0, 1.0, 0.0, 1.0 };
 	const glm::vec4 Rose = { 1.0, 0.0, 1.0, 1.0 };
 	const glm::vec4 Orange = { 1.0, 0.5, 0.0, 1.0 };
@@ -129,6 +101,10 @@ namespace PageCreator
 	static Text Text_CurrentLevel;
 	static Text Text_CurrentFunction;
 
+	static Text Text_Shift;
+	static Text Text_AltRightLeft;
+	static Text Text_AltUpDown;
+
 	//Rememeber we are not ever using a pointer to point to data in the book
     //The Editor Objects edit all the books and switch between books on their own
 
@@ -162,6 +138,7 @@ namespace PageCreator
 	//void CreateGUIObjects();
 	///////////////////////////////////////////////KEYBOARD FUNCTIONS////////////////////////////////
 
+	void PointerTest();
 	void SetKeyboardKeys();
 
 	// Arrow Key Default
@@ -227,6 +204,7 @@ namespace PageCreator
 	void DecreasePixelOffset();
 
 	void SetElements();
+	void SetBookFromElements();
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
