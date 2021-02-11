@@ -238,6 +238,11 @@ int main(int argc, char** argv)
 
 	//MasterElement::PrintBookStats(&Gamee);
 
+	for (int i = 0; i < argc; i++)
+	{
+		argv[i];
+	}
+
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -261,7 +266,7 @@ int main(int argc, char** argv)
 
 		//EditorPage.DrawPage();
 		
-		MasterElement::FindShape(&EditorBook, Mouse.xPos, Mouse.yPos, LEVEL_PAGEITEM, MouseState);
+		MasterElement::FindShape(&EditorBook, Mouse.xPos, Mouse.yPos, LEVEL_SHAPEGROUP, MouseState);
 		if (KeyState.Key1 == GUI_G_CLICKED)
 		{
 			//MasterElement::PrintBookStats(&EditorBook);

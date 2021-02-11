@@ -149,12 +149,13 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 	int ShapeCount = 0;
 	int VertexCount = 0;
 
-	int PageSpot = 0;
-	int PageGroupSpot = 0;
-	int PageItemSpot = 0;
-	int ShapeGroupSpot = 0;
-	int ShapeSpot = 0;
-	int VertexSpot = 0;
+
+	llVertexData* SavedVertex = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+	llShapeData* SavedShape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+	llShapeGroupData* SavedShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
+	llPageItemData* SavedPageItem = llBook->Page->PageGroup->PageItem;
+	llPageGroupData* SavedPageGroup = llBook->Page->PageGroup;
+	llPageData* SavedPage = llBook->Page;
 
 	//Page
 	llPageData* CurrentPage = llBook->Page;
@@ -163,7 +164,6 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 	while (CurrentPage->Previous != nullptr)
 	{
 		CurrentPage = CurrentPage->Previous;
-		PageSpot--; //if there is no previous aka first element, this doesn happen
 	}
 
 	while (CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
@@ -177,7 +177,6 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 		{
 			CurrentPageGroup = CurrentPageGroup->Previous;
 		
-			PageGroupSpot--;
 		}
 		/////////////////////////////////////////////////////
 		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
@@ -190,7 +189,6 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 			while (CurrentPageItem->Previous != nullptr)
 			{
 				CurrentPageItem = CurrentPageItem->Previous;
-				PageItemSpot--;
 			}
 			/////////////////////////////////////////////////////
 			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
@@ -211,8 +209,9 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 				while (CurrentShapeGroup->Previous != nullptr)
 				{
 					CurrentShapeGroup = CurrentShapeGroup->Previous;
-					ShapeGroupSpot--;
+
 				}
+			
 				/////////////////////////////////////////////////////
 				while (CurrentShapeGroup != nullptr)
 				{
@@ -234,7 +233,6 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 						while (CurrentShape->Previous != nullptr)
 						{
 							CurrentShape = CurrentShape->Previous;
-							ShapeSpot--;
 						}
 						/////////////////////////////////////////////////////
 						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
@@ -264,25 +262,13 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 		CurrentPage = CurrentPage->Next;
 	}
 
-	int PageIterationsLeft = PageSpot + PageCount;
-	int PageGroupIterationsLeft = PageGroupSpot + PageGroupCount;
-	int PageItemIterationsLeft = PageItemSpot + PageItemCount;
-	int ShapeGroupIterationsLeft = ShapeGroupSpot + ShapeGroupCount;
-	int ShapeIterationsLeft = ShapeSpot + ShapeCount;
 
-
-	while (PageIterationsLeft >= 0) //The bottom is zero including 0;
-	{
-		CurrentPage = CurrentPage->Previous;
-		PageIterationsLeft--;
-	}
-
-	while (PageGroupIterationsLeft >= 0) //The bottom is zero including 0;
-	{
-		CurrentPageGroup = CurrentPageGroup->Previous;
-		PageGroupIterationsLeft--;
-	}
-
+	llBook->Page = SavedPage;
+	llBook->Page->PageGroup = SavedPageGroup;
+	llBook->Page->PageGroup->PageItem = SavedPageItem;
+	llBook->Page->PageGroup->PageItem->ShapeGroup = SavedShapeGroup;
+	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape = SavedShape;
+	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = SavedVertex;
 }
 
 void MasterElement::PrintBook(llBookData* llBook)

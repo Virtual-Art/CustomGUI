@@ -39,12 +39,12 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Quad DeleteWhenFixed(&CreatorBook);
 	DeleteWhenFixed.SetllPosition({-2.0, 0.0});
 
-	//Quad Quad_Find(CurrentBook);
+	Quad Quad_Find(CurrentBook);
 	//Quad_Find.GetData()->ShapeButton.LogicalActions[0] = PointerTest;
 
-	Slider UniqueSlider(CurrentBook);
+	Text UniqueSlider(CurrentBook);
 	UniqueSlider.SetllPosition({0.5, 0.5});
-	Slider UniqueSlider1(CurrentBook);
+	Text UniqueSlider1(CurrentBook);
 	UniqueSlider1.SetllPosition({0.5, -0.5});
 
 	EditorSelected = &QuadEditor;
@@ -1011,12 +1011,35 @@ void PageCreator::Empty()
 
 void PageCreator::SetBookFromElements()
 {
-	CurrentBook->Page = CurrentPage;
-	CurrentBook->Page->PageGroup = CurrentPageGroup;
-	CurrentBook->Page->PageGroup->PageItem = CurrentPageItem;
-	CurrentBook->Page->PageGroup->PageItem->ShapeGroup = CurrentShapeGroup;
-	CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape = CurrentShape;
-	CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = CurrentShape->Vertexx;
+	if (CurrentPage != nullptr)
+	{
+		CurrentBook->Page = CurrentPage;
+
+		if (CurrentPageGroup != nullptr)
+		{
+			CurrentBook->Page->PageGroup = CurrentPageGroup;
+
+			if (CurrentPageItem != nullptr)
+			{
+				CurrentBook->Page->PageGroup->PageItem = CurrentPageItem;
+
+				if (CurrentShapeGroup != nullptr)
+				{
+					CurrentBook->Page->PageGroup->PageItem->ShapeGroup = CurrentShapeGroup;
+
+					if (CurrentShape != nullptr)
+					{
+						CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape = CurrentShape;
+
+						if (CurrentVertex != nullptr)
+						{
+							CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = CurrentShape->Vertexx;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void PageCreator::SetElements()
