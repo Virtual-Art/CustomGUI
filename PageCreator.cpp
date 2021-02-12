@@ -40,12 +40,12 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	DeleteWhenFixed.SetllPosition({-2.0, 0.0});
 
 	Quad Quad_Find(CurrentBook);
-	//Quad_Find.GetData()->ShapeButton.LogicalActions[0] = PointerTest;
+	Quad_Find.SetllPosition({-2.0, 0.0});
 
-	Text UniqueSlider(CurrentBook);
-	UniqueSlider.SetllPosition({0.5, 0.5});
-	Text UniqueSlider1(CurrentBook);
-	UniqueSlider1.SetllPosition({0.5, -0.5});
+	//Text UniqueSlider(CurrentBook);
+	//UniqueSlider.SetllPosition({0.5, 0.5});
+	//Text UniqueSlider1(CurrentBook);
+	//UniqueSlider1.SetllPosition({0.5, -0.5});
 
 	EditorSelected = &QuadEditor;
 

@@ -162,6 +162,7 @@
     <ClCompile Include="NewCharacter.cpp" />
     <ClCompile Include="NewPage.cpp" />
     <ClCompile Include="NewRender.cpp" />
+    <ClCompile Include="NumberPrinter.cpp" />
     <ClCompile Include="Oscillation.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageCreator.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="NewCharacter.h" />
     <ClInclude Include="NewPage.h" />
     <ClInclude Include="NewRender.h" />
+    <ClInclude Include="NumberPrinter.h" />
     <ClInclude Include="Oscillation.h" />
     <ClInclude Include="Page.h" />
     <ClInclude Include="PageCreator.h" />
