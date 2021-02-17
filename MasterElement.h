@@ -74,6 +74,15 @@
 #define MIN_VALID_POSITION -1.0 //-3.5 
 #define MAX_VALID_POSITION  1.0 // 3.5
 
+#define TYPE_INT 0
+#define TYPE_FLOAT 1
+#define TYPE_DOUBLE 2
+#define TYPE_VEC2 3
+#define TYPE_VEC3 4 
+#define TYPE_VEC4 5
+
+#define PIXEL 0.00166
+
 #include <iostream>
 #include "Page.h"
 #include <glm/gtc/type_ptr.hpp>
@@ -450,7 +459,7 @@ public:
 	//		CurrentPage = CurrentPage->Next;
 	//	}
 	//}
-
+	static void Toggle(bool& ToToggle);
 	static void FindShape(llBookData* llBook, float xMouse, float yMouse, int ElementLevel, int MouseState);
 
 	//Print Book

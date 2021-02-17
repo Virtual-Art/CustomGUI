@@ -1950,145 +1950,145 @@ int Page::ShapeDataCount()
 //
 //////////////////////////////////////////////////////////////////////
 //
-int Page::PrintVector2(glm::vec2 Vector, glm::vec2 Position, glm::vec4 Color)
-{ 
-	int ID = Amount();
-	//Vector
-	float x = Vector[0];
-	float y = Vector[1];
-
-	//SubStrings
-	string X = "  X: ";
-	string Y = "  Y: ";
-	string floatx = to_string(x);
-	string floaty = to_string(y);
-	
-	string Text = X + floatx + Y + floaty;
-	TextSpecification Vector2( Text, Position, false, Color);
-
-	AddTextBox(Vector2);
-
-	return ID;
-}
-int Page::PrintVector3(glm::vec3 Vector, glm::vec2 Position, glm::vec4 Color)
-{
-	int ID = Amount();
-	//Vector
-	float x = Vector[0];
-	float y = Vector[1];
-	float z = Vector[2];
-
-	//SubStrings
-	string X = "  X: ";
-	string Y = "  Y: ";
-	string Z = "  Z: ";
-	string floatx = to_string(x);
-	string floaty = to_string(y);
-	string floatz = to_string(z);
-
-	//Display 5 Characters only
-	floatx.erase(5);
-	floaty.erase(5);
-	floatz.erase(5);
-
-	
-	string Text = X + floatx + Y + floaty + Z + floatz;
-	TextSpecification Vector3( Text, Position, false, Color);
-	AddTextBox(Vector3);
-
-	return ID;
-}
-
-int Page::PrintVector4(glm::vec4 Vector, glm::vec2 Position, glm::vec4 Color)
-{
-	int ID = Amount();
-	//Vector
-	float r = Vector[0];
-	float g = Vector[1];
-	float b = Vector[2];
-	float a = Vector[3];
-
-	//SubStrings
-	string R = "  R ";
-	string G = "  G ";
-	string B = "  B ";
-	string A = "  A ";
-	string floatr = to_string(r);
-	string floatg = to_string(g);
-	string floatb = to_string(b);
-	string floata = to_string(a);
-
-	//Display 5 Characters only
-	floatr.erase(5);
-	floatg.erase(5);
-	floatb.erase(5);
-	floata.erase(5);
-
-	string Text =  R + floatr + G + floatg + B + floatb + A + floata;
-	TextSpecification Vector4( Text, Position, false, Color);
-	AddTextBox(Vector4);
-
-	return ID;
-}
-
-int Page::PrintFloat(float Float, glm::vec2 Position, glm::vec4 Color)
-{
-	int ID = Amount();
-	//Vector
-	float x = Float;
-
-	string floatx = to_string(x);
-
-	string Devision = "  ";
-
-	//Display 5 Characters only
-	floatx.erase(5);
-
-	string Text = Devision + floatx;
-	TextSpecification Float1(Text, Position, false, Color);
-	AddTextBox(Float1);
-
-	return ID;
-}
-int Page::PrintInt(int Int, glm::vec2 Position, glm::vec4 Color)
-{
-	int ID = Amount();
-	//Vector
-	int x = Int;
-
-	string Intx = to_string(x);
-	string Text;
-	string Zero = " ";
-
-	if (Intx.size() == 1)
-	{
-	   Text = Zero + Zero + Zero + Intx;
-	}
-	
-	if (Intx.size() == 2)
-	{
-		Text = Zero + Zero + Intx;
-	}
-
-	if (Intx.size() == 3)
-	{
-		Text = Zero + Intx;
-	}
-
-	if (Intx.size() == 4)
-	{
-		Text = Intx;
-	}
-
-	if (Intx.size() > 4)
-	{
-		Text = Intx.erase(4);
-	}
-	TextSpecification Int1(Text, Position, false, Color);
-	AddTextBox(Int1);
-
-	return ID;
-}
+//int Page::PrintVector2(glm::vec2 Vector, glm::vec2 Position, glm::vec4 Color)
+//{ 
+//	int ID = Amount();
+//	//Vector
+//	float x = Vector[0];
+//	float y = Vector[1];
+//
+//	//SubStrings
+//	string X = "  X: ";
+//	string Y = "  Y: ";
+//	string floatx = to_string(x);
+//	string floaty = to_string(y);
+//	
+//	string Text = X + floatx + Y + floaty;
+//	TextSpecification Vector2( Text, Position, false, Color);
+//
+//	AddTextBox(Vector2);
+//
+//	return ID;
+//}
+//int Page::PrintVector3(glm::vec3 Vector, glm::vec2 Position, glm::vec4 Color)
+//{
+//	int ID = Amount();
+//	//Vector
+//	float x = Vector[0];
+//	float y = Vector[1];
+//	float z = Vector[2];
+//
+//	//SubStrings
+//	string X = "  X: ";
+//	string Y = "  Y: ";
+//	string Z = "  Z: ";
+//	string floatx = to_string(x);
+//	string floaty = to_string(y);
+//	string floatz = to_string(z);
+//
+//	//Display 5 Characters only
+//	floatx.erase(5);
+//	floaty.erase(5);
+//	floatz.erase(5);
+//
+//	
+//	string Text = X + floatx + Y + floaty + Z + floatz;
+//	TextSpecification Vector3( Text, Position, false, Color);
+//	AddTextBox(Vector3);
+//
+//	return ID;
+//}
+//
+//int Page::PrintVector4(glm::vec4 Vector, glm::vec2 Position, glm::vec4 Color)
+//{
+//	int ID = Amount();
+//	//Vector
+//	float r = Vector[0];
+//	float g = Vector[1];
+//	float b = Vector[2];
+//	float a = Vector[3];
+//
+//	//SubStrings
+//	string R = "  R ";
+//	string G = "  G ";
+//	string B = "  B ";
+//	string A = "  A ";
+//	string floatr = to_string(r);
+//	string floatg = to_string(g);
+//	string floatb = to_string(b);
+//	string floata = to_string(a);
+//
+//	//Display 5 Characters only
+//	floatr.erase(5);
+//	floatg.erase(5);
+//	floatb.erase(5);
+//	floata.erase(5);
+//
+//	string Text =  R + floatr + G + floatg + B + floatb + A + floata;
+//	TextSpecification Vector4( Text, Position, false, Color);
+//	AddTextBox(Vector4);
+//
+//	return ID;
+//}
+//
+//int Page::PrintFloat(float Float, glm::vec2 Position, glm::vec4 Color)
+//{
+//	int ID = Amount();
+//	//Vector
+//	float x = Float;
+//
+//	string floatx = to_string(x);
+//
+//	string Devision = "  ";
+//
+//	//Display 5 Characters only
+//	floatx.erase(5);
+//
+//	string Text = Devision + floatx;
+//	TextSpecification Float1(Text, Position, false, Color);
+//	AddTextBox(Float1);
+//
+//	return ID;
+//}
+//int Page::PrintInt(int Int, glm::vec2 Position, glm::vec4 Color)
+//{
+//	int ID = Amount();
+//	//Vector
+//	int x = Int;
+//
+//	string Intx = to_string(x);
+//	string Text;
+//	string Zero = " ";
+//
+//	if (Intx.size() == 1)
+//	{
+//	   Text = Zero + Zero + Zero + Intx;
+//	}
+//	
+//	if (Intx.size() == 2)
+//	{
+//		Text = Zero + Zero + Intx;
+//	}
+//
+//	if (Intx.size() == 3)
+//	{
+//		Text = Zero + Intx;
+//	}
+//
+//	if (Intx.size() == 4)
+//	{
+//		Text = Intx;
+//	}
+//
+//	if (Intx.size() > 4)
+//	{
+//		Text = Intx.erase(4);
+//	}
+//	TextSpecification Int1(Text, Position, false, Color);
+//	AddTextBox(Int1);
+//
+//	return ID;
+//}
 //
 //int Page::PrintBool(bool Bool, glm::vec2 Position, glm::vec4 Color)
 //{

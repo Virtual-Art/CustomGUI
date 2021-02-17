@@ -50,6 +50,7 @@
 #include "MasterElement.h"
 #include "NewPage.h"
 #include "Button.h"
+#include "NumberPrinter.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -243,10 +244,25 @@ int main(int argc, char** argv)
 	    argv[i];
 	}
 
+	glm::vec2 MousePosition = { Mouse.xPos, Mouse.yPos };
+
+	llPageItemData NumberGroup;
+	NumberGroup.Position = { -0.98, -0.94 };
+	NumberGroup.Color = { 0.0, 0.5, 1.0, 1.0 };
+
+	NumberPrinterData NewVec2_Data;
+	NewVec2_Data.Description = "Mouse"; 
+	NewVec2_Data.Type = TYPE_VEC2;
+	NewVec2_Data.VEC2 = &MousePosition;
+
+	NumberPrinter NewVec2(&EditorBook, &NumberGroup, NewVec2_Data);
+
+
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
-		glm::vec2 MousePosition = {Mouse.xPos, Mouse.yPos};
+		MousePosition = { Mouse.xPos, Mouse.yPos };
+
 		Time = glfwGetTime();
 		PreviousTime = glfwGetTime();
 		glClearColor(0.091, 0.14, 0.14, 1.0);
@@ -264,9 +280,11 @@ int main(int argc, char** argv)
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
 
+		NewVec2.llUpdate();
+
 		//EditorPage.DrawPage();
 		
-		MasterElement::FindShape(&EditorBook, Mouse.xPos, Mouse.yPos, LEVEL_SHAPEGROUP, MouseState);
+		//MasterElement::FindShape(&EditorBook, Mouse.xPos, Mouse.yPos, LEVEL_SHAPEGROUP, MouseState);
 		if (KeyState.Key1 == GUI_G_CLICKED)
 		{
 			//MasterElement::PrintBookStats(&EditorBook);

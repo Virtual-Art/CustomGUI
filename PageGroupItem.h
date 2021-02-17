@@ -88,6 +88,7 @@ public:
 	PageGroupItem(Page& Page, ShapeData& LoadedShape);
 	PageGroupItem(Page& Page, int GroupID);
 	void llInit(llBookData* llBook);
+	void llPageItemInit(llBookData* llBook, llPageItemData* PageItemData);
 
 	void SetllPageItem(llPageItemData* llPageItem);
 
@@ -109,6 +110,10 @@ public:
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 	void ShapeToGroup(ShapeData& ShapeData);
+
+	glm::vec2 GetPosition() override { return CurrentllPageItem->Position; };
+	glm::vec2 GetSize() override { return CurrentllPageItem->Size; };
+	glm::vec4 GetColor() override { return  CurrentllPageItem->Color; };
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...

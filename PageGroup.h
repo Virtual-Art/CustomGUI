@@ -53,6 +53,10 @@ public:
 	TextData CurrentText;
 	//SliderData CurrentSliderData; //?
 
+	glm::vec2 GetPosition() override { return CurrentllPageGroup->Position; };
+	glm::vec2 GetSize() override { return CurrentllPageGroup->Size; };
+	glm::vec4 GetColor() override { return  CurrentllPageGroup->Color; };
+
 	PageGroup();
 	PageGroup(Page& Page);
 	PageGroup(Page& Page, PageGroupData& PageGroup);

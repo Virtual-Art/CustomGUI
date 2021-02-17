@@ -6,17 +6,13 @@
 
 using namespace std;
 
-#define TYPE_INT 0
-#define TYPE_FLOAT 1
-#define TYPE_DOUBLE 2
-#define TYPE_VEC2 3
-#define TYPE_VEC3 4 
-#define TYPE_VEC4 5
+
 
 struct NumberPrinterData
 {
 	string Description;
-	int Type;
+	int FontSize = 16;
+	int Type = -1;
 	int* Integer = nullptr;
 	float* Float = nullptr;
 	glm::vec2* VEC2 = nullptr;
@@ -35,6 +31,8 @@ public:
 	NumberPrinter(llBookData* llBook, llPageItemData* llPageItem, NumberPrinterData NumberPrinter);
 	NumberPrinter(llPageItemData* llPageItem);
 
+	void llInit(llBookData* llBook, llPageItemData* llPageItem, NumberPrinterData NumberPrinter);
+
 	void llUpdate();
 	void CreateNumber();
 	void CreateInt();
@@ -44,6 +42,10 @@ public:
 	void CreateVec3();
 	void CreateVec4();
 	void ReplaceNumber();
+
+
+	void ReplaceVec2();
+	void SetVec2(glm::vec2* NewVec2);
 
 	void Add_Default() override {};
 	void Add_Duplicate() override {};

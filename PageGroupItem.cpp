@@ -244,6 +244,76 @@ PageGroupItem::PageGroupItem(Page& Page, int ID)
 
 }
 
+void PageGroupItem::llPageItemInit(llBookData* llBookData, llPageItemData* llPageItem)
+{
+	//Make sure we are provided with data
+	if (llPageItem != nullptr && llBookData != nullptr)
+	{
+		//Look at the book, is there a Page in the book? no?
+		if (llBookData->Page == nullptr)
+		{
+			//Create a new Page & PageGroup for the PageItem we are about to create
+			Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+			//Link the Created groups to the book we are looking at
+			llBookData->Page = CreatedPage;
+			llBookData->PageHead = CreatedPage;
+
+			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroupHead = CreatedPageGroup;
+		}
+
+		//Create a new PageItem & Copy the provided data
+		CurrentllPageItem = new llPageItemData;
+		*CurrentllPageItem = *llPageItem;
+		//Log::LogString("PageItem Created and ShapeGroup Created?");
+
+		//Take a look at the current PageItem in the current PageGroup
+		llPageItemData* TestingPageItem = llBookData->Page->PageGroup->PageItem;
+
+		//The book doesn't have a PageItem in the current PageGroup
+		if (TestingPageItem == nullptr)
+		{
+			//Set the book to include and point to the newly created PageItem
+			Log::LogString("PageGroup Empty. First PageItem!");
+			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
+			llBookData->Page->PageGroup->PageItemHead = CurrentllPageItem;
+		}
+		else //A Page Item already exists in the current Page Group
+		{
+			llPageItemData* FoundTail = TestingPageItem;
+			int LinkCount = 0;
+
+			//Find the last PageItem in the current PageGroup
+			//Log::LogString("Finding Tail..");
+			while (FoundTail->Next != nullptr)
+			{
+				FoundTail = FoundTail->Next;
+				LinkCount++;
+			}
+
+			//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
+			Log::LogString("PageItem Linked");
+			FoundTail->Next = CurrentllPageItem;
+			CurrentllPageItem->Previous = FoundTail;
+
+
+
+			//Then set the book to point to the new PageItem we created
+			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
+		}
+
+		CurrentllPageItem->Type = TYPE_CUSTOM;
+		LoadedBook = llBookData;
+	}
+	else
+	{
+		Log::LogString("Sorry llShape was nullptr");
+	}
+}
+
 void PageGroupItem::llSwitch(llPageItemData* llPageItem)
 {
 	if (llPageItem != nullptr)

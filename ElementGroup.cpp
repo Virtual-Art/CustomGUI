@@ -961,14 +961,14 @@ void ShapeGroup::SetllMouseAccess()
 	{
 		CurrentShape = CurrentShape->Next;
 	}
-	Log::LogString("Start of MouseAccess");
+	//Log::LogString("Start of MouseAccess");
 	//Compare CurrentShape's Access variables with all other shapes
 	while (CurrentShape != nullptr)
 	{
-		Log::LogFloat("Right ", CurrentllShapeGroup->Right);
-		Log::LogFloat("Left  ", CurrentllShapeGroup->Left);
-		Log::LogFloat("Top   ", CurrentllShapeGroup->Top);
-		Log::LogFloat("Bottom", CurrentllShapeGroup->Bottom);
+		//Log::LogFloat("Right ", CurrentllShapeGroup->Right);
+		//Log::LogFloat("Left  ", CurrentllShapeGroup->Left);
+		//Log::LogFloat("Top   ", CurrentllShapeGroup->Top);
+		//Log::LogFloat("Bottom", CurrentllShapeGroup->Bottom);
 
 		//Furthest Right is the most positive number
 		if (FurthestRight < CurrentShape->Right) //
@@ -1003,6 +1003,8 @@ void ShapeGroup::SetllMouseAccess()
 	CurrentllShapeGroup->Top    = FurthestTop;
 	CurrentllShapeGroup->Bottom = FurthestBottom;
 
+	CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft;
+	CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom;
 }
 
 void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)

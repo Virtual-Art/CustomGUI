@@ -9,6 +9,7 @@
 #include "NewPage.h"
 #include "PageGroup.h"
 #include "Slider.h"
+#include "NumberPrinter.h"
 #include "MouseManager.h"
 #include "KeyboardManager.h"
 #include "FileProcessor.h"
@@ -66,7 +67,7 @@ namespace PageCreator
 	static KeyFunction**** CreatorFunction;
 
 	//Creator Variables
-	const int OnePixel = 0.00166; //1 Pixel
+	static bool HideCreatorPage = false;
 	static glm::vec4 PreviousColor = {0.0, 0.0, 0.0, 1.0};
 	static int PixelOffset = 5;
 
@@ -104,6 +105,16 @@ namespace PageCreator
 	static Text Text_Shift;
 	static Text Text_AltRightLeft;
 	static Text Text_AltUpDown;
+
+
+	//Element Viewer
+	static NumberPrinter Mouse_Position;
+	static NumberPrinter Creator_Element_Position;
+	static NumberPrinter Creator_Element_Size;
+	static Slider Creator_Element_Color_R;
+	static Slider Creator_Element_Color_G;
+	static Slider Creator_Element_Color_B;
+	static Slider Creator_Element_Color_A;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
     //The Editor Objects edit all the books and switch between books on their own

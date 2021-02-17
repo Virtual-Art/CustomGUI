@@ -42,33 +42,94 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Quad Quad_Find(CurrentBook);
 	Quad_Find.SetllPosition({-2.0, 0.0});
 
-	//Text UniqueSlider(CurrentBook);
-	//UniqueSlider.SetllPosition({0.5, 0.5});
-	//Text UniqueSlider1(CurrentBook);
-	//UniqueSlider1.SetllPosition({0.5, -0.5});
+	Text UniqueSlider(CurrentBook);
+	UniqueSlider.SetllPosition({0.5, 0.5});
+	Text UniqueSlider1(CurrentBook);
+	UniqueSlider1.SetllPosition({0.5, -0.5});
 
 	EditorSelected = &QuadEditor;
 
+	/////////////////////////////////////ElementViewer////////////////////////////////////////
 
+	//Required Groups
+	llPageItemData PageItem_Data;
+	NumberPrinterData NumberPrinter_Data;
+	SliderData Slider_Data;
+	Quad ElementViewerBackGround(&CreatorBook);
+	ElementViewerBackGround.SetPosition({-0.8, 0.0});
+	ElementViewerBackGround.SetSize({0.4, 1.8});
+	ElementViewerBackGround.SetColor({ 0.0, 0.0, 0.0, 0.3 });
+
+	Quad EditorSlider(&CreatorBook);
+	EditorSlider.SetPosition({ 0.195, -0.95 });
+	EditorSlider.SetSize({ 1.55, 0.075 });
+	EditorSlider.SetColor({ 0.0, 0.0, 0.0, 0.5 });
+
+	Quad EditorSlider_Slider(&CreatorBook);
+	EditorSlider_Slider.SetPosition({ -0.195, -0.95 });
+	EditorSlider_Slider.SetSize({ 0.76, 0.05 });
+	EditorSlider_Slider.SetColor({ 0.091, 0.14, 0.14, 1.0 });
+
+	//Element Position
+	NumberPrinter_Data.Description = "Position";
+	NumberPrinter_Data.Type = TYPE_VEC2;
+	PageItem_Data.Position = { -0.98, 0.4 };
+	PageItem_Data.Color = { 0.0, 0.5, 1.0, 1.0 };
+	Creator_Element_Position.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
+
+
+	//Element Size
+	NumberPrinter_Data.Description = "Size    ";
+	NumberPrinter_Data.Type = TYPE_VEC2;
+	PageItem_Data.Position = { -0.98, 0.3 };
+	Creator_Element_Size.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
+
+	//Red
+	Slider_Data.Description = 'R';
+	PageItem_Data.Position = { -0.835, 0.2 };
+	PageItem_Data.Size = {0.2, 0.03};
+	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+
+	//Green
+	Slider_Data.Description = 'G';
+	PageItem_Data.Position = { -0.835, 0.1 };
+	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+
+	//Blue
+	Slider_Data.Description = 'B';
+	PageItem_Data.Position = { -0.835, 0.0 };
+	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+
+	//Alpha
+	Slider_Data.Description = 'A';
+	PageItem_Data.Position = { -0.835, -0.1 };
+	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+
+
+	//////////////////////////////////////Instructions//////////////////////////////////////////////
+
+	//Shift + up, down, right, left
 	Text_Details.Phrase = "Press Shift + Up/Down or Left/Right To Switch levels or Neighbour Elements";
 	Text_Details.Centered = true;
 	ShapeGroup_Details.Position = { 0.0, 0.95 };
 	ShapeGroup_Details.Color = Purple;
-	Text_Shift.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
+	//Text_Shift.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
+	//Alt + up, down, right, left
 	Text_Details.Phrase = "Press Alt + Up/Down or Right/Left To Switch Options or Element Types";
 	Text_Details.Centered = true;
 	ShapeGroup_Details.Position = { 0.0, 0.85 };
 	ShapeGroup_Details.Color = Orange;
-	Text_AltRightLeft.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
+	//Text_AltRightLeft.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
+	//Ctrl + A & up, down, right, left
 	Text_Details.Phrase = "Press Ctrl + A to Add and Arrow Keys to use the Option Selected";
 	Text_Details.Centered = true;
 	ShapeGroup_Details.Position = { 0.0, 0.75 };
 	ShapeGroup_Details.Color = Yellow;
-	Text_AltUpDown.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
+	//Text_AltUpDown.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
-	//Current Level
+	////////////////////////////////////////////Current Level/////////////////////////////////////
 	//Label
 	Text_Details.Phrase = "Current Level: ";
 	Text_Details.Centered = false;
@@ -79,10 +140,10 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	//Level
 	Text_Details.Phrase = "Shape";
 	ShapeGroup_Details.Position = { -0.95, 0.7 };
-	ShapeGroup_Details.Color = Black;
+	ShapeGroup_Details.Color = White;
 	Text_CurrentLevel.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
-	//Current Function
+	//////////////////////////////////////////Current Function////////////////////////////////////
 	//Label
 	Text_Details.Phrase = "Current Option: ";
 	ShapeGroup_Details.Position = { -0.95, 0.6 };
@@ -92,14 +153,23 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	//Options
 	Text_Details.Phrase = "Position";
 	ShapeGroup_Details.Position = { -0.95, 0.5 };
-	ShapeGroup_Details.Color = Black;
+	ShapeGroup_Details.Color = White;
 	Text_CurrentFunction.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 {
-	BookCreatorPage.DrawPage();
 	PageEditor.DrawPage();
+
+	if (KeyState.Key1 == GUI_S_CLICKED && KeyState.Ctrl == true)
+	{
+		MasterElement::Toggle(HideCreatorPage);
+	}
+
+	if (HideCreatorPage == false)
+	{
+		BookCreatorPage.DrawPage();
+	}
 
 	CurrentKeyResult = &KeyState;
 	CurrentMouseState = MouseState;

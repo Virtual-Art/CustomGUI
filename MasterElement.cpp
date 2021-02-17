@@ -149,7 +149,6 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 	int ShapeCount = 0;
 	int VertexCount = 0;
 
-
 	llVertexData* SavedVertex = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
 	llShapeData* SavedShape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
 	llShapeGroupData* SavedShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
@@ -274,6 +273,21 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 void MasterElement::PrintBook(llBookData* llBook)
 {
 
+}
+
+void MasterElement::Toggle(bool& ToToggle)
+{
+	if (ToToggle == false)
+	{
+		ToToggle = true;
+		return;
+	}
+
+	if (ToToggle == true)
+	{
+		ToToggle = false;
+		return;
+	}
 }
 
 int MasterElement::GetShapeCount(llShapeGroupData* llShapeGroup)

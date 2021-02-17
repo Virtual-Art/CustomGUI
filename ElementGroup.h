@@ -49,6 +49,29 @@ class ShapeGroup : public MasterElement
 		return CurrentllShapeGroup;
 	}
 
+	float GetAccessRight()
+	{
+		return CurrentllShapeGroup->Right;
+	}
+
+	float GetAccessLeft()
+	{
+		return CurrentllShapeGroup->Left;
+	}
+
+
+	float GetAccessTop()
+	{
+		return CurrentllShapeGroup->Top;
+	}
+
+
+	float GetAccessBottom()
+	{		
+		return CurrentllShapeGroup->Bottom;
+	}
+
+
 	void Init(Page& Page, int GroupID) {};
 
 	void Add_Default();
@@ -157,6 +180,11 @@ class ShapeGroup : public MasterElement
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 	void SetllShapeGroup(llShapeGroupData* llShapeGroup);
 	virtual void llUpdate();
+
+	glm::vec2 GetPosition() override { return CurrentllShapeGroup->Position; };
+	glm::vec2 GetSize() override { return CurrentllShapeGroup->Size; };
+	glm::vec4 GetColor() override { return  CurrentllShapeGroup->Color; };
+
 
 protected:
 	virtual void Update() {};
