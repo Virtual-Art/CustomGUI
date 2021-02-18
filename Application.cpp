@@ -61,7 +61,6 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	MouseManager Mouse;
 	Keyboard Keyboard;
 	Keyboard::CreateKeyFuncContainer();
 
@@ -94,7 +93,7 @@ int main(int argc, char** argv)
 	glfwMakeContextCurrent(window);
 	glewInit();
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	Mouse.ScrollInput(window);
+	MouseManager::ScrollInput(window);
 	Maths Maths;
 	FontMath Font;
 	Render Renderer;
@@ -244,7 +243,7 @@ int main(int argc, char** argv)
 	    argv[i];
 	}
 
-	glm::vec2 MousePosition = { Mouse.xPos, Mouse.yPos };
+	glm::vec2 MousePosition = { MouseManager::xPos, MouseManager::yPos };
 
 	llPageItemData NumberGroup;
 	NumberGroup.Position = { -0.98, -0.94 };
@@ -257,11 +256,10 @@ int main(int argc, char** argv)
 
 	NumberPrinter NewVec2(&EditorBook, &NumberGroup, NewVec2_Data);
 
-
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
-		MousePosition = { Mouse.xPos, Mouse.yPos };
+		MousePosition = { MouseManager::xPos, MouseManager::yPos };
 
 		Time = glfwGetTime();
 		PreviousTime = glfwGetTime();
@@ -269,13 +267,11 @@ int main(int argc, char** argv)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		//Setup
-		int MouseState = Mouse.GetMouseState(window, glfwGetTime(), 0.3, 0.4);
+		int MouseState = MouseManager::GetMouseState(window, glfwGetTime(), 0.3, 0.4);
 		KeyResult KeyState = Keyboard.GetKeyBoardState(window, glfwGetTime(), 0.3, 0.4);
-		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(Mouse.xPos, Mouse.yPos, false);
-		GUIShapeDataHovered = GUI.FindShapeData(Mouse.xPos, Mouse.yPos, false);
+		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
+		GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		PageCreator::OnUpdate(KeyState, MouseState);
-
-		//llSlider.SetllPosition(MousePosition);
 
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
@@ -283,8 +279,25 @@ int main(int argc, char** argv)
 		NewVec2.llUpdate();
 
 		//EditorPage.DrawPage();
+
+
+		//a SliderPointer points to a function that belongs to slider
+		typedef void(MasterElement::* MasterElementFunction)();
+
+		//Create a SliderPointer
+		MasterElementFunction VirtualTest_Function;
+
+		//Set the Slider Pointer to point to a one of the Sliders functions
+		//SetSlider is the Slider function that Slider Pointer will point to
+		VirtualTest_Function = &MasterElement::VirtualTest;
 		
-		//MasterElement::FindShape(&EditorBook, Mouse.xPos, Mouse.yPos, LEVEL_SHAPEGROUP, MouseState);
+		//Create a Slider to use
+		Slider SliderExecute;
+
+		//Slider to use -> Play whatever Slider Function SliderTable is pointing too
+		(SliderExecute.*VirtualTest_Function)();
+		//this exact line of code can play any Slider Function
+
 		if (KeyState.Key1 == GUI_G_CLICKED)
 		{
 			//MasterElement::PrintBookStats(&EditorBook);
@@ -294,7 +307,7 @@ int main(int argc, char** argv)
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, GUI);
 		//Renderer.DrawPage(ShapeShader, ColorCube, Segoe, ColorCube, *PageSelected);
 
-		Mouse.GetMousePosition(window);
+		MouseManager::GetMousePosition(window);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

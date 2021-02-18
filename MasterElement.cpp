@@ -137,10 +137,14 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 }
 
 
-void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, int ElementLevel, int MouseState)
+void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 {
 	//if (llBook->Page == nullptr) { return; };
 	//Log::LogString("Printing Book Stats");
+
+	float xMouse = MouseManager::xPos;
+	float yMouse = MouseManager::yPos;
+
 	int VertexIndex = 0;
 	int PageCount = 0;
 	int PageGroupCount = 0;
@@ -242,7 +246,7 @@ void MasterElement::FindShape(llBookData* llBook, float xMouse, float yMouse, in
 								if (ElementLevel == LEVEL_SHAPE)
 								{
 									//cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
-									CurrentShape->ShapeButton.ProcessMouseButtons(MouseState);
+									CurrentShape->ShapeButton.ProcessMouseButtons(MouseManager::CurrentMouseState);
 								}
 							}
 							CurrentShape = CurrentShape->Next;

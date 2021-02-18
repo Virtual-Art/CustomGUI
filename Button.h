@@ -7,6 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "MouseManager.h"
+#include "KeyboardManager.h"
 #include "ElementAction.h"
 
 using namespace std;

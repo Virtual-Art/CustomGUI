@@ -805,36 +805,6 @@ int PageGroupItem::FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape)
 	return FoundID;
 }
 
-int PageGroupItem::GetShapeGroup(int ChildGroupID)
-{
-	if (Initialized != true) { Log::LogString("GetShapeGroup Failed:: ShapeGroup Not Initialized"); return -1; }
-	ReCalibrateID();
-	int CurrentID = CurrentPageItem.ShapeStart;
-	bool Found = false;
-	ShapeData* RetreivedShape = CurrentPage->GetShapeDataP(CurrentID);
-
-	//Found
-	while (RetreivedShape->ShapeGroup.PageItem.ID == CurrentPageItem.ID)
-	{
-		cout << "Checking..." << RetreivedShape->ShapeGroup.ID  << " == " << ChildGroupID << endl;
-		if (RetreivedShape->ShapeGroup.ID == ChildGroupID)
-		{
-			cout << " ShapeGroup: " << RetreivedShape->ShapeGroup.ID << " Match Found!" << endl;
-			cout << " ShapeGroup Start : " << CurrentID - RetreivedShape->ShapeGroup.ShapeOffset << endl;
-			cout << "--------" << endl;
-			return CurrentID - RetreivedShape->ShapeGroup.ShapeOffset;
-		}
-
-		//Not Found, Next group
-		cout << " No Match " << endl;
-		int NextGroupID = RetreivedShape->ShapeGroup.ShapeCount - RetreivedShape->ShapeGroup.ShapeOffset + 1;
-		CurrentID += NextGroupID;
-		RetreivedShape += NextGroupID;
-	}
-
-	cout << "Group Not Found" << endl;
-	return -1;
-}
 
 void PageGroupItem::SetMouseAccess()
 {
@@ -959,3 +929,66 @@ void SwithToPageItem(int ShapeID)
 //		}
 //	}
 //}
+
+
+
+
+llShapeGroupData* PageGroupItem::GetShapeGroup(int Index)
+{
+	int LoopIndex = 0;
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+
+	//Go to head
+	while (CurrentShapeGroup->Previous != nullptr)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Previous;
+	}
+
+	while (LoopIndex != Index && CurrentShapeGroup->Next != nullptr)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+		LoopIndex++;
+	}
+
+	return CurrentShapeGroup;
+}
+
+llShapeData* PageGroupItem::GetShapeGroupShape(int ShapeGroupIndex, int ShapeIndex)
+{
+	/////////////////////////////////ShapeGroup///////////////////////////////////
+	int LoopIndex = 0;
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+
+	//Go to head
+	while (CurrentShapeGroup->Previous != nullptr)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Previous;
+	}
+
+	while (LoopIndex != ShapeGroupIndex && CurrentShapeGroup->Next != nullptr)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+		Log::LogInt(" ", LoopIndex);
+		LoopIndex++;
+	}
+
+
+	/////////////////////////////Shape///////////////////////////////////////////////////
+	int LoopIndex2 = 0;
+	llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+
+	//Go to head
+	while (CurrentShape->Previous != nullptr)
+	{
+		CurrentShape = CurrentShape->Previous;
+	}
+
+	while (LoopIndex2 != ShapeIndex && CurrentShape->Next != nullptr)
+	{
+		CurrentShape = CurrentShape->Next;
+		Log::LogInt(" ", LoopIndex2);
+		LoopIndex2++;
+	}
+
+	return CurrentShape;
+}

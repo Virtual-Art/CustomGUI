@@ -88,22 +88,23 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Slider_Data.Description = 'R';
 	PageItem_Data.Position = { -0.835, 0.2 };
 	PageItem_Data.Size = {0.2, 0.03};
-	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+	Slider_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+
 
 	//Green
 	Slider_Data.Description = 'G';
 	PageItem_Data.Position = { -0.835, 0.1 };
-	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+	Slider_Color_G.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
 
 	//Blue
 	Slider_Data.Description = 'B';
 	PageItem_Data.Position = { -0.835, 0.0 };
-	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+	Slider_Color_B.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
 
 	//Alpha
 	Slider_Data.Description = 'A';
 	PageItem_Data.Position = { -0.835, -0.1 };
-	Creator_Element_Color_R.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
+	Slider_Color_A.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
 
 
 	//////////////////////////////////////Instructions//////////////////////////////////////////////
@@ -155,6 +156,30 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	ShapeGroup_Details.Position = { -0.95, 0.5 };
 	ShapeGroup_Details.Color = White;
 	Text_CurrentFunction.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
+
+	llShapeData SoExcited;
+	SoExcited.Position = {-0.5, 0.0};
+	SoExcited.Size = {0.15, 0.3};
+	Quad_Slider_Test.llQuadInit(&CreatorBook, &SoExcited);
+
+	llShapeData* Shape_Slider;
+
+	//Set Slider Quad Button to Change Slider Position
+	Shape_Slider = Slider_Color_R.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
+	Slider_Color_R.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[0];
+	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderR;
+
+	Shape_Slider = Slider_Color_G.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
+	Slider_Color_G.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[1];
+	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderG;
+
+	Shape_Slider = Slider_Color_B.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
+	Slider_Color_B.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[2];
+	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderB;
+
+	Shape_Slider = Slider_Color_A.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
+	Slider_Color_A.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[3];
+	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderA;
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
@@ -198,6 +223,8 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 		}
 		TextEditor.SetllText(CurrentText);
 	}
+
+	MasterElement::FindElement(&CreatorBook, LEVEL_SHAPE);
 }
 
 //void PageCreator::Init(Page& Creatorpage, Page& GUIpage, Book& Book)
@@ -1296,3 +1323,33 @@ void PageCreator::PointerTest()
 	Log::LogString("Pointer Test is working");
 }
 
+
+void PageCreator::SetSliderR()
+{
+	Slider_Color_R.SetSlider();
+	Quad_Slider_Test.llUpdate();
+}
+
+void PageCreator::SetSliderG()
+{
+	Slider_Color_G.SetSlider();
+	Quad_Slider_Test.llUpdate();
+}
+
+void PageCreator::SetSliderB()
+{
+	Slider_Color_B.SetSlider();
+	Quad_Slider_Test.llUpdate();
+}
+
+void PageCreator::SetSliderA()
+{
+	Slider_Color_A.SetSlider();
+	Quad_Slider_Test.llUpdate();
+}
+
+void PageCreator::SetCurrentSlider()
+{
+	SliderEditor.llSwitch(CurrentPageItem);
+	SliderEditor.SetSlider();
+}

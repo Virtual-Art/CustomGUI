@@ -94,6 +94,9 @@ public:
 
 	virtual llPageItemData* GetData() { return CurrentllPageItem; };
 
+	llShapeGroupData* GetShapeGroup(int Index);
+	llShapeData* GetShapeGroupShape(int ShapeGroupIndex, int ShapeIndex);
+
 	llPageItemData* GetPageItem()
 	{
 		return CurrentllPageItem;
@@ -156,7 +159,6 @@ public:
 	glm::vec2 ConvertEndToMiddle(glm::vec2 Position, glm::vec2 Size);
 	glm::vec2 ConvertBeginningToMiddle(glm::vec2 Position, glm::vec2 Size);
 	int FindShapeGroup(bool FromBottom, double xMouse, double yMouse);
-	int GetShapeGroup(int ChildGroupID);
 
 	void PrintGroupShapes()
 	{

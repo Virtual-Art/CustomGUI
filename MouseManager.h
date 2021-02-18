@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Log.h"
 
 using namespace std;
 
@@ -33,35 +34,57 @@ using namespace std;
 #define GUI_MOUSEMIDDLE_QUADRUPLECLICKED 17
 #define GUI_MOUSEMIDDLE_QUINTUPLECLICKED 18
 
-
-
-
-class MouseManager
+namespace MouseManager
 {
-public:
 
-	double xPos;
-	double yPos;
-	int MouseState; // 0 = click, 1 = pressed, 2 = nothing
-	int TotalClicks;
-	int RightClicks;
-	int LeftClicks;
-	int TotalPresses;
-	int RightPresses;
-	int LeftPresses;
-	float LastRightPressTime;
-	float LastLeftPressTime;
+	extern double xPos;
+	extern double yPos;
+	extern int CurrentMouseState;
 
-	static int ScrollTally;
-	static double ScrollPosition;
-    static double ScrollX;
-    static double ScrollY;
+	static int TotalClicks = 0;
+	static int RightClicks = 0;
+	static int LeftClicks = 0;
+	static int TotalPresses = 0;
+	static int RightPresses = 0;
+	static int LeftPresses = 0;
+	static float LastRightPressTime = 0;
+	static float LastLeftPressTime = 0;
 
-	static int CurrentMouseState;
+	static bool DoubleInit = false;
+	static bool TimerReady = false;
+	static bool SingleClick = true;
+	static bool PressState = false;
+	//Start Time
+	static float RightStartTime = 0.0;
+	static float LeftStartTime = 0.0;
+	static float MiddleStartTime = 0.0;
+
+	static int MiddleMultiTrack = 0;
+	static int RightMultiTrack = 0;
+	static int LeftMultiTrack = 0;
+
+	static float StartTimer;
+
+	static float RightDoubleStartTime;
+	static float LeftDoubleStartTime;
+	static float MiddleDoubleStartTime;
+		   
+	//Click Time
+	static float RightClickTime;
+	static float LeftClickTime;
+	static float MiddleClickTime;
+		   
+	static float RightDoubleClickTime;
+	static float LeftDoubleClickTime;
+	static float MiddleDoubleClickTime;
+
+	static int ScrollTally = 0;
+	static double ScrollPosition = 0.0;
+    static double ScrollX = 0.0;
+    static double ScrollY = 0.0;
 
 	static int increment;
 
-	MouseManager();
 	void MouseInit(GLFWwindow* window);
 	float TimeStamp();
 	void MouseInput();
@@ -74,9 +97,9 @@ public:
 
 	bool Toggle(bool& Toggle);
 
-	double MouseX, MouseY;
+	static double MouseX, MouseY;
 
-	GLFWwindow* window;
+	static GLFWwindow* window;
 
 	void ScrollInput(GLFWwindow* window);
 
@@ -84,72 +107,18 @@ public:
 
 	void MousePosition();
 
-	double PrintScrollWheel()
-	{
-		cout << ScrollPosition << endl;
-		return ScrollPosition;
-	}
+	double PrintScrollWheel();
 
-	void ScrollTopCap(unsigned int cap)
-	{
-		if (ScrollPosition >= cap)
-		{
-			ScrollTally = cap;
-			ScrollPosition = cap; 
-		}
+	void ScrollTopCap(unsigned int cap);
 
-	}
+	void ScrollBottomCap(signed int cap);
 
-	void ScrollBottomCap(signed int cap)
-	{
-		if (ScrollPosition <= cap)
-		{
-			ScrollTally = cap;
-			ScrollPosition = cap;
-		}
-	}
+	void ScrollAutoSet(int cap);
 
-	void ScrollAutoSet(int cap)
-	{
-		ScrollTally = cap;
-		ScrollPosition = cap;
-	}
+	void ScrollReset();
 
-	void ScrollReset()
-	{
-		ScrollTally = 0;
-		ScrollPosition = 0;
-	}
+	glm::vec2 MousePositionGet();
 
-private:
-	bool TimerReady;
-	bool SingleClick;
-	bool PressState;
-	bool DoubleInit;
-	int MiddleMultiTrack;
-	int RightMultiTrack;
-	int LeftMultiTrack;
-
-	float StartTimer;
-
-	//Start Time
-	float RightStartTime;
-	float LeftStartTime;
-	float MiddleStartTime;
-
-	float RightDoubleStartTime;
-	float LeftDoubleStartTime;
-	float MiddleDoubleStartTime;
-
-	//Click Time
-	float RightClickTime;
-	float LeftClickTime;
-	float MiddleClickTime;
-
-	float RightDoubleClickTime;
-	float LeftDoubleClickTime;
-	float MiddleDoubleClickTime;
-
-};
+}
 
 #endif 

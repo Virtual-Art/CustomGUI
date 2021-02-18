@@ -81,6 +81,11 @@
 #define TYPE_VEC3 4 
 #define TYPE_VEC4 5
 
+#define TOPRIGHT 0
+#define	TOPLEFT 1
+#define BOTTOMRIGHT 2
+#define	BOTTOMLEFT 3
+
 #define PIXEL 0.00166
 
 #include <iostream>
@@ -146,6 +151,7 @@ struct llShapeData
 	llVertexData* Vertexx = nullptr; // Child
 	llVertexData* VertexxHead = nullptr; // Child
 	Button ShapeButton;
+
 };
 
 struct llShapeGroupData
@@ -177,7 +183,13 @@ struct llShapeGroupData
 	llShapeGroupData* Previous = nullptr;
 	llShapeData* Shape = nullptr; // Child
 	llShapeData* ShapeHead = nullptr; // Child
+	Button ShapeGroupButton;
 	///////////////////////////////////
+	llShapeData* operator[] (int i)
+	{
+		llShapeData* ToReturn = Shape;
+		return ToReturn;
+	}
 };
 
 struct llPageItemData
@@ -207,6 +219,9 @@ struct llPageItemData
 	llPageItemData* Previous = nullptr;
 	llShapeGroupData* ShapeGroup = nullptr; // Child
 	llShapeGroupData* ShapeGroupHead = nullptr; // Child
+	Button PageItemButton;
+
+
 };
 
 struct llPageGroupData
@@ -235,6 +250,8 @@ struct llPageGroupData
 	llPageGroupData* Previous = nullptr;
 	llPageItemData* PageItem = nullptr; // Child
 	llPageItemData* PageItemHead = nullptr; // Child
+	Button PageGroupButton;
+
 };
 
 struct llPageData
@@ -460,7 +477,7 @@ public:
 	//	}
 	//}
 	static void Toggle(bool& ToToggle);
-	static void FindShape(llBookData* llBook, float xMouse, float yMouse, int ElementLevel, int MouseState);
+	static void FindElement(llBookData* llBook, int ElementLevel);
 
 	//Print Book
 	static void PrintBookStats(llBookData* llBook);
@@ -489,6 +506,9 @@ public:
 	{
 	
 	};
+
+	virtual void VirtualTest() { Log::LogString("I am a Master Element"); };
+
 	virtual void Add_Duplicate() {}; 
 	virtual void Add_Insert() {};
 	virtual void Delete() {};

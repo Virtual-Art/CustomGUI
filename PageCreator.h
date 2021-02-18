@@ -10,8 +10,7 @@
 #include "PageGroup.h"
 #include "Slider.h"
 #include "NumberPrinter.h"
-#include "MouseManager.h"
-#include "KeyboardManager.h"
+
 #include "FileProcessor.h"
 
 using namespace std;
@@ -111,10 +110,11 @@ namespace PageCreator
 	static NumberPrinter Mouse_Position;
 	static NumberPrinter Creator_Element_Position;
 	static NumberPrinter Creator_Element_Size;
-	static Slider Creator_Element_Color_R;
-	static Slider Creator_Element_Color_G;
-	static Slider Creator_Element_Color_B;
-	static Slider Creator_Element_Color_A;
+	static Slider Slider_Color_R;
+	static Slider Slider_Color_G;
+	static Slider Slider_Color_B;
+	static Slider Slider_Color_A;
+	static Quad Quad_Slider_Test;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
     //The Editor Objects edit all the books and switch between books on their own
@@ -216,6 +216,15 @@ namespace PageCreator
 
 	void SetElements();
 	void SetBookFromElements();
+
+
+	void SetSliderR();
+	void SetSliderG();
+	void SetSliderB();
+	void SetSliderA();
+
+
+	void SetCurrentSlider();
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
