@@ -11,12 +11,13 @@
 #include "KeyboardManager.h"
 #include "ElementAction.h"
 
+
 using namespace std;
 
 typedef void(*ButtonFunction)();
 
 
-class Button
+class Button 
 {
 public:
 

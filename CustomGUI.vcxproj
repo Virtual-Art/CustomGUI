@@ -251,8 +251,11 @@
     <Text Include="Shaders\VertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\0PAEA.png" />
     <Image Include="Resources\13-132414_icon-green-check-mark-png-transparent-png.png" />
+    <Image Include="Resources\1_SkFEBcaoea9WXIdQg2GsTw.png" />
     <Image Include="Resources\440-4406206_black-check-mark-clipart-transparent-background-black-check.png" />
+    <Image Include="Resources\78a4b5484c635dfa874c88fea2e7cd0a.jpg" />
     <Image Include="Resources\arial.png" />
     <Image Include="Resources\calibri.png" />
     <Image Include="Resources\candara.png" />
@@ -266,6 +269,8 @@
     <Image Include="Resources\img_514215.png" />
     <Image Include="Resources\metrostation-i-icon-png-clipart-thumbnail.jpg" />
     <Image Include="Resources\pexels-photo-414612.jpeg" />
+    <Image Include="Resources\pngtree-black-gradient-radial-gradient-png-image_2274808.jpg" />
+    <Image Include="Resources\radial_gradient.png" />
     <Image Include="Resources\segoe.png" />
   </ItemGroup>
   <ItemGroup>

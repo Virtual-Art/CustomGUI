@@ -109,7 +109,7 @@ int main(int argc, char** argv)
 	FileSystem.LoadBook(MainBook, ShapeShader);
 
 	RawTexture Segoe = Texture.CreateTexture("Resources/segoe.png", "FontAtlas", GL_TEXTURE0, 0, GL_RGBA);
-	RawTexture ColorCube = Texture.CreateTexture("Resources/color-cube.png", "FontAtlas", GL_TEXTURE2, 2, GL_RGB);
+	RawTexture RoundedCorners = Texture.CreateTexture("1_SkFEBcaoea9WXIdQg2GsTw.png", "FontAtlas", GL_TEXTURE2, 2, GL_ALPHA);
 	NewCharacter AnyCharacter(MainBook.Page[0], "Resources/segoe.fnt");
 
 	Page Editor(400); 
@@ -121,7 +121,7 @@ int main(int argc, char** argv)
 	//Quad WHY(&EditorBook);
 	//WHY.SetPosition({-2.0, 0.0});
 	////Text WHYY(&EditorBook);
-	PageCreator::llInit(&EditorBook, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
+	PageCreator::llInit(&EditorBook, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 	//WHYY.SetllText("WHYYYYYYYYYY");
     //WHYY.SetllPosition({0.0, 0.9});
 	
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
 	llBookData Gamee;
 
 	
-	NewPage FistPage(&Gamee, &ShapeShader, &ColorCube, &Segoe, &ColorCube);
+	NewPage FistPage(&Gamee, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	//MasterElement::AddPageToBook(&Gamee);
 	//MasterElement::AddPageToBook(&Gamee);
