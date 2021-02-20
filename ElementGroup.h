@@ -49,28 +49,15 @@ class ShapeGroup : public MasterElement
 		return CurrentllShapeGroup;
 	}
 
-	float GetAccessRight()
-	{
-		return CurrentllShapeGroup->Right;
-	}
+	float GetAccessRight();
+	float GetAccessLeft();
+	float GetAccessTop();
+	float GetAccessBottom();
 
-	float GetAccessLeft()
-	{
-		return CurrentllShapeGroup->Left;
-	}
-
-
-	float GetAccessTop()
-	{
-		return CurrentllShapeGroup->Top;
-	}
-
-
-	float GetAccessBottom()
-	{		
-		return CurrentllShapeGroup->Bottom;
-	}
-
+	float GetAccessRight(int PixelOffset);
+	float GetAccessLeft(int PixelOffset);
+	float GetAccessTop(int PixelOffset);
+	float GetAccessBottom(int PixelOffset);
 
 	void Init(Page& Page, int GroupID) {};
 

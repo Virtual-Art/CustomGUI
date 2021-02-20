@@ -51,6 +51,7 @@
 #include "NewPage.h"
 #include "Button.h"
 #include "NumberPrinter.h"
+#include "Toggle.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -256,6 +257,17 @@ int main(int argc, char** argv)
 
 	NumberPrinter NewVec2(&EditorBook, &NumberGroup, NewVec2_Data);
 
+	llPageItemData PageItem_Toggle;
+	PageItem_Toggle.Position = PageCreator::Origin;
+
+	bool YESS = false;
+
+	ToggleData Data_Toggle;
+	Data_Toggle.Description = "Mouse Access";
+	Data_Toggle.OnOff = &YESS;
+
+	Toggle NewToggle(&EditorBook, &PageItem_Toggle, Data_Toggle);
+
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -295,7 +307,7 @@ int main(int argc, char** argv)
 		Slider SliderExecute;
 
 		//Slider to use -> Play whatever Slider Function SliderTable is pointing too
-		(SliderExecute.*VirtualTest_Function)();
+		//(SliderExecute.*VirtualTest_Function)();
 		//this exact line of code can play any Slider Function
 
 		if (KeyState.Key1 == GUI_G_CLICKED)

@@ -1146,3 +1146,50 @@ void ShapeGroup::NewllUpdate()
 		}
 	}
 }
+
+
+
+float ShapeGroup::GetAccessRight()
+{
+	return CurrentllShapeGroup->Right;
+}
+
+float ShapeGroup::GetAccessLeft()
+{
+	return CurrentllShapeGroup->Left;
+}
+
+
+float ShapeGroup::GetAccessTop()
+{
+	return CurrentllShapeGroup->Top;
+}
+
+
+float ShapeGroup::GetAccessBottom()
+{
+	return CurrentllShapeGroup->Bottom;
+}
+
+
+float ShapeGroup::GetAccessRight(int PixelOffset)
+{
+	return CurrentllShapeGroup->Right + PIXEL * PixelOffset;
+}
+
+float ShapeGroup::GetAccessLeft(int PixelOffset)
+{
+	return CurrentllShapeGroup->Left + PIXEL * PixelOffset;
+}
+
+
+float ShapeGroup::GetAccessTop(int PixelOffset)
+{
+	return CurrentllShapeGroup->Top + PIXEL * PixelOffset;
+}
+
+
+float ShapeGroup::GetAccessBottom(int PixelOffset)
+{
+	return CurrentllShapeGroup->Bottom + PIXEL * PixelOffset;
+}

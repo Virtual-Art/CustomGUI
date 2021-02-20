@@ -29,6 +29,7 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	CharacterEditor.llInit(CurrentBook);
 	TextEditor.llInit(CurrentBook);
 	SliderEditor.llInit(CurrentBook);
+	ToggleEditor.llInit(CurrentBook);
 
 	CreateFunctionContainer(); //Build "Creator" Function Table
 	SetCreatorFunctions();     //Set Functions To Function Table
@@ -106,6 +107,12 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	PageItem_Data.Position = { -0.835, -0.1 };
 	Slider_Color_A.llSliderInit(&CreatorBook, &PageItem_Data, Slider_Data);
 
+	ToggleData Toggle_Data;
+
+	//Toggle Hide
+	Toggle_Data.Description = "Hide";
+	PageItem_Data.Position = { -0.93, -0.2 };
+	Toggle_Hide.llToggleInit(&CreatorBook, &PageItem_Data, Toggle_Data);
 
 	//////////////////////////////////////Instructions//////////////////////////////////////////////
 
@@ -180,6 +187,12 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Shape_Slider = Slider_Color_A.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
 	Slider_Color_A.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[3];
 	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderA;
+
+	llShapeData* Shape_Toggle;
+
+	Shape_Toggle = Toggle_Hide.GetShapeGroupShape(GROUP_TOGGLE, TOGGLE_BACKGROUND);
+	Toggle_Hide.CurrentToggleData.OnOff = &Quad_Slider_Test.GetData()->Hide;
+	Shape_Toggle->ShapeButton.LogicalActions[2] = SetCurrentToggle;
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
@@ -188,7 +201,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 
 	if (KeyState.Key1 == GUI_S_CLICKED && KeyState.Ctrl == true)
 	{
-		MasterElement::Toggle(HideCreatorPage);
+		MasterElement::ToggleToggle(HideCreatorPage);
 	}
 
 	if (HideCreatorPage == false)
@@ -1352,4 +1365,10 @@ void PageCreator::SetCurrentSlider()
 {
 	SliderEditor.llSwitch(CurrentPageItem);
 	SliderEditor.SetSlider();
+}
+
+void PageCreator::SetCurrentToggle()
+{
+	Toggle_Hide.ClickToggle();
+	Quad_Slider_Test.llUpdate();
 }

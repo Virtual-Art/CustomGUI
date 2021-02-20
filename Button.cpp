@@ -55,6 +55,12 @@ void Button::ProcessMouseButtons(int MouseState)
 		//cout << "lalqalalalalallalala" << endl;
 		LogicalActions[1]();
 	}
+
+	if (MouseState == GUI_MOUSELEFT_CLICKED) //MouseLeft Clicked
+	{
+		//cout << "lalqalalalalallalala" << endl;
+		LogicalActions[2]();
+	}
 }
 
 //Helper Function

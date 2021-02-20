@@ -279,7 +279,7 @@ void MasterElement::PrintBook(llBookData* llBook)
 
 }
 
-void MasterElement::Toggle(bool& ToToggle)
+void MasterElement::ToggleToggle(bool& ToToggle)
 {
 	if (ToToggle == false)
 	{

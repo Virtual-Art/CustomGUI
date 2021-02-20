@@ -61,6 +61,16 @@
 #define MIN_COLOR_VALUE 0.0
 #define MAX_COLOR_VALUE 1.0
 
+#define INPUT_CENTER 0
+#define INPUT_LEFT 1
+#define INPUT_RIGHT 2
+#define INPUT_TOP 3
+#define INPUT_BOTTOM 4
+#define INPUT_TOPLEFT 5
+#define INPUT_TOPRIGHT 6
+#define INPUT_BOTTOMLEFT 7
+#define INPUT_BOTTOMRIGHT 8
+
 #define RED 0
 #define GREEN 1
 #define BLUE 2
@@ -125,6 +135,7 @@ struct llShapeData
 	int Action = -1;
 	int Layer;
 	int Type = 0;
+	int InputType = INPUT_CENTER;
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.05, 0.05 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
@@ -139,6 +150,7 @@ struct llShapeData
 	bool Highlighted = false;
 	bool ShapeDataisHighlight = false;
 	bool PartOfGroup = false;
+	bool Hide = false;
 	float Top = -3;
 	float Bottom = -3;
 	float Left = -3;
@@ -477,7 +489,7 @@ public:
 	//		CurrentPage = CurrentPage->Next;
 	//	}
 	//}
-	static void Toggle(bool& ToToggle);
+	static void ToggleToggle(bool& ToToggle);
 	static void FindElement(llBookData* llBook, int ElementLevel);
 
 	//Print Book

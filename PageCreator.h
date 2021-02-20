@@ -10,7 +10,7 @@
 #include "PageGroup.h"
 #include "Slider.h"
 #include "NumberPrinter.h"
-
+#include "Toggle.h"
 #include "FileProcessor.h"
 
 using namespace std;
@@ -114,6 +114,7 @@ namespace PageCreator
 	static Slider Slider_Color_G;
 	static Slider Slider_Color_B;
 	static Slider Slider_Color_A;
+	static Toggle Toggle_Hide;
 	static Quad Quad_Slider_Test;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
@@ -140,6 +141,7 @@ namespace PageCreator
 	static NewCharacter CharacterEditor;
 	static Text TextEditor;
 	static Slider SliderEditor;
+	static Toggle ToggleEditor;
 	
 	void OnUpdate(KeyResult& KeyState, int MouseState);
 	//void Init(Page& Creatorpage, Page& GUIPage, Book& Book);
@@ -225,6 +227,7 @@ namespace PageCreator
 
 
 	void SetCurrentSlider();
+	void SetCurrentToggle();
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
