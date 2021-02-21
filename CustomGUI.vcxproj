@@ -143,6 +143,7 @@
     <ClCompile Include="Container.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="CustomShape.cpp" />
+    <ClCompile Include="DropDownList.cpp" />
     <ClCompile Include="ElementAction.cpp" />
     <ClCompile Include="ElementGroup.cpp" />
     <ClCompile Include="Exponential.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Dependencies\GLEW\include\GL\wglew.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="DropDownList.h" />
     <ClInclude Include="ElementAction.h" />
     <ClInclude Include="ElementGroup.h" />
     <ClInclude Include="Exponential.h" />

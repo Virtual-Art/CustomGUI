@@ -197,7 +197,6 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 {
-	PageEditor.DrawPage();
 
 	if (KeyState.Key1 == GUI_S_CLICKED && KeyState.Ctrl == true)
 	{
@@ -208,6 +207,8 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 	{
 		BookCreatorPage.DrawPage();
 	}
+
+	PageEditor.DrawPage();
 
 	CurrentKeyResult = &KeyState;
 	CurrentMouseState = MouseState;

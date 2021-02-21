@@ -52,6 +52,7 @@
 #include "Button.h"
 #include "NumberPrinter.h"
 #include "Toggle.h"
+#include "DropDownList.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -258,15 +259,24 @@ int main(int argc, char** argv)
 	NumberPrinter NewVec2(&EditorBook, &NumberGroup, NewVec2_Data);
 
 	llPageItemData PageItem_Toggle;
-	PageItem_Toggle.Position = PageCreator::Origin;
+	PageItem_Toggle.Position = {-0.89, -0.3};
 
-	bool YESS = false;
+	string* DropList = new string[7];
+	DropList[0] = "New";
+	DropList[1] = "Open";
+	DropList[2] = "Save";
+	DropList[3] = "Save All";
+	DropList[4] = "Forclosure";
+	DropList[5] = "Really Long Phrase";
+	DropList[6] = "CHILLED";
 
-	ToggleData Data_Toggle;
-	Data_Toggle.Description = "Mouse Access";
-	Data_Toggle.OnOff = &YESS;
 
-	Toggle NewToggle(&EditorBook, &PageItem_Toggle, Data_Toggle);
+	DropDownListData Data_DropDown;
+	Data_DropDown.Description = "File      ";
+	Data_DropDown.ListCount = 5;
+	Data_DropDown.StringList = DropList;
+
+	DropDownList NewDropDown(&EditorBook, &PageItem_Toggle, Data_DropDown);
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
