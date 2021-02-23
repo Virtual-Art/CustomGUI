@@ -114,6 +114,28 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	PageItem_Data.Position = { -0.93, -0.2 };
 	Toggle_Hide.llToggleInit(&CreatorBook, &PageItem_Data, Toggle_Data);
 
+	DropDownListData DropDown_Data;
+
+	//Toggle Hide
+	string* DropList = new string[10];
+	DropList[0] = "Garlic";
+	DropList[1] = "Salt";
+	DropList[2] = "Water";
+	DropList[3] = "Tomato";
+	DropList[4] = "Pepper";
+	DropList[5] = "Butter";
+	DropList[6] = "Spring Mix Salad";
+	DropList[7] = "Carrots";
+	DropList[8] = "Lemon";
+	DropList[9] = "Potatos";
+	DropDown_Data.MaxListCount = 10;
+	DropDown_Data.CurrentListCount = 10;
+	DropDown_Data.StringList = DropList;
+	DropDown_Data.Hidden = true;
+	DropDown_Data.Description = "File";
+	PageItem_Data.Position = { -0.53, 0.94 };
+	DropDown_Test.llDropDownListInit(&CreatorBook, &PageItem_Data, DropDown_Data);
+
 	//////////////////////////////////////Instructions//////////////////////////////////////////////
 
 	//Shift + up, down, right, left
@@ -193,16 +215,28 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Shape_Toggle = Toggle_Hide.GetShapeGroupShape(GROUP_TOGGLE, TOGGLE_BACKGROUND);
 	Toggle_Hide.CurrentToggleData.OnOff = &Quad_Slider_Test.GetData()->Hide;
 	Shape_Toggle->ShapeButton.LogicalActions[2] = SetCurrentToggle;
+
+	Log::LogString("----------------------------------------------------------");
+
+	llShapeData* Shape_DropDown;
+	Shape_DropDown = DropDown_Test.GetShapeGroupShape(GROUP_BACKGROUND, 0);
+	Shape_DropDown->ShapeButton.LogicalActions[2] = ProcessDropDown;
+	//Shape_DropDown->ShapeButton.LogicalActions[1] = TestFunction;
+	
+	//Shape_DropDown = DropDown_Test.GetShapeGroupShape(GROUP_BACKGROUND, 4);
+	//cout << &Shape_DropDown->ShapeButton.LogicalActions[2] << endl;
+	//
+	//Shape_DropDown = DropDown_Test.GetShapeGroupShape(GROUP_BACKGROUND, 4);
+	//cout << &Shape_DropDown->ShapeButton.LogicalActions[2] << endl;
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 {
-
 	if (KeyState.Key1 == GUI_S_CLICKED && KeyState.Ctrl == true)
 	{
 		MasterElement::ToggleToggle(HideCreatorPage);
 	}
-
+	
 	if (HideCreatorPage == false)
 	{
 		BookCreatorPage.DrawPage();
@@ -212,7 +246,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 
 	CurrentKeyResult = &KeyState;
 	CurrentMouseState = MouseState;
-
+	
 	if (CurrentLevel == LEVEL_SHAPEGROUP && CurrentType == TYPE_TEXT && KeyState.Ctrl != true && KeyState.CurrentAscii != -1 && KeyState.Key1 != 0)
 	{
 		CurrentText = TextEditor.GetText();
@@ -224,7 +258,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 		Log::LogString(CurrentText);
 		TextEditor.SetllText(CurrentText);
 	}
-
+	
 	if (CurrentLevel == LEVEL_SHAPEGROUP && CurrentType == TYPE_TEXT && KeyState.Ctrl != true &&KeyState.Key1 == GUI_BACKSPACE_CLICKED || KeyState.Key1 == GUI_BACKSPACE_PRESSED)
 	{
 		if (CurrentText.size() > 1)
@@ -237,7 +271,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 		}
 		TextEditor.SetllText(CurrentText);
 	}
-
+	
 	MasterElement::FindElement(&CreatorBook, LEVEL_SHAPE);
 }
 
@@ -385,10 +419,10 @@ void PageCreator::SetArrowKeys()
 
 void PageCreator::AddLetter()
 {
-	if (CurrentKeyResult->CurrentAscii != -1 && CurrentKeyResult->Key1 != 0)
-	{
-		CurrentText += CurrentKeyResult->CurrentAscii;
-	}
+	//if (CurrentKeyResult->CurrentAscii != -1 && CurrentKeyResult->Key1 != 0)
+	//{
+	//	CurrentText += CurrentKeyResult->CurrentAscii;
+	//}
 }
 
 void PageCreator::BackSpace()
@@ -1372,4 +1406,20 @@ void PageCreator::SetCurrentToggle()
 {
 	Toggle_Hide.ClickToggle();
 	Quad_Slider_Test.llUpdate();
+}
+
+void PageCreator::ProcessDropDown()
+{
+	DropDown_Test.ToggleShow();
+}
+
+void PageCreator::HighlightDropDownDriver()
+{
+	DropDown_Test.HoverDriver();
+}
+
+
+void PageCreator::TestFunction()
+{
+	Log::LogString("TestFunction");
 }

@@ -11,6 +11,7 @@
 #include "Slider.h"
 #include "NumberPrinter.h"
 #include "Toggle.h"
+#include "DropDownList.h"
 #include "FileProcessor.h"
 
 using namespace std;
@@ -115,6 +116,7 @@ namespace PageCreator
 	static Slider Slider_Color_B;
 	static Slider Slider_Color_A;
 	static Toggle Toggle_Hide;
+	static DropDownList DropDown_Test;
 	static Quad Quad_Slider_Test;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
@@ -228,6 +230,11 @@ namespace PageCreator
 
 	void SetCurrentSlider();
 	void SetCurrentToggle();
+	void ProcessDropDown();
+
+	void TestFunction();
+
+	void HighlightDropDownDriver();
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 

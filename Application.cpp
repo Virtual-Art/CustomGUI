@@ -60,7 +60,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 using namespace std;
 
-
 int main(int argc, char** argv)
 {
 	Keyboard Keyboard;
@@ -192,12 +191,20 @@ int main(int argc, char** argv)
 	yaat_t.Phrase = "PeeMart";
 	llShapeGroupData yaat;
 	yaat.Position = { 0.0, 0.9 };
-	Quad llQuad0(&Gamee);
-	Quad llQuad1(&Gamee);
-	Quad llQuad3(&Gamee);
-	Quad llQuad2(&Gamee);
-	Text llText0(&Gamee, &yaat, yaat_t);
-	Text llText1(&Gamee, &yaat, yaat_t);
+	//-----------------------------------//
+	Quad llQuad0(&Gamee); //TYPE_QUAD
+	Quad llQuad1(&Gamee); //TYPE_QUAD
+	Quad llQuad3(&Gamee); //TYPE_QUAD
+	Quad llQuad2(&Gamee); //TYPE_QUAD
+	Text llText0(&Gamee, &yaat, yaat_t); //TYPE_TEXT_QUAD * 10
+	//-----------------------------------//
+	Text llText1(&EditorBook, &yaat, yaat_t);
+	Quad llQuad10(&EditorBook);
+	Quad llQuad11(&EditorBook);
+	//-----------------------------------//
+
+	llQuad10.SetPosition({0.8, 0.9});
+	llQuad11.SetPosition({0.8, 0.8});
 
 	//llText1.SetllPosition({ 0.0, -0.888 });
 
@@ -261,23 +268,6 @@ int main(int argc, char** argv)
 	llPageItemData PageItem_Toggle;
 	PageItem_Toggle.Position = {-0.89, -0.3};
 
-	string* DropList = new string[7];
-	DropList[0] = "New";
-	DropList[1] = "Open";
-	DropList[2] = "Save";
-	DropList[3] = "Save All";
-	DropList[4] = "Forclosure";
-	DropList[5] = "Really Long Phrase";
-	DropList[6] = "CHILLED";
-
-
-	DropDownListData Data_DropDown;
-	Data_DropDown.Description = "File      ";
-	Data_DropDown.ListCount = 5;
-	Data_DropDown.StringList = DropList;
-
-	DropDownList NewDropDown(&EditorBook, &PageItem_Toggle, Data_DropDown);
-
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -298,9 +288,14 @@ int main(int argc, char** argv)
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
 
+
 		NewVec2.llUpdate();
 
 		//EditorPage.DrawPage();
+
+		if (KeyState.Key1 == GUI_I_CLICKED)
+		{
+		}
 
 
 		//a SliderPointer points to a function that belongs to slider
@@ -319,6 +314,8 @@ int main(int argc, char** argv)
 		//Slider to use -> Play whatever Slider Function SliderTable is pointing too
 		//(SliderExecute.*VirtualTest_Function)();
 		//this exact line of code can play any Slider Function
+
+		
 
 		if (KeyState.Key1 == GUI_G_CLICKED)
 		{

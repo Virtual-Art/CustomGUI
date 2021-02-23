@@ -445,7 +445,12 @@ void NewCharacter::CreatellCharacter()
 	while (CurrentVertex != nullptr)
 	{
 		//Set Data
-		CurrentVertex->Color = CurrentllShape->Color;
+		if (CurrentllShape->Hide == true)
+		{CurrentVertex->Color = CurrentllShape->Color;
+		 CurrentVertex->Color[3] = 0.0;}
+		else
+		{CurrentVertex->Color = CurrentllShape->Color;}
+
 		CurrentVertex->TexIndex = 1;
 		CurrentVertex->CentralPoint = { CurrentllShape->Position[0] + (CurrentllShape->Size[0] / 2), CurrentllShape->Position[1] - (CurrentllShape->Size[1] / 2) };
 		CurrentVertex->GUIAction = CurrentllShape->Action;

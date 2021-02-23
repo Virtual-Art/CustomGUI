@@ -53,7 +53,6 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 
 		llBook->Page->PageGroup->PageItem = CreatedPageItem;
 		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
-
 	}
 
 	CurrentllShapeGroup = new llShapeGroupData;
@@ -942,69 +941,72 @@ void ShapeGroup::SetllMouseAccess()
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::ShapeGroup is null "); return; };
 	if (CurrentllShapeGroup->Shape == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No Shapes in ShapeGroup"); return; };
 
-	//Setup
-	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
-
-
-	//Go to Head Shape
-	while (CurrentShape->Previous != nullptr)
+	if (CurrentllShapeGroup->MouseAccess == true)
 	{
-		CurrentShape = CurrentShape->Previous;
+		//Setup
+		llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+
+
+		//Go to Head Shape
+		while (CurrentShape->Previous != nullptr)
+		{
+			CurrentShape = CurrentShape->Previous;
+		}
+
+		float FurthestRight = CurrentShape->Right;
+		float FurthestLeft = CurrentShape->Left;
+		float FurthestTop = CurrentShape->Top;
+		float FurthestBottom = CurrentShape->Bottom;
+
+		if (CurrentShape->Next != nullptr)
+		{
+			CurrentShape = CurrentShape->Next;
+		}
+		//Log::LogString("Start of MouseAccess");
+		//Compare CurrentShape's Access variables with all other shapes
+		while (CurrentShape != nullptr)
+		{
+			//Log::LogFloat("Right ", CurrentllShapeGroup->Right);
+			//Log::LogFloat("Left  ", CurrentllShapeGroup->Left);
+			//Log::LogFloat("Top   ", CurrentllShapeGroup->Top);
+			//Log::LogFloat("Bottom", CurrentllShapeGroup->Bottom);
+
+			//Furthest Right is the most positive number
+			if (FurthestRight < CurrentShape->Right) //
+			{
+				FurthestRight = CurrentShape->Right;
+			}
+
+			//Furthest Left is the most negative number
+			if (FurthestLeft > CurrentShape->Left) //
+			{
+				FurthestLeft = CurrentShape->Left;
+			}
+
+			//Furthest Top is the most positive number
+			if (FurthestTop < CurrentShape->Top) //
+			{
+				FurthestTop = CurrentShape->Top;
+			}
+
+			//Furthest Bottom is the most negative number
+			if (FurthestBottom > CurrentShape->Bottom) //
+			{
+				FurthestBottom = CurrentShape->Bottom;
+			}
+
+			CurrentShape = CurrentShape->Next;
+		}
+
+		//Set ShapeGroup
+		CurrentllShapeGroup->Right = FurthestRight;
+		CurrentllShapeGroup->Left = FurthestLeft;
+		CurrentllShapeGroup->Top = FurthestTop;
+		CurrentllShapeGroup->Bottom = FurthestBottom;
+
+		CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft;
+		CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom;
 	}
-
-	float FurthestRight = CurrentShape->Right;
-	float FurthestLeft = CurrentShape->Left;
-	float FurthestTop = CurrentShape->Top;
-	float FurthestBottom = CurrentShape->Bottom;
-
-	if (CurrentShape->Next != nullptr)
-	{
-		CurrentShape = CurrentShape->Next;
-	}
-	//Log::LogString("Start of MouseAccess");
-	//Compare CurrentShape's Access variables with all other shapes
-	while (CurrentShape != nullptr)
-	{
-		//Log::LogFloat("Right ", CurrentllShapeGroup->Right);
-		//Log::LogFloat("Left  ", CurrentllShapeGroup->Left);
-		//Log::LogFloat("Top   ", CurrentllShapeGroup->Top);
-		//Log::LogFloat("Bottom", CurrentllShapeGroup->Bottom);
-
-		//Furthest Right is the most positive number
-		if (FurthestRight < CurrentShape->Right) //
-		{
-			FurthestRight = CurrentShape->Right;
-		}
-
-		//Furthest Left is the most negative number
-        if (FurthestLeft > CurrentShape->Left ) //
-		{
-			FurthestLeft = CurrentShape->Left;
-		}
-
-		//Furthest Top is the most positive number
-		if (FurthestTop < CurrentShape->Top ) //
-		{
-			FurthestTop = CurrentShape->Top;
-		}
-
-		//Furthest Bottom is the most negative number
-		if (FurthestBottom > CurrentShape->Bottom ) //
-		{
-			FurthestBottom = CurrentShape->Bottom;
-		}
-
-		CurrentShape = CurrentShape->Next;
-	}
-
-	//Set ShapeGroup
-	CurrentllShapeGroup->Right  = FurthestRight;
-	CurrentllShapeGroup->Left   = FurthestLeft;
-	CurrentllShapeGroup->Top    = FurthestTop;
-	CurrentllShapeGroup->Bottom = FurthestBottom;
-
-	CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft;
-	CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom;
 }
 
 void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)

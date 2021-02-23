@@ -241,11 +241,11 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
 						{
 							ShapeCount++;
-							if (xMouse < CurrentShape->Right && xMouse >  CurrentShape->Left && yMouse < CurrentShape->Top && yMouse >  CurrentShape->Bottom)
+							if (xMouse < CurrentShape->Right && xMouse >  CurrentShape->Left && yMouse < CurrentShape->Top && yMouse >  CurrentShape->Bottom && CurrentShape->MouseAccess == true)
 							{
 								if (ElementLevel == LEVEL_SHAPE)
 								{
-									//cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+								//	cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
 									CurrentShape->ShapeButton.ProcessMouseButtons(MouseManager::CurrentMouseState);
 								}
 							}

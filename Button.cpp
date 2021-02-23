@@ -33,6 +33,8 @@ Button::~Button()
 
 	//then delete the pointer that points to the 4 attributes
 	delete[] TriggeredActions;
+
+	delete[] LogicalActions;
 }
 
 void Button::PlayLogicalActions()
@@ -50,7 +52,7 @@ void Button::ProcessMouseButtons(int MouseState)
 		LogicalActions[0]();
 	}
 
-	if (MouseState == GUI_MOUSELEFT_PRESSED) //MouseLeft Clicked
+	if (MouseState == GUI_MOUSERIGHT_CLICKED) //MouseLeft Clicked
 	{
 		//cout << "lalqalalalalallalala" << endl;
 		LogicalActions[1]();
@@ -61,6 +63,8 @@ void Button::ProcessMouseButtons(int MouseState)
 		//cout << "lalqalalalalallalala" << endl;
 		LogicalActions[2]();
 	}
+
+	//LogicalActions[3]();
 }
 
 //Helper Function

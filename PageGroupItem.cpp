@@ -968,8 +968,9 @@ llShapeData* PageGroupItem::GetShapeGroupShape(int ShapeGroupIndex, int ShapeInd
 	while (LoopIndex != ShapeGroupIndex && CurrentShapeGroup->Next != nullptr)
 	{
 		CurrentShapeGroup = CurrentShapeGroup->Next;
-		Log::LogInt(" ", LoopIndex);
+		//Log::LogInt(" ", LoopIndex);
 		LoopIndex++;
+		Log::LogString("Siffed ShapeGroup");
 	}
 
 
@@ -986,8 +987,8 @@ llShapeData* PageGroupItem::GetShapeGroupShape(int ShapeGroupIndex, int ShapeInd
 	while (LoopIndex2 != ShapeIndex && CurrentShape->Next != nullptr)
 	{
 		CurrentShape = CurrentShape->Next;
-		Log::LogInt(" ", LoopIndex2);
 		LoopIndex2++;
+		Log::LogString("Siffed Shape");
 	}
 
 	return CurrentShape;

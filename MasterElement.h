@@ -165,7 +165,6 @@ struct llShapeData
 	llVertexData* Vertexx = nullptr; // Child
 	llVertexData* VertexxHead = nullptr; // Child
 	Button ShapeButton;
-
 };
 
 struct llShapeGroupData
@@ -189,6 +188,7 @@ struct llShapeGroupData
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
+	bool Hide = false;
 	float Top = -3;
 	float Bottom = -3;
 	float Left = -3;
@@ -197,7 +197,7 @@ struct llShapeGroupData
 	llShapeGroupData* Previous = nullptr;
 	llShapeData* Shape = nullptr; // Child
 	llShapeData* ShapeHead = nullptr; // Child
-	Button ShapeGroupButton;
+	
 	///////////////////////////////////
 	llShapeData* operator[] (int i)
 	{
