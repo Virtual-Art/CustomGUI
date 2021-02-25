@@ -993,3 +993,49 @@ llShapeData* PageGroupItem::GetShapeGroupShape(int ShapeGroupIndex, int ShapeInd
 
 	return CurrentShape;
 }
+
+
+float PageGroupItem::GetAccessRight()
+{
+	return CurrentllPageItem->Right;
+}
+
+float PageGroupItem::GetAccessLeft()
+{
+	return CurrentllPageItem->Left;
+}
+
+
+float PageGroupItem::GetAccessTop()
+{
+	return CurrentllPageItem->Top;
+}
+
+
+float PageGroupItem::GetAccessBottom()
+{
+	return CurrentllPageItem->Bottom;
+}
+
+
+float PageGroupItem::GetAccessRight(int PixelOffset)
+{
+	return CurrentllPageItem->Right + PIXEL * PixelOffset;
+}
+
+float PageGroupItem::GetAccessLeft(int PixelOffset)
+{
+	return CurrentllPageItem->Left + PIXEL * PixelOffset;
+}
+
+
+float PageGroupItem::GetAccessTop(int PixelOffset)
+{
+	return CurrentllPageItem->Top + PIXEL * PixelOffset;
+}
+
+
+float PageGroupItem::GetAccessBottom(int PixelOffset)
+{
+	return CurrentllPageItem->Bottom + PIXEL * PixelOffset;
+}

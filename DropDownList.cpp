@@ -56,13 +56,20 @@ void DropDownList::CreateDropDownList()
 
 	//Driver Quad
 	glm::vec2 Quad_Driver_BackGround_Position = CurrentllPageItem->Position;
-	glm::vec4 Quad_Driver_BackGround_Color = { 0.0, 0.3, 0.3, 0.5 };
+	glm::vec4 Quad_Driver_BackGround_Color = { 0.0, 0.3, 0.3, 1.0 };
 
 	//Create Driver BackGround
 	CurrentShape.Position = Quad_Driver_BackGround_Position;
 	CurrentShape.Position[Y_AXIS] += PIXEL;
 	CurrentShape.Color = Quad_Driver_BackGround_Color;
-	CurrentShape.Hide = CurrentDropDownListData.Hidden;
+	if (HighlightDriver != true)
+	{
+		CurrentShape.Hide = CurrentDropDownListData.Hidden;
+	}
+	else
+	{
+		CurrentShape.Hide = false;
+	}
 	Quad Quad_Description_Background(LoadedBook, &CurrentShape);
 
 	BackGroundGroup = CurrentllPageItem->ShapeGroup;
@@ -80,6 +87,8 @@ void DropDownList::CreateDropDownList()
 
 	//Quad Size Correct Now
 	Quad_Description_Background.SetSize(Text_Description.GetSize(10, 20));
+
+	CurrentllPageItem->Size = Text_Description.GetSize(10, 20);
 
 	//Sub BackGround
 	glm::vec2 Quad_SubList_Position = { Quad_Description_Background.GetAccessLeft(), Quad_Description_Background.GetAccessBottom() };
@@ -202,7 +211,7 @@ void DropDownList::llReplaceDropDownList()
 
 	//Driver Quad
 	glm::vec2 Quad_Driver_BackGround_Position = CurrentllPageItem->Position;
-	glm::vec4 Quad_Driver_BackGround_Color = { 0.0, 0.3, 0.3, 0.5 };
+	glm::vec4 Quad_Driver_BackGround_Color = { 0.0, 0.3, 0.3, 1.0 };
 
 	//Create Driver BackGround
 	Quad_Reference.llSwitch(CurrentBackGroundShape);
@@ -230,6 +239,7 @@ void DropDownList::llReplaceDropDownList()
 
 	//Quad Size Correct Now
 	Quad_Reference.SetSize(Text_Reference.GetSize(10, 20));
+	CurrentllPageItem->Size = Text_Reference.GetSize(10, 20);
 
 	//Sub BackGround
 	glm::vec2 Quad_SubList_Position = { Quad_Reference.GetAccessLeft(), Quad_Reference.GetAccessBottom() };
@@ -322,4 +332,13 @@ void DropDownList::HoverDriver()
 {
 	HighlightDriver = true;
 	llReplaceDropDownList();
+}
+
+void DropDownList::UpdateDropDownMouseAccess()
+{
+	CurrentllPageItem->Right = CurrentllPageItem->Position[X_AXIS] + CurrentllPageItem->Size[X_AXIS] / 2;
+	CurrentllPageItem->Left = CurrentllPageItem->Position[X_AXIS] - CurrentllPageItem->Size[X_AXIS] / 2;
+	CurrentllPageItem->Top = CurrentllPageItem->Position[Y_AXIS] + CurrentllPageItem->Size[Y_AXIS] / 2;
+	CurrentllPageItem->Bottom = CurrentllPageItem->Position[Y_AXIS] - CurrentllPageItem->Size[Y_AXIS] / 2;
+
 }

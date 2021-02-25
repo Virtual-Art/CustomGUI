@@ -42,6 +42,8 @@ public:
 
 	void HoverDriver();
 
+	void UpdateDropDownMouseAccess();
+
 	//void ClickToggle();
 
 

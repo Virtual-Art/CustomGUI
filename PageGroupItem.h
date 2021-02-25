@@ -107,6 +107,16 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
+	float GetAccessRight();
+	float GetAccessLeft();
+	float GetAccessTop();
+	float GetAccessBottom();
+
+	float GetAccessRight(int PixelOffset);
+	float GetAccessLeft(int PixelOffset);
+	float GetAccessTop(int PixelOffset);
+	float GetAccessBottom(int PixelOffset);
+
 	virtual void llUpdate();
 	virtual void Update() {};
 	void ReCalibrateID();

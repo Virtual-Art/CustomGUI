@@ -164,7 +164,7 @@ struct llShapeData
 	llShapeData* Previous = nullptr;
 	llVertexData* Vertexx = nullptr; // Child
 	llVertexData* VertexxHead = nullptr; // Child
-	Button ShapeButton;
+	Button* ShapeButton = nullptr;
 };
 
 struct llShapeGroupData

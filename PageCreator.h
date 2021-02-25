@@ -116,8 +116,11 @@ namespace PageCreator
 	static Slider Slider_Color_B;
 	static Slider Slider_Color_A;
 	static Toggle Toggle_Hide;
-	static DropDownList DropDown_Test;
+	static DropDownList File;
+	static DropDownList Edit;
 	static Quad Quad_Slider_Test;
+	static Button Button_File_Driver;
+	static Button Button_Edit_Driver;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
     //The Editor Objects edit all the books and switch between books on their own
@@ -230,7 +233,8 @@ namespace PageCreator
 
 	void SetCurrentSlider();
 	void SetCurrentToggle();
-	void ProcessDropDown();
+	void ProcessDropDownFile();
+	void ProcessDropDownEdit();
 
 	void TestFunction();
 

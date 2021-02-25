@@ -52,8 +52,9 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 
 	/////////////////////////////////////ElementViewer////////////////////////////////////////
 
-	//Required Groups
 	llPageItemData PageItem_Data;
+
+	//Required Groups
 	NumberPrinterData NumberPrinter_Data;
 	SliderData Slider_Data;
 	Quad ElementViewerBackGround(&CreatorBook);
@@ -114,27 +115,6 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	PageItem_Data.Position = { -0.93, -0.2 };
 	Toggle_Hide.llToggleInit(&CreatorBook, &PageItem_Data, Toggle_Data);
 
-	DropDownListData DropDown_Data;
-
-	//Toggle Hide
-	string* DropList = new string[10];
-	DropList[0] = "Garlic";
-	DropList[1] = "Salt";
-	DropList[2] = "Water";
-	DropList[3] = "Tomato";
-	DropList[4] = "Pepper";
-	DropList[5] = "Butter";
-	DropList[6] = "Spring Mix Salad";
-	DropList[7] = "Carrots";
-	DropList[8] = "Lemon";
-	DropList[9] = "Potatos";
-	DropDown_Data.MaxListCount = 10;
-	DropDown_Data.CurrentListCount = 10;
-	DropDown_Data.StringList = DropList;
-	DropDown_Data.Hidden = true;
-	DropDown_Data.Description = "File";
-	PageItem_Data.Position = { -0.53, 0.94 };
-	DropDown_Test.llDropDownListInit(&CreatorBook, &PageItem_Data, DropDown_Data);
 
 	//////////////////////////////////////Instructions//////////////////////////////////////////////
 
@@ -196,38 +176,71 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	//Set Slider Quad Button to Change Slider Position
 	Shape_Slider = Slider_Color_R.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
 	Slider_Color_R.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[0];
-	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderR;
+	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderR;
 
 	Shape_Slider = Slider_Color_G.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
 	Slider_Color_G.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[1];
-	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderG;
+	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderG;
 
 	Shape_Slider = Slider_Color_B.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
 	Slider_Color_B.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[2];
-	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderB;
+	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderB;
 
 	Shape_Slider = Slider_Color_A.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
 	Slider_Color_A.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[3];
-	Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderA;
+	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderA;
 
 	llShapeData* Shape_Toggle;
 
 	Shape_Toggle = Toggle_Hide.GetShapeGroupShape(GROUP_TOGGLE, TOGGLE_BACKGROUND);
 	Toggle_Hide.CurrentToggleData.OnOff = &Quad_Slider_Test.GetData()->Hide;
-	Shape_Toggle->ShapeButton.LogicalActions[2] = SetCurrentToggle;
+	//Shape_Toggle->ShapeButton.LogicalActions[2] = SetCurrentToggle;
+
+	DropDownListData DropDown_Data_File;
+	string* DropList = new string[7];
+	DropList[0] = "New";
+	DropList[1] = "Open            Ctrl + O";
+	DropList[2] = "Close";
+	DropList[3] = "Save";
+	DropList[4] = "Save All";
+	DropList[5] = "Recent Files";
+	DropList[6] = "Exit             Ctrl + E";
+	DropDown_Data_File.MaxListCount = 7;
+	DropDown_Data_File.CurrentListCount = 7;
+	DropDown_Data_File.StringList = DropList;
+	DropDown_Data_File.Hidden = true;
+	DropDown_Data_File.Description = "File";
+	PageItem_Data.Position = { -0.96, 0.96 };
+	File.llDropDownListInit(&CreatorBook, &PageItem_Data, DropDown_Data_File);
+
+	DropDownListData DropDown_Data_Edit;
+	string* DropList2 = new string[7];
+	DropList2[0] = "Undo";
+	DropList2[1] = "Redo";
+	DropList2[2] = "Cut";
+	DropList2[3] = "Copy";
+	DropList2[4] = "Paste";
+	DropList2[5] = "Duplicate";
+	DropList2[6] = "Delete             ";
+	DropDown_Data_Edit.MaxListCount = 7;
+	DropDown_Data_Edit.CurrentListCount = 7;
+	DropDown_Data_Edit.StringList = DropList2;
+	DropDown_Data_Edit.Hidden = true;
+	DropDown_Data_Edit.Description = "Edit";
+	PageItem_Data.Position = { -0.90, 0.96};
+	Edit.llDropDownListInit(&CreatorBook, &PageItem_Data, DropDown_Data_Edit);
 
 	Log::LogString("----------------------------------------------------------");
 
+	Button_File_Driver.LogicalActions[2] = ProcessDropDownFile;
+	Button_Edit_Driver.LogicalActions[2] = ProcessDropDownEdit;
+
 	llShapeData* Shape_DropDown;
-	Shape_DropDown = DropDown_Test.GetShapeGroupShape(GROUP_BACKGROUND, 0);
-	Shape_DropDown->ShapeButton.LogicalActions[2] = ProcessDropDown;
-	//Shape_DropDown->ShapeButton.LogicalActions[1] = TestFunction;
-	
-	//Shape_DropDown = DropDown_Test.GetShapeGroupShape(GROUP_BACKGROUND, 4);
-	//cout << &Shape_DropDown->ShapeButton.LogicalActions[2] << endl;
-	//
-	//Shape_DropDown = DropDown_Test.GetShapeGroupShape(GROUP_BACKGROUND, 4);
-	//cout << &Shape_DropDown->ShapeButton.LogicalActions[2] << endl;
+	Shape_DropDown = File.GetShapeGroupShape(GROUP_BACKGROUND, 0);
+	Shape_DropDown->ShapeButton = &Button_File_Driver;
+
+	Shape_DropDown = Edit.GetShapeGroupShape(GROUP_BACKGROUND, 0);
+	Shape_DropDown->ShapeButton = &Button_Edit_Driver;
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
@@ -1408,14 +1421,20 @@ void PageCreator::SetCurrentToggle()
 	Quad_Slider_Test.llUpdate();
 }
 
-void PageCreator::ProcessDropDown()
+void PageCreator::ProcessDropDownFile()
 {
-	DropDown_Test.ToggleShow();
+	File.ToggleShow();
 }
+
+void PageCreator::ProcessDropDownEdit()
+{
+	Edit.ToggleShow();
+}
+
 
 void PageCreator::HighlightDropDownDriver()
 {
-	DropDown_Test.HoverDriver();
+	File.HoverDriver();
 }
 
 

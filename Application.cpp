@@ -58,6 +58,17 @@
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+
+void RandomTest1()
+{
+	Log::LogString("TEST 1");
+}
+
+void RandomTest2()
+{
+	Log::LogString("TEST 2");
+}
+
 using namespace std;
 
 int main(int argc, char** argv)
@@ -268,6 +279,7 @@ int main(int argc, char** argv)
 	llPageItemData PageItem_Toggle;
 	PageItem_Toggle.Position = {-0.89, -0.3};
 
+
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -288,6 +300,7 @@ int main(int argc, char** argv)
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
 
+		MasterElement::FindElement(&EditorBook, LEVEL_SHAPE);
 
 		NewVec2.llUpdate();
 
@@ -295,6 +308,12 @@ int main(int argc, char** argv)
 
 		if (KeyState.Key1 == GUI_I_CLICKED)
 		{
+			//DropDown
+		}
+		
+		if (KeyState.Key1 == GUI_O_CLICKED)
+		{
+			//Add
 		}
 
 

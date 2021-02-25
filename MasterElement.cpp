@@ -245,8 +245,12 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 							{
 								if (ElementLevel == LEVEL_SHAPE)
 								{
-								//	cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
-									CurrentShape->ShapeButton.ProcessMouseButtons(MouseManager::CurrentMouseState);
+									
+									if (CurrentShape->ShapeButton != nullptr)
+									{
+										cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+									}
 								}
 							}
 							CurrentShape = CurrentShape->Next;

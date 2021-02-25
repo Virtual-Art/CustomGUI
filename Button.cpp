@@ -47,7 +47,7 @@ void Button::PlayLogicalActions()
 
 void Button::ProcessMouseButtons(int MouseState)
 {
-	if (MouseState == 1) //MouseLeft Clicked
+	if (MouseState == GUI_MOUSELEFT_PRESSED) //MouseLeft Clicked
 	{
 		LogicalActions[0]();
 	}
@@ -64,7 +64,7 @@ void Button::ProcessMouseButtons(int MouseState)
 		LogicalActions[2]();
 	}
 
-	//LogicalActions[3]();
+	LogicalActions[3]();
 }
 
 //Helper Function
