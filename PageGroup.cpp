@@ -409,3 +409,15 @@ void PageGroup::llUpdate()
 		}
 	}
 }
+
+
+
+//glm::vec2* PageGroup::GetPosition()
+//{
+//	return &CurrentllPageGroup->Position;
+//}
+
+//glm::vec2* PageGroup::GetSize()
+//{
+//	return &CurrentllPageGroup->Size;
+//}

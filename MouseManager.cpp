@@ -73,7 +73,7 @@ int MouseManager::GetMouseState(GLFWwindow* window, float Time, float DoubleClic
 			LeftStartTime = TimeStamp();
 			LeftClickTime = LeftStartTime + PressLength;
 			LeftMultiTrack++;
-			if (LeftMultiTrack < 6)
+			if (LeftMultiTrack < 3)
 			{
 				cout << LeftMultiTrack << " Left Clicks" << endl;
 				CurrentMouseState = 1 + LeftMultiTrack;
@@ -117,11 +117,11 @@ int MouseManager::GetMouseState(GLFWwindow* window, float Time, float DoubleClic
 			RightStartTime = TimeStamp();
 			RightClickTime = RightStartTime + PressLength;
 			RightMultiTrack++;
-			if (RightMultiTrack < 6)
+			if (RightMultiTrack < 7)
 			{
 				cout << RightMultiTrack << " Right Clicks" << endl;
-				CurrentMouseState = 7 + RightMultiTrack;
-				return 7 + RightMultiTrack;
+				CurrentMouseState = 4 + RightMultiTrack;
+				return 4 + RightMultiTrack;
 			}
 		}
 
@@ -163,11 +163,11 @@ int MouseManager::GetMouseState(GLFWwindow* window, float Time, float DoubleClic
 			MiddleStartTime = TimeStamp();
 			MiddleClickTime = MiddleStartTime + PressLength;
 			MiddleMultiTrack++;
-			if (MiddleMultiTrack < 6)
+			if (MiddleMultiTrack < 10)
 			{
 				cout <<  MiddleMultiTrack << " Middle Clicks" << endl;
-				CurrentMouseState = 13 + MiddleMultiTrack;
-				return 13 + MiddleMultiTrack;
+				CurrentMouseState = 7 + MiddleMultiTrack;
+				return 7 + MiddleMultiTrack;
 			}
 		}
 

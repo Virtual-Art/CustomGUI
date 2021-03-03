@@ -10,9 +10,9 @@ Button::Button()
 		TriggeredActions[i] = new ElementAction*[5];
 	}
 
-	LogicalActions = new ButtonFunction[5];
+	LogicalActions = new ButtonFunction[11];
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		LogicalActions[i] = Empty;
 	}
@@ -39,7 +39,7 @@ Button::~Button()
 
 void Button::PlayLogicalActions()
 {
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		LogicalActions[i]();
 	}
@@ -47,24 +47,10 @@ void Button::PlayLogicalActions()
 
 void Button::ProcessMouseButtons(int MouseState)
 {
-	if (MouseState == GUI_MOUSELEFT_PRESSED) //MouseLeft Clicked
-	{
-		LogicalActions[0]();
-	}
 
-	if (MouseState == GUI_MOUSERIGHT_CLICKED) //MouseLeft Clicked
-	{
-		//cout << "lalqalalalalallalala" << endl;
-		LogicalActions[1]();
-	}
+	LogicalActions[MouseState]();
 
-	if (MouseState == GUI_MOUSELEFT_CLICKED) //MouseLeft Clicked
-	{
-		//cout << "lalqalalalalallalala" << endl;
-		LogicalActions[2]();
-	}
-
-	LogicalActions[3]();
+	LogicalActions[10]();
 }
 
 //Helper Function

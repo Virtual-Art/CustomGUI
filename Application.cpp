@@ -209,13 +209,13 @@ int main(int argc, char** argv)
 	Quad llQuad2(&Gamee); //TYPE_QUAD
 	Text llText0(&Gamee, &yaat, yaat_t); //TYPE_TEXT_QUAD * 10
 	//-----------------------------------//
-	Text llText1(&EditorBook, &yaat, yaat_t);
-	Quad llQuad10(&EditorBook);
-	Quad llQuad11(&EditorBook);
+	//Text llText1(&EditorBook, &yaat, yaat_t);
+	//Quad llQuad10(&EditorBook);
+	//Quad llQuad11(&EditorBook);
 	//-----------------------------------//
 
-	llQuad10.SetPosition({0.8, 0.9});
-	llQuad11.SetPosition({0.8, 0.8});
+	//llQuad10.SetPosition({0.8, 0.9});
+	//llQuad11.SetPosition({0.8, 0.8});
 
 	//llText1.SetllPosition({ 0.0, -0.888 });
 

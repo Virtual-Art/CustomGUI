@@ -1039,3 +1039,18 @@ float PageGroupItem::GetAccessBottom(int PixelOffset)
 {
 	return CurrentllPageItem->Bottom + PIXEL * PixelOffset;
 }
+
+////glm::vec4* PageGroupItem::GetColor()
+////{
+////	return &CurrentllShapeGroup->Color;
+////}
+//
+//glm::vec2* PageGroupItem::GetPosition()
+//{
+//	return &CurrentllShapeGroup->Position;
+//}
+
+//glm::vec2* PageGroupItem::GetSize()
+//{
+//	return &CurrentllShapeGroup->Size;
+//}

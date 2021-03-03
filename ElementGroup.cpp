@@ -1195,3 +1195,18 @@ float ShapeGroup::GetAccessBottom(int PixelOffset)
 {
 	return CurrentllShapeGroup->Bottom + PIXEL * PixelOffset;
 }
+
+////glm::vec4* ShapeGroup::GetColor()
+////{
+////	return &CurrentllShapeGroup->Color;
+////}
+//
+//glm::vec2* ShapeGroup::GetPosition()
+//{
+//	return &CurrentllShapeGroup->Position;
+//}
+
+//glm::vec2* ShapeGroup::GetSize()
+//{
+//	return &CurrentllShapeGroup->Size;
+//}

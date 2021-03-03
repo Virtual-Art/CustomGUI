@@ -43,10 +43,10 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Quad Quad_Find(CurrentBook);
 	Quad_Find.SetllPosition({-2.0, 0.0});
 
-	Text UniqueSlider(CurrentBook);
-	UniqueSlider.SetllPosition({0.5, 0.5});
-	Text UniqueSlider1(CurrentBook);
-	UniqueSlider1.SetllPosition({0.5, -0.5});
+	//Text UniqueSlider(CurrentBook);
+	//UniqueSlider.SetllPosition({0.5, 0.5});
+	//Text UniqueSlider1(CurrentBook);
+	//UniqueSlider1.SetllPosition({0.5, -0.5});
 
 	EditorSelected = &QuadEditor;
 
@@ -166,34 +166,39 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	ShapeGroup_Details.Color = White;
 	Text_CurrentFunction.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
-	llShapeData SoExcited;
-	SoExcited.Position = {-0.5, 0.0};
-	SoExcited.Size = {0.15, 0.3};
-	Quad_Slider_Test.llQuadInit(&CreatorBook, &SoExcited);
-
 	llShapeData* Shape_Slider;
+	Button_R_Slider.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetSliderR;
+	Button_G_Slider.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetSliderG;
+	Button_B_Slider.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetSliderB;
+	Button_A_Slider.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetSliderA;
+
+	Button_R_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderR;
+	Button_G_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderG;
+	Button_B_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderB;
+	Button_A_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderA;
 
 	//Set Slider Quad Button to Change Slider Position
 	Shape_Slider = Slider_Color_R.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
-	Slider_Color_R.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[0];
-	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderR;
+	
+	//Slider_Color_R.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[0];
+	Shape_Slider->ShapeButton = &Button_R_Slider;
 
 	Shape_Slider = Slider_Color_G.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
-	Slider_Color_G.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[1];
-	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderG;
+	//Slider_Color_G.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[1];
+	Shape_Slider->ShapeButton = &Button_G_Slider;
 
 	Shape_Slider = Slider_Color_B.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
-	Slider_Color_B.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[2];
-	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderB;
+	//Slider_Color_B.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[2];
+	Shape_Slider->ShapeButton = &Button_B_Slider;
 
 	Shape_Slider = Slider_Color_A.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
-	Slider_Color_A.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[3];
-	//Shape_Slider->ShapeButton.LogicalActions[1] = SetSliderA;
+	//Slider_Color_A.CurrentSliderData.WorkingFloat = &Quad_Slider_Test.GetData()->Color[3];
+	Shape_Slider->ShapeButton = &Button_A_Slider;
 
 	llShapeData* Shape_Toggle;
 
 	Shape_Toggle = Toggle_Hide.GetShapeGroupShape(GROUP_TOGGLE, TOGGLE_BACKGROUND);
-	Toggle_Hide.CurrentToggleData.OnOff = &Quad_Slider_Test.GetData()->Hide;
+	//Toggle_Hide.CurrentToggleData.OnOff = &Quad_Slider_Test.GetData()->Hide;
 	//Shape_Toggle->ShapeButton.LogicalActions[2] = SetCurrentToggle;
 
 	DropDownListData DropDown_Data_File;
@@ -232,8 +237,9 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 
 	Log::LogString("----------------------------------------------------------");
 
-	Button_File_Driver.LogicalActions[2] = ProcessDropDownFile;
-	Button_Edit_Driver.LogicalActions[2] = ProcessDropDownEdit;
+	Button_File_Driver.LogicalActions[GUI_MOUSELEFT_CLICKED] = ProcessDropDownFile;
+	Button_Edit_Driver.LogicalActions[GUI_MOUSELEFT_CLICKED] = ProcessDropDownEdit;
+
 
 	llShapeData* Shape_DropDown;
 	Shape_DropDown = File.GetShapeGroupShape(GROUP_BACKGROUND, 0);
@@ -853,6 +859,8 @@ void PageCreator::SetShapeType()
 		Text_CurrentLevel.SetllText("Character");
 		break;
 	}
+
+	UpdateColorSliders();
 }
 
 void PageCreator::SetShapeGroupType()
@@ -870,6 +878,7 @@ void PageCreator::SetShapeGroupType()
 		Text_CurrentLevel.SetllText("Text");
 		break;
 	}
+	UpdateColorSliders();
 }
 
 void PageCreator::SetPageItemType()
@@ -890,6 +899,7 @@ void PageCreator::SetPageItemType()
 		Text_CurrentLevel.SetllText("Slider");
 		break;
 	}
+	UpdateColorSliders();
 }
 
 void PageCreator::SetPageGroupType()
@@ -903,6 +913,7 @@ void PageCreator::SetPageGroupType()
 		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	}
+	UpdateColorSliders();
 }
 
 void PageCreator::SetPageType()
@@ -916,6 +927,7 @@ void PageCreator::SetPageType()
 		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
+	UpdateColorSliders();
 }
 
 //Arrow Key with Alt
@@ -1051,13 +1063,16 @@ void PageCreator::Add()
 	EditorSelected->Add_Default();
 	CurrentFunction = 0;
 	SetElements();
+	UpdateColorSliders();
 }
 
 void PageCreator::Duplicate()
 {
+	SetBookFromElements();
 	EditorSelected->Add_Duplicate();
 	CurrentFunction = 0;
-	//SetElements();
+	SetElements();
+	UpdateColorSliders();
 }
 
 void PageCreator::Insert()
@@ -1208,42 +1223,46 @@ void PageCreator::SetElements()
 	{
 		//Log::LogString("Page Set");
 		CurrentPage = CurrentBook->Page;
-		cout << "Page Set" << CurrentPage << endl;
+		cout << "Page Set " << CurrentPage << endl;
 
 		//PageGroup
 		if (CurrentBook->Page->PageGroup != nullptr)
 		{
 			//Log::LogString("PageGroup Set");
 			CurrentPageGroup = CurrentBook->Page->PageGroup;
-			cout << "PageGroup Set" << CurrentPageGroup << endl;
+			cout << "PageGroup Set " << CurrentPageGroup << endl;
 
 			//PageItem
 			if (CurrentBook->Page->PageGroup->PageItem != nullptr)
 			{
 				//Log::LogString("PageItem Set");
 				CurrentPageItem = CurrentBook->Page->PageGroup->PageItem;
-				cout << "PageItem Set" << CurrentPageItem << endl;
+				cout << "PageItem Set " << CurrentPageItem << endl;
 			
 				//ShapeGroup
 				if (CurrentBook->Page->PageGroup->PageItem->ShapeGroup != nullptr)
 				{
 					//Log::LogString("ShapeGroup Set");
 					CurrentShapeGroup = CurrentBook->Page->PageGroup->PageItem->ShapeGroup;
-					cout << "ShapeGroup Set" << CurrentShapeGroup << endl;
+					cout << "ShapeGroup Set " << CurrentShapeGroup << endl;
 
 					//Shape
 					if (CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape != nullptr)
 					{
 						//Log::LogString("Shape Set");
 						CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
-						cout << "Shape Set" << CurrentShape << endl;
+						while (CurrentShape->Next != nullptr)
+						{
+							CurrentShape = CurrentShape->Next;
+							cout << "Shape Set " << CurrentShape << endl;
+						}
 
 						//Vertex
 						if (CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx != nullptr)
 						{
 							//Log::LogString("Vertex Set");
 							CurrentVertex = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
-							cout << "Vertex Set" << CurrentVertex << endl;
+							cout << "Vertex Set " << CurrentVertex << endl;
 						}
 						else
 						{
@@ -1301,74 +1320,90 @@ void PageCreator::SetElements()
 void PageCreator::PositionUp()
 {
 	EditorSelected->OffsetPosition({ 0.0, 0.00166 * PixelOffset }, OnlyY);
+	UpdateColorSliders();
 }
 void PageCreator::PositionDown()
 {
 	EditorSelected->OffsetPosition({ 0.0, -0.00166 * PixelOffset }, OnlyY);
+	UpdateColorSliders();
 }
 void PageCreator::PositionRight()
 {
 	EditorSelected->OffsetPosition({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
+	UpdateColorSliders();
 }
 void PageCreator::PositionLeft()
 {
 	EditorSelected->OffsetPosition({ -0.00166 * PixelOffset, 0.0 }, OnlyX);
+	UpdateColorSliders();
 }
 
 //SIZE
 void PageCreator::SizeDown()
 {
 	EditorSelected->OffsetSize({ 0.0, 0.00166 * PixelOffset }, OnlyY);
+	UpdateColorSliders();
 }
 void PageCreator::SizeUp()
 {
 	EditorSelected->OffsetSize({ 0.0, 0.00166 * -PixelOffset }, OnlyY);
+	UpdateColorSliders();
 }
 void PageCreator::SizeRight()
 {
 	EditorSelected->OffsetSize({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
+	UpdateColorSliders();
 }
 void PageCreator::SizeLeft()
 {
 	EditorSelected->OffsetSize({ 0.00166 * -PixelOffset, 0.0}, OnlyX);
+	UpdateColorSliders();
 }
 
 // COLOR
 void PageCreator::ColorRUp()
 {
 	EditorSelected->OffsetColor({ 0.01 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
+	SetSliderR();
 }
 void PageCreator::ColorRDown()
 {
 	EditorSelected->OffsetColor({ 0.01 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
+	SetSliderR();
 }
 
 void PageCreator::ColorGUp()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.01 * PixelOffset,  0.0, 0.0 }, OnlyG);
+	SetSliderG();
 }
 
 void PageCreator::ColorGDown()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.01 * -PixelOffset,  0.0, 0.0 }, OnlyG);
+	SetSliderG();
 }
 
 void PageCreator::ColorBUp()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * PixelOffset, 0.0 }, OnlyB);
+	SetSliderB();
 }
 void PageCreator::ColorBDown()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * -PixelOffset,  0.0 }, OnlyB);
+	SetSliderB();
 }
 
 void PageCreator::ColorAUp()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * PixelOffset }, OnlyA);
+	SetSliderA();
 }
 void PageCreator::ColorADown()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * -PixelOffset }, OnlyA);
+	SetSliderA();
 }
 
 void PageCreator::SetText()
@@ -1384,29 +1419,79 @@ void PageCreator::PointerTest()
 	Log::LogString("Pointer Test is working");
 }
 
+void PageCreator::UpdateColorSliders()
+{
+	switch (CurrentLevel)
+	{
+	case LEVEL_VERTEX:
+
+		break;
+
+	case LEVEL_SHAPE:
+		Log::LogString("Level Shape");
+		Creator_Element_Position.CurrentNumberPrinter.VEC2 = &CurrentShape->Position;
+		Creator_Element_Size.CurrentNumberPrinter.VEC2 = &CurrentShape->Size;
+		Slider_Color_R.CurrentSliderData.WorkingFloat = &CurrentShape->Color[0];
+		Slider_Color_G.CurrentSliderData.WorkingFloat = &CurrentShape->Color[1];
+		Slider_Color_B.CurrentSliderData.WorkingFloat = &CurrentShape->Color[2];
+		Slider_Color_A.CurrentSliderData.WorkingFloat = &CurrentShape->Color[3];
+		break;
+
+	case LEVEL_SHAPEGROUP:
+		Slider_Color_R.CurrentSliderData.WorkingFloat = &CurrentShapeGroup->Color[0];
+		Slider_Color_G.CurrentSliderData.WorkingFloat = &CurrentShapeGroup->Color[1];
+		Slider_Color_B.CurrentSliderData.WorkingFloat = &CurrentShapeGroup->Color[2];
+		Slider_Color_A.CurrentSliderData.WorkingFloat = &CurrentShapeGroup->Color[3];
+		break;
+
+	case LEVEL_PAGEITEM:
+		Slider_Color_R.CurrentSliderData.WorkingFloat = &CurrentPageItem->Color[0];
+		Slider_Color_G.CurrentSliderData.WorkingFloat = &CurrentPageItem->Color[1];
+		Slider_Color_B.CurrentSliderData.WorkingFloat = &CurrentPageItem->Color[2];
+		Slider_Color_A.CurrentSliderData.WorkingFloat = &CurrentPageItem->Color[3];
+		break;
+
+	case LEVEL_PAGEGROUP:
+		Slider_Color_R.CurrentSliderData.WorkingFloat = &CurrentPageGroup->Color[0];
+		Slider_Color_G.CurrentSliderData.WorkingFloat = &CurrentPageGroup->Color[1];
+		Slider_Color_B.CurrentSliderData.WorkingFloat = &CurrentPageGroup->Color[2];
+		Slider_Color_A.CurrentSliderData.WorkingFloat = &CurrentPageGroup->Color[3];
+		break;
+	}
+
+	cout << "SHAPE CONNECTED TO SLIDERS: " << CurrentShape << endl;
+
+	SetSliderR();
+	SetSliderG();
+	SetSliderB();
+	SetSliderA();
+	Creator_Element_Position.llUpdate();
+	Creator_Element_Size.llUpdate();
+}
+
 
 void PageCreator::SetSliderR()
 {
 	Slider_Color_R.SetSlider();
-	Quad_Slider_Test.llUpdate();
+	EditorSelected->llUpdate();
 }
 
 void PageCreator::SetSliderG()
 {
 	Slider_Color_G.SetSlider();
-	Quad_Slider_Test.llUpdate();
+	EditorSelected->llUpdate();
 }
 
 void PageCreator::SetSliderB()
 {
 	Slider_Color_B.SetSlider();
-	Quad_Slider_Test.llUpdate();
+	EditorSelected->llUpdate();
 }
 
 void PageCreator::SetSliderA()
 {
 	Slider_Color_A.SetSlider();
-	Quad_Slider_Test.llUpdate();
+	EditorSelected->llUpdate();
 }
 
 void PageCreator::SetCurrentSlider()
@@ -1418,7 +1503,7 @@ void PageCreator::SetCurrentSlider()
 void PageCreator::SetCurrentToggle()
 {
 	Toggle_Hide.ClickToggle();
-	Quad_Slider_Test.llUpdate();
+	//Quad_Slider_Test.llUpdate();
 }
 
 void PageCreator::ProcessDropDownFile()

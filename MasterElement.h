@@ -527,11 +527,19 @@ public:
 	virtual void Add_Insert() {};
 	virtual void Delete() {};
 
+	virtual void llUpdate() {};
 	virtual void lllSwitch(int Offset) {};
 	virtual ShapeData& Switch(int RequstedShapeID) { return LoadedShape; };
 	virtual ShapeData& Switch(Page& Page, int RequstedShapeID) { return LoadedShape; };
 	//virtual void SetShape(ShapeData& ShapeData) {};
 	//virtual void SetShape(ShapeData& ShapeData, glm::vec2 PSConversions) {};
+
+	//virtual float* GetColorR() {};
+	//virtual float* GetColorG() {};
+	//virtual float* GetColorB() {};
+	//virtual float* GetColorA() {};
+	//virtual glm::vec2* GetPosition() {};
+	//virtual glm::vec2* GetSize() {};
 	virtual void SetPosition(glm::vec2 Position) {};                     //Set All
 	virtual void SetPosition(glm::vec2 Position, glm::vec2 bools) {};    //Set all with true boolean(s)
 	virtual void SetSize(glm::vec2 Size) {};                             //Set All
@@ -558,9 +566,9 @@ public:
 	virtual void OffsetSize(glm::vec2 Size, int Conversion) {};                          //..
 	virtual void OffsetSize(glm::vec2 Size, glm::vec2 bools, int Conversion) {};
 
-	virtual glm::vec2 GetPosition() { return { -1.0, -1.0 }; };
+	//virtual glm::vec2 GetPosition() { return { -1.0, -1.0 }; };
 	virtual glm::vec2 GetSize() { return { -1.0, -1.0 }; };
-	virtual glm::vec4 GetColor() { return { -1.0, -1.0, -1.0, -1.0 }; };
+	//virtual glm::vec4 GetColor() { return { -1.0, -1.0, -1.0, -1.0 }; };
 	virtual bool GetMouseAccess() { return false; };
 
 	glm::vec2 ApplyPositionConversion(glm::vec2 Position, int Conversion, glm::vec2 Size);

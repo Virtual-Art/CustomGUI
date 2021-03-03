@@ -118,9 +118,13 @@ namespace PageCreator
 	static Toggle Toggle_Hide;
 	static DropDownList File;
 	static DropDownList Edit;
-	static Quad Quad_Slider_Test;
 	static Button Button_File_Driver;
 	static Button Button_Edit_Driver;
+
+	static Button Button_R_Slider;
+	static Button Button_G_Slider;
+	static Button Button_B_Slider;
+	static Button Button_A_Slider;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
     //The Editor Objects edit all the books and switch between books on their own
@@ -224,6 +228,7 @@ namespace PageCreator
 	void SetElements();
 	void SetBookFromElements();
 
+	void UpdateColorSliders();
 
 	void SetSliderR();
 	void SetSliderG();

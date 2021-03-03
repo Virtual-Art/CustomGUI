@@ -53,9 +53,12 @@ public:
 	TextData CurrentText;
 	//SliderData CurrentSliderData; //?
 
-	glm::vec2 GetPosition() override { return CurrentllPageGroup->Position; };
-	glm::vec2 GetSize() override { return CurrentllPageGroup->Size; };
-	glm::vec4 GetColor() override { return  CurrentllPageGroup->Color; };
+	//float* GetColorR() { return &CurrentllPageGroup->Color[0]; };
+	//float* GetColorG() { return &CurrentllPageGroup->Color[1]; };
+	//float* GetColorB() { return &CurrentllPageGroup->Color[2]; };
+	//float* GetColorA() { return &CurrentllPageGroup->Color[3]; };
+	//glm::vec2* GetPosition() override;
+	//glm::vec2* GetSize() override;
 
 	PageGroup();
 	PageGroup(Page& Page);
@@ -83,7 +86,7 @@ public:
 
 	//SetPosition();
 	//SetSize();
-	virtual void llUpdate();
+	void llUpdate();
 	void ShapeToGroup(ShapeData& ShapeData);
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);

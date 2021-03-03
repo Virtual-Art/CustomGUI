@@ -59,6 +59,13 @@ class ShapeGroup : public MasterElement
 	float GetAccessTop(int PixelOffset);
 	float GetAccessBottom(int PixelOffset);
 
+	//float* GetColorR() { return &CurrentllShapeGroup->Color[0]; };
+	//float* GetColorG() { return &CurrentllShapeGroup->Color[1]; };
+	//float* GetColorB() { return &CurrentllShapeGroup->Color[2]; };
+	//float* GetColorA() { return &CurrentllShapeGroup->Color[3]; };
+	//glm::vec2* GetPosition() override;
+	//glm::vec2* GetSize() override;
+
 	void Init(Page& Page, int GroupID) {};
 
 	void Add_Default();
@@ -166,11 +173,11 @@ class ShapeGroup : public MasterElement
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
 	void SetllShapeGroup(llShapeGroupData* llShapeGroup);
-	virtual void llUpdate();
+	void llUpdate() override;
 
-	glm::vec2 GetPosition() override { return CurrentllShapeGroup->Position; };
-	glm::vec2 GetSize() override { return CurrentllShapeGroup->Size; };
-	glm::vec4 GetColor() override { return  CurrentllShapeGroup->Color; };
+	//glm::vec2 GetPosition() override { return CurrentllShapeGroup->Position; };
+	//glm::vec2 GetSize() override { return CurrentllShapeGroup->Size; };
+	//glm::vec4 GetColor() override { return  CurrentllShapeGroup->Color; };
 
 
 protected:
