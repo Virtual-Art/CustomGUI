@@ -78,6 +78,7 @@ int main(int argc, char** argv)
 
 	MemoryManagment<int> VertexContainer;
 	System System;
+
 	FileSystem FileSystem;
 	Book MainBook("ProgramFiles/FirstGUI.Book");
 
@@ -86,12 +87,13 @@ int main(int argc, char** argv)
 	cout << " System: MouseButtonNumber  " << System.MouseButtonNumber << endl;
 	cout << " System: last thing  " << System.NumberofMonitors << endl;
 	GLFWwindow* window;
-	int SCR_WIDTH = 1200;//System.Width;
-	int SCR_HEIGHT = 600;//System.Height;
+	int SCR_WIDTH = 1200; // System.Width; //
+	int SCR_HEIGHT = 600; // System.Height - 100; // 
 
 	/* Initialize the library */
 	if (!glfwInit())
 		return -1;
+
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GUI Library", NULL, NULL);
@@ -274,7 +276,7 @@ int main(int argc, char** argv)
 	NewVec2_Data.Type = TYPE_VEC2;
 	NewVec2_Data.VEC2 = &MousePosition;
 
-	NumberPrinter NewVec2(&EditorBook, &NumberGroup, NewVec2_Data);
+	//NumberPrinter NewVec2(&EditorBook, &NumberGroup, NewVec2_Data);
 
 	llPageItemData PageItem_Toggle;
 	PageItem_Toggle.Position = {-0.89, -0.3};
@@ -302,13 +304,13 @@ int main(int argc, char** argv)
 
 		MasterElement::FindElement(&EditorBook, LEVEL_SHAPE);
 
-		NewVec2.llUpdate();
+		//NewVec2.llUpdate();
 
 		//EditorPage.DrawPage();
 
 		if (KeyState.Key1 == GUI_I_CLICKED)
 		{
-			//DropDown
+			MasterElement::PrintBookStats(&EditorBook);
 		}
 		
 		if (KeyState.Key1 == GUI_O_CLICKED)

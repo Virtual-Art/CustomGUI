@@ -6,6 +6,7 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	llShapeGroupData ShapeGroup_Details;
 
 	CurrentBook = llBook;
+	CurrentFunction = 9;
 
 	CurrentTextures[0] = Texture0;
 	CurrentTextures[1] = Texture1;
@@ -77,14 +78,14 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	NumberPrinter_Data.Type = TYPE_VEC2;
 	PageItem_Data.Position = { -0.98, 0.4 };
 	PageItem_Data.Color = { 0.0, 0.5, 1.0, 1.0 };
-	Creator_Element_Position.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
-
+	NumberPrinter_Element_Position.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
+	NumberPrinter_Element_Position.SetDescriptionColor(HighlightColor);
 
 	//Element Size
 	NumberPrinter_Data.Description = "Size    ";
 	NumberPrinter_Data.Type = TYPE_VEC2;
 	PageItem_Data.Position = { -0.98, 0.3 };
-	Creator_Element_Size.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
+	NumberPrinter_Element_Size.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
 
 	//Red
 	Slider_Data.Description = 'R';
@@ -152,19 +153,6 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	ShapeGroup_Details.Position = { -0.95, 0.7 };
 	ShapeGroup_Details.Color = White;
 	Text_CurrentLevel.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
-
-	//////////////////////////////////////////Current Function////////////////////////////////////
-	//Label
-	Text_Details.Phrase = "Current Option: ";
-	ShapeGroup_Details.Position = { -0.95, 0.6 };
-	ShapeGroup_Details.Color = { 0.171, 0.8461 , 0.95 , 1.0 };
-	Text_CurrentFunction_Label.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
-
-	//Options
-	Text_Details.Phrase = "Position";
-	ShapeGroup_Details.Position = { -0.95, 0.5 };
-	ShapeGroup_Details.Color = White;
-	Text_CurrentFunction.llInit(&CreatorBook, &ShapeGroup_Details, Text_Details);
 
 	llShapeData* Shape_Slider;
 	Button_R_Slider.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetSliderR;
@@ -385,28 +373,28 @@ void PageCreator::SetCreatorFunctions()
 			CreatorFunction[Level][Type][FUNCTION_SIZE][ARROW_LEFT]   = SizeLeft;
 
 			//R
-			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_UP]    = ColorRUp;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_DOWN]  = ColorRDown;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_RIGHT] = Empty;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_LEFT]  = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_UP] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_DOWN] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_RIGHT] = ColorRUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_R][ARROW_LEFT]  = ColorRDown;
 
 			//G
-			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_UP]    = ColorGUp;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_DOWN]  = ColorGDown;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_RIGHT] = Empty;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_LEFT]  = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_UP] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_DOWN] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_RIGHT] = ColorGUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_G][ARROW_LEFT] = ColorGDown;
 
 			//B
-			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_UP] = ColorBUp;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_DOWN] = ColorBDown;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_RIGHT] = Empty;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_LEFT] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_UP] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_DOWN] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_RIGHT] = ColorBUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_B][ARROW_LEFT] = ColorBDown;
 
 			//A
-			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_UP] = ColorAUp;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_DOWN] = ColorADown;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_RIGHT] = Empty;
-			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_LEFT] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_UP] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_DOWN] = Empty;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_RIGHT] = ColorAUp;
+			CreatorFunction[Level][Type][FUNCTION_COLOR_A][ARROW_LEFT] = ColorADown;
 		}
 	}
 }
@@ -489,45 +477,56 @@ void PageCreator::OptionsUp()
 	{
 		CurrentFunction++;
 	}
-	if (CurrentFunction == 0)
+	if (CurrentFunction == 9)
 	{
-		Text_CurrentFunction.SetllText("Position");
-	}
-	if (CurrentFunction == 1)
-	{
-		Text_CurrentFunction.SetllText("Size");
-	}
-	if (CurrentFunction == 2)
-	{
-		Text_CurrentFunction.SetllText("R Color");
-	}
-	if (CurrentFunction == 3)
-	{
-		Text_CurrentFunction.SetllText("G Color");
-	}
-	if (CurrentFunction == 4)
-	{
-		Text_CurrentFunction.SetllText("B Color");
-	}
-	if (CurrentFunction == 5)
-	{
-		Text_CurrentFunction.SetllText("A Color");
-	}
-	if (CurrentFunction == 6)
-	{
-		Text_CurrentFunction.SetllText("Function Not Set");
-	}
-	if (CurrentFunction == 7)
-	{
-		Text_CurrentFunction.SetllText("Function Not Set");
+		//Text_CurrentFunction.SetllText("Position");
+		NumberPrinter_Element_Position.SetDescriptionColor(HighlightColor); //
+		NumberPrinter_Element_Size.SetDescriptionColor(DescriptionColor);
 	}
 	if (CurrentFunction == 8)
 	{
-		Text_CurrentFunction.SetllText("Function Not Set");
+		//Text_CurrentFunction.SetllText("Size");
+		NumberPrinter_Element_Size.SetDescriptionColor(HighlightColor); //
+		Slider_Color_R.SetDescriptionColor(DescriptionColor);
 	}
-	if (CurrentFunction == 9)
+	if (CurrentFunction == 7)
 	{
-		Text_CurrentFunction.SetllText("Function Not Set");
+		//Text_CurrentFunction.SetllText("R Color");
+		Slider_Color_R.SetDescriptionColor(HighlightColor); //
+		Slider_Color_G.SetDescriptionColor(DescriptionColor);
+	}
+	if (CurrentFunction == 6)
+	{
+		//Text_CurrentFunction.SetllText("G Color");
+		Slider_Color_G.SetDescriptionColor(HighlightColor); //
+		Slider_Color_B.SetDescriptionColor(DescriptionColor);
+	}
+	if (CurrentFunction == 5)
+	{
+		//Text_CurrentFunction.SetllText("B Color");
+		Slider_Color_B.SetDescriptionColor(HighlightColor); //
+		Slider_Color_A.SetDescriptionColor(DescriptionColor);
+	}
+	if (CurrentFunction == 4)
+	{
+		//Text_CurrentFunction.SetllText("A Color");
+		Slider_Color_A.SetDescriptionColor(HighlightColor); //
+	}
+	if (CurrentFunction == 3)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
+	}
+	if (CurrentFunction == 2)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
+	}
+	if (CurrentFunction == 1)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
+	}
+	if (CurrentFunction == 0)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	cout << "CurrentFunction: " << CurrentFunction << endl;
 }
@@ -541,45 +540,56 @@ void PageCreator::OptionsDown()
 	}
 
 	//Log To Screen
-	if (CurrentFunction == 0)
+	if (CurrentFunction == 9)
 	{
-		Text_CurrentFunction.SetllText("Position");
-	}
-	if (CurrentFunction == 1)
-	{
-		Text_CurrentFunction.SetllText("Size");
-	}
-	if (CurrentFunction == 2)
-	{
-		Text_CurrentFunction.SetllText("R Color");
-	}
-	if (CurrentFunction == 3)
-	{
-		Text_CurrentFunction.SetllText("G Color");
-	}
-	if (CurrentFunction == 4)
-	{
-		Text_CurrentFunction.SetllText("B Color");
-	}
-	if (CurrentFunction == 5)
-	{
-		Text_CurrentFunction.SetllText("A Color");
-	}
-	if (CurrentFunction == 6)
-	{
-		Text_CurrentFunction.SetllText("Function Not Set");
-	}
-	if (CurrentFunction == 7)
-	{
-		Text_CurrentFunction.SetllText("Function Not Set");
+		//Text_CurrentFunction.SetllText("Position");
+		NumberPrinter_Element_Position.SetDescriptionColor(HighlightColor); //
 	}
 	if (CurrentFunction == 8)
 	{
-		Text_CurrentFunction.SetllText("Function Not Set");
+		//Text_CurrentFunction.SetllText("Size");
+		NumberPrinter_Element_Position.SetDescriptionColor(DescriptionColor);
+		NumberPrinter_Element_Size.SetDescriptionColor(HighlightColor); //
 	}
-	if (CurrentFunction == 9)
+	if (CurrentFunction == 7)
 	{
-		Text_CurrentFunction.SetllText("Function Not Set");
+		//Text_CurrentFunction.SetllText("R Color");
+		NumberPrinter_Element_Size.SetDescriptionColor(DescriptionColor);
+		Slider_Color_R.SetDescriptionColor(HighlightColor); //
+	}
+	if (CurrentFunction == 6)
+	{
+		//Text_CurrentFunction.SetllText("G Color");
+		Slider_Color_R.SetDescriptionColor(DescriptionColor);
+		Slider_Color_G.SetDescriptionColor(HighlightColor); //
+	}
+	if (CurrentFunction == 5)
+	{
+		//Text_CurrentFunction.SetllText("B Color");
+		Slider_Color_G.SetDescriptionColor(DescriptionColor);
+		Slider_Color_B.SetDescriptionColor(HighlightColor); //
+	}
+	if (CurrentFunction == 4)
+	{
+		//Text_CurrentFunction.SetllText("A Color");
+		Slider_Color_B.SetDescriptionColor(DescriptionColor);
+		Slider_Color_A.SetDescriptionColor(HighlightColor); //
+	}
+	if (CurrentFunction == 3)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
+	}
+	if (CurrentFunction == 2)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
+	}
+	if (CurrentFunction == 1)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
+	}
+	if (CurrentFunction == 0)
+	{
+		//Text_CurrentFunction.SetllText("Function Not Set");
 	}
 	cout << "CurrentFunction: " << CurrentFunction << endl;
 }
@@ -878,7 +888,7 @@ void PageCreator::SetShapeGroupType()
 		Text_CurrentLevel.SetllText("Text");
 		break;
 	}
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 
 void PageCreator::SetPageItemType()
@@ -899,7 +909,7 @@ void PageCreator::SetPageItemType()
 		Text_CurrentLevel.SetllText("Slider");
 		break;
 	}
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 
 void PageCreator::SetPageGroupType()
@@ -913,7 +923,7 @@ void PageCreator::SetPageGroupType()
 		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	}
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 
 void PageCreator::SetPageType()
@@ -927,7 +937,7 @@ void PageCreator::SetPageType()
 		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 
 //Arrow Key with Alt
@@ -1061,7 +1071,7 @@ void PageCreator::Add()
 {
 	SetBookFromElements();
 	EditorSelected->Add_Default();
-	CurrentFunction = 0;
+	//CurrentFunction = 9;
 	SetElements();
 	UpdateColorSliders();
 }
@@ -1070,7 +1080,7 @@ void PageCreator::Duplicate()
 {
 	SetBookFromElements();
 	EditorSelected->Add_Duplicate();
-	CurrentFunction = 0;
+	//CurrentFunction = 9;
 	SetElements();
 	UpdateColorSliders();
 }
@@ -1363,47 +1373,47 @@ void PageCreator::SizeLeft()
 // COLOR
 void PageCreator::ColorRUp()
 {
-	EditorSelected->OffsetColor({ 0.01 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-	SetSliderR();
+	EditorSelected->OffsetColor({ 0.005 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
+	UpdateSliderR();
 }
 void PageCreator::ColorRDown()
 {
-	EditorSelected->OffsetColor({ 0.01 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-	SetSliderR();
+	EditorSelected->OffsetColor({ 0.005 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
+	UpdateSliderR();
 }
 
 void PageCreator::ColorGUp()
 {
-	EditorSelected->OffsetColor({ 0.0, 0.01 * PixelOffset,  0.0, 0.0 }, OnlyG);
-	SetSliderG();
+	EditorSelected->OffsetColor({ 0.0, 0.005 * PixelOffset,  0.0, 0.0 }, OnlyG);
+	UpdateSliderG();
 }
 
 void PageCreator::ColorGDown()
 {
-	EditorSelected->OffsetColor({ 0.0, 0.01 * -PixelOffset,  0.0, 0.0 }, OnlyG);
-	SetSliderG();
+	EditorSelected->OffsetColor({ 0.0, 0.005 * -PixelOffset,  0.0, 0.0 }, OnlyG);
+	UpdateSliderG();
 }
 
 void PageCreator::ColorBUp()
 {
-	EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * PixelOffset, 0.0 }, OnlyB);
-	SetSliderB();
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.005 * PixelOffset, 0.0 }, OnlyB);
+	UpdateSliderB();
 }
 void PageCreator::ColorBDown()
 {
-	EditorSelected->OffsetColor({ 0.0, 0.0, 0.01 * -PixelOffset,  0.0 }, OnlyB);
-	SetSliderB();
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.005 * -PixelOffset,  0.0 }, OnlyB);
+	UpdateSliderB();
 }
 
 void PageCreator::ColorAUp()
 {
-	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * PixelOffset }, OnlyA);
-	SetSliderA();
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.005 * PixelOffset }, OnlyA);
+	UpdateSliderA();
 }
 void PageCreator::ColorADown()
 {
-	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.01 * -PixelOffset }, OnlyA);
-	SetSliderA();
+	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.005 * -PixelOffset }, OnlyA);
+	UpdateSliderA();
 }
 
 void PageCreator::SetText()
@@ -1429,8 +1439,8 @@ void PageCreator::UpdateColorSliders()
 
 	case LEVEL_SHAPE:
 		Log::LogString("Level Shape");
-		Creator_Element_Position.CurrentNumberPrinter.VEC2 = &CurrentShape->Position;
-		Creator_Element_Size.CurrentNumberPrinter.VEC2 = &CurrentShape->Size;
+		NumberPrinter_Element_Position.CurrentNumberPrinter.VEC2 = &CurrentShape->Position;
+		NumberPrinter_Element_Size.CurrentNumberPrinter.VEC2 = &CurrentShape->Size;
 		Slider_Color_R.CurrentSliderData.WorkingFloat = &CurrentShape->Color[0];
 		Slider_Color_G.CurrentSliderData.WorkingFloat = &CurrentShape->Color[1];
 		Slider_Color_B.CurrentSliderData.WorkingFloat = &CurrentShape->Color[2];
@@ -1438,6 +1448,8 @@ void PageCreator::UpdateColorSliders()
 		break;
 
 	case LEVEL_SHAPEGROUP:
+		NumberPrinter_Element_Position.CurrentNumberPrinter.VEC2 = &CurrentShapeGroup->Position;
+		NumberPrinter_Element_Size.CurrentNumberPrinter.VEC2 = &CurrentShapeGroup->Size;
 		Slider_Color_R.CurrentSliderData.WorkingFloat = &CurrentShapeGroup->Color[0];
 		Slider_Color_G.CurrentSliderData.WorkingFloat = &CurrentShapeGroup->Color[1];
 		Slider_Color_B.CurrentSliderData.WorkingFloat = &CurrentShapeGroup->Color[2];
@@ -1461,14 +1473,15 @@ void PageCreator::UpdateColorSliders()
 
 	cout << "SHAPE CONNECTED TO SLIDERS: " << CurrentShape << endl;
 
-	SetSliderR();
-	SetSliderG();
-	SetSliderB();
-	SetSliderA();
-	Creator_Element_Position.llUpdate();
-	Creator_Element_Size.llUpdate();
+	UpdateSliderR();
+	UpdateSliderG();
+	UpdateSliderB();
+	UpdateSliderA();
+	NumberPrinter_Element_Position.llUpdate();
+	NumberPrinter_Element_Size.llUpdate();
 }
 
+/////////////Set//////////////////////
 
 void PageCreator::SetSliderR()
 {
@@ -1491,6 +1504,32 @@ void PageCreator::SetSliderB()
 void PageCreator::SetSliderA()
 {
 	Slider_Color_A.SetSlider();
+	EditorSelected->llUpdate();
+}
+
+///////////Update////////
+
+void PageCreator::UpdateSliderR()
+{
+	Slider_Color_R.SetAnswer();
+	EditorSelected->llUpdate();
+}
+
+void PageCreator::UpdateSliderG()
+{
+	Slider_Color_G.SetAnswer();
+	EditorSelected->llUpdate();
+}
+
+void PageCreator::UpdateSliderB()
+{
+	Slider_Color_B.SetAnswer();
+	EditorSelected->llUpdate();
+}
+
+void PageCreator::UpdateSliderA()
+{
+	Slider_Color_A.SetAnswer();
 	EditorSelected->llUpdate();
 }
 

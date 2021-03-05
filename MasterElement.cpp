@@ -106,7 +106,7 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 							{
 								CurrentVertex = CurrentVertex->Previous;
 							}
-							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << CurrentShape << endl;
 							/////////////////////////////////////////////////////
 							while (CurrentVertex != nullptr)
 							{

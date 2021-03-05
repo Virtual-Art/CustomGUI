@@ -677,19 +677,23 @@ void ShapeGroup::OffsetColor(glm::vec4 Color, glm::vec4 bools)
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetColor w/ bools FAILED:: ShapeGroup nullptr"); return; };
 	if (bools[0] == true)
 	{
+		if (CurrentllShapeGroup->Color[0] == Color[0]) { return; }
 		CurrentllShapeGroup->Color[0] += Color[0];
 
 	}
 	if (bools[1] == true)
 	{
+		if (CurrentllShapeGroup->Color[1] == Color[1]) { return; }
 		CurrentllShapeGroup->Color[1] += Color[1];
 	}
 	if (bools[2] == true)
 	{
+		if (CurrentllShapeGroup->Color[2] == Color[2]) { return; }
 		CurrentllShapeGroup->Color[2] += Color[2];
 	}
 	if (bools[3] == true)
 	{
+		if (CurrentllShapeGroup->Color[3] == Color[3]) { return; }
 		CurrentllShapeGroup->Color[3] += Color[3];
 	}
 	llUpdate();

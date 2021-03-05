@@ -37,8 +37,8 @@ namespace PageCreator
 	// Min/Max Variables
 	const int MaxLevel = 5;
 	const int MinLevel = 0;
-	const int MaxFunction = 5;
-	const int MinFunction = 0;
+	const int MaxFunction = 10;
+	const int MinFunction = 4;
 	const int PixelOffsetMax = 100;
 	const int PixelOffsetMin = 1;
 
@@ -50,6 +50,9 @@ namespace PageCreator
 	const glm::vec4 OnlyA = {false, false, false, true };
 
 	const glm::vec2 Origin = { 0.0, 0.0 };
+
+	const glm::vec4 HighlightColor = { 1.0, 0.5, 0.0, 1.0 };
+	const glm::vec4 DescriptionColor = {1.0, 1.0, 1.0, 1.0};
 
 	const glm::vec4 Red = { 1.0, 0.0, 0.0, 1.0 };
 	const glm::vec4 Green = { 0.0, 1.0, 0.0, 1.0 };
@@ -97,29 +100,27 @@ namespace PageCreator
 	//Helper Objects
 
 	static Text Text_CurrentLevel_Label;
-	static Text Text_CurrentFunction_Label;
-	
 	static Text Text_CurrentLevel;
-	static Text Text_CurrentFunction;
 
 	static Text Text_Shift;
 	static Text Text_AltRightLeft;
 	static Text Text_AltUpDown;
 
+	//Tab Bar
+	static DropDownList File;
+	static DropDownList Edit;
+	static Button Button_File_Driver;
+	static Button Button_Edit_Driver;
 
 	//Element Viewer
-	static NumberPrinter Mouse_Position;
-	static NumberPrinter Creator_Element_Position;
-	static NumberPrinter Creator_Element_Size;
+	static NumberPrinter NumberPrinter_Element_Position;
+	static NumberPrinter NumberPrinter_Element_Size;
 	static Slider Slider_Color_R;
 	static Slider Slider_Color_G;
 	static Slider Slider_Color_B;
 	static Slider Slider_Color_A;
 	static Toggle Toggle_Hide;
-	static DropDownList File;
-	static DropDownList Edit;
-	static Button Button_File_Driver;
-	static Button Button_Edit_Driver;
+	static NumberPrinter Mouse_Position;
 
 	static Button Button_R_Slider;
 	static Button Button_G_Slider;
@@ -234,6 +235,11 @@ namespace PageCreator
 	void SetSliderG();
 	void SetSliderB();
 	void SetSliderA();
+
+	void UpdateSliderR();
+	void UpdateSliderG();
+	void UpdateSliderB();
+	void UpdateSliderA();
 
 
 	void SetCurrentSlider();

@@ -13,16 +13,16 @@
 
 
 //Level Type Function
-#define FUNCTION_POSITION  0
-#define FUNCTION_SIZE  1
-#define FUNCTION_COLOR_R  2
-#define FUNCTION_COLOR_G  3
-#define FUNCTION_COLOR_B  4
-#define FUNCTION_COLOR_A  5
-#define MAINFUNCTION_6  6
-#define MAINFUNCTION_7  7
-#define MAINFUNCTION_8  8
-#define MAINFUNCTION_9  9
+#define FUNCTION_POSITION  9
+#define FUNCTION_SIZE  8
+#define FUNCTION_COLOR_R  7
+#define FUNCTION_COLOR_G  6
+#define FUNCTION_COLOR_B  5
+#define FUNCTION_COLOR_A  4
+#define MAINFUNCTION_3  3
+#define MAINFUNCTION_2  2
+#define MAINFUNCTION_1  1
+#define MAINFUNCTION_0  0
 
 #define FUNCTION_SET_TEXT 6
 

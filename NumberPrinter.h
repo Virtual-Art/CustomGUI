@@ -43,6 +43,7 @@ public:
 	void CreateVec4();
 	void ReplaceNumber();
 
+	void SetDescriptionColor(glm::vec4 Color);
 
 	void ReplaceVec2();
 	void SetVec2(glm::vec2* NewVec2);

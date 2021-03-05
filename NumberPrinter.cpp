@@ -177,7 +177,22 @@ void NumberPrinter::CreateVec2()
 
 }
 
+void NumberPrinter::SetDescriptionColor(glm::vec4 Color)
+{
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 
+	while (CurrentShapeGroup->Previous != nullptr)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Previous;
+	}
+
+	Text Description(CurrentShapeGroup);
+	Description.llSwitch(CurrentShapeGroup);
+	CurrentShapeGroup->Color = Color;
+	CurrentText.Phrase = CurrentNumberPrinter.Description;
+	Description.SetllTextGroup(CurrentShapeGroup, CurrentText);
+	
+}
 
 void NumberPrinter::ReplaceVec2()
 {
