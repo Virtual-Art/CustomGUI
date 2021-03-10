@@ -2,7 +2,6 @@
 
 void MasterElement::PrintBookStats(llBookData* llBook)
 {
-
 	Log::LogString("Printing Book Stats");
 	int VertexIndex = 0;
 	int PageCount = -1;
@@ -106,7 +105,7 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 							{
 								CurrentVertex = CurrentVertex->Previous;
 							}
-							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << CurrentShape << endl;
+							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << " | " << CurrentShape << endl;
 							/////////////////////////////////////////////////////
 							while (CurrentVertex != nullptr)
 							{
@@ -200,7 +199,7 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 				{
 					if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left&& yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom)
 					{
-						cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
+						cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
 					}
 				}
 
@@ -228,7 +227,7 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 						{
 							if (ElementLevel == LEVEL_SHAPEGROUP)
 							{
-								cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+								cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
 							}
 						}
 						//Set shape to beginning
@@ -248,7 +247,7 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 									
 									if (CurrentShape->ShapeButton != nullptr)
 									{
-										cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+										cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
 										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
 									}
 								}
@@ -279,6 +278,474 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 }
 
 void MasterElement::PrintBook(llBookData* llBook)
+{
+
+}
+
+
+void MasterElement::NextPage(llBookData* llBook)
+{
+	//Book to PageItem Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->Next == nullptr) { Log::LogString("Page Tail");  return; }
+
+	//Next Page 
+	llBook->Page = llBook->Page->Next;
+}
+
+void MasterElement::PreviousPage(llBookData* llBook)
+{
+	//Book to PageItem Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->Previous == nullptr) { Log::LogString("Page Head");  return; }
+
+	//Next Page 
+	llBook->Page = llBook->Page->Previous;
+
+}
+
+//PageGroup
+void MasterElement::NextPageGroup(llBookData* llBook)
+{
+	//Book to PageItem Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->Next == nullptr) { Log::LogString("PageGroup Tail");  return; }
+
+	//Next Page Group
+	llBook->Page->PageGroup = llBook->Page->PageGroup->Next;
+
+}
+
+void MasterElement::PreviousPageGroup(llBookData* llBook)
+{
+	//Book to PageItem Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->Previous== nullptr) { Log::LogString("PageGroup Head");  return; }
+
+	//Next Page Group
+	llBook->Page->PageGroup = llBook->Page->PageGroup->Previous;
+
+}
+
+//PageItem
+void MasterElement::NextPageItem(llBookData* llBook)
+{
+	//Book to PageItem Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem == nullptr) { Log::LogString("WARNING:: NextShape:: No PageItem");  return; }
+	if (llBook->Page->PageGroup->PageItem->Next == nullptr) { Log::LogString("PageItem Tail");  return; }
+
+	//Next Page Item
+	llBook->Page->PageGroup->PageItem = llBook->Page->PageGroup->PageItem->Next;
+
+}
+
+void MasterElement::PreviousPageItem(llBookData* llBook)
+{
+	//Book to PageItem Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem == nullptr) { Log::LogString("WARNING:: NextShape:: No PageItem");  return; }
+	if (llBook->Page->PageGroup->PageItem->Previous == nullptr) { Log::LogString("PageItem Head");  return; }
+
+	//Previous Page Item
+	llBook->Page->PageGroup->PageItem = llBook->Page->PageGroup->PageItem->Previous;
+
+}
+
+//ShapeGroup
+void MasterElement::NextShapeGroup(llBookData* llBook)
+{
+	//Book to Shape Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem == nullptr) { Log::LogString("WARNING:: NextShape:: No PageItem");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No ShapeGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup->Next == nullptr) { Log::LogString("Shape Group Tail");  return; }
+
+	//Previous Shape Group
+	llBook->Page->PageGroup->PageItem->ShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup->Next;
+
+}
+
+void MasterElement::PreviousShapeGroup(llBookData* llBook)
+{
+	//Book to Shape Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem == nullptr) { Log::LogString("WARNING:: NextShape:: No PageItem");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No ShapeGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup->Previous == nullptr) { Log::LogString("Shape Group Head");  return; }
+
+	//Previous Shape Group
+	llBook->Page->PageGroup->PageItem->ShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup->Previous;
+
+}
+
+void MasterElement::NextShape(llBookData* llBook)
+{
+	//Book to Shape Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem == nullptr) { Log::LogString("WARNING:: NextShape:: No PageItem");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No ShapeGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape == nullptr) { Log::LogString("WARNING:: NextShape:: No Shape");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Next == nullptr) { Log::LogString("Shape Tail");  return; }
+
+	//Switch to Next Shape
+	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Next;
+}
+
+void MasterElement::PreviousShape(llBookData* llBook)
+{
+	//Book to Shape Valid?
+	if (llBook == nullptr) { Log::LogString("ERROR:: NextShape Failed:: book was nullptr");  return; };
+	if (llBook->Page == nullptr) { Log::LogString("WARNING:: NextShape:: No Page");  return; }
+	if (llBook->Page->PageGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No PageGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem == nullptr) { Log::LogString("WARNING:: NextShape:: No PageItem");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { Log::LogString("WARNING:: NextShape:: No ShapeGroup");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape == nullptr) { Log::LogString("WARNING:: NextShape:: No Shape");  return; }
+	if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Previous == nullptr) { Log::LogString("Shape Head");  return; }
+
+	//Switch to Previous Shape
+	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Previous;
+
+}
+
+void MasterElement::CurrentDirectory(llBookData* llBook)
+{
+	if (llBook != nullptr)
+	{
+		//Reset Counts
+		int VertexIndex = 0;
+		int PageCount = 0;
+		int PageGroupCount = 0;
+		int PageItemCount = 0;
+		int ShapeGroupCount = 0;
+		int ShapeCount = 0;
+		int VertexCount = 0;
+
+		llPageData*       SavedPage       = nullptr;
+		llPageGroupData * SavedPageGroup  = nullptr;
+		llPageItemData*   SavedPageItem   = nullptr;
+		llShapeGroupData* SavedShapeGroup = nullptr;
+		llShapeData*      SavedShape	  = nullptr;
+		llVertexData*     SavedVertex	  = nullptr;
+
+		llPageData* CurrentPage = nullptr;
+		llPageGroupData* CurrentPageGroup = nullptr;
+		llPageItemData* CurrentPageItem = nullptr;
+		llShapeGroupData* CurrentShapeGroup = nullptr;
+		llShapeData* CurrentShape = nullptr;
+		llVertexData* CurrentVertex = nullptr;
+
+		//Save CurrentDirectory
+		//Page
+		if (llBook->Page != nullptr)
+		{
+			SavedPage = llBook->Page;
+			CurrentPage = llBook->Page;
+			//Page Group
+			if (llBook->Page->PageGroup != nullptr)
+			{
+				SavedPageGroup = llBook->Page->PageGroup;
+				CurrentPageGroup = CurrentPage->PageGroup;
+				//PageItem
+				if (llBook->Page->PageGroup->PageItem != nullptr)
+				{
+					SavedPageItem = llBook->Page->PageGroup->PageItem;
+					CurrentPageItem = CurrentPageGroup->PageItem;
+					//ShapeGroup
+					if (llBook->Page->PageGroup->PageItem->ShapeGroup != nullptr)
+					{
+						SavedShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
+						CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+						//Shape
+						if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape != nullptr)
+						{
+							SavedShape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+							CurrentShape = CurrentShapeGroup->Shape;
+							//Vertex
+							if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx != nullptr)
+							{
+								SavedVertex = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		//Page
+		if (CurrentPage != nullptr)
+		{
+			//Set to beginning
+			while (CurrentPage->Previous != nullptr)
+			{
+				CurrentPage = CurrentPage->Previous;
+			}
+
+			while (CurrentPage->Next != nullptr && CurrentPage != SavedPage)
+			{
+				CurrentPage = CurrentPage->Next;
+				PageCount++;
+			}
+		}
+		else
+		{
+			PageCount = -1;
+		}
+		//////////////////////////|^ Page ^|/////////////////////////
+
+		if (CurrentPageGroup != nullptr)
+		{
+			//Set to beginning
+			while (CurrentPageGroup->Previous != nullptr)
+			{
+				CurrentPageGroup = CurrentPageGroup->Previous;
+			}
+
+			while (CurrentPageGroup->Next != nullptr && CurrentPageGroup != SavedPageGroup)
+			{
+				CurrentPageGroup = CurrentPageGroup->Next;
+				PageGroupCount++;
+			}
+		}
+		else
+		{
+			PageGroupCount = -1;
+		}
+		/////////////////////////|^ PageGroup ^|\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+		if (CurrentPageItem != nullptr)
+		{
+			//Set to beginning
+			while (CurrentPageItem->Previous != nullptr)
+			{
+				CurrentPageItem = CurrentPageItem->Previous;
+			}
+
+			while (CurrentPageItem->Next != nullptr && CurrentPageItem != SavedPageItem)
+			{
+				CurrentPageItem = CurrentPageItem->Next;
+				PageItemCount++;
+			}
+		}
+		else
+		{
+			PageItemCount = -1;
+		}
+		/////////////////////////|^ PageItem ^|\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+		if (CurrentShapeGroup != nullptr)
+		{
+			//Set to beginning
+			while (CurrentShapeGroup->Previous != nullptr)
+			{
+				CurrentShapeGroup = CurrentShapeGroup->Previous;
+			}
+
+			while (CurrentShapeGroup->Next != nullptr && CurrentShapeGroup != SavedShapeGroup)
+			{
+				CurrentShapeGroup = CurrentShapeGroup->Next;
+				ShapeGroupCount++;
+			}
+		}
+		else
+		{
+			ShapeGroupCount = -1;
+		}
+		/////////////////////////|^ ShapeGroup ^|\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+		if (CurrentShape != nullptr)
+		{
+			//Set to beginning
+			while (CurrentShape->Previous != nullptr)
+			{
+				CurrentShape = CurrentShape->Previous;
+			}
+
+			while (CurrentShape->Next != nullptr && CurrentShape != SavedShape)
+			{
+				CurrentShape = CurrentShape->Next;
+				ShapeCount++;
+			}
+		}
+		else
+		{
+			ShapeCount = -1;
+		}
+		/////////////////////////|^ ShapeGroup ^|\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+		cout << "[Current Directory] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << CurrentShape << endl;
+	
+	}
+	else
+	{
+		Log::LogString("ERROR:: Cannot Print Book Directory:: book was nullptr");
+	}
+
+}
+
+//Copy Shape to new Shape in the same ShapeGroup
+void MasterElement::CopyShape(llBookData* Book, llShapeData* ShapeReference)
+{
+	llVertexData* TopRight = new llVertexData;
+	llVertexData* TopLeft = new llVertexData;
+	llVertexData* BottomRight = new llVertexData;
+	llVertexData* BottomLeft = new llVertexData;
+
+	//Log::LogString("Shape Created");
+	llShapeData* NewShape = new llShapeData;
+	*NewShape = *ShapeReference;
+
+	//Reset any links
+	NewShape->Next = nullptr;
+	NewShape->Previous = nullptr;
+	NewShape->Vertexx = nullptr;
+
+	llShapeData* FoundTail = Book->Page->PageGroup->PageItem->ShapeGroup->Shape;
+
+	//Find tail then add
+	if (FoundTail == nullptr)
+	{
+		Log::LogString("New ShapeGroup Linked");
+		Book->Page->PageGroup->PageItem->ShapeGroup->Shape = NewShape;
+		Book->Page->PageGroup->PageItem->ShapeGroup->ShapeHead = NewShape;
+	}
+	else
+	{
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			//Log::LogChar("Finding ttail..", FoundTail->Ascii);
+			cout << "Finding TTail " << FoundTail << endl;
+		}
+		Log::LogChar("New Shape Linked", char(FoundTail->Ascii));
+		FoundTail->Next = NewShape;
+		NewShape->Previous = FoundTail;
+	}
+
+	llVertexData* CurrentReferenceVertex = ShapeReference->Vertexx;
+	llVertexData* CurrentCopyVertex = TopLeft;
+
+	//Go to first vertex of the reference
+	while (CurrentReferenceVertex->Previous != nullptr)
+	{
+		CurrentReferenceVertex = CurrentReferenceVertex->Previous;
+	}
+
+	//Top Left
+	*TopLeft = *CurrentReferenceVertex;
+
+	//Top Right
+	CurrentReferenceVertex = CurrentReferenceVertex->Next;
+	*TopRight = *CurrentReferenceVertex;
+
+	//Bottom Right
+	CurrentReferenceVertex = CurrentReferenceVertex->Next;
+	*BottomRight = *CurrentReferenceVertex;
+
+	//Bottom Left
+	CurrentReferenceVertex = CurrentReferenceVertex->Next;
+	*BottomLeft = *CurrentReferenceVertex;
+
+	//Set Next
+	TopLeft->Next = TopRight;
+	TopRight->Next = BottomRight;
+	BottomRight->Next = BottomLeft;
+
+	//Set Previous
+	BottomLeft->Previous = BottomRight;
+	BottomRight->Previous = TopRight;
+	TopRight->Previous = TopLeft;
+
+	//Attach Vertices to Shape
+	NewShape->Vertexx = TopLeft;
+}
+
+//Copy ShapeGroup to new ShapeGroup in the same PageItem
+void MasterElement::CopyShapeGroup(llBookData* Book, llShapeGroupData* ShapeGroupReference)
+{
+	//Create a New Shape Group and Set it's data
+	llShapeGroupData* NewShapeGroup = new llShapeGroupData;
+	*NewShapeGroup = *ShapeGroupReference;
+
+	//Reset Links
+	NewShapeGroup->Next = nullptr;
+	NewShapeGroup->Previous = nullptr;
+	NewShapeGroup->Shape = nullptr;
+
+	int Count = 0;
+
+	//Find tail then add
+	llShapeGroupData* FoundTail = Book->Page->PageGroup->PageItem->ShapeGroup;
+	while (FoundTail->Next != nullptr)
+	{
+		FoundTail = FoundTail->Next;
+		Log::LogInt("Count ", Count);
+	}
+	Log::LogString("New ShapeGroup Linked");
+	FoundTail->Next = NewShapeGroup;
+	NewShapeGroup->Previous = FoundTail;
+
+	Book->Page->PageGroup->PageItem->ShapeGroup = NewShapeGroup;
+
+	//Go to first Shape of the Shape Group reference
+	llShapeData* CurrentReferenceShape = ShapeGroupReference->Shape;
+	while (CurrentReferenceShape->Previous != nullptr)
+	{
+		CurrentReferenceShape = CurrentReferenceShape->Previous;
+	}
+
+	//while (CurrentReferenceShape != nullptr)
+	//{
+		CopyShape(Book, CurrentReferenceShape);
+		CurrentReferenceShape = CurrentReferenceShape->Next;
+
+		CopyShape(Book, CurrentReferenceShape);
+		CurrentReferenceShape = CurrentReferenceShape->Next;
+
+		CopyShape(Book, CurrentReferenceShape);
+		CurrentReferenceShape = CurrentReferenceShape->Next;
+
+		CopyShape(Book, CurrentReferenceShape);
+		CurrentReferenceShape = CurrentReferenceShape->Next;
+	//}
+}
+
+//Copy PageItem to new PageItem in the same PageGroup
+void MasterElement::CopyPageItem(llBookData* Book, llPageItemData* PageItemReference)
+{
+
+}
+
+//Copy the same PageGroup into new PageGroup in the same page
+void MasterElement::CopyPageGroup(llBookData* Book, llPageGroupData* PageGroupReference)
+{
+
+}
+
+//copy the same Page into a new page in the same book
+void MasterElement::CopyPage(llBookData* Book, llBookData* PageReference)
+{
+
+}
+
+//copy book into new book
+void MasterElement::CopyBook(llBookData* NewBook, llBookData* BookReference)
 {
 
 }

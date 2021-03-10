@@ -351,7 +351,95 @@ void ShapeGroup::Add_Default()
 
 void ShapeGroup::Add_Duplicate()
 {
-
+	////Validate
+	//if (CurrentllShapeGroup == nullptr || CurrentllShapeGroup->Shape == nullptr) { Log::LogString("ERROR:: ShapeGroup AddDuplicate FAILED:: Shape or ShapeGroup was nullptr"); };
+	//
+	//llShapeGroupData* ReferenceShapeGroup = CurrentllShapeGroup;
+	//llShapeData* Data_DuplicateShape = ReferenceShapeGroup->Shape;
+	//
+	////Go to Shape head
+	//while (Data_DuplicateShape->Previous != nullptr)
+	//{
+	//	Data_DuplicateShape = Data_DuplicateShape->Previous;
+	//}
+	//
+	//if (LoadedBook->Page == nullptr)
+	//{
+	//	Log::LogString("Book Is Brand New");
+	//	llPageData* CreatedPage = new llPageData;
+	//	llPageGroupData* CreatedPageGroup = new llPageGroupData;
+	//	llPageItemData* CreatedPageItem = new llPageItemData;
+	//
+	//	LoadedBook->Page = CreatedPage;
+	//	LoadedBook->PageHead = CreatedPage;
+	//
+	//	LoadedBook->Page->PageGroup = CreatedPageGroup;
+	//	LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+	//
+	//	LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+	//	LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+	//}
+	//
+	//if (LoadedBook->Page->PageGroup == nullptr)
+	//{
+	//	llPageGroupData* CreatedPageGroup = new llPageGroupData;
+	//	llPageItemData* CreatedPageItem = new llPageItemData;
+	//
+	//	LoadedBook->Page->PageGroup = CreatedPageGroup;
+	//	LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+	//
+	//	LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+	//	LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+	//
+	//}
+	//
+	//if (LoadedBook->Page->PageGroup->PageItem == nullptr)
+	//{
+	//	llPageItemData* CreatedPageItem = new llPageItemData;
+	//
+	//	LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+	//	LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+	//}
+	//
+	//CurrentllShapeGroup = new llShapeGroupData;
+	////Log::LogString("Shape Group Created");
+	//
+	//llShapeGroupData* TestingShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
+	//
+	////Completely new object
+	//if (TestingShapeGroup == nullptr)
+	//{
+	//	Log::LogString("New ShapeGroup Linked");
+	//	LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+	//	LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+	//}
+	//else //Shapes already created
+	//{
+	//	llShapeGroupData* FoundTail = TestingShapeGroup;
+	//	int LinkCount = 1;
+	//
+	//	//Find tail then add
+	//	//Log::LogString("Finding Tail..");
+	//	while (FoundTail->Next != nullptr)
+	//	{
+	//		FoundTail = FoundTail->Next;
+	//		LinkCount++;
+	//	}
+	//	Log::LogString("New ShapeGroup Linked");
+	//	FoundTail->Next = CurrentllShapeGroup;
+	//	CurrentllShapeGroup->Previous = FoundTail;
+	//	LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+	//}
+	//
+	//CurrentllShapeGroup->Type = TYPE_CUSTOM;
+	//
+	//
+	//while (Data_DuplicateShape != nullptr)
+	//{
+	//	Shape DuplicateShape(LoadedBook, Data_DuplicateShape);
+	//}
+	Log::LogString("Duplicating ShapeGroup");
+	CopyShapeGroup(LoadedBook, CurrentllShapeGroup);
 }
 
 void ShapeGroup::Add_Insert()

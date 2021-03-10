@@ -490,6 +490,37 @@ public:
 	//		CurrentPage = CurrentPage->Next;
 	//	}
 	//}
+
+	static void CurrentDirectory(llBookData* llBook);
+
+	//Page
+	static void NextPage(llBookData* llBook);
+	static void PreviousPage(llBookData* llBook);
+
+	//PageGroup
+	static void NextPageGroup(llBookData* llBook);
+	static void PreviousPageGroup(llBookData* llBook);
+
+	//PageItem
+	static void NextPageItem(llBookData* llBook);
+	static void PreviousPageItem(llBookData* llBook);
+
+	//ShapeGroup
+	static void NextShapeGroup(llBookData* llBook);
+	static void PreviousShapeGroup(llBookData* llBook);
+
+	//Shape
+	static void NextShape(llBookData* llBook);
+	static void PreviousShape(llBookData* llBook);
+
+	////////
+	static void CopyShape(llBookData* Book, llShapeData* ShapeReference);
+	static void CopyShapeGroup(llBookData* Book, llShapeGroupData* ShapeGroupReference);
+	static void CopyPageItem(llBookData* Book, llPageItemData* PageItemReference);
+	static void CopyPageGroup(llBookData* Book, llPageGroupData* PageGroupReference);
+	static void CopyPage(llBookData* Book, llBookData* PageReference);
+	static void CopyBook(llBookData* NewBook, llBookData* BookReference);
+
 	static void ToggleToggle(bool& ToToggle);
 	static void FindElement(llBookData* llBook, int ElementLevel);
 

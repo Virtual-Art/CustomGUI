@@ -279,7 +279,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 		TextEditor.SetllText(CurrentText);
 	}
 	
-	MasterElement::FindElement(&CreatorBook, LEVEL_SHAPE);
+	//MasterElement::FindElement(&CreatorBook, LEVEL_SHAPE);
 }
 
 //void PageCreator::Init(Page& Creatorpage, Page& GUIpage, Book& Book)
@@ -689,73 +689,78 @@ void PageCreator::DataRight()
 		break;
 	case LEVEL_SHAPE:
 		
-		if (CurrentShape->Next != nullptr)
-		{
-			CurrentShape = CurrentShape->Next;
-			CurrentType = CurrentShape->Type;
-			SetShapeType();
-		}
-		else
-		{
-			Log::LogString("Shape Edge");
-		}
+		//if (CurrentShape->Next != nullptr)
+		//{
+		//	CurrentShape = CurrentShape->Next;
+		//	CurrentType = CurrentShape->Type;
+		MasterElement::NextShape(CurrentBook);
+		SetShapeType();
+		//}
+		//else
+		//{
+		//	Log::LogString("Shape Edge");
+		//}
 		break;
 
 	case LEVEL_SHAPEGROUP:
 		
-		if (CurrentShapeGroup->Next != nullptr)
-		{
-			CurrentShapeGroup = CurrentShapeGroup->Next;
-			CurrentShape = CurrentShapeGroup->Shape;
-			CurrentType = CurrentShapeGroup->Type;
+		//if (CurrentShapeGroup->Next != nullptr)
+		//{
+			//CurrentShapeGroup = CurrentShapeGroup->Next;
+			//CurrentShape = CurrentShapeGroup->Shape;
+			//CurrentType = CurrentShapeGroup->Type;
+			MasterElement::NextShapeGroup(CurrentBook);
 			SetShapeGroupType();
-		}
-		else
-		{
-			Log::LogString("ShapeGroup Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("ShapeGroup Edge");
+		//}
 		break;
 
 	case LEVEL_PAGEITEM:
 
-		if (CurrentPageItem->Next != nullptr)
-		{
-			CurrentPageItem = CurrentPageItem->Next;
-			CurrentShapeGroup = CurrentPageItem->ShapeGroup;
-			CurrentShape = CurrentPageItem->ShapeGroup->Shape;
-			cout << "PageItem Switching to: " << CurrentPageItem << endl;
-			CurrentType = CurrentPageItem->Type;
+		//if (CurrentPageItem->Next != nullptr)
+		//{
+		//	CurrentPageItem = CurrentPageItem->Next;
+		//	CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+		//	CurrentShape = CurrentPageItem->ShapeGroup->Shape;
+		//	cout << "PageItem Switching to: " << CurrentPageItem << endl;
+		//	CurrentType = CurrentPageItem->Type;
+			MasterElement::NextPageItem(CurrentBook);
 			SetPageItemType();
-		}
-		else
-		{
-			Log::LogString("PageItem Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("PageItem Edge");
+		//}
 	    break;
 
 	case LEVEL_PAGEGROUP:
 
-		if (CurrentPageGroup->Next != nullptr)
-		{
-			CurrentPageGroup = CurrentPageGroup->Next;
+		//if (CurrentPageGroup->Next != nullptr)
+		//{
+		//	CurrentPageGroup = CurrentPageGroup->Next;
+			MasterElement::NextPageGroup(CurrentBook);
 			SetPageGroupType();
-		}
-		else
-		{
-			Log::LogString("PageGroup Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("PageGroup Edge");
+		//}
 		break;
 
 	case LEVEL_PAGE:
-		if (CurrentPage->Next != nullptr)
-		{
-			CurrentPage = CurrentPage->Next;
+		//if (CurrentPage->Next != nullptr)
+		//{
+		//	CurrentPage = CurrentPage->Next;
+			MasterElement::NextPage(CurrentBook);
 			SetPageType();
-		}
-		else
-		{
-			Log::LogString("Page Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("Page Edge");
+		//}
 		break;
 	}
 }
@@ -773,73 +778,72 @@ void PageCreator::DataLeft()
 		break;
 	case LEVEL_SHAPE:
 
-		if (CurrentShape->Previous != nullptr)
-		{
-			CurrentShape = CurrentShape->Previous;
-			SetShapeType();
-		}
-		else
-		{
-			Log::LogString("Shape Edge");
-		}
+
+		//CurrentShape = CurrentShape->Previous;
+		MasterElement::PreviousShape(CurrentBook);
+		SetShapeType();
 		break;
 
 	case LEVEL_SHAPEGROUP:
-		if (CurrentShapeGroup->Previous != nullptr)
-		{
-			CurrentShapeGroup = CurrentShapeGroup->Previous;
-			CurrentShape = CurrentShapeGroup->Shape;
-			CurrentType = CurrentShapeGroup->Type;
+		//if (CurrentShapeGroup->Previous != nullptr)
+		//{
+			//CurrentShapeGroup = CurrentShapeGroup->Previous;
+			//CurrentShape = CurrentShapeGroup->Shape;
+			//CurrentType = CurrentShapeGroup->Type;
+			MasterElement::PreviousShapeGroup(CurrentBook);
 			SetShapeGroupType();
-		}
-		else
-		{
-			Log::LogString("ShapeGroup Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("ShapeGroup Edge");
+		//}
 		break;
 
 	case LEVEL_PAGEITEM:
 
-		if (CurrentPageItem->Previous != nullptr)
-		{
-			//Go To previous PageItem if that page item is slider go to slider editor, or if its page item go to 
-			//page item editor
-			CurrentPageItem = CurrentPageItem->Previous;
-			CurrentShapeGroup = CurrentPageItem->ShapeGroup;
-			CurrentShape = CurrentPageItem->ShapeGroup->Shape;
-			cout << "PageItem Now:" << CurrentPageItem << endl;
-			CurrentType = CurrentPageItem->Type;
+		//if (CurrentPageItem->Previous != nullptr)
+		//{
+		//	//Go To previous PageItem if that page item is slider go to slider editor, or if its page item go to 
+		//	//page item editor
+		//	CurrentPageItem = CurrentPageItem->Previous;
+		//	CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+		//	CurrentShape = CurrentPageItem->ShapeGroup->Shape;
+		//	cout << "PageItem Now:" << CurrentPageItem << endl;
+		//	CurrentType = CurrentPageItem->Type;
+			MasterElement::PreviousPageItem(CurrentBook);
 			SetPageItemType();
-		}
-		else
-		{
-			Log::LogString("PageItem Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("PageItem Edge");
+		//}
 		break;
 
 	case LEVEL_PAGEGROUP:
 
-		if (CurrentPageGroup->Previous != nullptr)
-		{
-			CurrentPageGroup = CurrentPageGroup->Previous;
+		//if (CurrentPageGroup->Previous != nullptr)
+		//{
+		//	CurrentPageGroup = CurrentPageGroup->Previous;
+			MasterElement::PreviousPageGroup(CurrentBook);
 			SetPageGroupType();
-		}
-		else
-		{
-			Log::LogString("PageGroup Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("PageGroup Edge");
+		//}
 		break;
 
 	case LEVEL_PAGE:
-		if (CurrentPage->Previous != nullptr)
-		{
-			CurrentPage = CurrentPage->Previous;
+		//if (CurrentPage->Previous != nullptr)
+		//{
+		//	CurrentPage = CurrentPage->Previous;
+			MasterElement::PreviousPage(CurrentBook);
 			SetPageType();
-		}
-		else
-		{
-			Log::LogString("Page Edge");
-		}
+		//}
+		//else
+		//{
+		//	Log::LogString("Page Edge");
+		//}
 		break;
 	}
 }
@@ -850,27 +854,27 @@ void PageCreator::SetShapeType()
 	{
 	case TYPE_SHAPE:
 		EditorSelected = &ShapeEditor;
-		//SetElements();
+		SetElements();
 		ShapeEditor.llSwitch(CurrentShape);
 		Text_CurrentLevel.SetllText("Shape");
 		break;
 
 	case TYPE_SHAPE_QUAD:
 		EditorSelected = &QuadEditor;
-		//SetElements();
+		SetElements();
 		QuadEditor.llSwitch(CurrentShape);
 		Text_CurrentLevel.SetllText("Quad");
 		break;
 
 	case TYPE_SHAPE_CHARACTER:
 		EditorSelected = &CharacterEditor;
-		//SetElements();
+		SetElements();
 		CharacterEditor.llSwitch(CurrentShape);
 		Text_CurrentLevel.SetllText("Character");
 		break;
 	}
-
-	UpdateColorSliders();
+	MasterElement::CurrentDirectory(CurrentBook);
+	//UpdateColorSliders();
 }
 
 void PageCreator::SetShapeGroupType()
@@ -888,6 +892,7 @@ void PageCreator::SetShapeGroupType()
 		Text_CurrentLevel.SetllText("Text");
 		break;
 	}
+	MasterElement::CurrentDirectory(CurrentBook);
 	//UpdateColorSliders();
 }
 
@@ -897,18 +902,19 @@ void PageCreator::SetPageItemType()
 	{
 	case TYPE_PAGEITEM:
 		EditorSelected = &PageItemEditor;
-		//SetElements();
+		SetElements();
 		PageItemEditor.llSwitch(CurrentPageItem);
 		Text_CurrentLevel.SetllText("PageItem");
 		break;
 	case TYPE_PAGEITEM_SLIDER:
 		EditorSelected = &SliderEditor;
 		cout << "PageItem Switching to: " << CurrentPageItem << endl;
-		//SetElements();
+		SetElements();
 		SliderEditor.llSwitch(CurrentPageItem);
 		Text_CurrentLevel.SetllText("Slider");
 		break;
 	}
+	MasterElement::CurrentDirectory(CurrentBook);
 	//UpdateColorSliders();
 }
 
@@ -918,11 +924,12 @@ void PageCreator::SetPageGroupType()
 	{
 	case TYPE_PAGEGROUP:
 		EditorSelected = &PageGroupEditor;
-		//SetElements();
+		SetElements();
 		PageGroupEditor.llSwitch(CurrentPageGroup);
 		Text_CurrentLevel.SetllText("PageGroup");
 		break;
 	}
+	MasterElement::CurrentDirectory(CurrentBook);
 	//UpdateColorSliders();
 }
 
@@ -937,6 +944,7 @@ void PageCreator::SetPageType()
 		Text_CurrentLevel.SetllText("Page");
 		break;
 	}
+	MasterElement::CurrentDirectory(CurrentBook);
 	//UpdateColorSliders();
 }
 
@@ -1069,11 +1077,11 @@ void PageCreator::LevelDown()
 
 void PageCreator::Add()
 {
-	SetBookFromElements();
+	//SetBookFromElements();
 	EditorSelected->Add_Default();
 	//CurrentFunction = 9;
-	SetElements();
-	UpdateColorSliders();
+	//SetElements();
+	//UpdateColorSliders();
 }
 
 void PageCreator::Duplicate()
@@ -1223,6 +1231,9 @@ void PageCreator::SetBookFromElements()
 			}
 		}
 	}
+
+
+	MasterElement::CurrentDirectory(CurrentBook);
 }
 
 void PageCreator::SetElements()
@@ -1261,11 +1272,11 @@ void PageCreator::SetElements()
 					{
 						//Log::LogString("Shape Set");
 						CurrentShape = CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
-						while (CurrentShape->Next != nullptr)
-						{
+						//while (CurrentShape->Next != nullptr)
+						//{
 							CurrentShape = CurrentShape->Next;
 							cout << "Shape Set " << CurrentShape << endl;
-						}
+						//}
 
 						//Vertex
 						if (CurrentBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx != nullptr)
@@ -1324,6 +1335,7 @@ void PageCreator::SetElements()
 		CurrentPageGroup = nullptr;
 		CurrentPage = nullptr;
 	}
+
 }
 
 // POSITION

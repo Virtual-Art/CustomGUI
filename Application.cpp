@@ -302,7 +302,7 @@ int main(int argc, char** argv)
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
 
-		MasterElement::FindElement(&EditorBook, LEVEL_SHAPE);
+		//MasterElement::FindElement(&EditorBook, LEVEL_SHAPE);
 
 		//NewVec2.llUpdate();
 
@@ -310,12 +310,13 @@ int main(int argc, char** argv)
 
 		if (KeyState.Key1 == GUI_I_CLICKED)
 		{
-			MasterElement::PrintBookStats(&EditorBook);
+			//
+			MasterElement::CurrentDirectory(&EditorBook);
 		}
 		
 		if (KeyState.Key1 == GUI_O_CLICKED)
 		{
-			//Add
+			MasterElement::PrintBookStats(&EditorBook);
 		}
 
 
