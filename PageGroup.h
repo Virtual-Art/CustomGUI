@@ -61,18 +61,30 @@ public:
 	//glm::vec2* GetSize() override;
 
 	PageGroup();
+	PageGroup(llBookData* llBookData);
+	PageGroup(llBookData* llBookData, llPageGroupData* llPageGroup);
+	PageGroup(llPageGroupData* llPageGroup);
+
 	PageGroup(Page& Page);
 	PageGroup(Page& Page, PageGroupData& PageGroup);
 	PageGroup(Page& Page, ShapeData& ShapeData);
 	PageGroup(Page& Page, int ID);
 	void llInit(llBookData* llBook);
-	llPageGroupData* llSwitch(llPageGroupData* llPageGroup) { return CurrentllPageGroup; };
+	void llSwitch(llPageGroupData* llPageGroup);
 	llPageGroupData* GetData() { return CurrentllPageGroup; };
 
-	void Add_Default() {}; //Editor/None Set in Stone
-	void Add_Duplicate() {}; //Editor/None Set in Stone
-	void Add_Insert() {}; //Editor/None Set in Stone
-	void Delete() {};
+	void Add_Default() override; //Editor/None Set in Stone
+	void Add_Duplicate() override { CopyPageGroup(LoadedBook, CurrentllPageGroup); }; //Editor/None Set in Stone
+	void Add_Insert() override {}; //Editor/None Set in Stone
+	void Delete() override {};
+
+	void HighlightPageGroup(glm::vec4 Color);
+	void HighlightOff();
+
+	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
+	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...
+	void OffsetColor(glm::vec4 Color, glm::vec4 bools) override;       //...
+	void llUpdate();
 
 	void ReCalibrateID();
 	void SetllPageGroup(llPageGroupData* PageGroup);
@@ -86,7 +98,6 @@ public:
 
 	//SetPosition();
 	//SetSize();
-	void llUpdate();
 	void ShapeToGroup(ShapeData& ShapeData);
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);

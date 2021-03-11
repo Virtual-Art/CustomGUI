@@ -187,6 +187,12 @@ namespace PageCreator
 	void ArrowKeyRight();
 	void ArrowKeyLeft();
 
+	//Make Sure these functions work on ALL levels not just shape
+	void Add();//Ctrl + a
+	void Duplicate(); //Ctrl + d
+	void Insert(); //Insert Key
+	void Delete(); // Delete key
+
 	//BOOK TRAVERSING FUNCTIONS
 	void DataLeft();    //Shift + Left
 	void DataRight();   //Shift + Right
@@ -212,14 +218,6 @@ namespace PageCreator
 	void AddLetter();
 	void BackSpace();
 
-
-	//Make Sure these functions work on ALL levels not just shape
-	void Add();//Ctrl + a
-	void Duplicate(); //Ctrl + d
-	void Insert(); //Insert Key
-	void Delete(); // Delete key
-	//void Next();
-	//void Previous();
 
 	void SetQuadSelected(int MouseState, int ShapeHovered);
 

@@ -452,6 +452,19 @@ void ShapeGroup::Delete()
 
 }
 
+void ShapeGroup::HighlightShapeGroup(glm::vec4 HighlightColor)
+{
+	CurrentllShapeGroup->HighlightColor = HighlightColor;
+	CurrentllShapeGroup->Highlighted = true;
+	llUpdate();
+}
+
+void ShapeGroup::HighlightOff()
+{
+	CurrentllShapeGroup->Highlighted = false;
+	llUpdate();
+}
+
 void ShapeGroup::llShapeGroupInit(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 {
 	//If it exists
@@ -551,15 +564,28 @@ void ShapeGroup::SetllShapeGroup(llShapeGroupData* llShapeGroup)
 		*CurrentllShapeGroup = *llShapeGroup;
 		llUpdate();
 	}
+	else
+	{
+		Log::LogString("ERROR:: SetllShapeGroup FAILED:: llShapeGroup was nullptr");
+	}
 }
 
 
 // This shape group may have quads, characters, custom shapes
 void ShapeGroup::llUpdate()
 {
+	Log::LogString("trying Update ShapeGroup");
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: ShapeGroup nullptr"); return; };
-	if (CurrentllShapeGroup != nullptr && LoadedBook != nullptr)
+	if (LoadedBook != nullptr)
 	{
+		if (CurrentllShapeGroup->ChangeAsGroup == false)
+		{
+			//Set PageItem Position Offset
+			llPageItemData* CurrentPageItem = LoadedBook->Page->PageGroup->PageItem;
+			CurrentllShapeGroup->PositionOffset = CurrentPageItem->Position - CurrentllShapeGroup->Position;
+		}
+
+		Log::LogString("Updating ShapeGroup");
 		llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
 
 		//Go to head Shape
@@ -571,16 +597,19 @@ void ShapeGroup::llUpdate()
 		//Set All sub group positions and call sub group functions
 		while (CurrentShape != nullptr)
 		{
-			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
-		    CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
-		    CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
-
 			switch (CurrentShape->Type)
 			{
 			case TYPE_SHAPE:
 			{
 				Shape ShapeSelected(CurrentShape);
 				ShapeSelected.LoadedBook = LoadedBook;
+				ShapeSelected.llSwitch(CurrentShape);
+				CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+				CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
+				CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+				//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
+				//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+				CurrentShape->ChangeAsGroup = true;
 				ShapeSelected.SetllShape(CurrentShape);
 				break;
 			}
@@ -588,6 +617,13 @@ void ShapeGroup::llUpdate()
 			{
 				Quad QuadSelected(CurrentShape);
 				QuadSelected.LoadedBook = LoadedBook;
+				QuadSelected.llSwitch(CurrentShape);
+				CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+				CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
+				CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+				//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
+				//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+				CurrentShape->ChangeAsGroup = true;
 				QuadSelected.SetllShape(CurrentShape);
 				break;
 			}
@@ -595,17 +631,24 @@ void ShapeGroup::llUpdate()
 			{
 				NewCharacter CharSelected(CurrentShape);
 				CharSelected.LoadedBook = LoadedBook;
+				CharSelected.llSwitch(CurrentShape);
+				CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+				CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
+				CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+				//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
+				//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+				CurrentShape->ChangeAsGroup = true;
 				CharSelected.SetllShape(CurrentShape);
 				break;
 			}
 			}
 			CurrentShape = CurrentShape->Next;
-			
-
-			//Edit Position
-			//Edit Size
-			//Edit Color
+		
 		}
+	}
+	else
+	{
+		Log::LogString("LoadedBook Was nullptr");
 	}
 }
 
@@ -732,6 +775,7 @@ void ShapeGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 	{
 		CurrentllShapeGroup->Position[1] += Position[1];
 	}
+
 	llUpdate();
 }
 void ShapeGroup::OffsetSize(glm::vec2 Size)

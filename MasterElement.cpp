@@ -688,18 +688,24 @@ void MasterElement::CopyShapeGroup(llBookData* Book, llShapeGroupData* ShapeGrou
 	NewShapeGroup->Previous = nullptr;
 	NewShapeGroup->Shape = nullptr;
 
-	int Count = 0;
-
-	//Find tail then add
+	//See if there is an Existing shape group inside page item
 	llShapeGroupData* FoundTail = Book->Page->PageGroup->PageItem->ShapeGroup;
-	while (FoundTail->Next != nullptr)
+	if (FoundTail == nullptr)
 	{
-		FoundTail = FoundTail->Next;
-		Log::LogInt("Count ", Count);
+		Log::LogString("New ShapeGroup Linked");
+		Book->Page->PageGroup->PageItem->ShapeGroup = NewShapeGroup;
+		Book->Page->PageGroup->PageItem->ShapeGroupHead = NewShapeGroup;
 	}
-	Log::LogString("New ShapeGroup Linked");
-	FoundTail->Next = NewShapeGroup;
-	NewShapeGroup->Previous = FoundTail;
+	else
+	{
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+		}
+		Log::LogString("New ShapeGroup Linked");
+		FoundTail->Next = NewShapeGroup;
+		NewShapeGroup->Previous = FoundTail;
+	}
 
 	Book->Page->PageGroup->PageItem->ShapeGroup = NewShapeGroup;
 
@@ -710,32 +716,106 @@ void MasterElement::CopyShapeGroup(llBookData* Book, llShapeGroupData* ShapeGrou
 		CurrentReferenceShape = CurrentReferenceShape->Previous;
 	}
 
-	//while (CurrentReferenceShape != nullptr)
-	//{
+	while (CurrentReferenceShape != nullptr)
+	{
 		CopyShape(Book, CurrentReferenceShape);
 		CurrentReferenceShape = CurrentReferenceShape->Next;
-
-		CopyShape(Book, CurrentReferenceShape);
-		CurrentReferenceShape = CurrentReferenceShape->Next;
-
-		CopyShape(Book, CurrentReferenceShape);
-		CurrentReferenceShape = CurrentReferenceShape->Next;
-
-		CopyShape(Book, CurrentReferenceShape);
-		CurrentReferenceShape = CurrentReferenceShape->Next;
-	//}
+	}
 }
 
 //Copy PageItem to new PageItem in the same PageGroup
 void MasterElement::CopyPageItem(llBookData* Book, llPageItemData* PageItemReference)
 {
+	Log::LogString("Copying Page Item");
+	//Create a New Shape Group and Set it's data
+	llPageItemData* NewPageItem = new llPageItemData;
+	*NewPageItem = *PageItemReference;
 
+	//Reset Links
+	NewPageItem->Next = nullptr;
+	NewPageItem->Previous = nullptr;
+	NewPageItem->ShapeGroup = nullptr;
+
+	int Count = 0;
+
+	//Find tail then add
+	llPageItemData* FoundTail = Book->Page->PageGroup->PageItem;
+	if (FoundTail == nullptr)
+	{
+		Log::LogString("New PageItem Linked");
+		Book->Page->PageGroup->PageItem = NewPageItem;
+		Book->Page->PageGroup->PageItemHead = NewPageItem;
+	}
+	else
+	{
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			Log::LogInt("Count ", Count);
+		}
+		Log::LogString("New PageItem Linked");
+		FoundTail->Next = NewPageItem;
+		NewPageItem->Previous = FoundTail;
+	}
+
+	Book->Page->PageGroup->PageItem = NewPageItem;
+
+	//Go to first Shape of the Shape Group reference
+	llShapeGroupData* CurrentReferenceShapeGroup = PageItemReference->ShapeGroup;
+	while (CurrentReferenceShapeGroup->Previous != nullptr)
+	{
+		CurrentReferenceShapeGroup = CurrentReferenceShapeGroup->Previous;
+	}
+
+	while (CurrentReferenceShapeGroup != nullptr)
+	{
+		CopyShapeGroup(Book, CurrentReferenceShapeGroup);
+		CurrentReferenceShapeGroup = CurrentReferenceShapeGroup->Next;
+	}
 }
 
 //Copy the same PageGroup into new PageGroup in the same page
+//Book->Page could be nullptr
 void MasterElement::CopyPageGroup(llBookData* Book, llPageGroupData* PageGroupReference)
 {
+	//Validate
+	if(Book == nullptr) {Log::LogString("ERROR:: CopyPageGroup FAILED:: No PageGroup Provided"); return;};
+    if(PageGroupReference == nullptr) {Log::LogString("ERROR:: CopyPageGroup FAILED:: No Book Provided"); return;};
 
+	//Create a New Shape Group and Set it's data
+	llPageGroupData* NewPageGroup = new llPageGroupData;
+	*NewPageGroup = *PageGroupReference;
+
+	//Reset Links
+	NewPageGroup->Next = nullptr;
+	NewPageGroup->Previous = nullptr;
+	NewPageGroup->PageItem = nullptr;
+
+
+	//Find tail then add
+	llPageGroupData* FoundTail = Book->Page->PageGroup;
+	while (FoundTail->Next != nullptr)
+	{
+		FoundTail = FoundTail->Next;
+	}
+	Log::LogString("New PageGroup Linked");
+	FoundTail->Next = NewPageGroup;
+	NewPageGroup->Previous = FoundTail;
+
+	Book->Page->PageGroup = NewPageGroup;
+
+	//Go to first Shape of the Shape Group reference
+	llPageItemData* CurrentReferencePageItem = PageGroupReference->PageItem;
+	while (CurrentReferencePageItem->Previous != nullptr)
+	{
+		CurrentReferencePageItem = CurrentReferencePageItem->Previous;
+	}
+
+	while (CurrentReferencePageItem != nullptr)
+	{
+		CopyPageItem(Book, CurrentReferencePageItem);
+		CurrentReferencePageItem = CurrentReferencePageItem->Next;
+	}
 }
 
 //copy the same Page into a new page in the same book

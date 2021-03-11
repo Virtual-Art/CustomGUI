@@ -430,10 +430,15 @@ void NewCharacter::SetAction(int ShapeDataActionID){};
 
 void NewCharacter::CreatellCharacter()
 {
-	//llShapeGroupData* CurrentShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
-	//CurrentllShape->PositionOffset = CurrentllShape->Position - CurrentShapeGroup->Position;
-	//CurrentllShape->SizeOffset = CurrentllShape->Size - CurrentShapeGroup->Size;
-	//CurrentllShape->ColorOffset = CurrentllShape->Color - CurrentShapeGroup->Color;
+	if (CurrentllShape->ChangeAsGroup == false && LoadedBook != nullptr)
+	{
+		//This will work with an assumption:
+		//the quad we are updating belongs to the current ShapeGroup Directory in the book
+		llShapeGroupData* CurrentShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
+		CurrentllShape->PositionOffset = CurrentllShape->Position - CurrentShapeGroup->Position;
+		//CurrentllShape->SizeOffset = CurrentllShape->Size + CurrentShapeGroup->Size;
+		//CurrentllShape->ColorOffset = CurrentllShape->Color + CurrentShapeGroup->Color;
+	}
 
 	TopRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / 2 };
 	BottomRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / -2 };
@@ -444,12 +449,15 @@ void NewCharacter::CreatellCharacter()
 
 	while (CurrentVertex != nullptr)
 	{
-		//Set Data
+		//Process Hide
 		if (CurrentllShape->Hide == true)
 		{CurrentVertex->Color = CurrentllShape->Color;
 		 CurrentVertex->Color[3] = 0.0;}
 		else
 		{CurrentVertex->Color = CurrentllShape->Color;}
+
+		//Process Highlight
+		if (CurrentllShape->Highlighted == true) { CurrentVertex->Color = CurrentllShape->HighlightColor; }
 
 		CurrentVertex->TexIndex = 1;
 		CurrentVertex->CentralPoint = { CurrentllShape->Position[0] + (CurrentllShape->Size[0] / 2), CurrentllShape->Position[1] - (CurrentllShape->Size[1] / 2) };
@@ -478,6 +486,8 @@ void NewCharacter::CreatellCharacter()
 	CurrentllShape->Bottom = (CurrentllShape->Position[Y_AXIS] - CurrentllShape->Size[Y_AXIS] / 2);
 	CurrentllShape->Left = (CurrentllShape->Position[X_AXIS] - CurrentllShape->Size[X_AXIS] / 2);
 	CurrentllShape->Right = (CurrentllShape->Position[X_AXIS] + CurrentllShape->Size[X_AXIS] / 2);
+
+	CurrentllShape->ChangeAsGroup == false;
 }
 
 //Makeup of a Square

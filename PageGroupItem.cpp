@@ -71,7 +71,6 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 {
-
 	//Make sure we are provided with data
 	if (llPageItem != nullptr && llBookData != nullptr)
 	{
@@ -86,6 +85,15 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			//Link the Created groups to the book we are looking at
 			llBookData->Page = CreatedPage;
 			llBookData->PageHead = CreatedPage;
+
+			llBookData->Page->PageGroup = CreatedPageGroup;
+			llBookData->Page->PageGroupHead = CreatedPageGroup;
+		}
+
+		if (llBookData->Page->PageGroup == nullptr)
+		{
+			Log::LogString("Book Is Brand New");
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
 			llBookData->Page->PageGroup = CreatedPageGroup;
 			llBookData->Page->PageGroupHead = CreatedPageGroup;
@@ -124,8 +132,6 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			Log::LogString("PageItem Linked");
 			FoundTail->Next = CurrentllPageItem;
 			CurrentllPageItem->Previous = FoundTail;
-
-
 			
 			//Then set the book to point to the new PageItem we created
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
@@ -329,6 +335,7 @@ void PageGroupItem::llSwitch(llPageItemData* llPageItem)
 void PageGroupItem::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
 	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageItem nullptr"); return; };
+	Log::LogString("Offsetting Position");
 	if (bools[0] == true)
 	{
 		CurrentllPageItem->Position[0] += Position[0];
@@ -337,7 +344,8 @@ void PageGroupItem::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 	{
 		CurrentllPageItem->Position[1] += Position[1];
 	}
-	llUpdate();
+	llUpdate(); 
+	Log::LogString("Position offseted");
 }
 
 void PageGroupItem::OffsetSize(glm::vec2 Size, glm::vec2 bools)
@@ -386,31 +394,42 @@ void PageGroupItem::SetllPageItem(llPageItemData* llPageItem)
 	}
 }
 
-
-
 void PageGroupItem::llUpdate()
 {
+	//Validate
 	if (CurrentllPageItem != nullptr && LoadedBook != nullptr)
 	{
+		//Go To ShapeGroup Head
 		llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
-
 		while (CurrentShapeGroup->Previous != nullptr)
 		{
 			CurrentShapeGroup = CurrentShapeGroup->Previous;
 		}
 
-		//Main Loop
+		if (CurrentllPageItem->ChangeAsGroup == false)
+		{
+			//Set PageItem Position Offset
+			llPageGroupData* CurrentPageGroup = LoadedBook->Page->PageGroup;
+			CurrentllPageItem->PositionOffset = CurrentPageGroup->Position - CurrentllPageItem->Position;
+		}
+
+		//Update all ShapeGroups in Current PageItem
 		while (CurrentShapeGroup != nullptr)
 		{
-			CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
-			CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
-			CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
-
 			switch (CurrentShapeGroup->Type)
 			{
 			case TYPE_SHAPEGROUP:
 			{
 				ShapeGroup ShapeGroupSelected(CurrentShapeGroup);
+				ShapeGroupSelected.llSwitch(CurrentShapeGroup);
+				ShapeGroupSelected.LoadedBook = LoadedBook;
+				//No idea why it's negative this level positive on the Shape level?
+				CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+				CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
+				CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
+				//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+				//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+				CurrentShapeGroup->ChangeAsGroup = true;
 				ShapeGroupSelected.SetllShapeGroup(CurrentShapeGroup);
 				break;
 			}
@@ -418,11 +437,19 @@ void PageGroupItem::llUpdate()
 			{
 				TextData INCOMPLETE;
 				Text QuadSelected(CurrentShapeGroup);
+				QuadSelected.llSwitch(CurrentShapeGroup);
+				QuadSelected.LoadedBook = LoadedBook;
+				CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+				CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
+				CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
+				//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+				//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+				CurrentShapeGroup->ChangeAsGroup = true;
 				QuadSelected.SetllTextGroup(CurrentShapeGroup, INCOMPLETE);
 				break;
 			}
-			CurrentShapeGroup = CurrentShapeGroup->Next;
 			}
+			CurrentShapeGroup = CurrentShapeGroup->Next;
 
 		}
 	}
@@ -531,7 +558,8 @@ void PageGroupItem::Add_Default()
 
 void PageGroupItem::Add_Duplicate()
 {
-
+	CopyPageItem(LoadedBook, CurrentllPageItem);
+	Log::LogString("PageItem Copied");
 }
 
 void PageGroupItem::Add_Insert()
@@ -542,6 +570,19 @@ void PageGroupItem::Add_Insert()
 void PageGroupItem::Delete()
 {
 
+}
+
+void PageGroupItem::HighlightPageItem(glm::vec4 HighlightColor)
+{
+	CurrentllPageItem->HighlightColor = HighlightColor;
+	CurrentllPageItem->Highlighted = true;
+	llUpdate();
+}
+
+void PageGroupItem::HighlightOff()
+{
+	CurrentllPageItem->Highlighted = false;
+	llUpdate();
 }
 
 ShapeData& PageGroupItem::Switch(int RequstedShapeID)

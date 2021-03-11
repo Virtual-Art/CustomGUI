@@ -107,6 +107,10 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
+
+	void HighlightPageItem(glm::vec4 Color);
+	void HighlightOff();
+
 	float GetAccessRight();
 	float GetAccessLeft();
 	float GetAccessTop();
@@ -124,7 +128,7 @@ public:
 	//glm::vec2* GetPosition() override;
 	//glm::vec2* GetSize() override;
 
-	void llUpdate();
+	void llUpdate() override;
 	virtual void Update() {};
 	void ReCalibrateID();
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);

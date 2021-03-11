@@ -73,8 +73,12 @@ class ShapeGroup : public MasterElement
 	void Add_Insert();
 	void Delete();
 
+	void HighlightShapeGroup(glm::vec4 Color);
+	void HighlightOff();
+
+	void SetllShapeGroup(llShapeGroupData* llShapeGroup);
+	void llUpdate() override;
 	virtual void llSwitch(llShapeGroupData* llShapeGroup);
-	//void llSwitch(int Offset);
 
 	void SetllPosition(glm::vec2 Position)
 	{
@@ -150,7 +154,7 @@ class ShapeGroup : public MasterElement
 	void OffsetSize(glm::vec2 Size);                         
 	void OffsetColor(glm::vec4 Color);                       
 
-	// Basic + boolean //Book Creator Functions
+	// Basic + boolean
 	void SetPosition(glm::vec2 Position, glm::vec2 bools) override;    
 	void SetSize(glm::vec2 Size, glm::vec2 bools) override;            
 	void SetColor(glm::vec4 Color, glm::vec4 bools) override;  
@@ -172,8 +176,7 @@ class ShapeGroup : public MasterElement
 
 	int FindNextGroup(int CurrentID, ShapeData* RetreivedShape);
 	int FindPreviousGroup(int CurrentID, ShapeData* RetreivedShape);
-	void SetllShapeGroup(llShapeGroupData* llShapeGroup);
-	void llUpdate() override;
+
 
 	//glm::vec2 GetPosition() override { return CurrentllShapeGroup->Position; };
 	//glm::vec2 GetSize() override { return CurrentllShapeGroup->Size; };

@@ -996,7 +996,7 @@ void PageCreator::LevelUp()
 		EditorSelected = &PageItemEditor; //Supposed to set type here, won't always be basic type
 		if (CurrentShapeGroup != nullptr)
 		{
-			CurrentType = CurrentShapeGroup->Type;
+			CurrentType = CurrentPageItem->Type;
 		}
 		Text_CurrentLevel.SetllText("PageItem");
 		SetPageItemType();
@@ -1007,6 +1007,7 @@ void PageCreator::LevelUp()
 		//CurrentType = CurrentPageGroup->Type;
 		EditorSelected = &PageGroupEditor; //Supposed to set type here, won't always be basic type
 		Text_CurrentLevel.SetllText("PageGroup");
+		SetPageGroupType();
 		break;
 	case LEVEL_PAGE:
 		//CurrentPage = CurrentBook->Page;
@@ -1062,8 +1063,9 @@ void PageCreator::LevelDown()
 		SetPageItemType();
 		break;
 	case LEVEL_PAGEGROUP:
-		//Element_Selected = &PageGroupSelected;
+		EditorSelected = &PageGroupEditor;
 		Text_CurrentLevel.SetllText("PageGroup");
+		SetPageGroupType();
 		break;
 	case LEVEL_PAGE:
 		//Element_Selected = &PageSelected;
@@ -1090,7 +1092,7 @@ void PageCreator::Duplicate()
 	EditorSelected->Add_Duplicate();
 	//CurrentFunction = 9;
 	SetElements();
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 
 void PageCreator::Insert()
@@ -1342,90 +1344,90 @@ void PageCreator::SetElements()
 void PageCreator::PositionUp()
 {
 	EditorSelected->OffsetPosition({ 0.0, 0.00166 * PixelOffset }, OnlyY);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 void PageCreator::PositionDown()
 {
 	EditorSelected->OffsetPosition({ 0.0, -0.00166 * PixelOffset }, OnlyY);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 void PageCreator::PositionRight()
 {
 	EditorSelected->OffsetPosition({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 void PageCreator::PositionLeft()
 {
 	EditorSelected->OffsetPosition({ -0.00166 * PixelOffset, 0.0 }, OnlyX);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 
 //SIZE
 void PageCreator::SizeDown()
 {
 	EditorSelected->OffsetSize({ 0.0, 0.00166 * PixelOffset }, OnlyY);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 void PageCreator::SizeUp()
 {
 	EditorSelected->OffsetSize({ 0.0, 0.00166 * -PixelOffset }, OnlyY);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 void PageCreator::SizeRight()
 {
 	EditorSelected->OffsetSize({ 0.00166 * PixelOffset, 0.0 }, OnlyX);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 void PageCreator::SizeLeft()
 {
 	EditorSelected->OffsetSize({ 0.00166 * -PixelOffset, 0.0}, OnlyX);
-	UpdateColorSliders();
+	//UpdateColorSliders();
 }
 
 // COLOR
 void PageCreator::ColorRUp()
 {
 	EditorSelected->OffsetColor({ 0.005 * PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-	UpdateSliderR();
+	//UpdateSliderR();
 }
 void PageCreator::ColorRDown()
 {
 	EditorSelected->OffsetColor({ 0.005 * -PixelOffset, 0.0, 0.0, 0.0 }, OnlyR);
-	UpdateSliderR();
+	//UpdateSliderR();
 }
 
 void PageCreator::ColorGUp()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.005 * PixelOffset,  0.0, 0.0 }, OnlyG);
-	UpdateSliderG();
+	//UpdateSliderG();
 }
 
 void PageCreator::ColorGDown()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.005 * -PixelOffset,  0.0, 0.0 }, OnlyG);
-	UpdateSliderG();
+	//UpdateSliderG();
 }
 
 void PageCreator::ColorBUp()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.005 * PixelOffset, 0.0 }, OnlyB);
-	UpdateSliderB();
+	//UpdateSliderB();
 }
 void PageCreator::ColorBDown()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.005 * -PixelOffset,  0.0 }, OnlyB);
-	UpdateSliderB();
+	//UpdateSliderB();
 }
 
 void PageCreator::ColorAUp()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.005 * PixelOffset }, OnlyA);
-	UpdateSliderA();
+	//UpdateSliderA();
 }
 void PageCreator::ColorADown()
 {
 	EditorSelected->OffsetColor({ 0.0, 0.0, 0.0, 0.005 * -PixelOffset }, OnlyA);
-	UpdateSliderA();
+	//UpdateSliderA();
 }
 
 void PageCreator::SetText()

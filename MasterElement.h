@@ -159,6 +159,7 @@ struct llShapeData
 	string Text = "";
 	bool EndStart = false;
 	bool TextCentered = true;
+	bool ChangeAsGroup = false;
 	ShapeVertex Vertex[4];
 	llShapeData* Next = nullptr;
 	llShapeData* Previous = nullptr;
@@ -185,10 +186,12 @@ struct llShapeGroupData
 	glm::vec2 PositionOffset = { 0.0, 0.0 };
 	glm::vec2 SizeOffset = { 0.0, 0.0 };
 	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
+	glm::vec4 HighlightColor;
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
 	bool Hide = false;
+	bool ChangeAsGroup = false;
 	float Top = -3;
 	float Bottom = -3;
 	float Left = -3;
@@ -222,9 +225,11 @@ struct llPageItemData
 	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
+	glm::vec4 HighlightColor;
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
+	bool ChangeAsGroup = false;
 	float Top = -3;
 	float Bottom = -3;
 	float Left = -3;
@@ -252,10 +257,11 @@ struct llPageGroupData
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
+	glm::vec4 HighlightColor;
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
-
+	bool ChangeAsGroup = false;
 	float Top = -3;
 	float Bottom = -3;
 	float Left = -3;

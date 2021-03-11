@@ -310,7 +310,6 @@ int main(int argc, char** argv)
 
 		if (KeyState.Key1 == GUI_I_CLICKED)
 		{
-			//
 			MasterElement::CurrentDirectory(&EditorBook);
 		}
 		
