@@ -193,6 +193,7 @@ void NewCharacter::Add_Default() //Editor/None Set in Stone
 			cout << FoundTail << endl;
 			FoundTail->Next = CurrentllShape;
 			CurrentllShape->Previous = FoundTail;
+			LoadedBook->Page->PageGroup->PageItem->ShapeGroup->Shape = CurrentllShape;
 		}
 
 		CurrentllShape->Type = TYPE_CHARACTER;

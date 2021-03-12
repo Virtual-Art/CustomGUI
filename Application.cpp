@@ -318,6 +318,10 @@ int main(int argc, char** argv)
 			MasterElement::PrintBookStats(&EditorBook);
 		}
 
+		if (KeyState.Key1 == GUI_M_CLICKED)
+		{
+			PageCreator::PrintCreatorStats();
+		}
 
 		//a SliderPointer points to a function that belongs to slider
 		typedef void(MasterElement::* MasterElementFunction)();

@@ -1,5 +1,53 @@
 #include "Text.h"
 
+Text::Text(llBookData* llBookData)
+	: ShapeGroup(llBookData)
+{
+	//DefaultTextData
+	CurrentTextData.Phrase = "TEXT";
+
+	//Group Setup
+	//CurrentllShapeGroup->ShapeCount = CurrentTextData.Phrase.size();
+
+	//Attribute Setup
+	CurrentllShapeGroup->Color = { 1.0, 1.0, 1.0, 1.0 };
+	CurrentllShapeGroup->Size = { 0.0, 0.0 }; // all of the xadvances of all the text
+	CurrentllShapeGroup->Position = { 0.0, 0.0 };
+	CurrentllShapeGroup->MouseAccess = true;
+	CurrentllShapeGroup->Highlighted = false;
+	CurrentllShapeGroup->Centered = false;
+
+	CurrentllShapeGroup->XYShapePerRow = { 2.0, 2.0 }; // Can use without
+	CurrentllShapeGroup->ShapeSize = { 0.8, 0.8 };  // Can use without
+	CurrentllShapeGroup->Type = TYPE_TEXT;
+
+	AddllText();
+}
+
+Text::Text(llBookData* llBookData, llShapeGroupData* llShapeGroup, TextData& TextData)
+	: ShapeGroup(llBookData, llShapeGroup)
+{
+	CurrentTextData = TextData;
+	CurrentllShapeGroup->Type = TYPE_TEXT;
+	AddllText();
+	llShapeGroup->Size = CurrentllShapeGroup->Size;
+}
+
+Text::Text(llShapeGroupData* llShapeGroup)
+	: ShapeGroup(llShapeGroup)
+{
+	if (llShapeGroup != nullptr)
+	{
+	   CurrentTextData.Phrase = llShapeGroup->Shape->Text;
+	   CurrentTextData.Centered = llShapeGroup->Shape->TextCentered;
+	   CurrentTextData.EndStart = llShapeGroup->Shape->EndStart;
+	}
+	else
+	{
+		Log::LogString("Text Suspended");
+	}
+}
+
 Text::Text(Page& Page)
  : ShapeGroup{Page}
 {
@@ -19,7 +67,7 @@ Text::Text(Page& Page)
 
 	this->CurrentShapeGroup.XYShapePerRow = { 2.0, 2.0 }; // Can use without
 	this->CurrentShapeGroup.ShapeSize = { 0.8, 0.8 };  // Can use without
-	CurrentShapeGroup.Type = TYPE_TEXT;
+	//CurrentShapeGroup.Type = TYPE_TEXT;
 
 	AddText();
 }
@@ -30,7 +78,7 @@ Text::Text(Page& Page, ShapeGroupData& ShapeGroupData, TextData& TextData)
 {
 	CurrentTextData = TextData;
 	CurrentShapeGroup.ShapeCount = TextData.Phrase.size() - 1;
-	CurrentShapeGroup.Type = TYPE_TEXT;
+	//CurrentShapeGroup.Type = TYPE_TEXT;
 	
 	AddText();
 	ShapeGroupData.Size = CurrentShapeGroup.Size;
@@ -43,7 +91,7 @@ Text::Text(Page& Page, ShapeData& ShapeData, TextData& TextData)
 	CurrentTextData = TextData;
 	this->CurrentShapeGroup.ShapeStart = Page.ShapeAmount();
 	this->CurrentShapeGroup.ShapeCount = TextData.Phrase.size() - 1;
-	CurrentShapeGroup.Type = TYPE_TEXT;
+	//CurrentShapeGroup.Type = TYPE_TEXT;
 	AddText();
 	ShapeData.ShapeGroup.Size = CurrentShapeGroup.Size;
 }
@@ -176,12 +224,199 @@ Text::Text(Page& Page, int Integer, string Description, glm::vec2 Position)
 //	GroupData.Size = CurrentShapeGroup.Size;
 //}
 //
-Text::Text() {};
 
 Text::Text(Page& Page, int GroupID, int Integer, string Description)
 	: ShapeGroup(Page, GroupID)
 {
 
+}
+
+void Text::Add_Default()
+{
+	if (LoadedBook->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		LoadedBook->Page = CreatedPage;
+		LoadedBook->PageHead = CreatedPage;
+
+		LoadedBook->Page->PageGroup = CreatedPageGroup;
+		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+
+		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+	}
+
+	if (LoadedBook->Page->PageGroup == nullptr)
+	{
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		LoadedBook->Page->PageGroup = CreatedPageGroup;
+		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+
+		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+	}
+
+	if (LoadedBook->Page->PageGroup->PageItem == nullptr)
+	{
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+	}
+
+	CurrentllShapeGroup = new llShapeGroupData;
+	//Log::LogString("Shape Group Created");
+
+	llShapeGroupData* TestingShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
+
+	//Completely new object
+	if (TestingShapeGroup == nullptr)
+	{
+		Log::LogString("New ShapeGroup Linked");
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+	}
+	else //Shapes already created
+	{
+		llShapeGroupData* FoundTail = TestingShapeGroup;
+		int LinkCount = 1;
+
+		//Find tail then add
+		//Log::LogString("Finding Tail..");
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			LinkCount++;
+		}
+		Log::LogString("New ShapeGroup Linked");
+		FoundTail->Next = CurrentllShapeGroup;
+		CurrentllShapeGroup->Previous = FoundTail;
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+	}
+
+	//CurrentllShapeGroup->Type = TYPE_SHAPEGROUP_TEXT;
+	//DefaultTextData
+	CurrentTextData.Phrase = "TEXT";
+
+	//Group Setup
+	//CurrentllShapeGroup->ShapeCount = CurrentTextData.Phrase.size();
+
+	//Attribute Setup
+	CurrentllShapeGroup->Color = { 1.0, 1.0, 1.0, 1.0 };
+	CurrentllShapeGroup->Size = { 0.0, 0.0 }; // all of the xadvances of all the text
+	CurrentllShapeGroup->Position = { 0.0, 0.0 };
+	CurrentllShapeGroup->MouseAccess = true;
+	CurrentllShapeGroup->Highlighted = false;
+	CurrentllShapeGroup->Centered = false;
+
+	CurrentllShapeGroup->XYShapePerRow = { 2.0, 2.0 }; // Can use without
+	CurrentllShapeGroup->ShapeSize = { 0.8, 0.8 };  // Can use without
+	CurrentllShapeGroup->Type = TYPE_TEXT;
+
+	AddllText();
+}
+
+//void Text::Add_Duplicate()
+//{
+//	if (LoadedBook->Page == nullptr)
+//	{
+//		Log::LogString("Book Is Brand New");
+//		llPageData* CreatedPage = new llPageData;
+//		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+//		llPageItemData* CreatedPageItem = new llPageItemData;
+//
+//		LoadedBook->Page = CreatedPage;
+//		LoadedBook->PageHead = CreatedPage;
+//
+//		LoadedBook->Page->PageGroup = CreatedPageGroup;
+//		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+//
+//		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+//		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+//	}
+//
+//	if (LoadedBook->Page->PageGroup == nullptr)
+//	{
+//		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+//		llPageItemData* CreatedPageItem = new llPageItemData;
+//
+//		LoadedBook->Page->PageGroup = CreatedPageGroup;
+//		LoadedBook->Page->PageGroupHead = CreatedPageGroup;
+//
+//		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+//		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+//
+//	}
+//
+//	if (LoadedBook->Page->PageGroup->PageItem == nullptr)
+//	{
+//		llPageItemData* CreatedPageItem = new llPageItemData;
+//
+//		LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
+//		LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+//
+//	}
+//
+//	llShapeGroupData Temp = *CurrentllShapeGroup;
+//
+//	CurrentllShapeGroup = new llShapeGroupData;
+//	*CurrentllShapeGroup = Temp;
+//	//Log::LogString("Shape Group Created");
+//
+//	llShapeGroupData* TestingShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
+//
+//	//Completely new object
+//	if (TestingShapeGroup == nullptr)
+//	{
+//		Log::LogString("New ShapeGroup Linked");
+//		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+//		LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+//	}
+//	else //Shapes already created
+//	{
+//		llShapeGroupData* FoundTail = TestingShapeGroup;
+//		int LinkCount = 1;
+//
+//		//Find tail then add
+//		//Log::LogString("Finding Tail..");
+//		while (FoundTail->Next != nullptr)
+//		{
+//			FoundTail = FoundTail->Next;
+//			LinkCount++;
+//		}
+//		Log::LogString("New ShapeGroup Linked");
+//		FoundTail->Next = CurrentllShapeGroup;
+//		CurrentllShapeGroup->Previous = FoundTail;
+//		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+//	}
+//	AddllText();
+//}
+
+void Text::Add_Insert()
+{
+
+}
+
+void Text::Delete()
+{
+
+}
+
+void Text::llInit(llBookData* llBookData, llShapeGroupData* llShapeGroup, TextData& TextData)
+{
+	llShapeGroupInit(llBookData, llShapeGroup);
+	CurrentTextData = TextData;
+	//CurrentllShapeGroup->Type = TYPE_TEXT;
+	AddllText();
+	llShapeGroup->Size = CurrentllShapeGroup->Size;
 }
 
 void Text::Init(Page& Page, string Text, glm::vec2 Position)
@@ -221,6 +456,12 @@ void Text::AddText()
 {
 	CreateText();
 	SetMouseAccess();
+}
+
+void Text::AddllText()
+{
+	CreatellText();
+	SetllMouseAccess();
 }
 
 //Loads Group Data to Shape 
@@ -482,6 +723,279 @@ void Text::CreateText()
 	}
 }
 
+void Text::CreatellText()
+{
+	int SCR_HEIGHT = 600;
+	int SCR_WIDTH = 1200;
+	int ShapeOffset = 0;
+	bool LineRestart = true;
+	float Maxline = 1.0;
+	glm::vec2 StartPosition = CurrentllShapeGroup->Position;
+
+	SetllTextSize();
+
+
+	if (CurrentTextData.EndStart != true && CurrentTextData.Centered == true)
+	{
+		StartPosition[0] -= CurrentllShapeGroup->Size[0] / 2;
+	}
+
+	if (CurrentTextData.EndStart == true && CurrentTextData.Centered != true)
+	{
+		StartPosition[0] -= CurrentllShapeGroup->Size[0];
+	}
+
+	//LoadedShape.ShapeGroup = CurrentllShapeGroup;
+	CurrentTextData.CursorPosition = ApplyPositionConversion(StartPosition, P_COMPUTER_TO_PIXEL);
+
+	glm::vec4 CharLineColor = { 0.3, 0.5, 0.4, 1.0 };
+
+	//Set PageItem Position Offset
+	llPageItemData* CurrentPageItem = LoadedBook->Page->PageGroup->PageItem;
+	CurrentllShapeGroup->PositionOffset = CurrentPageItem->Position - CurrentllShapeGroup->Position;
+
+	//Text Loop
+	for (int n = 0; n < CurrentTextData.Phrase.size(); n++)
+	{
+		char CurrentChar = CurrentTextData.Phrase[n];
+
+		CurrentCharacterData = NewCharacter::GetCharacter(CurrentChar);
+		//Retreives Character information from file
+		//CurrentShapeGroup.ID = CurrentShapeGroup.ID;
+		lllShape.Ascii = CurrentChar;
+		lllShape.Position = GetCharacterPosition(CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, LineRestart);
+		lllShape.Size = GetCharacterSize(CurrentCharacterData, lllShape.Position, SCR_HEIGHT, SCR_WIDTH, CurrentTextData.FontSize);
+
+		//Apply Conversions
+		lllShape.Position = ApplyPositionConversion(lllShape.Position, P_PIXEL_TO_COMPUTER);
+		lllShape.Size = ApplySizeConversion(lllShape.Size, S_PIXEL_TO_COMPUTER);
+		//CurrentShapeGroup.ShapeOffset = ShapeOffset;
+				//Shape Details
+		lllShape.PartOfGroup = true;
+		lllShape.Hide = CurrentllShapeGroup->Hide;
+		lllShape.ActiveTexture = CurrentTextData.FontSlot;
+		//lllShape.ShapeGroup.ShapeCount = CurrentTextData.Phrase.size() - 1;
+
+		//Text Details
+		lllShape.Text = CurrentTextData.Phrase;
+		lllShape.Type = TYPE_CHARACTER;
+		//lllShape.ShapeGroup.Type = TYPE_TEXT;
+		lllShape.TextCentered = CurrentTextData.Centered;
+		lllShape.EndStart = CurrentTextData.EndStart;
+		lllShape.MouseAccess = CurrentllShapeGroup->MouseAccess;
+		lllShape.HighlightColor = CurrentllShapeGroup->HighlightColor;
+		lllShape.Highlighted = CurrentllShapeGroup->Highlighted;
+
+
+		//lllShape.SizeOffset = lllShape.Size - CurrentllShapeGroup->Size;
+		//lllShape.ColorOffset = lllShape.Color - CurrentllShapeGroup->Color;
+
+		//UpdatellMouseAccess(lllShape.Position, lllShape.Size);
+		NewCharacter Char_Text(LoadedBook, &lllShape);
+		//CurrentPageItem.ShapeOffset++;
+
+		//Cursor Position is still in pixel space
+
+		//////Checks if line needs to be returned 
+		//LineRestart = QueryLineRestart(CurrentTextData.CursorPosition, Maxline);
+
+		//Cusror still in pixels
+
+		//In pixels
+	//	CurrentShapeGroup.Size[0] += AdvanceCursor(CurrentCharacterData, CurrentTextData);
+		AdvanceCursor(CurrentCharacterData, CurrentTextData);
+		//	CurrentShapeGroup.Size[1] = CurrentTextData.FontSize / CurrentCharacterData.LineHeight;
+
+			//LineRestart = QueryLineRestart(CurrentTextData.CursorPosition, Maxline);
+			//if (CurrentTextData.List == false)
+			//{
+			//	if (LineRestart == true)
+			//	{   ////Move CursorPosition to the next line
+			//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.CharSpacing, CurrentShapeGroup.Position[0]);
+			//	}
+			//}
+			//else
+			//{
+			//	//Next Line if Space
+			//	if (FullTextString[n - 1] == ' ' && FullTextString[n] == ' ' && FullTextString[n + 1] != ' ')
+			//	{   ////Move CursorPosition to the next line
+			//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.LineSpacing, CurrentShapeGroup.Position[0]);
+			//	}
+			//}
+			//ShapeOffset++;
+	}
+	SetllMouseAccess();
+	CurrentllShapeGroup->ChangeAsGroup = false;
+}
+
+void Text::NewReplacellText()
+{
+	if (CurrentllShapeGroup == nullptr) { return; };
+	if (CurrentllShapeGroup->Shape == nullptr) { return; };
+
+	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+	llShapeData* StrainAfterText;
+	llShapeData CurrentllShape;
+
+	//Text Details
+	if (Editorized == true)
+	{
+		CurrentTextData.Phrase = CurrentShape->Text;
+	}
+	//CurrentTextData.Centered = CurrentShape->TextCentered;
+	//CurrentTextData.EndStart =	CurrentShape->EndStart; 
+
+	int SCR_HEIGHT = 600;
+	int SCR_WIDTH = 1200;
+	glm::vec2 StartPosition = CurrentllShapeGroup->Position;
+
+	bool LineRestart = true;
+	float Maxline;
+
+	SetllTextSize();
+
+	if (CurrentTextData.Centered == true && CurrentTextData.EndStart != true)
+	{
+		StartPosition[0] -= CurrentllShapeGroup->Size[0] / 2;
+	}
+
+	if (CurrentTextData.EndStart == true && CurrentTextData.Centered != true)
+	{
+		StartPosition[0] -= CurrentllShapeGroup->Size[0];
+	}
+
+	CurrentTextData.CursorPosition = ApplyPositionConversion(StartPosition, P_COMPUTER_TO_PIXEL);
+
+
+	CurrentTextData.FontSize = 12;
+	//Find Head
+	while (CurrentShape->Previous != nullptr)
+	{
+		CurrentShape = CurrentShape->Previous;
+	}
+
+	//i Suppose if this while loop is called at all then it's a type CUSTOM_WITH_TEXT
+	while (CurrentShape->Type != TYPE_CHARACTER && CurrentShape->Next != nullptr)
+	{
+		CurrentShape = CurrentShape->Next;
+	}
+
+	if (LoadedBook != nullptr && CurrentllShapeGroup->ChangeAsGroup == false)
+	{
+		//Set PageItem Position Offset
+		llPageItemData* CurrentPageItem = LoadedBook->Page->PageGroup->PageItem;
+		CurrentllShapeGroup->PositionOffset = CurrentPageItem->Position - CurrentllShapeGroup->Position;
+	}
+
+
+	NewCharacter TextCharacter(CurrentShape);
+	TextCharacter.LoadedBook = LoadedBook;
+
+	//Text Loop
+	for (int n = 0; n < CurrentTextData.Phrase.size(); n++)
+	{
+		char CurrentChar = CurrentTextData.Phrase[n];
+		CurrentCharacterData = NewCharacter::GetCharacter(CurrentChar);
+		TextCharacter.llSwitch(CurrentShape); // Working
+		
+		CurrentShape->Ascii = CurrentChar;
+		CurrentShape->Position = GetCharacterPosition(CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, LineRestart);
+		CurrentShape->Size = GetCharacterSize(CurrentCharacterData, CurrentShape->Position, SCR_HEIGHT, SCR_WIDTH, CurrentTextData.FontSize);
+	
+		CurrentShape->Position = ApplyPositionConversion(CurrentShape->Position, P_PIXEL_TO_COMPUTER);
+		CurrentShape->Size = ApplySizeConversion(CurrentShape->Size, S_PIXEL_TO_COMPUTER);
+	
+		//Shape Details
+		CurrentShape->PartOfGroup = true;
+		CurrentShape->Color = CurrentllShapeGroup->Color;
+		CurrentShape->ActiveTexture = CurrentTextData.FontSlot;
+		CurrentShape->Hide = CurrentllShapeGroup->Hide;
+		CurrentShape->MouseAccess = CurrentllShapeGroup->MouseAccess;
+	
+		//Text Details
+		CurrentShape->Text = CurrentTextData.Phrase;
+		CurrentShape->Type = TYPE_CHARACTER;
+		CurrentShape->TextCentered = CurrentTextData.Centered;
+		CurrentShape->EndStart = CurrentTextData.EndStart;
+		CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+		CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
+	
+		//CurrentShape->PositionOffset = CurrentShape->Position - CurrentllShapeGroup->Position;
+		//CurrentShape->SizeOffset = CurrentShape->Size - CurrentllShapeGroup->Size;
+		//CurrentShape->ColorOffset = CurrentShape->Color - CurrentllShapeGroup->Color;
+		//UpdatellMouseAccess(CurrentShape->Position, CurrentShape->Size);
+		TextCharacter.SetllShape(CurrentShape);
+		////Checks if line needs to be returned 
+		//LineRestart = QueryLineRestart(CurrentTextData.CursorPosition, Maxline);
+	
+		//CurrentShapeGroup.Size[0] += AdvanceCursor(CurrentCharacterData, CurrentTextData);
+		AdvanceCursor(CurrentCharacterData, CurrentTextData);
+		//CurrentShapeGroup.Size[1] = CurrentTextData.FontSize / CurrentCharacterData.LineHeight;
+		//LineRestart = QueryLineRestart(CurrentTextData.CursorPosition, Maxline);
+		//if (CurrentTextData.List == false)
+		//{
+		//	if (LineRestart == true)
+		//	{   ////Move CursorPosition to the next line
+		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.CharSpacing, CurrentShapeGroup.Position[0]);
+		//	}
+		//}
+		//else
+		//{
+		//	//Next Line if Space
+		//	if (FullTextString[n - 1] == ' ' && FullTextString[n] == ' ' && FullTextString[n + 1] != ' ')
+		//	{   ////Move CursorPosition to the next line
+		//		CurrentTextData.CursorPosition = NextLine(StartPosition, CurrentCharacterData, CurrentTextData.CursorPosition, CurrentTextData.FontSize, CurrentTextData.LineSpacing, CurrentShapeGroup.Position[0]);
+		//	}
+		//}
+	    //we are adding extra text
+		//Run out of line but still needs to go further
+		if (CurrentShape->Next == nullptr && n != CurrentTextData.Phrase.size() - 1)
+		{
+			Log::LogString("Adding on normal");
+			TextCharacter.AddOn(TYPE_CHARACTER);
+		}
+		if (CurrentShape->Next != nullptr)
+		{
+		//	//if we are not done but the rest is quads,
+			if (CurrentShape->Next->Type != TYPE_CHARACTER && n != CurrentTextData.Phrase.size() - 1)
+			{
+				Log::LogString("Adding in between");
+
+				//Disconnect strain
+				StrainAfterText = CurrentShape->Next;
+				CurrentShape->Next = nullptr;
+				StrainAfterText->Previous = nullptr;
+				Log::LogString("Non-Text Strain Disconnected");
+
+				////AddCharacter
+				TextCharacter.AddOn(TYPE_CHARACTER);
+				
+				////Reconnect strain
+				CurrentShape->Next->Next = StrainAfterText;
+				StrainAfterText->Previous = CurrentShape->Next;// The currentshape is no longer the last shape in the text
+				Log::LogString("Non-Text Strain Reconnected");
+				//okay you can't use ->Next->Next as many times it just gives you the same value (incorrect oviously)
+			}
+		}
+		CurrentShape = CurrentShape->Next;
+	}
+
+	//Cut the line off at the deletion point
+	//CurrentShape->Previous->Next == nullptr;
+	//There is text that needs to be dicareded
+	while (CurrentShape != nullptr && CurrentShape->Type == TYPE_CHARACTER)
+	{
+		static int Count = 0;
+		llShapeData* Next = CurrentShape->Next;
+		NewCharacter OverFill(CurrentShape);
+		OverFill.LoadedBook = LoadedBook;
+		OverFill.Delete();
+		CurrentShape = CurrentShape->Next;
+	}
+
+	CurrentllShapeGroup->ChangeAsGroup = false;
+}
+
 void Text::NewReplaceText()
 {
 	//cout << "REPLACE COLOR " << CurrentShapeGroup.Color[0] << " , " << CurrentShapeGroup.Color[1] << " , " << CurrentShapeGroup.Color[2] << " , " << CurrentShapeGroup.Color[3] << " , " << endl;
@@ -591,6 +1105,13 @@ void Text::NewReplaceText()
 	}
 }
 
+void Text::SetllText(string Text)
+{
+	CurrentTextData.Phrase = Text;
+	CurrentllShapeGroup->Shape->Text = Text;
+	llUpdate();
+}
+
 void Text::SetText(string Text)
 {
 	//ReCalibrateID();
@@ -640,9 +1161,15 @@ void Text::OffsetFont(int FontSize)
 void Text::Update()
 {
 	if (Initialized == false) return Log::LogString("Text Update Error:: Group Not Initialized");
-	SetShape();
 	NewReplaceText();
-	SetMouseAccess();
+	SetllMouseAccess();
+}
+
+void Text::llUpdate()
+{
+	//SetShape();
+	NewReplacellText();
+	SetllMouseAccess();
 }
 
 void Text::SetTextSize()
@@ -659,6 +1186,22 @@ void Text::SetTextSize()
 	}
 	
 	CurrentShapeGroup.Size = ApplySizeConversion({TextWidth, CurrentTextData.FontSize }, S_PIXEL_TO_COMPUTER);
+}
+
+void Text::SetllTextSize()
+{
+	float TextWidth = 0.0;
+	float SmoothingReduction = 1.19;
+	for (int n = 0; n < CurrentTextData.Phrase.size(); n++)
+	{
+		CharacterData CurrentChar = NewCharacter::GetCharacter(CurrentTextData.Phrase[n]);
+
+		float ScaleSize = CurrentTextData.FontSize * SmoothingReduction / CurrentChar.LineHeight;
+		float AdvanceWidth = (CurrentChar.CharWidth + 2) * ScaleSize; //In Pixels
+		TextWidth += AdvanceWidth;
+	}
+
+	CurrentllShapeGroup->Size = ApplySizeConversion({ TextWidth, CurrentTextData.FontSize }, S_PIXEL_TO_COMPUTER);
 }
 
 //GroupData must have an initialized ID
@@ -739,6 +1282,20 @@ void Text::SetTextGroup(ShapeGroupData& ShapeGroup, TextData& TextData)
 	else
 	{
 		cout << "ERROR::SETTEXTGROUP()::ID not set " << ShapeGroup.ShapeStart << endl;
+	}
+}
+
+void Text::SetllTextGroup(llShapeGroupData* llShapeGroup, TextData& TextData)
+{
+	if (llShapeGroup != nullptr)
+	{
+		*CurrentllShapeGroup = *llShapeGroup;
+		CurrentTextData = TextData;
+		llUpdate();
+	}
+	else
+	{
+		cout << "SetllTextGroup ShapeGroup was nullptr"  << endl;
 	}
 }
 

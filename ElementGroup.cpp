@@ -12,88 +12,94 @@ ShapeGroup::ShapeGroup()
 	CurrentllShapeGroup = nullptr;
 }
 
-
-
 ShapeGroup::ShapeGroup(llBookData* llBook)
 	:SetInStone(true)
 {
-	if (llBook->Page == nullptr)
+	//Validate
+	if (llBook == nullptr)
 	{
-		Log::LogString("Book Is Brand New");
-		llPageData* CreatedPage = new llPageData;
-		llPageGroupData* CreatedPageGroup = new llPageGroupData;
-		llPageItemData* CreatedPageItem = new llPageItemData;
-
-		llBook->Page = CreatedPage;
-		llBook->PageHead = CreatedPage;
-
-		llBook->Page->PageGroup = CreatedPageGroup;
-		llBook->Page->PageGroupHead = CreatedPageGroup;
-
-		llBook->Page->PageGroup->PageItem = CreatedPageItem;
-		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
-	}
-
-	if (llBook->Page->PageGroup == nullptr)
-	{
-		llPageGroupData* CreatedPageGroup = new llPageGroupData;
-		llPageItemData* CreatedPageItem = new llPageItemData;
-
-		llBook->Page->PageGroup = CreatedPageGroup;
-		llBook->Page->PageGroupHead = CreatedPageGroup;
-
-		llBook->Page->PageGroup->PageItem = CreatedPageItem;
-		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
-
-	}
-
-	if (llBook->Page->PageGroup->PageItem == nullptr)
-	{
-		llPageItemData* CreatedPageItem = new llPageItemData;
-
-		llBook->Page->PageGroup->PageItem = CreatedPageItem;
-		llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
-	}
-
-	CurrentllShapeGroup = new llShapeGroupData;
-	//Log::LogString("Shape Group Created");
-
-	llShapeGroupData* TestingShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
-
-	//Completely new object
-	if (TestingShapeGroup == nullptr)
-	{
-		Log::LogString("New ShapeGroup Linked");
-		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
-		llBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
-	}
-	else //Shapes already created
-	{
-		llShapeGroupData* FoundTail = TestingShapeGroup;
-		int LinkCount = 1;
-
-		//Find tail then add
-		//Log::LogString("Finding Tail..");
-		while (FoundTail->Next != nullptr)
+		if (llBook->Page == nullptr)
 		{
-			FoundTail = FoundTail->Next;
-			LinkCount++;
-		}
-		Log::LogString("New ShapeGroup Linked");
-		FoundTail->Next = CurrentllShapeGroup;
-		CurrentllShapeGroup->Previous = FoundTail;
-		llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
-	}
+			Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
 
-	CurrentllShapeGroup->Type = TYPE_CUSTOM;
-	LoadedBook = llBook;
+			llBook->Page = CreatedPage;
+			llBook->PageHead = CreatedPage;
+
+			llBook->Page->PageGroup = CreatedPageGroup;
+			llBook->Page->PageGroupHead = CreatedPageGroup;
+
+			llBook->Page->PageGroup->PageItem = CreatedPageItem;
+			llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+		}
+
+		if (llBook->Page->PageGroup == nullptr)
+		{
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+			llPageItemData* CreatedPageItem = new llPageItemData;
+
+			llBook->Page->PageGroup = CreatedPageGroup;
+			llBook->Page->PageGroupHead = CreatedPageGroup;
+
+			llBook->Page->PageGroup->PageItem = CreatedPageItem;
+			llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		}
+
+		if (llBook->Page->PageGroup->PageItem == nullptr)
+		{
+			llPageItemData* CreatedPageItem = new llPageItemData;
+
+			llBook->Page->PageGroup->PageItem = CreatedPageItem;
+			llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+		}
+
+		CurrentllShapeGroup = new llShapeGroupData;
+		//Log::LogString("Shape Group Created");
+
+		llShapeGroupData* TestingShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
+
+		//Completely new object
+		if (TestingShapeGroup == nullptr)
+		{
+			Log::LogString("New ShapeGroup Linked");
+			llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+			llBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+		}
+		else //Shapes already created
+		{
+			llShapeGroupData* FoundTail = TestingShapeGroup;
+			int LinkCount = 1;
+
+			//Find tail then add
+			//Log::LogString("Finding Tail..");
+			while (FoundTail->Next != nullptr)
+			{
+				FoundTail = FoundTail->Next;
+				LinkCount++;
+			}
+			Log::LogString("New ShapeGroup Linked");
+			FoundTail->Next = CurrentllShapeGroup;
+			CurrentllShapeGroup->Previous = FoundTail;
+			llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		}
+
+		CurrentllShapeGroup->Type = TYPE_CUSTOM;
+		LoadedBook = llBook;
+	}
+	else
+	{
+		Log::LogString("ERROR:: ShapeInit FAILED:: No Book Provided ");
+	}
 }
 
 ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 	:SetInStone(true)
 {
-	//If it exists
-	if (llShapeGroup != nullptr)
+	//Validate
+	if (llShapeGroup != nullptr && llBookData != nullptr)
 	{
 		if (llBookData->Page == nullptr)
 		{
@@ -169,10 +175,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 		LoadedBook = llBookData;
 		CurrentllShapeGroup->Type = TYPE_CUSTOM;
 	}
-	else
-	{
-		Log::LogString("Sorry llShape was nullptr");
-	}
+	else{ Log::LogString("ERROR:: ShapeGroup FAILED:: No Book Provided "); }
 }
 
 ShapeGroup::ShapeGroup(llShapeGroupData* ShapeGroup)
@@ -277,6 +280,9 @@ ShapeGroup::ShapeGroup(Page& Page, int ID)
 
 void ShapeGroup::Add_Default()
 {
+	//Validate
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: Add_Default ShapeGroup FAILED:: No Book Provided "); return; }
+
 	if (LoadedBook->Page == nullptr)
 	{
 		Log::LogString("Book Is Brand New");
@@ -351,94 +357,10 @@ void ShapeGroup::Add_Default()
 
 void ShapeGroup::Add_Duplicate()
 {
-	////Validate
-	//if (CurrentllShapeGroup == nullptr || CurrentllShapeGroup->Shape == nullptr) { Log::LogString("ERROR:: ShapeGroup AddDuplicate FAILED:: Shape or ShapeGroup was nullptr"); };
-	//
-	//llShapeGroupData* ReferenceShapeGroup = CurrentllShapeGroup;
-	//llShapeData* Data_DuplicateShape = ReferenceShapeGroup->Shape;
-	//
-	////Go to Shape head
-	//while (Data_DuplicateShape->Previous != nullptr)
-	//{
-	//	Data_DuplicateShape = Data_DuplicateShape->Previous;
-	//}
-	//
-	//if (LoadedBook->Page == nullptr)
-	//{
-	//	Log::LogString("Book Is Brand New");
-	//	llPageData* CreatedPage = new llPageData;
-	//	llPageGroupData* CreatedPageGroup = new llPageGroupData;
-	//	llPageItemData* CreatedPageItem = new llPageItemData;
-	//
-	//	LoadedBook->Page = CreatedPage;
-	//	LoadedBook->PageHead = CreatedPage;
-	//
-	//	LoadedBook->Page->PageGroup = CreatedPageGroup;
-	//	LoadedBook->Page->PageGroupHead = CreatedPageGroup;
-	//
-	//	LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
-	//	LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
-	//}
-	//
-	//if (LoadedBook->Page->PageGroup == nullptr)
-	//{
-	//	llPageGroupData* CreatedPageGroup = new llPageGroupData;
-	//	llPageItemData* CreatedPageItem = new llPageItemData;
-	//
-	//	LoadedBook->Page->PageGroup = CreatedPageGroup;
-	//	LoadedBook->Page->PageGroupHead = CreatedPageGroup;
-	//
-	//	LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
-	//	LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
-	//
-	//}
-	//
-	//if (LoadedBook->Page->PageGroup->PageItem == nullptr)
-	//{
-	//	llPageItemData* CreatedPageItem = new llPageItemData;
-	//
-	//	LoadedBook->Page->PageGroup->PageItem = CreatedPageItem;
-	//	LoadedBook->Page->PageGroup->PageItemHead = CreatedPageItem;
-	//}
-	//
-	//CurrentllShapeGroup = new llShapeGroupData;
-	////Log::LogString("Shape Group Created");
-	//
-	//llShapeGroupData* TestingShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
-	//
-	////Completely new object
-	//if (TestingShapeGroup == nullptr)
-	//{
-	//	Log::LogString("New ShapeGroup Linked");
-	//	LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
-	//	LoadedBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
-	//}
-	//else //Shapes already created
-	//{
-	//	llShapeGroupData* FoundTail = TestingShapeGroup;
-	//	int LinkCount = 1;
-	//
-	//	//Find tail then add
-	//	//Log::LogString("Finding Tail..");
-	//	while (FoundTail->Next != nullptr)
-	//	{
-	//		FoundTail = FoundTail->Next;
-	//		LinkCount++;
-	//	}
-	//	Log::LogString("New ShapeGroup Linked");
-	//	FoundTail->Next = CurrentllShapeGroup;
-	//	CurrentllShapeGroup->Previous = FoundTail;
-	//	LoadedBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
-	//}
-	//
-	//CurrentllShapeGroup->Type = TYPE_CUSTOM;
-	//
-	//
-	//while (Data_DuplicateShape != nullptr)
-	//{
-	//	Shape DuplicateShape(LoadedBook, Data_DuplicateShape);
-	//}
-	Log::LogString("Duplicating ShapeGroup");
+	//Validate
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: Add_Duplicate ShapeGroup FAILED:: No Book Provided "); return; }
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: Add_Duplicate ShapeGroup FAILED:: Invalid ShapeGroup State"); return; }
+
 	CopyShapeGroup(LoadedBook, CurrentllShapeGroup);
 }
 
@@ -449,11 +371,15 @@ void ShapeGroup::Add_Insert()
 
 void ShapeGroup::Delete()
 {
-
+	//Validate
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: Delete ShapeGroup FAILED:: Invalid ShapeGroup State "); return;  }
 }
 
 void ShapeGroup::HighlightShapeGroup(glm::vec4 HighlightColor)
 {
+	//Validate
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: HighlightShapeGroup ShapeGroup FAILED:: Invalid ShapeGroup State "); return; }
+
 	CurrentllShapeGroup->HighlightColor = HighlightColor;
 	CurrentllShapeGroup->Highlighted = true;
 	llUpdate();
@@ -461,194 +387,184 @@ void ShapeGroup::HighlightShapeGroup(glm::vec4 HighlightColor)
 
 void ShapeGroup::HighlightOff()
 {
+	//Validate
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: HighlightOff ShapeGroup FAILED:: Invalid ShapeGroup State "); return; }
+
 	CurrentllShapeGroup->Highlighted = false;
 	llUpdate();
 }
 
 void ShapeGroup::llShapeGroupInit(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 {
-	//If it exists
-	if (llShapeGroup != nullptr)
+	//Validate
+	if (llShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroupInit FAILED:: No ShapeGroup Provided"); }
+	if (llBookData == nullptr) { Log::LogString("ERROR:: ShapeGroupInit FAILED:: No Book Provided "); }
+
+	if (llBookData->Page == nullptr)
 	{
-		if (llBookData->Page == nullptr)
-		{
-			Log::LogString("Book Is Brand New");
-			llPageData* CreatedPage = new llPageData;
-			llPageGroupData* CreatedPageGroup = new llPageGroupData;
-			llPageItemData* CreatedPageItem = new llPageItemData;
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
 
-			llBookData->Page = CreatedPage;
-			llBookData->PageHead = CreatedPage;
+		llBookData->Page = CreatedPage;
+		llBookData->PageHead = CreatedPage;
 
-			llBookData->Page->PageGroup = CreatedPageGroup;
-			llBookData->Page->PageGroupHead = CreatedPageGroup;
+		llBookData->Page->PageGroup = CreatedPageGroup;
+		llBookData->Page->PageGroupHead = CreatedPageGroup;
 
-			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
-			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
-		}
-
-		if (llBookData->Page->PageGroup == nullptr)
-		{
-			llPageGroupData* CreatedPageGroup = new llPageGroupData;
-			llPageItemData* CreatedPageItem = new llPageItemData;
-			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
-
-			llBookData->Page->PageGroup = CreatedPageGroup;
-			llBookData->Page->PageGroupHead = CreatedPageGroup;
-
-			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
-			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
-
-			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
-			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
-		}
-
-		if (llBookData->Page->PageGroup->PageItem == nullptr)
-		{
-			llPageItemData* CreatedPageItem = new llPageItemData;
-			llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
-
-			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
-			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
-
-			llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
-			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
-		}
-
-		CurrentllShapeGroup = new llShapeGroupData;
-		*CurrentllShapeGroup = *llShapeGroup;
-
-		llShapeGroupData* TestingShapeGroup = llBookData->Page->PageGroup->PageItem->ShapeGroup;
-
-		//Completely new shapegroup object
-		if (TestingShapeGroup == nullptr)
-		{
-			Log::LogString("New ShapeGroup Linked");
-			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
-			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
-		}
-		else //Shape groups already created
-		{
-			llShapeGroupData* FoundTail = TestingShapeGroup;
-			int LinkCount = 1;
-
-			//Find tail then add
-			//Log::LogString("Finding Tail..");
-			while (FoundTail->Next != nullptr)
-			{
-				FoundTail = FoundTail->Next;
-				LinkCount++;
-			}
-
-			Log::LogString("New ShapeGroup Linked");
-			FoundTail->Next = CurrentllShapeGroup;
-			CurrentllShapeGroup->Previous = FoundTail;
-			//We are setting the book to point to this new shape group because that's where we want to load shapes
-			//however the previous group is not lost because we set the next and previous
-			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
-		}
-
-		LoadedBook = llBookData;
-		CurrentllShapeGroup->Type = TYPE_CUSTOM;
+		llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+		llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
 	}
-	else
+
+	if (llBookData->Page->PageGroup == nullptr)
 	{
-		Log::LogString("Text Init FAILED");
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		llBookData->Page->PageGroup = CreatedPageGroup;
+		llBookData->Page->PageGroupHead = CreatedPageGroup;
+
+		llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+		llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
 	}
+
+	if (llBookData->Page->PageGroup->PageItem == nullptr)
+	{
+		llPageItemData* CreatedPageItem = new llPageItemData;
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		llBookData->Page->PageGroup->PageItem = CreatedPageItem;
+		llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		llBookData->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+	}
+
+	CurrentllShapeGroup = new llShapeGroupData;
+	*CurrentllShapeGroup = *llShapeGroup;
+
+	llShapeGroupData* TestingShapeGroup = llBookData->Page->PageGroup->PageItem->ShapeGroup;
+
+	//Completely new shapegroup object
+	if (TestingShapeGroup == nullptr)
+	{
+		Log::LogString("New ShapeGroup Linked");
+		llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+		llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+	}
+	else //Shape groups already created
+	{
+		llShapeGroupData* FoundTail = TestingShapeGroup;
+		int LinkCount = 1;
+
+		//Find tail then add
+		//Log::LogString("Finding Tail..");
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			LinkCount++;
+		}
+
+		Log::LogString("New ShapeGroup Linked");
+		FoundTail->Next = CurrentllShapeGroup;
+		CurrentllShapeGroup->Previous = FoundTail;
+		//We are setting the book to point to this new shape group because that's where we want to load shapes
+		//however the previous group is not lost because we set the next and previous
+		llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+	}
+
+	LoadedBook = llBookData;
+	CurrentllShapeGroup->Type = TYPE_CUSTOM;
 }
 
 void ShapeGroup::SetllShapeGroup(llShapeGroupData* llShapeGroup)
 {
-	if (llShapeGroup != nullptr)
-	{
-		*CurrentllShapeGroup = *llShapeGroup;
-		llUpdate();
-	}
-	else
-	{
-		Log::LogString("ERROR:: SetllShapeGroup FAILED:: llShapeGroup was nullptr");
-	}
+	//Validate
+	if (llShapeGroup == nullptr) { Log::LogString("ERROR:: SetllShapeGroup FAILED:: No ShapeGroup Provided"); return; }
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: SetllShapeGroup FAILED:: Invalid ShapeGroup State "); return; }
+
+	*CurrentllShapeGroup = *llShapeGroup;
+	llUpdate();
 }
 
 
 // This shape group may have quads, characters, custom shapes
 void ShapeGroup::llUpdate()
 {
-	Log::LogString("trying Update ShapeGroup");
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: ShapeGroup nullptr"); return; };
-	if (LoadedBook != nullptr)
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: Invalid Book State"); return; };
+
+	if (CurrentllShapeGroup->ChangeAsGroup == false)
 	{
-		if (CurrentllShapeGroup->ChangeAsGroup == false)
-		{
-			//Set PageItem Position Offset
-			llPageItemData* CurrentPageItem = LoadedBook->Page->PageGroup->PageItem;
-			CurrentllShapeGroup->PositionOffset = CurrentPageItem->Position - CurrentllShapeGroup->Position;
-		}
-
-		Log::LogString("Updating ShapeGroup");
-		llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
-
-		//Go to head Shape
-		while (CurrentShape->Previous != nullptr)
-		{
-			CurrentShape = CurrentShape->Previous;
-		}
-
-		//Set All sub group positions and call sub group functions
-		while (CurrentShape != nullptr)
-		{
-			switch (CurrentShape->Type)
-			{
-			case TYPE_SHAPE:
-			{
-				Shape ShapeSelected(CurrentShape);
-				ShapeSelected.LoadedBook = LoadedBook;
-				ShapeSelected.llSwitch(CurrentShape);
-				CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
-				CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
-				CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
-				//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
-				//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
-				CurrentShape->ChangeAsGroup = true;
-				ShapeSelected.SetllShape(CurrentShape);
-				break;
-			}
-			case TYPE_QUAD:
-			{
-				Quad QuadSelected(CurrentShape);
-				QuadSelected.LoadedBook = LoadedBook;
-				QuadSelected.llSwitch(CurrentShape);
-				CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
-				CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
-				CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
-				//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
-				//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
-				CurrentShape->ChangeAsGroup = true;
-				QuadSelected.SetllShape(CurrentShape);
-				break;
-			}
-			case TYPE_CHARACTER:
-			{
-				NewCharacter CharSelected(CurrentShape);
-				CharSelected.LoadedBook = LoadedBook;
-				CharSelected.llSwitch(CurrentShape);
-				CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
-				CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
-				CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
-				//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
-				//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
-				CurrentShape->ChangeAsGroup = true;
-				CharSelected.SetllShape(CurrentShape);
-				break;
-			}
-			}
-			CurrentShape = CurrentShape->Next;
-		
-		}
+		//Set PageItem Position Offset
+		llPageItemData* CurrentPageItem = LoadedBook->Page->PageGroup->PageItem;
+		CurrentllShapeGroup->PositionOffset = CurrentPageItem->Position - CurrentllShapeGroup->Position;
 	}
-	else
+
+	Log::LogString("Updating ShapeGroup");
+	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+
+	//Go to head Shape
+	while (CurrentShape->Previous != nullptr)
 	{
-		Log::LogString("LoadedBook Was nullptr");
+		CurrentShape = CurrentShape->Previous;
+	}
+
+	//Set All sub group positions and call sub group functions
+	while (CurrentShape != nullptr)
+	{
+		switch (CurrentShape->Type)
+		{
+		case TYPE_SHAPE:
+		{
+			Shape ShapeSelected(CurrentShape);
+			ShapeSelected.LoadedBook = LoadedBook;
+			ShapeSelected.llSwitch(CurrentShape);
+			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+			CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
+			CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+			//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
+			//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+			CurrentShape->ChangeAsGroup = true;
+			ShapeSelected.SetllShape(CurrentShape);
+			break;
+		}
+		case TYPE_QUAD:
+		{
+			Quad QuadSelected(CurrentShape);
+			QuadSelected.LoadedBook = LoadedBook;
+			QuadSelected.llSwitch(CurrentShape);
+			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+			CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
+			CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+			//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
+			//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+			CurrentShape->ChangeAsGroup = true;
+			QuadSelected.SetllShape(CurrentShape);
+			break;
+		}
+		case TYPE_CHARACTER:
+		{
+			NewCharacter CharSelected(CurrentShape);
+			CharSelected.LoadedBook = LoadedBook;
+			CharSelected.llSwitch(CurrentShape);
+			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+			CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
+			CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+			//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
+			//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+			CurrentShape->ChangeAsGroup = true;
+			CharSelected.SetllShape(CurrentShape);
+			break;
+		}
+		}
+		CurrentShape = CurrentShape->Next;
+	
 	}
 }
 
@@ -765,8 +681,9 @@ void ShapeGroup::OffsetPosition(glm::vec2 Position)
 
 void ShapeGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
-	Log::LogString("Offsetting Position");
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: Offset Position FAILED:: ShapeGroup nullptr"); return; };
+	//Validate
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: Invalid ShapeGroup State"); return; };
+
 	if (bools[0] == true)
 	{
 		CurrentllShapeGroup->Position[0] += Position[0];
@@ -780,13 +697,13 @@ void ShapeGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 }
 void ShapeGroup::OffsetSize(glm::vec2 Size)
 {
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetSize FAILED:: ShapeGroup nullptr"); return; };
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetSize FAILED:: Invalid ShapeGroup State"); return; };
 	CurrentllShapeGroup->Size += Size;
 	llUpdate();
 }
 void ShapeGroup::OffsetSize(glm::vec2 Size, glm::vec2 bools)
 {
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetSize w/ bools FAILED:: ShapeGroup nullptr"); return; };
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetSize w/ bools FAILED:: Invalid ShapeGroup State"); return; };
 	if (bools[0] == true)
 	{
 		CurrentllShapeGroup->Size[0] += Size[0];
@@ -800,13 +717,13 @@ void ShapeGroup::OffsetSize(glm::vec2 Size, glm::vec2 bools)
 
 void ShapeGroup::OffsetColor(glm::vec4 Color)
 {
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetColor FAILED:: ShapeGroup nullptr"); return; };
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetColor FAILED:: Invalid ShapeGroup State"); return; };
 	CurrentllShapeGroup->Color += Color;
 	llUpdate();
 }
 void ShapeGroup::OffsetColor(glm::vec4 Color, glm::vec4 bools)
 {
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetColor w/ bools FAILED:: ShapeGroup nullptr"); return; };
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: OffsetColor w/ bools FAILED::  Invalid ShapeGroup State"); return; };
 	if (bools[0] == true)
 	{
 		if (CurrentllShapeGroup->Color[0] == Color[0]) { return; }
@@ -1074,14 +991,13 @@ void ShapeGroup::SetMouseAccess()
 void ShapeGroup::SetllMouseAccess()
 {
 	//Checks
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::ShapeGroup is null "); return; };
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::Invalid ShapeGroup State "); return; };
 	if (CurrentllShapeGroup->Shape == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No Shapes in ShapeGroup"); return; };
 
 	if (CurrentllShapeGroup->MouseAccess == true)
 	{
 		//Setup
 		llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
-
 
 		//Go to Head Shape
 		while (CurrentShape->Previous != nullptr)
@@ -1253,6 +1169,9 @@ void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
 
 void ShapeGroup::NewllUpdate()
 {
+	//Validate
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: NewllUpdate FAILED:: Invalid ShapeGroup State"); return; };
+
 	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
 	llShapeData* NullShape = nullptr;
 	llShapeData UpdatedShape = *CurrentShape;
@@ -1289,60 +1208,69 @@ void ShapeGroup::NewllUpdate()
 
 float ShapeGroup::GetAccessRight()
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessRight FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Right;
 }
 
 float ShapeGroup::GetAccessLeft()
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessLeft FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Left;
 }
 
 
 float ShapeGroup::GetAccessTop()
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessTop FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Top;
 }
 
 
 float ShapeGroup::GetAccessBottom()
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessBottom FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Bottom;
 }
 
 
 float ShapeGroup::GetAccessRight(int PixelOffset)
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessRight FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Right + PIXEL * PixelOffset;
 }
 
 float ShapeGroup::GetAccessLeft(int PixelOffset)
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessLeft FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Left + PIXEL * PixelOffset;
 }
 
 
 float ShapeGroup::GetAccessTop(int PixelOffset)
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessTop FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Top + PIXEL * PixelOffset;
 }
 
 
 float ShapeGroup::GetAccessBottom(int PixelOffset)
 {
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessBottom FAILED:: Invalid ShapeGroup State"); return 0.0; };
+
 	return CurrentllShapeGroup->Bottom + PIXEL * PixelOffset;
 }
-
-////glm::vec4* ShapeGroup::GetColor()
-////{
-////	return &CurrentllShapeGroup->Color;
-////}
-//
-//glm::vec2* ShapeGroup::GetPosition()
-//{
-//	return &CurrentllShapeGroup->Position;
-//}
-
-//glm::vec2* ShapeGroup::GetSize()
-//{
-//	return &CurrentllShapeGroup->Size;
-//}

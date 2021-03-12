@@ -100,7 +100,7 @@ void NewGrid::ReplaceGrid()
 			LoadedShape.Position = LoadShapePosition(this->LoadedShape.ShapeGroup.Position, this->LoadedShape.ShapeGroup.Size, this->LoadedShape.ShapeGroup.XYShapePerRow, { xQuad ,  yQuad }, this->LoadedShape.ShapeGroup.Centered);
 			LoadedShape.ShapeGroup.ShapeOffset = ShapeOffset;
 			//ReplaceQuad
-			QuadP_Replace.SetShape(LoadedShape);
+			//QuadP_Replace.SetShape(LoadedShape);
 			LoadedShapeID++;
 			ShapeOffset++;
 		}

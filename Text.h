@@ -30,19 +30,34 @@ class Text : public ShapeGroup
 
 public:
 
+	bool Editorized = false;
 	bool BeenCentered = false;
 	//Public Member Functions
 	TextData CurrentTextData;
 	CharacterData CurrentCharacterData;
+
+	Text() { LoadedBook = nullptr; CurrentllShapeGroup = nullptr; };
+	Text(llBookData* llBookData);
+	Text(llBookData* llBookData, llShapeGroupData* llShapeGroup, TextData& TextData);
+	Text(llShapeGroupData* llShapeGroup);
 
 	//Basic Text Constructors
 	Text(Page& Page);
 	Text(Page& Page, ShapeGroupData& ShapeGroupData, TextData& TextData);
 	Text(Page& Page, ShapeData& ShapeData, TextData& TextData);
 	Text(Page& Page, int GroupID);
+	void llInit(llBookData* llBook) { LoadedBook = llBook; Editorized = true; };
+	void llInit(llBookData* llBookData, llShapeGroupData* llShapeGroup, TextData& TextData);
 
-	//Simple
-	Text();
+	void Add_Default() override;
+	//void Add_Duplicate() override;
+	void Add_Insert() override;
+	void Delete() override;
+
+
+	glm::vec2 GetSize() { return CurrentllShapeGroup->Size; };
+	glm::vec2 GetSize(int xPixels, int yPixels) {return { CurrentllShapeGroup->Size[X_AXIS] + xPixels * PIXEL, CurrentllShapeGroup->Size[Y_AXIS] + yPixels * PIXEL };};
+
 	Text(Page& Page, string Text, glm::vec2 Position);
 
 	//Single Value Text Constructors
@@ -52,7 +67,7 @@ public:
 
 	void ShapeToGroup(ShapeData& ShapeData);
 	void Init(Page& Page, string Text, glm::vec2 Position);
-
+	string GetText() { return CurrentllShapeGroup->Shape->Text; };
 	
 	//Retreives the last state of the ShapeGroup and loads the object
 	ShapeData& Switch(int ShapeID) override
@@ -87,17 +102,24 @@ public:
 	//Create
 	void SetShape();
 	void SetTextGroup(ShapeData& ShapeData, TextData& TextData);
+	void SetllTextGroup(llShapeGroupData* llShapeGroup, TextData& TextData);
 	void SetTextGroup(ShapeGroupData& ShapeGroup, TextData& TextData);
 	
 	void CreateText();
 	void AddText();
 
+	void CreatellText();
+	void AddllText();
+
 	//Update
     void NewReplaceText();
+	void NewReplacellText();
 	void Update(); 
+	void llUpdate();
 
 	//MemberFunctions
 	void SetText(string Text);
+	void SetllText(string Text);
 	void SetFont(int FontSize);
 	void CenterText();
 	void OffsetFont(int FontSize);
@@ -110,6 +132,7 @@ private:
 
 	//Private Functions
 	void SetTextSize();
+	void SetllTextSize();
 
 
 

@@ -574,6 +574,9 @@ void PageGroupItem::Delete()
 
 void PageGroupItem::HighlightPageItem(glm::vec4 HighlightColor)
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: HighlightPageItem ShapeGroup FAILED:: Invalid ShapeGroup State "); return; }
+
 	CurrentllPageItem->HighlightColor = HighlightColor;
 	CurrentllPageItem->Highlighted = true;
 	llUpdate();
@@ -581,6 +584,9 @@ void PageGroupItem::HighlightPageItem(glm::vec4 HighlightColor)
 
 void PageGroupItem::HighlightOff()
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: HighlightPageItem ShapeGroup FAILED:: Invalid ShapeGroup State "); return; }
+
 	CurrentllPageItem->Highlighted = false;
 	llUpdate();
 }

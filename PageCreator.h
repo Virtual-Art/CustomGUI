@@ -54,6 +54,7 @@ namespace PageCreator
 	const glm::vec4 HighlightColor = { 1.0, 0.5, 0.0, 1.0 };
 	const glm::vec4 DescriptionColor = {1.0, 1.0, 1.0, 1.0};
 
+
 	const glm::vec4 Red = { 1.0, 0.0, 0.0, 1.0 };
 	const glm::vec4 Green = { 0.0, 1.0, 0.0, 1.0 };
 	const glm::vec4 Blue = { 0.0, 0.0, 1.0, 1.0 };
@@ -65,6 +66,12 @@ namespace PageCreator
 	const glm::vec4 Azure = { 0.0, 0.5, 1.0, 1.0 };
 	const glm::vec4 Purple = { 0.5, 0.0, 1.0, 1.0 };
 	const glm::vec4 Transparent = { 0.0, 0.0, 0.0, 0.0 };
+
+	const glm::vec4 ShapeHighlightColor = {0.0, 0.5, 0.9, 0.8 }; // Light Blue 
+	const glm::vec4 ShapeGroupHighlightColor = { 0.0, 0.9, 0.4, 0.8 }; // Medium Green
+	const glm::vec4 PageItemHighlightColor = { 0.5, 0.0, 0.5, 0.8}; //Medium Purple
+	const glm::vec4 PageGroupHighlightColor = Red;
+	const glm::vec4 PageHighlightColor = Orange;
 
 	// Table of Creator Functions
 	static KeyFunction**** CreatorFunction;
@@ -196,6 +203,8 @@ namespace PageCreator
 	//BOOK TRAVERSING FUNCTIONS
 	void DataLeft();    //Shift + Left
 	void DataRight();   //Shift + Right
+
+	void PrintCreatorStats();
 
 	//BOOK/TYPE TRAVERSING FUNCTIONS
 	void LevelUp();     //Shift + Up
