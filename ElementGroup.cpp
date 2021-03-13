@@ -182,14 +182,14 @@ ShapeGroup::ShapeGroup(llShapeGroupData* ShapeGroup)
 	:SetInStone(true)
 {
 	//If it exists
-	if (ShapeGroup != nullptr && ShapeGroup->Shape != nullptr)
+	if (ShapeGroup != nullptr )
 	{
 
 		CurrentllShapeGroup = ShapeGroup;
 	}
 	else
 	{
-		Log::LogString("Sorry llShapeGroup was nullptr or doesnt contain shapes");
+		Log::LogString("ERROR:: ShapeGroup FAILED:: ShapeGroup was nullptr ");
 	}
 }
 
@@ -496,8 +496,9 @@ void ShapeGroup::SetllShapeGroup(llShapeGroupData* llShapeGroup)
 // This shape group may have quads, characters, custom shapes
 void ShapeGroup::llUpdate()
 {
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: ShapeGroup nullptr"); return; };
 	if (LoadedBook == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: Invalid Book State"); return; };
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: ShapeGroup nullptr"); return; };
+	if (CurrentllShapeGroup->Shape == nullptr) { Log::LogString("WARNING:: llUpdate FAILED:: No Contents in Shape Group To Update"); return; };
 
 	if (CurrentllShapeGroup->ChangeAsGroup == false)
 	{

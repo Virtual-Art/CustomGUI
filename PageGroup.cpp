@@ -13,51 +13,59 @@ PageGroup::PageGroup()
 
 PageGroup::PageGroup(llBookData* llBook)
 {
-	if (llBook->Page == nullptr)
+	if (llBook != nullptr)
 	{
-		Log::LogString("Book Is Brand New");
-		llPageData* CreatedPage = new llPageData;
-		llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
-		llBook->Page = CreatedPage;
-		llBook->PageHead = CreatedPage;
-
-		llBook->Page->PageGroup = CreatedPageGroup;
-		llBook->Page->PageGroupHead = CreatedPageGroup;
-	}
-
-	CurrentllPageGroup = new llPageGroupData;
-	//Log::LogString("PageItem Created and Shape Group?");
-
-	llPageGroupData* TestingPageGroup = llBook->Page->PageGroup;
-
-	//Completely new object
-	if (TestingPageGroup == nullptr)
-	{
-		Log::LogString("New PageGroup Linked");
-		llBook->Page->PageGroup = CurrentllPageGroup;
-		llBook->Page->PageGroupHead = CurrentllPageGroup;
-	}
-	else //Shapes already created
-	{
-		llPageGroupData* FoundTail = TestingPageGroup;
-		int LinkCount = 0;
-
-		//Find tail then add
-		//Log::LogString("Finding Tail..");
-		while (FoundTail->Next != nullptr)
+		if (llBook->Page == nullptr)
 		{
-			FoundTail = FoundTail->Next;
-			LinkCount++;
-		}
-		Log::LogString("New PageGroup Linked");
-		FoundTail->Next = CurrentllPageGroup;
-		CurrentllPageGroup->Previous = FoundTail;
-		llBook->Page->PageGroup = CurrentllPageGroup;
-	}
+			Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
-	CurrentllPageGroup->Type = TYPE_PAGEGROUP;
-	LoadedBook = llBook;
+			llBook->Page = CreatedPage;
+			llBook->PageHead = CreatedPage;
+
+			llBook->Page->PageGroup = CreatedPageGroup;
+			llBook->Page->PageGroupHead = CreatedPageGroup;
+		}
+
+		CurrentllPageGroup = new llPageGroupData;
+		//Log::LogString("PageItem Created and Shape Group?");
+
+		llPageGroupData* TestingPageGroup = llBook->Page->PageGroup;
+
+		//Completely new object
+		if (TestingPageGroup == nullptr)
+		{
+			Log::LogString("New PageGroup Linked");
+			llBook->Page->PageGroup = CurrentllPageGroup;
+			llBook->Page->PageGroupHead = CurrentllPageGroup;
+		}
+		else //Shapes already created
+		{
+			llPageGroupData* FoundTail = TestingPageGroup;
+			int LinkCount = 0;
+
+			//Find tail then add
+			//Log::LogString("Finding Tail..");
+			while (FoundTail->Next != nullptr)
+			{
+				FoundTail = FoundTail->Next;
+				LinkCount++;
+			}
+			Log::LogString("New PageGroup Linked");
+			FoundTail->Next = CurrentllPageGroup;
+			CurrentllPageGroup->Previous = FoundTail;
+			llBook->Page->PageGroup = CurrentllPageGroup;
+		}
+
+		CurrentllPageGroup->Type = TYPE_PAGEGROUP;
+		LoadedBook = llBook;
+	}
+	else
+	{
+		Log::LogString("ERROR:: PageGroup Constructor FAILED:: No Book Provided");
+	}
 }
 
 PageGroup::PageGroup(llBookData* llBookData, llPageGroupData* llPageGroup)
@@ -124,30 +132,38 @@ PageGroup::PageGroup(llBookData* llBookData, llPageGroupData* llPageGroup)
 	}
 	else
 	{
-		Log::LogString("Sorry llShape was nullptr");
+		Log::LogString("ERROR:: PageGroup Constructor FAILED:: No Book or Page Group Provided");
 	}
 }
 
-PageGroup::PageGroup(llPageGroupData* llPageItem)
+PageGroup::PageGroup(llPageGroupData* llPageGroup)
 {
-
-}
-
-void PageGroup::llSwitch(llPageGroupData* llPageGroup)
-{
-	if (llPageGroup != nullptr)
+	//If it exists
+	if (llPageGroup != nullptr && llPageGroup->PageItem != nullptr)
 	{
+
 		CurrentllPageGroup = llPageGroup;
 	}
 	else
 	{
-		Log::LogString("ERROR:: llSwitch FAILED:: PageGroup was nullptr");
+		Log::LogString("ERROR:: PageGroup Constructor FAILED:: No PageGroup Provided");
 	}
+}
+
+void PageGroup::llSwitch(llPageGroupData* llPageGroup)
+{
+	//Validate
+	if (llPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Switch FAILED:: No PageGroup Provided ");  return; }
+
+	//Switch
+	CurrentllPageGroup = llPageGroup;
 }
 
 void PageGroup::Add_Default()
 {
-    if (LoadedBook != nullptr) { Log::LogString("ERROR:: PageGroup Add_Default Failed:: No Book Provided"); }
+	//Validate
+    if (LoadedBook == nullptr) { Log::LogString("ERROR:: PageGroup Add_Default Failed:: Invalid Book State"); }
+
 	if (LoadedBook->Page == nullptr)
 	{
 		Log::LogString("Book Is Brand New");
@@ -197,6 +213,9 @@ void PageGroup::Add_Default()
 
 void PageGroup::HighlightPageGroup(glm::vec4 HighlightColor)
 {
+	//Validate
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Highlight FAILED:: Invalid PageGroup State ");  return; }
+
 	CurrentllPageGroup->HighlightColor = HighlightColor;
 	CurrentllPageGroup->Highlighted = true;
 	llUpdate();
@@ -204,10 +223,12 @@ void PageGroup::HighlightPageGroup(glm::vec4 HighlightColor)
 
 void PageGroup::HighlightOff()
 {
+	//Validate
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Highlight Off FAILED:: Invalid PageGroup State ");  return; }
+
 	CurrentllPageGroup->Highlighted = false;
 	llUpdate();
 }
-
 
 
 void PageGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
@@ -651,6 +672,12 @@ float PageGroup::SetMouseAccess(glm::vec2 Position, glm::vec2 Size)
 
 void PageGroup::llUpdate()
 {
+	//Validate
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: PageGroup Update FAILED:: Invalid Book State");  return; }
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Update FAILED:: Invalid PageGroup State"); return; }
+	if (CurrentllPageGroup->PageItem == nullptr) { Log::LogString("WARNING:: PageGroup Update FAILED:: No Contents to Update"); return; }
+
+
 	if (CurrentllPageGroup != nullptr && LoadedBook != nullptr)
 	{
 		llPageItemData* CurrentPageItem = CurrentllPageGroup->PageItem;
@@ -696,15 +723,3 @@ void PageGroup::llUpdate()
 		}
 	}
 }
-
-
-
-//glm::vec2* PageGroup::GetPosition()
-//{
-//	return &CurrentllPageGroup->Position;
-//}
-
-//glm::vec2* PageGroup::GetSize()
-//{
-//	return &CurrentllPageGroup->Size;
-//}

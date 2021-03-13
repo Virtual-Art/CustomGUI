@@ -841,11 +841,13 @@ void PageCreator::SetShapeGroupType()
 
 void PageCreator::SetPageItemType()
 {
+	Log::LogString("Inside Page Item type");
 	switch (CurrentType)
 	{
 	case TYPE_PAGEITEM:
 		EditorSelected = &PageItemEditor;
 		SetElements();
+		Log::LogString("in Page Item");
 		PageItemEditor.HighlightOff();
 		PageItemEditor.llSwitch(CurrentPageItem);
 		PageItemEditor.HighlightPageItem(PageItemHighlightColor);
@@ -854,6 +856,7 @@ void PageCreator::SetPageItemType()
 	case TYPE_PAGEITEM_SLIDER:
 		EditorSelected = &SliderEditor;
 		SetElements();
+		Log::LogString("in Slider");
 		SliderEditor.HighlightOff();
 		SliderEditor.llSwitch(CurrentPageItem);
 		SliderEditor.HighlightPageItem(PageItemHighlightColor);
@@ -947,6 +950,7 @@ void PageCreator::LevelUp()
 			CurrentType = CurrentPageItem->Type;
 		}
 		Text_CurrentLevel.SetllText("PageItem");
+		Log::LogString("Going through page item");
 		SetPageItemType();
 		break;
 	case LEVEL_PAGEGROUP:

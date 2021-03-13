@@ -13,60 +13,68 @@ PageGroupItem::PageGroupItem()
 
 PageGroupItem::PageGroupItem(llBookData* llBook)
 {
-	if (llBook->Page == nullptr)
+	if (llBook != nullptr)
 	{
-		Log::LogString("Book Is Brand New");
-		llPageData* CreatedPage = new llPageData;
-		llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
-		llBook->Page = CreatedPage;
-		llBook->PageHead = CreatedPage;
-
-		llBook->Page->PageGroup = CreatedPageGroup;
-		llBook->Page->PageGroupHead = CreatedPageGroup;
-	}
-
-	if (llBook->Page->PageGroup == nullptr)
-	{
-		Log::LogString("Book Is Brand New");
-		llPageGroupData* CreatedPageGroup = new llPageGroupData;
-
-		llBook->Page->PageGroup = CreatedPageGroup;
-		llBook->Page->PageGroupHead = CreatedPageGroup;
-	}
-
-	CurrentllPageItem = new llPageItemData;
-	//Log::LogString("PageItem Created and Shape Group?");
-
-	llPageItemData* TestingPageItem = llBook->Page->PageGroup->PageItem;
-
-	//Completely new object
-	if (TestingPageItem == nullptr)
-	{
-		Log::LogString("PageGroup Empty. First PageItem!");
-		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
-		llBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
-	}
-	else //Shapes already created
-	{
-		llPageItemData* FoundTail = TestingPageItem;
-		int LinkCount = 0;
-
-		//Find tail then add
-		//Log::LogString("Finding Tail..");
-		while (FoundTail->Next != nullptr)
+		if (llBook->Page == nullptr)
 		{
-			FoundTail = FoundTail->Next;
-			LinkCount++;
-		}
-		Log::LogString("PageItem Linked");
-		FoundTail->Next = CurrentllPageItem;
-		CurrentllPageItem->Previous = FoundTail;
-		llBook->Page->PageGroup->PageItem = CurrentllPageItem;
-	}
+			Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
-	CurrentllPageItem->Type = TYPE_CUSTOM;
-	LoadedBook = llBook;
+			llBook->Page = CreatedPage;
+			llBook->PageHead = CreatedPage;
+
+			llBook->Page->PageGroup = CreatedPageGroup;
+			llBook->Page->PageGroupHead = CreatedPageGroup;
+		}
+
+		if (llBook->Page->PageGroup == nullptr)
+		{
+			Log::LogString("Book Is Brand New");
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+			llBook->Page->PageGroup = CreatedPageGroup;
+			llBook->Page->PageGroupHead = CreatedPageGroup;
+		}
+
+		CurrentllPageItem = new llPageItemData;
+		//Log::LogString("PageItem Created and Shape Group?");
+
+		llPageItemData* TestingPageItem = llBook->Page->PageGroup->PageItem;
+
+		//Completely new object
+		if (TestingPageItem == nullptr)
+		{
+			Log::LogString("PageGroup Empty. First PageItem!");
+			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+			llBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
+		}
+		else //Shapes already created
+		{
+			llPageItemData* FoundTail = TestingPageItem;
+			int LinkCount = 0;
+
+			//Find tail then add
+			//Log::LogString("Finding Tail..");
+			while (FoundTail->Next != nullptr)
+			{
+				FoundTail = FoundTail->Next;
+				LinkCount++;
+			}
+			Log::LogString("PageItem Linked");
+			FoundTail->Next = CurrentllPageItem;
+			CurrentllPageItem->Previous = FoundTail;
+			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+		}
+
+		CurrentllPageItem->Type = TYPE_CUSTOM;
+		LoadedBook = llBook;
+	}
+	else
+	{
+		Log::LogString("PageItem Constructor FAILED:: No Book Provided");
+	}
 }
 
 PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
@@ -142,13 +150,24 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 	}
 	else
 	{
-		Log::LogString("Sorry llShape was nullptr");
+
+		Log::LogString("PageItem Constructor FAILED:: No Book Provided or No PageItem Provided");
+
 	}
 }
 
 PageGroupItem::PageGroupItem(llPageItemData* llPageItem)
 {
+	//If it exists
+	if (llPageItem != nullptr && llPageItem->ShapeGroup != nullptr)
+	{
 
+		CurrentllPageItem = llPageItem;
+	}
+	else
+	{
+		Log::LogString("ERROR:: PageItem Constructor FAILED:: No PageItem Provided");
+	}
 }
 
 //New Page Item with data provided by derived class
@@ -253,89 +272,85 @@ PageGroupItem::PageGroupItem(Page& Page, int ID)
 void PageGroupItem::llPageItemInit(llBookData* llBookData, llPageItemData* llPageItem)
 {
 	//Make sure we are provided with data
-	if (llPageItem != nullptr && llBookData != nullptr)
+	if (llPageItem == nullptr ) { Log::LogString("ERROR:: PageItem Init FAILED:: No PageItem Provided ");  return; }
+	if (llBookData == nullptr ) { Log::LogString("ERROR:: PageItem Init FAILED:: No Book Provided ");  return; }
+	
+	//Look at the book, is there a Page in the book? no?
+	if (llBookData->Page == nullptr)
 	{
-		//Look at the book, is there a Page in the book? no?
-		if (llBookData->Page == nullptr)
-		{
-			//Create a new Page & PageGroup for the PageItem we are about to create
-			Log::LogString("Book Is Brand New");
-			llPageData* CreatedPage = new llPageData;
-			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		//Create a new Page & PageGroup for the PageItem we are about to create
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
-			//Link the Created groups to the book we are looking at
-			llBookData->Page = CreatedPage;
-			llBookData->PageHead = CreatedPage;
+		//Link the Created groups to the book we are looking at
+		llBookData->Page = CreatedPage;
+		llBookData->PageHead = CreatedPage;
 
-			llBookData->Page->PageGroup = CreatedPageGroup;
-			llBookData->Page->PageGroupHead = CreatedPageGroup;
-		}
-
-		//Create a new PageItem & Copy the provided data
-		CurrentllPageItem = new llPageItemData;
-		*CurrentllPageItem = *llPageItem;
-		//Log::LogString("PageItem Created and ShapeGroup Created?");
-
-		//Take a look at the current PageItem in the current PageGroup
-		llPageItemData* TestingPageItem = llBookData->Page->PageGroup->PageItem;
-
-		//The book doesn't have a PageItem in the current PageGroup
-		if (TestingPageItem == nullptr)
-		{
-			//Set the book to include and point to the newly created PageItem
-			Log::LogString("PageGroup Empty. First PageItem!");
-			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
-			llBookData->Page->PageGroup->PageItemHead = CurrentllPageItem;
-		}
-		else //A Page Item already exists in the current Page Group
-		{
-			llPageItemData* FoundTail = TestingPageItem;
-			int LinkCount = 0;
-
-			//Find the last PageItem in the current PageGroup
-			//Log::LogString("Finding Tail..");
-			while (FoundTail->Next != nullptr)
-			{
-				FoundTail = FoundTail->Next;
-				LinkCount++;
-			}
-
-			//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
-			Log::LogString("PageItem Linked");
-			FoundTail->Next = CurrentllPageItem;
-			CurrentllPageItem->Previous = FoundTail;
-
-
-
-			//Then set the book to point to the new PageItem we created
-			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
-		}
-
-		CurrentllPageItem->Type = TYPE_CUSTOM;
-		LoadedBook = llBookData;
+		llBookData->Page->PageGroup = CreatedPageGroup;
+		llBookData->Page->PageGroupHead = CreatedPageGroup;
 	}
-	else
+
+	//Create a new PageItem & Copy the provided data
+	CurrentllPageItem = new llPageItemData;
+	*CurrentllPageItem = *llPageItem;
+	//Log::LogString("PageItem Created and ShapeGroup Created?");
+
+	//Take a look at the current PageItem in the current PageGroup
+	llPageItemData* TestingPageItem = llBookData->Page->PageGroup->PageItem;
+
+	//The book doesn't have a PageItem in the current PageGroup
+	if (TestingPageItem == nullptr)
 	{
-		Log::LogString("Sorry llShape was nullptr");
+		//Set the book to include and point to the newly created PageItem
+		Log::LogString("PageGroup Empty. First PageItem!");
+		llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
+		llBookData->Page->PageGroup->PageItemHead = CurrentllPageItem;
 	}
+	else //A Page Item already exists in the current Page Group
+	{
+		llPageItemData* FoundTail = TestingPageItem;
+		int LinkCount = 0;
+
+		//Find the last PageItem in the current PageGroup
+		//Log::LogString("Finding Tail..");
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			LinkCount++;
+		}
+
+		//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
+		Log::LogString("PageItem Linked");
+		FoundTail->Next = CurrentllPageItem;
+		CurrentllPageItem->Previous = FoundTail;
+
+
+
+		//Then set the book to point to the new PageItem we created
+		llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
+	}
+
+	CurrentllPageItem->Type = TYPE_CUSTOM;
+	LoadedBook = llBookData;
+	
+		
+	
 }
 
 void PageGroupItem::llSwitch(llPageItemData* llPageItem)
 {
-	if (llPageItem != nullptr)
-	{
-		CurrentllPageItem = llPageItem;
-	}
-	else
-	{
-		Log::LogString("ERROR:: llSwitch FAILED:: PageItem was nullptr");
-	}
+	//Validate
+	if (llPageItem == nullptr) { Log::LogString("ERROR:: Page Item Switch FAILED:: PageItem was nullptr"); return; }
+
+	//Switch
+	CurrentllPageItem = llPageItem;
 }
 
 void PageGroupItem::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
 	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageItem nullptr"); return; };
-	Log::LogString("Offsetting Position");
+
 	if (bools[0] == true)
 	{
 		CurrentllPageItem->Position[0] += Position[0];
@@ -387,71 +402,73 @@ void PageGroupItem::OffsetColor(glm::vec4 Color, glm::vec4 bools)
 
 void PageGroupItem::SetllPageItem(llPageItemData* llPageItem)
 {
-	if (llPageItem != nullptr)
-	{
-		*CurrentllPageItem = *llPageItem;
-		llUpdate();
-	}
+	//Validate
+	if (llPageItem == nullptr) { Log::LogString("ERROR:: SetPageItem FAILED:: PageItem was nullptr"); return; }
+
+	//Set
+	*CurrentllPageItem = *llPageItem;
+	llUpdate();
 }
 
 void PageGroupItem::llUpdate()
 {
 	//Validate
-	if (CurrentllPageItem != nullptr && LoadedBook != nullptr)
+	if (LoadedBook == nullptr ) { Log::LogString("ERROR:: PageItem Update FAILED:: Invalid Book State");  return; }
+	if (CurrentllPageItem == nullptr ) { Log::LogString("ERROR:: PageItem Update FAILED:: Invalid PageItem State"); return; }
+	if (CurrentllPageItem->ShapeGroup == nullptr ) { Log::LogString("WARNING:: PageItem Update FAILED:: No Contents to Update"); return; }
+	
+	//Go To ShapeGroup Head
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+	while (CurrentShapeGroup->Previous != nullptr)
 	{
-		//Go To ShapeGroup Head
-		llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
-		while (CurrentShapeGroup->Previous != nullptr)
-		{
-			CurrentShapeGroup = CurrentShapeGroup->Previous;
-		}
+		CurrentShapeGroup = CurrentShapeGroup->Previous;
+	}
 
-		if (CurrentllPageItem->ChangeAsGroup == false)
-		{
-			//Set PageItem Position Offset
-			llPageGroupData* CurrentPageGroup = LoadedBook->Page->PageGroup;
-			CurrentllPageItem->PositionOffset = CurrentPageGroup->Position - CurrentllPageItem->Position;
-		}
+	if (CurrentllPageItem->ChangeAsGroup == false)
+	{
+		//Set PageItem Position Offset
+		llPageGroupData* CurrentPageGroup = LoadedBook->Page->PageGroup;
+		CurrentllPageItem->PositionOffset = CurrentPageGroup->Position - CurrentllPageItem->Position;
+	}
 
-		//Update all ShapeGroups in Current PageItem
-		while (CurrentShapeGroup != nullptr)
+	//Update all ShapeGroups in Current PageItem
+	while (CurrentShapeGroup != nullptr)
+	{
+		switch (CurrentShapeGroup->Type)
 		{
-			switch (CurrentShapeGroup->Type)
-			{
-			case TYPE_SHAPEGROUP:
-			{
-				ShapeGroup ShapeGroupSelected(CurrentShapeGroup);
-				ShapeGroupSelected.llSwitch(CurrentShapeGroup);
-				ShapeGroupSelected.LoadedBook = LoadedBook;
-				//No idea why it's negative this level positive on the Shape level?
-				CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
-				CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
-				CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
-				//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
-				//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
-				CurrentShapeGroup->ChangeAsGroup = true;
-				ShapeGroupSelected.SetllShapeGroup(CurrentShapeGroup);
-				break;
-			}
-			case TYPE_SHAPEGROUP_TEXT:
-			{
-				TextData INCOMPLETE;
-				Text QuadSelected(CurrentShapeGroup);
-				QuadSelected.llSwitch(CurrentShapeGroup);
-				QuadSelected.LoadedBook = LoadedBook;
-				CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
-				CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
-				CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
-				//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
-				//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
-				CurrentShapeGroup->ChangeAsGroup = true;
-				QuadSelected.SetllTextGroup(CurrentShapeGroup, INCOMPLETE);
-				break;
-			}
-			}
-			CurrentShapeGroup = CurrentShapeGroup->Next;
-
+		case TYPE_SHAPEGROUP:
+		{
+			ShapeGroup ShapeGroupSelected(CurrentShapeGroup);
+			ShapeGroupSelected.llSwitch(CurrentShapeGroup);
+			ShapeGroupSelected.LoadedBook = LoadedBook;
+			//No idea why it's negative this level positive on the Shape level?
+			CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+			CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
+			CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
+			//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+			//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+			CurrentShapeGroup->ChangeAsGroup = true;
+			ShapeGroupSelected.SetllShapeGroup(CurrentShapeGroup);
+			break;
 		}
+		case TYPE_SHAPEGROUP_TEXT:
+		{
+			TextData INCOMPLETE;
+			Text QuadSelected(CurrentShapeGroup);
+			QuadSelected.llSwitch(CurrentShapeGroup);
+			QuadSelected.LoadedBook = LoadedBook;
+			CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+			CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
+			CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
+			//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+			//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+			CurrentShapeGroup->ChangeAsGroup = true;
+			QuadSelected.SetllTextGroup(CurrentShapeGroup, INCOMPLETE);
+			break;
+		}
+		}
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+
 	}
 }
 
@@ -501,6 +518,9 @@ void PageGroupItem::ShapeToGroup(ShapeData& ShapeData)
 //ShapeData Editing
 void PageGroupItem::Add_Default()
 {
+	//Validate
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: Add PageItem FAILED:: Invalid Book State");  return; }
+
 	if (LoadedBook->Page == nullptr)
 	{
 		Log::LogString("Book Is Brand New");
@@ -558,8 +578,11 @@ void PageGroupItem::Add_Default()
 
 void PageGroupItem::Add_Duplicate()
 {
+	//Validate
+	if (LoadedBook == nullptr) {Log::LogString("ERROR:: Duplicate PageItem FAILED:: Invalid Book State"); return;}
+	if (CurrentllPageItem == nullptr) {Log::LogString("ERROR:: Duplicate PageItem FAILED:: Invalid PageItem State"); return;}
+
 	CopyPageItem(LoadedBook, CurrentllPageItem);
-	Log::LogString("PageItem Copied");
 }
 
 void PageGroupItem::Add_Insert()
@@ -575,7 +598,7 @@ void PageGroupItem::Delete()
 void PageGroupItem::HighlightPageItem(glm::vec4 HighlightColor)
 {
 	//Validate
-	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: HighlightPageItem ShapeGroup FAILED:: Invalid ShapeGroup State "); return; }
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: Highlight PageItem  FAILED:: Invalid ShapeGroup State "); return; }
 
 	CurrentllPageItem->HighlightColor = HighlightColor;
 	CurrentllPageItem->Highlighted = true;
@@ -585,7 +608,7 @@ void PageGroupItem::HighlightPageItem(glm::vec4 HighlightColor)
 void PageGroupItem::HighlightOff()
 {
 	//Validate
-	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: HighlightPageItem ShapeGroup FAILED:: Invalid ShapeGroup State "); return; }
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: HighlightPageItem FAILED:: Invalid ShapeGroup State "); return; }
 
 	CurrentllPageItem->Highlighted = false;
 	llUpdate();
@@ -631,6 +654,9 @@ void PageGroupItem::SetPageItem(ShapeData& ShapeData, glm::vec2 PSConversions)
 
 void PageGroupItem::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion)
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: PageItem Update Mouse Access FAILED:: Invalid PageItem State"); return; }
+
 	switch(PositionConversion)
 	{
 	case 1:
@@ -1044,60 +1070,69 @@ llShapeData* PageGroupItem::GetShapeGroupShape(int ShapeGroupIndex, int ShapeInd
 
 float PageGroupItem::GetAccessRight()
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessRight FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Right;
 }
 
 float PageGroupItem::GetAccessLeft()
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessLeft FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Left;
 }
 
 
 float PageGroupItem::GetAccessTop()
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessTop FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Top;
 }
 
 
 float PageGroupItem::GetAccessBottom()
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessBottom FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Bottom;
 }
 
 
 float PageGroupItem::GetAccessRight(int PixelOffset)
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessRight FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Right + PIXEL * PixelOffset;
 }
 
 float PageGroupItem::GetAccessLeft(int PixelOffset)
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessLeft FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Left + PIXEL * PixelOffset;
 }
 
 
 float PageGroupItem::GetAccessTop(int PixelOffset)
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessTop FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Top + PIXEL * PixelOffset;
 }
 
 
 float PageGroupItem::GetAccessBottom(int PixelOffset)
 {
+	//Validate
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessBottom FAILED:: Invalid PageItem State"); return 0.0; };
+
 	return CurrentllPageItem->Bottom + PIXEL * PixelOffset;
 }
-
-////glm::vec4* PageGroupItem::GetColor()
-////{
-////	return &CurrentllShapeGroup->Color;
-////}
-//
-//glm::vec2* PageGroupItem::GetPosition()
-//{
-//	return &CurrentllShapeGroup->Position;
-//}
-
-//glm::vec2* PageGroupItem::GetSize()
-//{
-//	return &CurrentllShapeGroup->Size;
-//}
