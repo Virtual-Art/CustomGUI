@@ -234,6 +234,8 @@ namespace PageCreator
 	void DecreasePixelOffset();
 
 	void SetElements();
+	void ResetElements();
+
 	void SetBookFromElements();
 
 	void UpdateColorSliders();

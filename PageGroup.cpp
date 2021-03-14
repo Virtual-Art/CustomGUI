@@ -159,6 +159,11 @@ void PageGroup::llSwitch(llPageGroupData* llPageGroup)
 	CurrentllPageGroup = llPageGroup;
 }
 
+void PageGroup::Delete()
+{
+	DeletePageGroup(LoadedBook, CurrentllPageGroup);
+}
+
 void PageGroup::Add_Default()
 {
 	//Validate

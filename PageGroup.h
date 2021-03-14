@@ -76,7 +76,7 @@ public:
 	void Add_Default() override; //Editor/None Set in Stone
 	void Add_Duplicate() override { CopyPageGroup(LoadedBook, CurrentllPageGroup); }; //Editor/None Set in Stone
 	void Add_Insert() override {}; //Editor/None Set in Stone
-	void Delete() override {};
+	void Delete() override;
 
 	void HighlightPageGroup(glm::vec4 Color);
 	void HighlightOff();

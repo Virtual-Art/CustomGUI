@@ -38,11 +38,11 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 
 	//BookEditor Setup
 	BookCreatorPage.llInit(&CreatorBook, CurrentShader, Texture0, Texture1, Texture2);
-	Quad DeleteWhenFixed(&CreatorBook);
-	DeleteWhenFixed.SetllPosition({-2.0, 0.0});
+	//Quad DeleteWhenFixed(&CreatorBook);
+	//DeleteWhenFixed.SetllPosition({-2.0, 0.0});
 
-	Quad Quad_Find(CurrentBook);
-	Quad_Find.SetllPosition({-2.0, 0.0});
+	//Quad Quad_Find(CurrentBook);
+	//Quad_Find.SetllPosition({-2.0, 0.0});
 
 	//Text UniqueSlider(CurrentBook);
 	//UniqueSlider.SetllPosition({0.5, 0.5});
@@ -279,7 +279,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 		TextEditor.SetllText(CurrentText);
 	}
 	
-	//MasterElement::FindElement(&CreatorBook, LEVEL_SHAPE);
+	MasterElement::FindElement(&CreatorBook, LEVEL_SHAPE);
 }
 
 //void PageCreator::Init(Page& Creatorpage, Page& GUIpage, Book& Book)
@@ -776,7 +776,6 @@ void PageCreator::DataLeft()
 void PageCreator::SetShapeType()
 {
 	//Set Type Based on Shape
-
 	switch (CurrentType)
 	{
 	case TYPE_SHAPE:
@@ -950,7 +949,6 @@ void PageCreator::LevelUp()
 			CurrentType = CurrentPageItem->Type;
 		}
 		Text_CurrentLevel.SetllText("PageItem");
-		Log::LogString("Going through page item");
 		SetPageItemType();
 		break;
 	case LEVEL_PAGEGROUP:
@@ -1079,7 +1077,7 @@ void PageCreator::Delete()
 {
 	//int PreviousShape = ShapeSelected->CurrentShapeData.ID - 1;
 	EditorSelected->Delete();
-	//Element_Selected->Switch(PreviousShape);
+	SetElements();
 }
 
 void PageCreator::SetQuadSelected(int MouseState, int ShapeHovered)
@@ -1275,6 +1273,16 @@ void PageCreator::SetElements()
 	}
 
 	MasterElement::CurrentDirectory(CurrentBook);
+}
+
+void PageCreator::ResetElements()
+{
+	CurrentVertex = nullptr;
+	CurrentShape = nullptr;
+	CurrentShapeGroup = nullptr;
+	CurrentPageItem = nullptr;
+	CurrentPageGroup = nullptr;
+	CurrentPage = nullptr;
 }
 
 // POSITION

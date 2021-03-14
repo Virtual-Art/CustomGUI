@@ -453,17 +453,17 @@ void PageGroupItem::llUpdate()
 		}
 		case TYPE_SHAPEGROUP_TEXT:
 		{
-			TextData INCOMPLETE;
-			Text QuadSelected(CurrentShapeGroup);
-			QuadSelected.llSwitch(CurrentShapeGroup);
-			QuadSelected.LoadedBook = LoadedBook;
+			//TextData INCOMPLETE;
+			Text TextSelected(CurrentShapeGroup);
+			TextSelected.llSwitch(CurrentShapeGroup);
+			TextSelected.LoadedBook = LoadedBook;
 			CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
 			CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
 			CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
 			//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
 			//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
 			CurrentShapeGroup->ChangeAsGroup = true;
-			QuadSelected.SetllTextGroup(CurrentShapeGroup, INCOMPLETE);
+			TextSelected.SetllTextGroup(CurrentShapeGroup);
 			break;
 		}
 		}
@@ -592,7 +592,7 @@ void PageGroupItem::Add_Insert()
 
 void PageGroupItem::Delete()
 {
-
+	DeletePageItem(LoadedBook, CurrentllPageItem);
 }
 
 void PageGroupItem::HighlightPageItem(glm::vec4 HighlightColor)

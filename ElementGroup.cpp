@@ -372,7 +372,34 @@ void ShapeGroup::Add_Insert()
 void ShapeGroup::Delete()
 {
 	//Validate
-	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: Delete ShapeGroup FAILED:: Invalid ShapeGroup State "); return;  }
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Invalid Shape State"); return; }
+	if (CurrentllShapeGroup->Shape == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Shape Does not Contain Vertices"); return; }
+
+	//Prep
+	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+	llShapeData* Next = nullptr;
+
+	//Save ShapeGroup Before and After Current
+	llShapeGroupData* PreviousllShapeGroup = CurrentllShapeGroup->Previous;
+	llShapeGroupData* NextllShapeGroup = CurrentllShapeGroup->Next;
+
+	//Delete all Shapes
+	while (CurrentShape != nullptr)
+	{
+		//Delete current Shape, go to next
+		Next = CurrentShape->Next;
+	    DeleteShape(LoadedBook, CurrentShape);
+		CurrentShape = Next;
+	}
+
+	//Delete ShapeGroup
+	CurrentllShapeGroup->Shape = nullptr;
+	delete CurrentllShapeGroup;
+	CurrentllShapeGroup = nullptr;
+
+	//Link any valid shapegroups back together
+	if (PreviousllShapeGroup != nullptr) { PreviousllShapeGroup->Next = NextllShapeGroup; }
+	if (NextllShapeGroup != nullptr) { NextllShapeGroup->Previous = PreviousllShapeGroup; }
 }
 
 void ShapeGroup::HighlightShapeGroup(glm::vec4 HighlightColor)

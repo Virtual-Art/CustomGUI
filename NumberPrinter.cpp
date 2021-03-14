@@ -12,6 +12,7 @@ NumberPrinter::NumberPrinter(llBookData* llBook)
 	CurrentllPageItem->XYShapePerRow = { 2.0, 2.0 }; // Can use without
 	CurrentllPageItem->ShapeSize = { 0.8, 0.8 };  // Can use without
 	CurrentllPageItem->Type = TYPE_PAGEITEM_NUMBER;
+	LoadedBook = llBook;
 	CreateNumber();
 }
 
@@ -19,6 +20,7 @@ NumberPrinter::NumberPrinter(llBookData* llBook, llPageItemData* llPageItem, Num
 	: PageGroupItem(llBook, llPageItem)
 {
 	CurrentNumberPrinter = NumberPrinter;
+	LoadedBook = llBook;
 	CreateNumber();
 }
 
@@ -196,6 +198,11 @@ void NumberPrinter::SetDescriptionColor(glm::vec4 Color)
 
 void NumberPrinter::ReplaceVec2()
 {
+	//Validate
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: Invalid Book State"); return; }
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: Invalid PageItem State"); return; }
+	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Contents Found in PageItem"); return; }
+	if (CurrentNumberPrinter.VEC2 == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Vector Provided"); return; }
 
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 	float x = -0.0000000;
@@ -208,12 +215,9 @@ void NumberPrinter::ReplaceVec2()
 
 	Text Text_Reference(CurrentShapeGroup);
 
-	if (CurrentNumberPrinter.VEC2 != nullptr)
-	{
-		x = CurrentNumberPrinter.VEC2->x;
-		y = CurrentNumberPrinter.VEC2->y;
 
-	}
+	x = CurrentNumberPrinter.VEC2->x;
+	y = CurrentNumberPrinter.VEC2->y;
 
 	//SubStrings
 	string X = "  X: ";

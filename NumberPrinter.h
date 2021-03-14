@@ -7,19 +7,6 @@
 using namespace std;
 
 
-
-struct NumberPrinterData
-{
-	string Description;
-	int FontSize = 16;
-	int Type = -1;
-	int* Integer = nullptr;
-	float* Float = nullptr;
-	glm::vec2* VEC2 = nullptr;
-	glm::vec3* VEC3 = nullptr;
-	glm::vec4* VEC4 = nullptr;
-};
-
 class NumberPrinter : public PageGroupItem
 {
 public: 
@@ -34,6 +21,7 @@ public:
 	void llInit(llBookData* llBook, llPageItemData* llPageItem, NumberPrinterData NumberPrinter);
 
 	void llUpdate();
+	void CreateString() {};
 	void CreateNumber();
 	void CreateInt();
 	void CreateFloat();
@@ -48,8 +36,10 @@ public:
 	void ReplaceVec2();
 	void SetVec2(glm::vec2* NewVec2);
 
+	void ReplaceString() {};           //INCOMPLETE
+	void SetString(string* String) {}; //INCOMPLETE
+
 	void Add_Default() override {};
-	void Add_Duplicate() override {};
 	void Add_Insert() override {};
 };
 

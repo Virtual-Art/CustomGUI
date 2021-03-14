@@ -110,6 +110,47 @@
 
 using namespace std;
 
+
+struct TextData
+{
+	string Phrase;
+	string FontFile;
+	float FontSize = 16.0;
+	float CharSpacing = -10.0; //in pixels 0.535
+	float LineSpacing = 1.0; //in pixels
+	float LineLength = 0.5; // in.....
+	glm::vec2 CursorPosition = { 0.0, 0.0 };
+	float FontSlot = 2;
+	bool List = true;
+	bool Centered = false;
+	bool EndStart = false;
+};
+
+
+struct SliderData
+{
+	double Min = 0;
+	double Max = 1.0;
+	double Controller = 0.5;
+	float* WorkingFloat;
+	string Description = "HI";
+	string Ratio = "0.0";
+};
+
+struct NumberPrinterData
+{
+	string Description;
+	int FontSize = 16;
+	int Type = -1;
+	string* String = nullptr;
+	int* Integer = nullptr;
+	float* Float = nullptr;
+	glm::vec2* VEC2 = nullptr;
+	glm::vec3* VEC3 = nullptr;
+	glm::vec4* VEC4 = nullptr;
+};
+
+
 struct llVertexData
 {
 	glm::vec2 Position = { 0.0, 0.0 };
@@ -207,6 +248,8 @@ struct llShapeGroupData
 		llShapeData* ToReturn = Shape;
 		return ToReturn;
 	}
+
+	TextData TextData;
 };
 
 struct llPageItemData
@@ -240,7 +283,8 @@ struct llPageItemData
 	llShapeGroupData* ShapeGroupHead = nullptr; // Child
 	Button PageItemButton;
 
-
+	NumberPrinterData NumberPrinterData;
+	SliderData SliderData;
 };
 
 struct llPageGroupData
@@ -526,6 +570,13 @@ public:
 	static void CopyPageGroup(llBookData* Book, llPageGroupData* PageGroupReference);
 	static void CopyPage(llBookData* Book, llBookData* PageReference);
 	static void CopyBook(llBookData* NewBook, llBookData* BookReference);
+
+
+	static void DeleteShape(llBookData* NewBook, llShapeData* ShapeReference);
+	static void DeleteShapeGroup(llBookData* NewBook, llShapeGroupData* ShapeReference);
+	static void DeletePageItem(llBookData* llBook, llPageItemData* PageItemReference);
+	static void DeletePageGroup(llBookData* llBook, llPageGroupData* PageGroupReference);
+	static void DeletePage(llBookData* llBook, llPageData* PageReference);
 
 	static void ToggleToggle(bool& ToToggle);
 	static void FindElement(llBookData* llBook, int ElementLevel);

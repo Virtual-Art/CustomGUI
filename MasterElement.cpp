@@ -830,6 +830,179 @@ void MasterElement::CopyBook(llBookData* NewBook, llBookData* BookReference)
 
 }
 
+void MasterElement::DeleteShape(llBookData* llBook, llShapeData* ReferenceShape)
+{
+	//Validate
+	if (llBook == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: No Book Provided"); return; }
+	if (ReferenceShape == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: No Shape Provided"); return; }
+	if (ReferenceShape->Vertexx == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Shape Does not Contain Vertices"); return; }
+
+	//Prep
+	llVertexData* CurrentVertex = ReferenceShape->Vertexx;
+	llVertexData* Next = nullptr;
+
+	//Save Shape Before and After Current
+	llShapeData* PreviousllShape = ReferenceShape->Previous;
+	llShapeData* NextllShape = ReferenceShape->Next;
+
+	//Delete all 4 vertices
+	while (CurrentVertex != nullptr)
+	{
+		//Delete current vertex, go to next
+		Next = CurrentVertex->Next;
+		delete CurrentVertex;
+		CurrentVertex = nullptr;
+		CurrentVertex = Next;
+	}
+
+	//Delete Shape
+	ReferenceShape->Vertexx = nullptr;
+	delete ReferenceShape;
+	ReferenceShape = nullptr;
+
+	//Link any valid shapes back together
+	if (PreviousllShape != nullptr) { PreviousllShape->Next = NextllShape; }
+	if (NextllShape != nullptr) { NextllShape->Previous = PreviousllShape; }
+}
+
+void MasterElement::DeleteShapeGroup(llBookData* llBook, llShapeGroupData* ShapeGroupReference)
+{
+	//Validate
+	if (llBook == nullptr) { Log::LogString("ERROR:: Delete ShapeGroup FAILED:: No Book Provided"); return; }
+	if (ShapeGroupReference == nullptr) { Log::LogString("ERROR:: Delete ShapeGroup FAILED:: No ShapeGroup Provided"); return; }
+	if (ShapeGroupReference->Shape == nullptr) { Log::LogString("ERROR:: Delete ShapeGroup FAILED:: ShapeGroup Does not Contain Shapes"); return; }
+
+	//Prep
+	llShapeData* CurrentShape = ShapeGroupReference->Shape;
+	llShapeData* Next = nullptr;
+
+	//Save ShapeGroup Before and After Current
+	llShapeGroupData* PreviousllShapeGroup = ShapeGroupReference->Previous;
+	llShapeGroupData* NextllShapeGroup = ShapeGroupReference->Next;
+
+	//Delete all Shapes
+	while (CurrentShape != nullptr)
+	{
+		//Delete current Shape, go to next
+		Next = CurrentShape->Next;
+		DeleteShape(llBook, CurrentShape);
+		CurrentShape = Next;
+	}
+
+	//Delete ShapeGroup
+	ShapeGroupReference->Shape = nullptr;
+	delete ShapeGroupReference;
+	ShapeGroupReference = nullptr;
+
+	//Link any valid shapegroups back together
+	if (PreviousllShapeGroup != nullptr) { PreviousllShapeGroup->Next = NextllShapeGroup; }
+	if (NextllShapeGroup != nullptr) { NextllShapeGroup->Previous = PreviousllShapeGroup; }
+}
+
+
+void MasterElement::DeletePageItem(llBookData* llBook, llPageItemData* PageItemReference)
+{
+	//Validate
+	if (llBook == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: No Book Provided"); return; }
+	if (PageItemReference == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Invalid Shape State"); return; }
+	if (PageItemReference->ShapeGroup == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Shape Does not Contain Vertices"); return; }
+
+	//Prep
+	llShapeGroupData* CurrentShapeGroup = PageItemReference->ShapeGroup;
+	llShapeGroupData* Next = nullptr;
+
+	//Save ShapeGroup Before and After Current
+	llPageItemData* PreviousllPageItem = PageItemReference->Previous;
+	llPageItemData* NextllPageItem = PageItemReference->Next;
+
+	//Delete all Shapes
+	while (CurrentShapeGroup != nullptr)
+	{
+		//Delete current Shape, go to next
+		Next = CurrentShapeGroup->Next;
+		DeleteShapeGroup(llBook, CurrentShapeGroup);
+		CurrentShapeGroup = Next;
+	}
+
+	//Delete ShapeGroup
+	PageItemReference->ShapeGroup = nullptr;
+	delete PageItemReference;
+	PageItemReference = nullptr;
+
+	//Link any valid shapegroups back together
+	if (PreviousllPageItem != nullptr) { PreviousllPageItem->Next = NextllPageItem; }
+	if (NextllPageItem != nullptr) { NextllPageItem->Previous = PreviousllPageItem; }
+}
+
+void MasterElement::DeletePageGroup(llBookData* llBook, llPageGroupData* PageGroupReference)
+{
+	//Validate
+	if (llBook == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: No Book Provided"); return; }
+	if (PageGroupReference == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: No PageItem Provided"); return; }
+	if (PageGroupReference->PageItem == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: PageItem Does not Contain ShapeGroups"); return; }
+
+	//Prep
+	llPageItemData* CurrentPageItem = PageGroupReference->PageItem;
+	llPageItemData* Next = nullptr;
+
+	//Save ShapeGroup Before and After Current
+	llPageGroupData* PreviousllPageGroup = PageGroupReference->Previous;
+	llPageGroupData* NextllPageGroup = PageGroupReference->Next;
+
+	//Delete all Shapes
+	while (CurrentPageItem != nullptr)
+	{
+		//Delete current Shape, go to next
+		Next = CurrentPageItem->Next;
+		DeletePageItem(llBook, CurrentPageItem);
+		CurrentPageItem = Next;
+	}
+
+	//Delete ShapeGroup
+	PageGroupReference->PageItem = nullptr;
+	delete PageGroupReference;
+	PageGroupReference = nullptr;
+
+	//Link any valid shapegroups back together
+	if (PreviousllPageGroup != nullptr) { PreviousllPageGroup->Next = NextllPageGroup; }
+	if (NextllPageGroup != nullptr) { NextllPageGroup->Previous = PreviousllPageGroup; }
+}
+///////////////////////////////////////////////////////////////
+void MasterElement::DeletePage(llBookData* llBook, llPageData* PageReference)
+{
+	//Validate
+	if (llBook == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: No Book Provided"); return; }
+	if (PageReference == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: No PageItem Provided"); return; }
+	if (PageReference->PageGroup == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: PageItem Does not Contain ShapeGroups"); return; }
+
+	//Prep
+	llPageGroupData* CurrentPageGroup = PageReference->PageGroup;
+	llPageGroupData* Next = nullptr;
+
+	//Save ShapeGroup Before and After Current
+	llPageData* PreviousllPage = PageReference->Previous;
+	llPageData* NextllPage = PageReference->Next;
+
+	//Delete all Shapes
+	while (CurrentPageGroup != nullptr)
+	{
+		//Delete current Shape, go to next
+		Next = CurrentPageGroup->Next;
+		DeletePageGroup(llBook, CurrentPageGroup);
+		CurrentPageGroup = Next;
+	}
+
+	//Delete ShapeGroup
+	PageReference->PageGroup = nullptr;
+	delete PageReference;
+	PageReference = nullptr;
+
+	//Link any valid shapegroups back together
+	if (PreviousllPage != nullptr) { PreviousllPage->Next = NextllPage; }
+	if (NextllPage != nullptr) { NextllPage->Previous = PreviousllPage; }
+}
+
+
 void MasterElement::ToggleToggle(bool& ToToggle)
 {
 	if (ToToggle == false)
