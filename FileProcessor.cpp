@@ -383,3 +383,257 @@ void FileSystem::LoadDirectory()
 
 	FindClose(hFind);
 }
+
+istream& operator>>(istream& in, glm::vec4& Vec4)
+{
+	in >> Vec4[0] >> Vec4[1] >> Vec4[2] >> Vec4[3];
+
+	return in;
+}
+
+ostream& operator<<(ostream& out, glm::vec4& Vec4)
+{
+	out << Vec4[0] << " " << Vec4[1] << " " << Vec4[2] << " " << Vec4[3];
+	return out;
+}
+
+ostream& operator<<(ostream& out, glm::vec2& Vec2)
+{
+	out << Vec2[0] << " " << Vec2[1];
+	return out;
+}
+istream& operator>>(istream& in, glm::vec2& Vec2)
+{
+	in >> Vec2[0] >> Vec2[1];
+	return in;
+}
+
+// Linked List
+ostream& operator<<(ostream& out, llVertexData* VertexData) 
+{
+	out << VertexData->Position;
+	out << VertexData->TexCoords;
+	out << VertexData->Color;
+	out << VertexData->TexIndex;
+	out << VertexData->CentralPoint;
+	out << VertexData->GUIAction;
+
+	return out;
+}
+
+ostream& operator<<(ostream& out, llShapeData* ShapeData) 
+{
+	out << ShapeData->Ascii;
+	out << ShapeData->ActiveTexture;
+	out << ShapeData->Action;
+	out << ShapeData->Type;
+	out << ShapeData->InputType;
+	out << ShapeData->Position;
+	out << ShapeData->Size;
+	out << ShapeData->Color;
+	out << ShapeData->PositionOffset;
+	out << ShapeData->SizeOffset;
+	out << ShapeData->ColorOffset;
+	out << ShapeData->HighlightColor;
+	out << ShapeData->MouseAccess;
+	out << ShapeData->Centered;
+	out << ShapeData->Highlighted;
+	out << ShapeData->Hide;
+	out << ShapeData->Top;
+	out << ShapeData->Bottom;
+	out << ShapeData->Left;
+	out << ShapeData->Right;
+	out << ShapeData->Text; //Not Needed
+	out << ShapeData->EndStart; //Not Needed
+	out << ShapeData->TextCentered; //Not Needed
+	out << ShapeData->ChangeAsGroup; //Not Needed
+
+	return out;
+}
+
+ostream& operator<<(ostream& out, llShapeGroupData* ShapeGroupData)
+{
+	out << ShapeGroupData->Type;
+	out << ShapeGroupData->XYShapePerRow;
+	out << ShapeGroupData->ShapeSize;
+	out << ShapeGroupData->Position;
+	out << ShapeGroupData->Size;
+	out << ShapeGroupData->Color;
+	out << ShapeGroupData->PositionOffset;
+	out << ShapeGroupData->SizeOffset;
+	out << ShapeGroupData->ColorOffset;
+	out << ShapeGroupData->HighlightColor;
+	out << ShapeGroupData->Centered;
+	out << ShapeGroupData->Highlighted;
+	out << ShapeGroupData->MouseAccess;
+	out << ShapeGroupData->Hide;
+	out << ShapeGroupData->ChangeAsGroup;
+	out << ShapeGroupData->Top;
+	out << ShapeGroupData->Bottom;
+	out << ShapeGroupData->Left;
+	out << ShapeGroupData->Right;
+
+	return out;
+}
+
+ostream& operator<<(ostream& out, llPageItemData* PageItemData)
+{
+	//PageItem
+	out << PageItemData->Type;
+	out << PageItemData->Position;
+	out << PageItemData->Size;
+	out << PageItemData->Color;
+	out << PageItemData->PositionOffset;
+	out << PageItemData->SizeOffset;
+	out << PageItemData->ColorOffset;
+	out << PageItemData->XYShapePerRow;
+	out << PageItemData->ShapeSize;
+	out << PageItemData->HighlightColor;
+	out << PageItemData->Centered;
+	out << PageItemData->Highlighted;
+	out << PageItemData->MouseAccess;
+	out << PageItemData->ChangeAsGroup;
+	out << PageItemData->Top;
+	out << PageItemData->Bottom;
+	out << PageItemData->Left;
+	out << PageItemData->Right;
+
+	return out;
+	//out << PageItemData->PageItemButton;		   // PLEASE COMPLETE
+	//out << PageItemData->NumberPrinterData;	   // PLEASE COMPLETE
+	//out << PageItemData->SliderData;             // PLEASE COMPLETE
+}
+
+ostream& operator<<(ostream& out, llPageGroupData* PageGroupData)
+{
+	out << PageGroupData->Type;
+	out << PageGroupData->Position;
+	out << PageGroupData->Size;
+	out << PageGroupData->Color;
+	out << PageGroupData->XYShapePerRow;
+	out << PageGroupData->ShapeSize;
+	out << PageGroupData->HighlightColor;
+	out << PageGroupData->Centered;
+	out << PageGroupData->Highlighted;
+	out << PageGroupData->MouseAccess;
+	out << PageGroupData->ChangeAsGroup;
+	out << PageGroupData->Top;
+	out << PageGroupData->Bottom;
+	out << PageGroupData->Left;
+	out << PageGroupData->Right;
+
+	return out;
+	//out << PageGroupData->PageGroupButton;  //PLEASE COMPLETE
+}
+
+ostream& operator<<(ostream& out, llPageData* PageData) {}
+ostream& operator<<(ostream& out, llBookData* BookData) {}
+
+
+
+// Linked List in
+istream& operator>>(istream& in, llVertexData* VertexData)
+{
+	in >> VertexData->Position;
+	in >> VertexData->TexCoords;
+	in >> VertexData->Color;
+	in >> VertexData->TexIndex;
+	in >> VertexData->CentralPoint;
+	in >> VertexData->GUIAction;
+
+	return in;
+}
+istream& operator>>(istream& in, llShapeData* ShapeData)
+{
+	in >> ShapeData->Ascii;
+	in >> ShapeData->ActiveTexture;
+	in >> ShapeData->Action;
+	in >> ShapeData->Type;
+	in >> ShapeData->InputType;
+	in >> ShapeData->Position;
+	in >> ShapeData->Size;
+	in >> ShapeData->Color;
+	in >> ShapeData->PositionOffset;
+	in >> ShapeData->SizeOffset;
+	in >> ShapeData->ColorOffset;
+	in >> ShapeData->HighlightColor;
+	in >> ShapeData->MouseAccess;
+	in >> ShapeData->Centered;
+	in >> ShapeData->Highlighted;
+	in >> ShapeData->Hide;
+	in >> ShapeData->Top;
+	in >> ShapeData->Bottom;
+	in >> ShapeData->Left;
+	in >> ShapeData->Right;
+	in >> ShapeData->Text; //Not Needed
+	in >> ShapeData->EndStart; //Not Needed
+	in >> ShapeData->TextCentered; //Not Needed
+	in >> ShapeData->ChangeAsGroup; //Not Needed
+	return in;
+}
+istream& operator>>(istream& in, llShapeGroupData* ShapeGroupData)
+{
+	in >> ShapeGroupData->Type;
+	in >> ShapeGroupData->XYShapePerRow;
+	in >> ShapeGroupData->ShapeSize;
+	in >> ShapeGroupData->Position;
+	in >> ShapeGroupData->Size;
+	in >> ShapeGroupData->Color;
+	in >> ShapeGroupData->PositionOffset;
+	in >> ShapeGroupData->SizeOffset;
+	in >> ShapeGroupData->ColorOffset;
+	in >> ShapeGroupData->HighlightColor;
+	in >> ShapeGroupData->Centered;
+	in >> ShapeGroupData->Highlighted;
+	in >> ShapeGroupData->MouseAccess;
+	in >> ShapeGroupData->Hide;
+	in >> ShapeGroupData->ChangeAsGroup;
+	in >> ShapeGroupData->Top;
+	in >> ShapeGroupData->Bottom;
+	in >> ShapeGroupData->Left;
+	in >> ShapeGroupData->Right;
+	return in;
+}
+istream& operator>>(istream& in, llPageItemData* PageItemData)
+{
+	in >> PageItemData->Type;
+	in >> PageItemData->Position;
+	in >> PageItemData->Size;
+	in >> PageItemData->Color;
+	in >> PageItemData->PositionOffset;
+	in >> PageItemData->SizeOffset;
+	in >> PageItemData->ColorOffset;
+	in >> PageItemData->XYShapePerRow;
+	in >> PageItemData->ShapeSize;
+	in >> PageItemData->HighlightColor;
+	in >> PageItemData->Centered;
+	in >> PageItemData->Highlighted;
+	in >> PageItemData->MouseAccess;
+	in >> PageItemData->ChangeAsGroup;
+	in >> PageItemData->Top;
+	in >> PageItemData->Bottom;
+	in >> PageItemData->Left;
+	in >> PageItemData->Right;
+	return in;
+}
+istream& operator>>(istream& in, llPageGroupData* PageGroupData)
+{
+	in >> PageGroupData->Type;
+	in >> PageGroupData->Position;
+	in >> PageGroupData->Size;
+	in >> PageGroupData->Color;
+	in >> PageGroupData->XYShapePerRow;
+	in >> PageGroupData->ShapeSize;
+	in >> PageGroupData->HighlightColor;
+	in >> PageGroupData->Centered;
+	in >> PageGroupData->Highlighted;
+	in >> PageGroupData->MouseAccess;
+	in >> PageGroupData->ChangeAsGroup;
+	in >> PageGroupData->Top;
+	in >> PageGroupData->Bottom;
+	in >> PageGroupData->Left;
+	in >> PageGroupData->Right;
+	return in;
+}
+istream& operator>>(istream& in, llPageData* Page) {}
+istream& operator>>(istream& in, llBookData* Book) {}

@@ -11,6 +11,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "Page.h"
 #include "Book.h"
+#include "MasterElement.h"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ public:
 
 	void SaveBook(Book& Book);
 
+	//This is where we load the file (through "Book" member)
 	Book LoadBook(Book& Book, ShaderProgram ShaderProgram);
 
 	//void ReadShapeDataFromFile(const string FilePath);
@@ -54,6 +56,29 @@ public:
 	friend istream& operator>>(istream& in, Page& Page);
 	friend istream& operator>>(istream& in, Book& Book);
 
+	// Linked List out
+	friend ostream& operator<<(ostream& out, llVertexData* ShapeData);
+	friend ostream& operator<<(ostream& out, llShapeData* ShapeData);
+	friend ostream& operator<<(ostream& out, llShapeGroupData* ShapeData);
+	friend ostream& operator<<(ostream& out, llPageItemData* ShapeData);
+	friend ostream& operator<<(ostream& out, llPageGroupData* ShapeData);
+	friend ostream& operator<<(ostream& out, llPageData* Page);
+	friend ostream& operator<<(ostream& out, llBookData* Book);
+
+	friend ostream& operator<<(ostream& out, glm::vec2& Vec2);
+	friend ostream& operator<<(ostream& out, glm::vec4& Vec4);
+
+	friend istream& operator>>(istream& in, glm::vec2& Vec2);
+	friend istream& operator>>(istream& in, glm::vec4& Vec4);
+
+	// Linked List in
+	friend istream& operator>>(istream& in, llVertexData* VertexData);
+	friend istream& operator>>(istream& in, llShapeData* ShapeData);
+	friend istream& operator>>(istream& in, llShapeGroupData* ShapeGroupData);
+	friend istream& operator>>(istream& in, llPageItemData* PageItemData);
+	friend istream& operator>>(istream& in, llPageGroupData* PageGroupData);
+	friend istream& operator>>(istream& in, llPageData* Page);
+	friend istream& operator>>(istream& in, llBookData* Book);
 };
 
  ostream& operator<<(ostream& out, const ShapeData& ShapeData);
@@ -66,7 +91,29 @@ public:
  istream& operator>>(istream& in, Page& Page);
  istream& operator>>(istream& in, Book& Book);
 
+ // Linked List
+ ostream& operator<<(ostream& out, llVertexData* ShapeData);
+ ostream& operator<<(ostream& out, llShapeData* ShapeData);
+ ostream& operator<<(ostream& out, llShapeGroupData* ShapeData);
+ ostream& operator<<(ostream& out, llPageItemData* ShapeData);
+ ostream& operator<<(ostream& out, llPageGroupData* ShapeData);
+ ostream& operator<<(ostream& out, llPageData* Page);
+ ostream& operator<<(ostream& out, llBookData* Book);
 
+ ostream& operator<<(ostream& out, glm::vec2& Vec2);
+ ostream& operator<<(ostream& out, glm::vec4& Vec4);
+
+istream& operator>>(istream& in, glm::vec2& Vec2);
+istream& operator>>(istream& in, glm::vec4& Vec4);
+
+ // Linked List in
+ istream& operator>>(istream& in, llVertexData* VertexData);
+ istream& operator>>(istream& in, llShapeData* ShapeData);
+ istream& operator>>(istream& in, llShapeGroupData* ShapeGroupData);
+ istream& operator>>(istream& in, llPageItemData* PageItemData);
+ istream& operator>>(istream& in, llPageGroupData* PageGroupData);
+ istream& operator>>(istream& in, llPageData* Page);
+ istream& operator>>(istream& in, llBookData* Book);
 
 
 #endif
