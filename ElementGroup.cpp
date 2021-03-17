@@ -27,12 +27,15 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 
 			llBook->Page = CreatedPage;
 			llBook->PageHead = CreatedPage;
+			llBook->PageCount++;
 
 			llBook->Page->PageGroup = CreatedPageGroup;
 			llBook->Page->PageGroupHead = CreatedPageGroup;
+			llBook->Page->PageGroupCount++;
 
 			llBook->Page->PageGroup->PageItem = CreatedPageItem;
 			llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+			llBook->Page->PageGroup->PageItemCount++;
 		}
 
 		if (llBook->Page->PageGroup == nullptr)
@@ -42,9 +45,11 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 
 			llBook->Page->PageGroup = CreatedPageGroup;
 			llBook->Page->PageGroupHead = CreatedPageGroup;
+			llBook->Page->PageGroupCount++;
 
 			llBook->Page->PageGroup->PageItem = CreatedPageItem;
 			llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+			llBook->Page->PageGroup->PageItemCount++;
 
 		}
 
@@ -54,10 +59,10 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 
 			llBook->Page->PageGroup->PageItem = CreatedPageItem;
 			llBook->Page->PageGroup->PageItemHead = CreatedPageItem;
+			llBook->Page->PageGroup->PageItemCount++;
 		}
 
 		CurrentllShapeGroup = new llShapeGroupData;
-		//Log::LogString("Shape Group Created");
 
 		llShapeGroupData* TestingShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
 
@@ -67,6 +72,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 			Log::LogString("New ShapeGroup Linked");
 			llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 			llBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+			llBook->Page->PageGroup->PageItem->ShapeGroupCount++;
 		}
 		else //Shapes already created
 		{
@@ -84,6 +90,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 			FoundTail->Next = CurrentllShapeGroup;
 			CurrentllShapeGroup->Previous = FoundTail;
 			llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+			llBook->Page->PageGroup->PageItem->ShapeGroupCount++;
 		}
 
 		CurrentllShapeGroup->Type = TYPE_CUSTOM;
@@ -110,12 +117,15 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 
 			llBookData->Page = CreatedPage;
 			llBookData->PageHead = CreatedPage;
+			llBookData->PageCount++;
 
 			llBookData->Page->PageGroup = CreatedPageGroup;
 			llBookData->Page->PageGroupHead = CreatedPageGroup;
+			llBookData->Page->PageGroupCount++;
 
 			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemCount++;
 		}
 
 		if (llBookData->Page->PageGroup == nullptr)
@@ -125,9 +135,11 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 
 			llBookData->Page->PageGroup = CreatedPageGroup;
 			llBookData->Page->PageGroupHead = CreatedPageGroup;
+			llBookData->Page->PageGroupCount++;
 
 			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemCount++;
 		}
 
 		if (llBookData->Page->PageGroup->PageItem == nullptr)
@@ -136,6 +148,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 
 			llBookData->Page->PageGroup->PageItem = CreatedPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CreatedPageItem;
+			llBookData->Page->PageGroup->PageItemCount++;
 		}
 
 		CurrentllShapeGroup = new llShapeGroupData;
@@ -150,6 +163,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 			Log::LogString("New ShapeGroup Linked");
 			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupCount++;
 		}
 		else //Shape groups already created
 		{
@@ -170,6 +184,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 			//We are setting the book to point to this new shape group because that's where we want to load shapes
 			//however the previous group is not lost because we set the next and previous
 			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
+			llBookData->Page->PageGroup->PageItem->ShapeGroupCount++;
 		}
 
 		LoadedBook = llBookData;

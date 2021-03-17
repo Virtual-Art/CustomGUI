@@ -136,6 +136,12 @@ int main(int argc, char** argv)
 	//WHY.SetPosition({-2.0, 0.0});
 	////Text WHYY(&EditorBook);
 	PageCreator::llInit(&EditorBook, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
+	llBookData FILEBook;
+
+	Slider FileTester(&FILEBook);
+
+
 	//WHYY.SetllText("WHYYYYYYYYYY");
     //WHYY.SetllPosition({0.0, 0.9});
 	
@@ -280,6 +286,12 @@ int main(int argc, char** argv)
 
 	llPageItemData PageItem_Toggle;
 	PageItem_Toggle.Position = {-0.89, -0.3};
+
+	FileSystem.SavellBook(&FILEBook, "ProgramFiles/FirstGUI.Book");
+	cout << "+--------------------------------+" << endl;
+	FileSystem.LoadllBook(&FILEBook, "ProgramFiles/FirstGUI.Book");
+
+	MasterElement::PrintBookStats(&FILEBook);
 
 
 	typedef void(*Master_P)();

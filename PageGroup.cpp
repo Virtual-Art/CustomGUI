@@ -40,6 +40,7 @@ PageGroup::PageGroup(llBookData* llBook)
 			Log::LogString("New PageGroup Linked");
 			llBook->Page->PageGroup = CurrentllPageGroup;
 			llBook->Page->PageGroupHead = CurrentllPageGroup;
+			llBook->Page->PageGroupCount++;
 		}
 		else //Shapes already created
 		{
@@ -57,6 +58,7 @@ PageGroup::PageGroup(llBookData* llBook)
 			FoundTail->Next = CurrentllPageGroup;
 			CurrentllPageGroup->Previous = FoundTail;
 			llBook->Page->PageGroup = CurrentllPageGroup;
+			llBook->Page->PageGroupCount++;
 		}
 
 		CurrentllPageGroup->Type = TYPE_PAGEGROUP;

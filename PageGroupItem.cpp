@@ -24,9 +24,11 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 			llBook->Page = CreatedPage;
 			llBook->PageHead = CreatedPage;
+			llBook->PageCount++;
 
 			llBook->Page->PageGroup = CreatedPageGroup;
 			llBook->Page->PageGroupHead = CreatedPageGroup;
+			llBook->Page->PageGroupCount++;
 		}
 
 		if (llBook->Page->PageGroup == nullptr)
@@ -36,6 +38,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 			llBook->Page->PageGroup = CreatedPageGroup;
 			llBook->Page->PageGroupHead = CreatedPageGroup;
+			llBook->Page->PageGroupCount++;
 		}
 
 		CurrentllPageItem = new llPageItemData;
@@ -49,6 +52,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 			Log::LogString("PageGroup Empty. First PageItem!");
 			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
 			llBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
+			llBook->Page->PageGroup->PageItemCount++;
 		}
 		else //Shapes already created
 		{
@@ -66,6 +70,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 			FoundTail->Next = CurrentllPageItem;
 			CurrentllPageItem->Previous = FoundTail;
 			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+			llBook->Page->PageGroup->PageItemCount++;
 		}
 
 		CurrentllPageItem->Type = TYPE_CUSTOM;
@@ -93,9 +98,11 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			//Link the Created groups to the book we are looking at
 			llBookData->Page = CreatedPage;
 			llBookData->PageHead = CreatedPage;
+			llBookData->PageCount++;
 
 			llBookData->Page->PageGroup = CreatedPageGroup;
 			llBookData->Page->PageGroupHead = CreatedPageGroup;
+			llBookData->Page->PageGroupCount++;
 		}
 
 		if (llBookData->Page->PageGroup == nullptr)
@@ -105,6 +112,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 
 			llBookData->Page->PageGroup = CreatedPageGroup;
 			llBookData->Page->PageGroupHead = CreatedPageGroup;
+			llBookData->Page->PageGroupCount++;
 		}
 
 		//Create a new PageItem & Copy the provided data
@@ -122,6 +130,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			Log::LogString("PageGroup Empty. First PageItem!");
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CurrentllPageItem;
+			llBookData->Page->PageGroup->PageItemCount++;
 		}
 		else //A Page Item already exists in the current Page Group
 		{
@@ -143,6 +152,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			
 			//Then set the book to point to the new PageItem we created
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
+			llBookData->Page->PageGroup->PageItemCount++;
 		}
 
 		CurrentllPageItem->Type = TYPE_CUSTOM;

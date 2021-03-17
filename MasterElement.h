@@ -166,6 +166,7 @@ struct llVertexData
 
 struct llShapeData
 {
+	int VertexCount = 4;
 	//ShapeGroupData ShapeGroup;
 	//PageItemData PageItem;
 	//PageGroupData PageGroup;
@@ -175,7 +176,7 @@ struct llShapeData
 	int Ascii = -1;
 	int ActiveTexture = 0;
 	int Action = -1;
-	int Layer;
+	int Layer = 0;
 	int Type = 0;
 	int InputType = INPUT_CENTER;
 	glm::vec2 Position = { 0.0, 0.0 };
@@ -184,9 +185,9 @@ struct llShapeData
 	glm::vec2 PositionOffset = { 0.0, 0.0 };
 	glm::vec2 SizeOffset = { 0.0, 0.0 };
 	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
-	glm::vec2 HighlightPosition = Position;
+	glm::vec2 HighlightPosition = { 0.0, 0.0 };
 	glm::vec2 HighlightSize = { this->Size[0] + 0.0135, this->Size[1] + 0.025 };
-	glm::vec4 HighlightColor;
+	glm::vec4 HighlightColor = {0.0, 0.0, 0.0, 1.0};
 	bool MouseAccess = true;
 	bool Centered = false;
 	bool Highlighted = false;
@@ -211,13 +212,11 @@ struct llShapeData
 
 struct llShapeGroupData
 {
+	int ShapeCount = 0;
 	///////////////////////////////////
 	//ShapeGroup
 	//Page* Page;
 	int ID = -1;
-	int ShapeStart = 0;
-	int ShapeOffset = -1;
-	int ShapeCount = -1;
 	int Type = 0;
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
@@ -227,7 +226,7 @@ struct llShapeGroupData
 	glm::vec2 PositionOffset = { 0.0, 0.0 };
 	glm::vec2 SizeOffset = { 0.0, 0.0 };
 	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
-	glm::vec4 HighlightColor;
+	glm::vec4 HighlightColor = { 0.0, 0.0, 0.0, 1.0 };
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
@@ -255,6 +254,7 @@ struct llShapeGroupData
 struct llPageItemData
 {
 	//PageItem
+	int ShapeGroupCount = 0;
 	int ID = -1;
 	int ShapeStart = 0;
 	int ShapeCount = -1;
@@ -268,7 +268,7 @@ struct llPageItemData
 	glm::vec4 ColorOffset = { 0.0, 0.0, 0.0, 0.0 };
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
-	glm::vec4 HighlightColor;
+	glm::vec4 HighlightColor = { 0.0, 0.0, 0.0, 0.0 };
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
@@ -289,6 +289,7 @@ struct llPageItemData
 
 struct llPageGroupData
 {
+	int PageItemCount = 0;
 	//PageGroup
 	//Page* Page;
 	int ID = -1;
@@ -301,7 +302,7 @@ struct llPageGroupData
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
-	glm::vec4 HighlightColor;
+	glm::vec4 HighlightColor = { 0.0, 0.0, 0.0, 0.0 };
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
@@ -320,6 +321,7 @@ struct llPageGroupData
 
 struct llPageData
 {
+	int PageGroupCount = 0;
 	bool PageReady = false;
 	llVertexData* VertexContainer = nullptr;
 	int* IndexContainer = nullptr;
@@ -483,7 +485,7 @@ struct llPageData
 
 struct llBookData
 {
-
+	int PageCount = 0;
 	llBookData* Next = nullptr;
 	llBookData* Previous = nullptr;
 	llPageData* Page = nullptr; // = nullptr; // Child
@@ -564,6 +566,17 @@ public:
 	static void PreviousShape(llBookData* llBook);
 
 	////////
+
+	//Add Empty
+	//Returns nullptr if no book provided
+	static llShapeData* AddShape(llBookData* Book);
+	static llShapeGroupData* AddShapeGroup(llBookData* Book);
+	static llPageItemData* AddPageItem(llBookData* Book);
+	static llPageGroupData* AddPageGroup(llBookData* Book);
+	static llPageData* AddPage(llBookData* Book);
+	static llBookData* AddBook();
+
+	//Duplicate
 	static void CopyShape(llBookData* Book, llShapeData* ShapeReference);
 	static void CopyShapeGroup(llBookData* Book, llShapeGroupData* ShapeGroupReference);
 	static void CopyPageItem(llBookData* Book, llPageItemData* PageItemReference);
@@ -571,7 +584,7 @@ public:
 	static void CopyPage(llBookData* Book, llBookData* PageReference);
 	static void CopyBook(llBookData* NewBook, llBookData* BookReference);
 
-
+	//Delete
 	static void DeleteShape(llBookData* NewBook, llShapeData* ShapeReference);
 	static void DeleteShapeGroup(llBookData* NewBook, llShapeGroupData* ShapeReference);
 	static void DeletePageItem(llBookData* llBook, llPageItemData* PageItemReference);

@@ -9,7 +9,7 @@
 #include "glm/GLM.HPP"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "Page.h"
+//#include "Page.h"
 #include "Book.h"
 #include "MasterElement.h"
 
@@ -26,6 +26,7 @@ public:
 
 	string FileList[100];
 	string BackSlash = "\\\\";
+	static llBookData* THISBOOK;
 	unsigned int ListCount;
 
 	//Change the Current Directories
@@ -43,8 +44,13 @@ public:
 	//This is where we load the file (through "Book" member)
 	Book LoadBook(Book& Book, ShaderProgram ShaderProgram);
 
+	void SavellBook(llBookData* Book, string FilePath);
+	void LoadllBook(llBookData* Book, string FilePath);
+
 	//void ReadShapeDataFromFile(const string FilePath);
 	void DisplayDirectoryFiles();
+
+	ostream& operator<<(ostream& hello);
 
 	friend ostream& operator<<(ostream& out, const ShapeData& ShapeData);
 	friend ostream& operator<<(ostream& out, const ShapeVertex& ShapeData);

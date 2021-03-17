@@ -599,6 +599,386 @@ void MasterElement::CurrentDirectory(llBookData* llBook)
 
 }
 
+llShapeData* MasterElement::AddShape(llBookData* Book)
+{
+	//Validate
+	if (Book == nullptr) { Log::LogString("ERROR:: Add EmptyShape FAILED:: No Book Provided"); return nullptr; }
+
+	//Setup
+	llShapeData* NewShape = nullptr;
+	llVertexData* VertexTopRight = nullptr;
+	llVertexData* VertexTopLeft = nullptr;
+	llVertexData* VertexBottomRight = nullptr;
+	llVertexData* VertexBottomLeft = nullptr;
+
+	//Add Neccesary Groups if not already Created
+	if (Book->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		Book->Page = CreatedPage;
+		Book->PageHead = CreatedPage;
+
+		Book->Page->PageGroup = CreatedPageGroup;
+		Book->Page->PageGroupHead = CreatedPageGroup;
+
+		Book->Page->PageGroup->PageItem = CreatedPageItem;
+		Book->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		Book->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		Book->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+	}
+
+	//Add Neccesary Groups if not already Created
+	if (Book->Page->PageGroup == nullptr)
+	{
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		Book->Page->PageGroup = CreatedPageGroup;
+		Book->Page->PageGroupHead = CreatedPageGroup;
+
+		Book->Page->PageGroup->PageItem = CreatedPageItem;
+		Book->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		Book->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		Book->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+	}
+
+	//Add Neccesary Groups if not already Created
+	if (Book->Page->PageGroup->PageItem == nullptr)
+	{
+		llPageItemData* CreatedPageItem = new llPageItemData;
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		Book->Page->PageGroup->PageItem = CreatedPageItem;
+		Book->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+		Book->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		Book->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+	}
+
+	//Add Neccesary Groups if not already Created
+	if (Book->Page->PageGroup->PageItem->ShapeGroup == nullptr)
+	{
+		llShapeGroupData* CreatedShapeGroup = new llShapeGroupData;
+
+		Book->Page->PageGroup->PageItem->ShapeGroup = CreatedShapeGroup;
+		Book->Page->PageGroup->PageItem->ShapeGroupHead = CreatedShapeGroup;
+	}
+
+	//Create Vertices
+	VertexTopRight = new llVertexData;
+	VertexTopLeft = new llVertexData;
+	VertexBottomRight = new llVertexData;
+	VertexBottomLeft = new llVertexData;
+
+	//Create Shape
+	NewShape = new llShapeData;
+
+	//Link Vertices together and to Shape
+	VertexTopLeft->Next = VertexTopRight;
+	VertexTopRight->Next = VertexBottomRight;
+	VertexBottomRight->Next = VertexBottomLeft;
+	VertexBottomLeft->Previous = VertexBottomRight;
+	VertexBottomRight->Previous = VertexTopRight;
+	VertexTopRight->Previous = VertexTopLeft;
+	NewShape->Vertexx = VertexTopLeft;
+
+	//Get the Current Shape in Current ShapeGroup
+	llShapeData* TestingShape = Book->Page->PageGroup->PageItem->ShapeGroup->Shape;
+
+	//No Shapes in ShapeGroup
+	if (TestingShape == nullptr)
+	{
+		//First Shape!
+		Log::LogChar("New Shape Linked", char(NewShape->Ascii));
+		Book->Page->PageGroup->PageItem->ShapeGroup->Shape = NewShape;
+		Book->Page->PageGroup->PageItem->ShapeGroup->ShapeHead = NewShape;
+	}
+	//Existing Shapes in ShapeGroup
+	else 
+	{
+		//Go to Shape Tail	
+		while (TestingShape->Next != nullptr) {TestingShape = TestingShape->Next;}
+
+		//Link Shape to list 
+		Log::LogChar("New Shape Linked", char(TestingShape->Ascii));
+		TestingShape->Next = NewShape;
+		NewShape->Previous = TestingShape;
+
+		//Current Shape Group points to the new Shape
+		Book->Page->PageGroup->PageItem->ShapeGroup->Shape = NewShape;
+		Book->Page->PageGroup->PageItem->ShapeGroup->ShapeHead = NewShape;
+	}
+
+	//Set as Default Shape Type
+	NewShape->Type = TYPE_SHAPE;
+	Book->Page->PageGroup->PageItem->ShapeGroup->ShapeCount++;
+	return NewShape;
+}
+
+llShapeGroupData* MasterElement::AddShapeGroup(llBookData* Book)
+{
+
+	//Validate
+	if (Book == nullptr) { Log::LogString("ERROR:: Add EmptyShape FAILED:: No Book Provided"); return nullptr; }
+
+	//Setup
+	llShapeGroupData* NewShapeGroup = nullptr;
+
+	//Create Groups if none
+	if (Book->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		Book->Page = CreatedPage;
+		Book->PageHead = CreatedPage;
+
+		Book->Page->PageGroup = CreatedPageGroup;
+		Book->Page->PageGroupHead = CreatedPageGroup;
+
+		Book->Page->PageGroup->PageItem = CreatedPageItem;
+		Book->Page->PageGroup->PageItemHead = CreatedPageItem;
+	}
+
+	if (Book->Page->PageGroup == nullptr)
+	{
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		Book->Page->PageGroup = CreatedPageGroup;
+		Book->Page->PageGroupHead = CreatedPageGroup;
+
+		Book->Page->PageGroup->PageItem = CreatedPageItem;
+		Book->Page->PageGroup->PageItemHead = CreatedPageItem;
+
+	}
+
+	if (Book->Page->PageGroup->PageItem == nullptr)
+	{
+		llPageItemData* CreatedPageItem = new llPageItemData;
+
+		Book->Page->PageGroup->PageItem = CreatedPageItem;
+		Book->Page->PageGroup->PageItemHead = CreatedPageItem;
+	}
+
+	//Create ShapeGroup
+	NewShapeGroup = new llShapeGroupData;
+
+	//Get Current ShapeGroup in PageItem
+	llShapeGroupData* TestingShapeGroup = Book->Page->PageGroup->PageItem->ShapeGroup;
+
+	//No ShapeGroups in current PageItem
+	if (TestingShapeGroup == nullptr)
+	{
+		//First ShapeGroup!
+		Log::LogString("New ShapeGroup Linked");
+		Book->Page->PageGroup->PageItem->ShapeGroup = NewShapeGroup;
+		Book->Page->PageGroup->PageItem->ShapeGroupHead = NewShapeGroup;
+	}
+	//ShapeGroups exist in current PageItem
+	else 
+	{
+		//Get ShapeGroup Tail
+		while (TestingShapeGroup->Next != nullptr)
+		{
+			TestingShapeGroup = TestingShapeGroup->Next;
+		}
+
+		//Link New ShapeGroup to Tail
+		Log::LogString("New ShapeGroup Linked");
+		TestingShapeGroup->Next = NewShapeGroup;
+		NewShapeGroup->Previous = TestingShapeGroup;
+
+		//CurrentPageItem Points to New ShapeGroup
+		Book->Page->PageGroup->PageItem->ShapeGroup = NewShapeGroup;
+	}
+
+	//Set As Default Shape Type
+	Book->Page->PageGroup->PageItem->ShapeGroupCount++;
+	NewShapeGroup->Type = TYPE_SHAPEGROUP;
+	return NewShapeGroup;
+}
+
+llPageItemData* MasterElement::AddPageItem(llBookData* Book)
+{
+	//Validate
+	if (Book == nullptr) { Log::LogString("ERROR:: Add EmptyShape FAILED:: No Book Provided"); return nullptr; }
+
+	llPageItemData* NewPageItem = nullptr;
+
+	if (Book->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		Book->Page = CreatedPage;
+		Book->PageHead = CreatedPage;
+
+		Book->Page->PageGroup = CreatedPageGroup;
+		Book->Page->PageGroupHead = CreatedPageGroup;
+	}
+
+	if (Book->Page->PageGroup == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		Book->Page->PageGroup = CreatedPageGroup;
+		Book->Page->PageGroupHead = CreatedPageGroup;
+	}
+
+    NewPageItem = new llPageItemData;
+
+	llPageItemData* TestingPageItem = Book->Page->PageGroup->PageItem;
+
+	//No PageItem's in PageGroup
+	if (TestingPageItem == nullptr)
+	{
+		//First PageGroup!
+		Log::LogString("New PageItem Linked");
+		Book->Page->PageGroup->PageItemHead = NewPageItem;
+	}
+	// PageItems exist in PageGroup
+	else 
+	{
+		//Go to PageItem Tail
+		while (TestingPageItem->Next != nullptr)
+		{
+			TestingPageItem = TestingPageItem->Next;
+		}
+
+		//Add PageItem to Tail
+		Log::LogString("New PageItem Linked");
+		TestingPageItem->Next = NewPageItem;
+		NewPageItem->Previous = TestingPageItem;
+
+		//Currenta PageGroup points to New PageItem
+		Book->Page->PageGroup->PageItem = NewPageItem;
+	}
+
+	Book->Page->PageGroup->PageItemCount++;
+	NewPageItem->Type = TYPE_PAGEITEM;
+	return NewPageItem;
+}
+
+llPageGroupData* MasterElement::AddPageGroup(llBookData* Book)
+{
+	//Validate
+	if (Book == nullptr) { Log::LogString("ERROR:: Add EmptyShape FAILED:: No Book Provided"); return nullptr; }
+
+	//Setup
+	llPageGroupData* NewPageGroup = nullptr;
+
+	//Create a Page if none exists
+	if (Book->Page == nullptr)
+	{
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		Book->Page = CreatedPage;
+		Book->PageHead = CreatedPage;
+
+		Book->Page->PageGroup = CreatedPageGroup;
+		Book->Page->PageGroupHead = CreatedPageGroup;
+	}
+
+	//Create New PageGroup
+	NewPageGroup = new llPageGroupData;
+
+	//Get Current Page Group
+	llPageGroupData* CurrentPageGroup = Book->Page->PageGroup;
+
+	//No PageGroups in Page
+	if (CurrentPageGroup == nullptr)
+	{
+		Log::LogString("New PageGroup Linked");
+		Book->Page->PageGroup = NewPageGroup;
+		Book->Page->PageGroupHead = NewPageGroup;
+	}
+	//PageGroups exist in Page
+	else 
+	{
+		//Go to last PageGroup
+		while (CurrentPageGroup->Next != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Next;
+		}
+
+		//Link new PageGroup at the end of Page
+		Log::LogString("New PageGroup Linked");
+		CurrentPageGroup->Next = NewPageGroup;
+		NewPageGroup->Previous = CurrentPageGroup;
+
+		//Set the new PageGroup as the current PageGroup
+		Book->Page->PageGroup = NewPageGroup;
+	}
+
+	Book->Page->PageGroupCount++;
+	NewPageGroup->Type = TYPE_PAGEGROUP;
+	return NewPageGroup;
+}
+
+llPageData* MasterElement::AddPage(llBookData* Book)
+{
+	//Validate
+	if (Book == nullptr) { Log::LogString("ERROR:: Add EmptyShape FAILED:: No Book Provided"); return nullptr; }
+
+	//Setup
+	llPageData* NewPage = nullptr;
+
+	//Create Page
+	NewPage = new llPageData;
+
+	//Get Current Page
+	llPageData* CurrentPage = Book->Page;
+
+	//No Pages in book
+	if (CurrentPage == nullptr)
+	{
+		//Link First Page!
+		Log::LogString("New Page Linked");
+		Book->Page = NewPage;
+		Book->PageHead = NewPage;
+	}
+	//Pages Exist in Book
+	else 
+	{
+		//Go To last Page
+		while (CurrentPage->Next != nullptr)
+		{
+			CurrentPage = CurrentPage->Next;
+		}
+
+	    //Link new Page at the end of the book
+		Log::LogString("New Page Linked");
+		CurrentPage->Next = NewPage;
+		NewPage->Previous = CurrentPage;
+
+		//Set the New Page as the Current Page
+		Book->Page = NewPage;
+	}
+
+	Book->PageCount++;
+	return NewPage;
+}
+
+llBookData* MasterElement::AddBook()
+{
+
+}
+
 //Copy Shape to new Shape in the same ShapeGroup
 void MasterElement::CopyShape(llBookData* Book, llShapeData* ShapeReference)
 {
