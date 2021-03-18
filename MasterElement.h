@@ -198,7 +198,7 @@ struct llShapeData
 	float Bottom = -3;
 	float Left = -3;
 	float Right = -3;
-	string Text = "";
+	string Text = "ll";
 	bool EndStart = false;
 	bool TextCentered = true;
 	bool ChangeAsGroup = false;
@@ -545,27 +545,25 @@ public:
 
 	static void CurrentDirectory(llBookData* llBook);
 
-	//Page
+	//Get Head Element
+	static llVertexData* HeadVertex(llVertexData* VertexReference);
+	static llShapeData* HeadShape(llShapeData* ShapeReference);
+	static llShapeGroupData* HeadShapeGroup(llShapeGroupData* ShapeGroupReference);
+	static llPageItemData* HeadPageItem(llPageItemData* PageItemReference);
+	static llPageGroupData* HeadPageGroup(llPageGroupData* PageGroupReference);
+	static llPageData* HeadPage(llPageData* PageReference);
+
+	//Book Traversing Functions
 	static void NextPage(llBookData* llBook);
 	static void PreviousPage(llBookData* llBook);
-
-	//PageGroup
 	static void NextPageGroup(llBookData* llBook);
 	static void PreviousPageGroup(llBookData* llBook);
-
-	//PageItem
 	static void NextPageItem(llBookData* llBook);
 	static void PreviousPageItem(llBookData* llBook);
-
-	//ShapeGroup
 	static void NextShapeGroup(llBookData* llBook);
 	static void PreviousShapeGroup(llBookData* llBook);
-
-	//Shape
 	static void NextShape(llBookData* llBook);
 	static void PreviousShape(llBookData* llBook);
-
-	////////
 
 	//Add Empty
 	//Returns nullptr if no book provided
@@ -590,6 +588,7 @@ public:
 	static void DeletePageItem(llBookData* llBook, llPageItemData* PageItemReference);
 	static void DeletePageGroup(llBookData* llBook, llPageGroupData* PageGroupReference);
 	static void DeletePage(llBookData* llBook, llPageData* PageReference);
+	static void EraseBook(llBookData* llBook);
 
 	static void ToggleToggle(bool& ToToggle);
 	static void FindElement(llBookData* llBook, int ElementLevel);

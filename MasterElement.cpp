@@ -11,127 +11,134 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 	int ShapeCount = -1;
 	int VertexCount = -1;
 
-	//Page
-	llPageData* CurrentPage = llBook->Page;
-
-	//Set to beginning
-	while (CurrentPage->Previous != nullptr)
+	if (llBook->Page != nullptr)
 	{
-		CurrentPage = CurrentPage->Previous;
-	}
+		//Page
+		llPageData* CurrentPage = llBook->Page;
 
-	while(CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
-	{
-		if (PageCount == -1)
+		//Set to beginning
+		while (CurrentPage->Previous != nullptr)
 		{
-			cout << " " << endl;
+			CurrentPage = CurrentPage->Previous;
 		}
-		PageCount++;
-		//Page Group
-		llPageGroupData* CurrentPageGroup = CurrentPage->PageGroup;
-		//Set PageGroup Beginning
-		/////////////////////////////////////////////////////
-		while (CurrentPageGroup->Previous != nullptr)
-		{
-			CurrentPageGroup = CurrentPageGroup->Previous;
-		}
-		/////////////////////////////////////////////////////
 
-		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
-		{		
-			if (PageGroupCount == -1)
+		while (CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
+		{
+			if (PageCount == -1)
 			{
-				cout << "----P" << endl;
+				cout << " " << endl;
 			}
-			PageGroupCount++;
-			//PageItem
-			llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
-			//Set PageItem Beginning
+			PageCount++;
+			//Page Group
+			llPageGroupData* CurrentPageGroup = CurrentPage->PageGroup;
+			//Set PageGroup Beginning
 			/////////////////////////////////////////////////////
-			while (CurrentPageItem->Previous != nullptr)
+			while (CurrentPageGroup->Previous != nullptr)
 			{
-				CurrentPageItem = CurrentPageItem->Previous;
+				CurrentPageGroup = CurrentPageGroup->Previous;
 			}
 			/////////////////////////////////////////////////////
 
-			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
+			while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
 			{
-				if (PageItemCount == -1)
+				if (PageGroupCount == -1)
 				{
-					cout << "----------PG" << endl;
+					cout << "----P" << endl;
 				}
-				PageItemCount++;
-				//ShapeGroup
-				llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
-				//Set ShapeGroup to beginning
+				PageGroupCount++;
+				//PageItem
+				llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
+				//Set PageItem Beginning
 				/////////////////////////////////////////////////////
-				while (CurrentShapeGroup->Previous != nullptr)
+				while (CurrentPageItem->Previous != nullptr)
 				{
-					CurrentShapeGroup = CurrentShapeGroup->Previous;
+					CurrentPageItem = CurrentPageItem->Previous;
 				}
 				/////////////////////////////////////////////////////
 
-				while (CurrentShapeGroup != nullptr)
+				while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
 				{
-					if (ShapeGroupCount == -1)
+					if (PageItemCount == -1)
 					{
-						cout << "-----------------PI" << endl;
+						cout << "----------PG" << endl;
 					}
-					ShapeGroupCount++;
-					//Shape
-					llShapeData* CurrentShape = CurrentShapeGroup->Shape;
-					if (CurrentShapeGroup->Shape != nullptr)
+					PageItemCount++;
+					//ShapeGroup
+					llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+					//Set ShapeGroup to beginning
+					/////////////////////////////////////////////////////
+					while (CurrentShapeGroup->Previous != nullptr)
 					{
-						//Set shape to beginning
-						/////////////////////////////////////////////////////
-						while (CurrentShape->Previous != nullptr)
-						{
-							CurrentShape = CurrentShape->Previous;
-						}
-						/////////////////////////////////////////////////////
+						CurrentShapeGroup = CurrentShapeGroup->Previous;
+					}
+					/////////////////////////////////////////////////////
 
-						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
+					while (CurrentShapeGroup != nullptr)
+					{
+						if (ShapeGroupCount == -1)
 						{
-							if (ShapeCount == -1)
-							{
-								cout << "---------------------SG" << endl;
-							}
-							ShapeCount++;
-							//PrintllShape(CurrentShape);
-							//Vertex
-							llVertexData* CurrentVertex = CurrentShape->Vertexx;
+							cout << "-----------------PI" << endl;
+						}
+						ShapeGroupCount++;
+						//Shape
+						llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+						if (CurrentShapeGroup->Shape != nullptr)
+						{
+							//Set shape to beginning
 							/////////////////////////////////////////////////////
-							while (CurrentVertex->Previous != nullptr)
+							while (CurrentShape->Previous != nullptr)
 							{
-								CurrentVertex = CurrentVertex->Previous;
+								CurrentShape = CurrentShape->Previous;
 							}
-							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << " | " << CurrentShape << endl;
 							/////////////////////////////////////////////////////
-							while (CurrentVertex != nullptr)
+
+							while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
 							{
-								if (VertexCount == -1)
+								if (ShapeCount == -1)
 								{
-									//cout << "------------------------------S" << endl;
+									cout << "---------------------SG" << endl;
 								}
-								VertexCount++;
+								ShapeCount++;
+								//PrintllShape(CurrentShape);
+								//Vertex
+								llVertexData* CurrentVertex = CurrentShape->Vertexx;
+								/////////////////////////////////////////////////////
+								while (CurrentVertex->Previous != nullptr)
+								{
+									CurrentVertex = CurrentVertex->Previous;
+								}
+								cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << " | " << CurrentShape << endl;
+								/////////////////////////////////////////////////////
+								while (CurrentVertex != nullptr)
+								{
+									if (VertexCount == -1)
+									{
+										//cout << "------------------------------S" << endl;
+									}
+									VertexCount++;
 
-								CurrentVertex = CurrentVertex->Next;
+									CurrentVertex = CurrentVertex->Next;
+								}
+								VertexCount = -1;
+								CurrentShape = CurrentShape->Next;
 							}
-							VertexCount = -1;
-							CurrentShape = CurrentShape->Next;
 						}
+						ShapeCount = -1;
+						CurrentShapeGroup = CurrentShapeGroup->Next;
 					}
-					ShapeCount = -1;
-					CurrentShapeGroup = CurrentShapeGroup->Next;
+					ShapeGroupCount = -1;
+					CurrentPageItem = CurrentPageItem->Next;
 				}
-				ShapeGroupCount = -1;
-				CurrentPageItem = CurrentPageItem->Next;
+				PageItemCount = -1;
+				CurrentPageGroup = CurrentPageGroup->Next;
 			}
-			PageItemCount = -1;
-			CurrentPageGroup = CurrentPageGroup->Next;
+			PageGroupCount = -1;
+			CurrentPage = CurrentPage->Next;
 		}
-		PageGroupCount = -1;
-		CurrentPage = CurrentPage->Next;
+	}
+	else
+	{
+		Log::LogString("Print Stats Failed. No Page linked to book ");
 	}
 }
 
@@ -282,6 +289,91 @@ void MasterElement::PrintBook(llBookData* llBook)
 
 }
 
+
+llVertexData* MasterElement::HeadVertex(llVertexData* VertexReference)
+{
+	//Already Head or Invalid
+	if (VertexReference->Previous == nullptr) { return VertexReference; }
+	if (VertexReference == nullptr) { Log::LogString("ERROR:: HeadVertex FAILED:: No Vertex Provided");  return nullptr; }
+
+	//Setup
+	llVertexData* VertexHead = VertexReference;
+
+	//Get Head
+	while (VertexHead->Previous != nullptr) { VertexHead = VertexHead->Previous; }
+
+	return VertexHead;
+}
+llShapeData* MasterElement::HeadShape(llShapeData* ShapeReference)
+{
+	//Already Head or Invalid
+	if (ShapeReference->Previous == nullptr) { return ShapeReference; }
+	if (ShapeReference == nullptr) { Log::LogString("ERROR:: HeadShape FAILED:: No Shape Provided");  return nullptr; }
+
+	//Setup
+	llShapeData* ShapeHead = ShapeReference;
+
+	//Get Head
+	while (ShapeHead->Previous != nullptr) { ShapeHead = ShapeHead->Previous; }
+
+	return ShapeHead;
+}
+llShapeGroupData* MasterElement::HeadShapeGroup(llShapeGroupData* ShapeGroupReference)
+{
+	//Already Head or Invalid
+	if (ShapeGroupReference->Previous == nullptr) { return ShapeGroupReference; }
+	if (ShapeGroupReference == nullptr) { Log::LogString("ERROR:: HeadShapeGroup FAILED:: No ShapeGroup Provided");  return nullptr; }
+
+	//Setup
+	llShapeGroupData* ShapeGroupHead = ShapeGroupReference;
+
+	//Get Head
+	while (ShapeGroupHead->Previous != nullptr) { ShapeGroupHead = ShapeGroupHead->Previous; }
+
+	return ShapeGroupHead;
+}
+llPageItemData* MasterElement::HeadPageItem(llPageItemData* PageItemReference)
+{
+	//Already Head or Invalid
+	if (PageItemReference->Previous == nullptr) { return PageItemReference; }
+	if (PageItemReference == nullptr) { Log::LogString("ERROR:: HeadPageItem FAILED:: No PageItem Provided");  return nullptr; }
+
+	//Setup
+	llPageItemData* PageItemHead = PageItemReference;
+
+	//Get Head
+	while (PageItemHead->Previous != nullptr) { PageItemHead = PageItemHead->Previous; }
+
+	return PageItemHead;
+}
+llPageGroupData* MasterElement::HeadPageGroup(llPageGroupData* PageGroupReference)
+{
+	//Already Head or Invalid
+	if (PageGroupReference->Previous == nullptr) { return PageGroupReference; }
+	if (PageGroupReference == nullptr) { Log::LogString("ERROR:: HeadPageGroup FAILED:: No PageGroup Provided");  return nullptr; }
+
+	//Setup
+	llPageGroupData* PageGroupHead = PageGroupReference;
+
+	//Get Head
+	while (PageGroupHead->Previous != nullptr) { PageGroupHead = PageGroupHead->Previous; }
+
+	return PageGroupHead;
+}
+llPageData* MasterElement::HeadPage(llPageData* PageReference)
+{
+	//Already Head or Invalid
+	if (PageReference->Previous == nullptr) { return PageReference; }
+	if (PageReference == nullptr) { Log::LogString("ERROR:: HeadPage FAILED:: No Page Provided");  return nullptr; }
+
+	//Setup
+	llPageData* PageHead = PageReference;
+
+	//Get Head
+	while (PageHead->Previous != nullptr) { PageHead = PageHead->Previous; }
+
+	return PageHead;
+}
 
 void MasterElement::NextPage(llBookData* llBook)
 {
@@ -697,7 +789,7 @@ llShapeData* MasterElement::AddShape(llBookData* Book)
 	if (TestingShape == nullptr)
 	{
 		//First Shape!
-		Log::LogChar("New Shape Linked", char(NewShape->Ascii));
+		//Log::LogChar("New Shape Linked", char(NewShape->Ascii));
 		Book->Page->PageGroup->PageItem->ShapeGroup->Shape = NewShape;
 		Book->Page->PageGroup->PageItem->ShapeGroup->ShapeHead = NewShape;
 	}
@@ -708,7 +800,7 @@ llShapeData* MasterElement::AddShape(llBookData* Book)
 		while (TestingShape->Next != nullptr) {TestingShape = TestingShape->Next;}
 
 		//Link Shape to list 
-		Log::LogChar("New Shape Linked", char(TestingShape->Ascii));
+		//Log::LogChar("New Shape Linked", char(TestingShape->Ascii));
 		TestingShape->Next = NewShape;
 		NewShape->Previous = TestingShape;
 
@@ -781,7 +873,7 @@ llShapeGroupData* MasterElement::AddShapeGroup(llBookData* Book)
 	if (TestingShapeGroup == nullptr)
 	{
 		//First ShapeGroup!
-		Log::LogString("New ShapeGroup Linked");
+		//Log::LogString("New ShapeGroup Linked");
 		Book->Page->PageGroup->PageItem->ShapeGroup = NewShapeGroup;
 		Book->Page->PageGroup->PageItem->ShapeGroupHead = NewShapeGroup;
 	}
@@ -795,7 +887,7 @@ llShapeGroupData* MasterElement::AddShapeGroup(llBookData* Book)
 		}
 
 		//Link New ShapeGroup to Tail
-		Log::LogString("New ShapeGroup Linked");
+		//Log::LogString("New ShapeGroup Linked");
 		TestingShapeGroup->Next = NewShapeGroup;
 		NewShapeGroup->Previous = TestingShapeGroup;
 
@@ -969,6 +1061,8 @@ llPageData* MasterElement::AddPage(llBookData* Book)
 		//Set the New Page as the Current Page
 		Book->Page = NewPage;
 	}
+
+	cout << "PagePointer " << Book->Page << endl;
 
 	Book->PageCount++;
 	return NewPage;
@@ -1218,7 +1312,7 @@ void MasterElement::DeleteShape(llBookData* llBook, llShapeData* ReferenceShape)
 	if (ReferenceShape->Vertexx == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Shape Does not Contain Vertices"); return; }
 
 	//Prep
-	llVertexData* CurrentVertex = ReferenceShape->Vertexx;
+	llVertexData* CurrentVertex = HeadVertex(ReferenceShape->Vertexx);
 	llVertexData* Next = nullptr;
 
 	//Save Shape Before and After Current
@@ -1243,6 +1337,9 @@ void MasterElement::DeleteShape(llBookData* llBook, llShapeData* ReferenceShape)
 	//Link any valid shapes back together
 	if (PreviousllShape != nullptr) { PreviousllShape->Next = NextllShape; }
 	if (NextllShape != nullptr) { NextllShape->Previous = PreviousllShape; }
+
+
+	Log::LogString("Shape & Vertices Deleted");
 }
 
 void MasterElement::DeleteShapeGroup(llBookData* llBook, llShapeGroupData* ShapeGroupReference)
@@ -1253,7 +1350,7 @@ void MasterElement::DeleteShapeGroup(llBookData* llBook, llShapeGroupData* Shape
 	if (ShapeGroupReference->Shape == nullptr) { Log::LogString("ERROR:: Delete ShapeGroup FAILED:: ShapeGroup Does not Contain Shapes"); return; }
 
 	//Prep
-	llShapeData* CurrentShape = ShapeGroupReference->Shape;
+	llShapeData* CurrentShape = HeadShape(ShapeGroupReference->Shape);
 	llShapeData* Next = nullptr;
 
 	//Save ShapeGroup Before and After Current
@@ -1277,6 +1374,8 @@ void MasterElement::DeleteShapeGroup(llBookData* llBook, llShapeGroupData* Shape
 	//Link any valid shapegroups back together
 	if (PreviousllShapeGroup != nullptr) { PreviousllShapeGroup->Next = NextllShapeGroup; }
 	if (NextllShapeGroup != nullptr) { NextllShapeGroup->Previous = PreviousllShapeGroup; }
+
+	Log::LogString("ShapeGroup Deleted");
 }
 
 
@@ -1288,23 +1387,23 @@ void MasterElement::DeletePageItem(llBookData* llBook, llPageItemData* PageItemR
 	if (PageItemReference->ShapeGroup == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Shape Does not Contain Vertices"); return; }
 
 	//Prep
-	llShapeGroupData* CurrentShapeGroup = PageItemReference->ShapeGroup;
+	llShapeGroupData* CurrentShapeGroup = HeadShapeGroup(PageItemReference->ShapeGroup);
 	llShapeGroupData* Next = nullptr;
 
-	//Save ShapeGroup Before and After Current
+	//Save PageItem Before and After Current
 	llPageItemData* PreviousllPageItem = PageItemReference->Previous;
 	llPageItemData* NextllPageItem = PageItemReference->Next;
 
 	//Delete all Shapes
 	while (CurrentShapeGroup != nullptr)
 	{
-		//Delete current Shape, go to next
+		//Delete current ShapeGroup, go to next
 		Next = CurrentShapeGroup->Next;
 		DeleteShapeGroup(llBook, CurrentShapeGroup);
 		CurrentShapeGroup = Next;
 	}
 
-	//Delete ShapeGroup
+	//Delete PageItem
 	PageItemReference->ShapeGroup = nullptr;
 	delete PageItemReference;
 	PageItemReference = nullptr;
@@ -1312,6 +1411,8 @@ void MasterElement::DeletePageItem(llBookData* llBook, llPageItemData* PageItemR
 	//Link any valid shapegroups back together
 	if (PreviousllPageItem != nullptr) { PreviousllPageItem->Next = NextllPageItem; }
 	if (NextllPageItem != nullptr) { NextllPageItem->Previous = PreviousllPageItem; }
+
+	Log::LogString("PageItem Deleted");
 }
 
 void MasterElement::DeletePageGroup(llBookData* llBook, llPageGroupData* PageGroupReference)
@@ -1322,23 +1423,23 @@ void MasterElement::DeletePageGroup(llBookData* llBook, llPageGroupData* PageGro
 	if (PageGroupReference->PageItem == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: PageItem Does not Contain ShapeGroups"); return; }
 
 	//Prep
-	llPageItemData* CurrentPageItem = PageGroupReference->PageItem;
+	llPageItemData* CurrentPageItem = HeadPageItem(PageGroupReference->PageItem);
 	llPageItemData* Next = nullptr;
 
-	//Save ShapeGroup Before and After Current
+	//Save PageGroup Before and After Current
 	llPageGroupData* PreviousllPageGroup = PageGroupReference->Previous;
 	llPageGroupData* NextllPageGroup = PageGroupReference->Next;
 
 	//Delete all Shapes
 	while (CurrentPageItem != nullptr)
 	{
-		//Delete current Shape, go to next
+		//Delete current PageItem, go to next
 		Next = CurrentPageItem->Next;
 		DeletePageItem(llBook, CurrentPageItem);
 		CurrentPageItem = Next;
 	}
 
-	//Delete ShapeGroup
+	//Delete PageGroup
 	PageGroupReference->PageItem = nullptr;
 	delete PageGroupReference;
 	PageGroupReference = nullptr;
@@ -1346,6 +1447,8 @@ void MasterElement::DeletePageGroup(llBookData* llBook, llPageGroupData* PageGro
 	//Link any valid shapegroups back together
 	if (PreviousllPageGroup != nullptr) { PreviousllPageGroup->Next = NextllPageGroup; }
 	if (NextllPageGroup != nullptr) { NextllPageGroup->Previous = PreviousllPageGroup; }
+
+	Log::LogString("PageGroup Deleted");
 }
 ///////////////////////////////////////////////////////////////
 void MasterElement::DeletePage(llBookData* llBook, llPageData* PageReference)
@@ -1356,23 +1459,23 @@ void MasterElement::DeletePage(llBookData* llBook, llPageData* PageReference)
 	if (PageReference->PageGroup == nullptr) { Log::LogString("ERROR:: Delete PageItem FAILED:: PageItem Does not Contain ShapeGroups"); return; }
 
 	//Prep
-	llPageGroupData* CurrentPageGroup = PageReference->PageGroup;
+	llPageGroupData* CurrentPageGroup = HeadPageGroup(PageReference->PageGroup);
 	llPageGroupData* Next = nullptr;
 
-	//Save ShapeGroup Before and After Current
+	//Save Page Before and After Current
 	llPageData* PreviousllPage = PageReference->Previous;
 	llPageData* NextllPage = PageReference->Next;
 
 	//Delete all Shapes
 	while (CurrentPageGroup != nullptr)
 	{
-		//Delete current Shape, go to next
+		//Delete current PageGroup, go to next
 		Next = CurrentPageGroup->Next;
 		DeletePageGroup(llBook, CurrentPageGroup);
 		CurrentPageGroup = Next;
 	}
 
-	//Delete ShapeGroup
+	//Delete Page
 	PageReference->PageGroup = nullptr;
 	delete PageReference;
 	PageReference = nullptr;
@@ -1380,8 +1483,50 @@ void MasterElement::DeletePage(llBookData* llBook, llPageData* PageReference)
 	//Link any valid shapegroups back together
 	if (PreviousllPage != nullptr) { PreviousllPage->Next = NextllPage; }
 	if (NextllPage != nullptr) { NextllPage->Previous = PreviousllPage; }
+
+	Log::LogString("Page Deleted");
 }
 
+void MasterElement::EraseBook(llBookData* llBook)
+{
+
+	//Validate
+	if (llBook == nullptr) { Log::LogString("ERROR:: Delete Book FAILED:: No Book Provided"); return; }
+	if (llBook->Page == nullptr) { Log::LogString("ERROR:: Delete Book FAILED:: No Pages in Book"); return; }
+
+
+	//Prep
+	llPageData* CurrentPage = HeadPage(llBook->Page);
+	llPageData* Next = nullptr;
+
+	//Save ShapeGroup Before and After Current
+	//llBookData* PreviousllBook = llBook->Previous;
+	//llBookData* NextllBook = llBook->Next;
+
+	//Delete all Shapes
+	while (CurrentPage != nullptr)
+	{
+		//Delete current Page, go to next
+		Next = CurrentPage->Next;
+		DeletePage(llBook, CurrentPage);
+		CurrentPage = Next;
+	}
+
+	llBook->Page = nullptr;
+
+	Log::LogString("Book Erased");
+
+	/////////////////////////Un-Comment Code if you choose t link books together////////////////////
+
+	//Delete Book
+	//delete llBook;
+	//llBook = nullptr;
+
+	//Link any valid Books back together
+	//if (PreviousllBook != nullptr) { PreviousllBook->Next = NextllBook; }
+	//if (NextllBook != nullptr) { NextllBook->Previous = PreviousllBoook; }
+
+}
 
 void MasterElement::ToggleToggle(bool& ToToggle)
 {

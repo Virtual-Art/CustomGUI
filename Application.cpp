@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include <fstream>
 #include <sstream>
 #include <GL/glew.h>
@@ -58,6 +59,16 @@
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+
+struct ListNode
+{
+	int val = -1;
+	ListNode* Next = nullptr;
+};
+
+ListNode* swapPairs(ListNode* Head);
+ListNode* swapPairs2(ListNode* Head);
+ListNode* SwapTwoPointers(ListNode* Head, int k);
 
 void RandomTest1()
 {
@@ -120,7 +131,7 @@ int main(int argc, char** argv)
 
 	llBookData EditorBook;
 
-	FileSystem.LoadBook(MainBook, ShapeShader);
+	//FileSystem.LoadBook(MainBook, ShapeShader);
 
 	RawTexture Segoe = Texture.CreateTexture("Resources/segoe.png", "FontAtlas", GL_TEXTURE0, 0, GL_RGBA);
 	RawTexture RoundedCorners = Texture.CreateTexture("1_SkFEBcaoea9WXIdQg2GsTw.png", "FontAtlas", GL_TEXTURE2, 2, GL_ALPHA);
@@ -140,6 +151,12 @@ int main(int argc, char** argv)
 	llBookData FILEBook;
 
 	Slider FileTester(&FILEBook);
+	Slider FileTester2(&FILEBook);
+	Slider FileTester3(&FILEBook);
+	llShapeGroupData fail_data;
+	TextData Fail_text;
+	Fail_text.Phrase = "This will not fail no matter how many times i write stuff i just can't write squiggly";
+	Text Thiswillfail(&FILEBook, &fail_data, Fail_text);
 
 
 	//WHYY.SetllText("WHYYYYYYYYYY");
@@ -287,12 +304,51 @@ int main(int argc, char** argv)
 	llPageItemData PageItem_Toggle;
 	PageItem_Toggle.Position = {-0.89, -0.3};
 
-	FileSystem.SavellBook(&FILEBook, "ProgramFiles/FirstGUI.Book");
+	llBookData NEWBOOK;
+
+	FileSystem.SavellBook(FILEBook, "ProgramFiles/FirstGUI.Book");
+
 	cout << "+--------------------------------+" << endl;
-	FileSystem.LoadllBook(&FILEBook, "ProgramFiles/FirstGUI.Book");
+	FileSystem.LoadllBook(FILEBook, "ProgramFiles/FirstGUI.Book");
 
 	MasterElement::PrintBookStats(&FILEBook);
 
+	//Create
+	ListNode* One = new ListNode;
+	ListNode* Two = new ListNode;
+	ListNode* Three = new ListNode;
+	ListNode* Four = new ListNode;
+	ListNode* Five = new ListNode;
+	ListNode* Six = new ListNode;
+
+	//Set and Link
+	One->val = 1;
+	One->Next = Two;
+	Two->val = 2;
+	Two->Next = Three;
+	Three->val = 3;
+	Three->Next = Four;
+	Four->val = 4;
+	Four->Next = Five;
+	Five->val = 5;
+	Five->Next = Six;
+	Six->val = 6;
+
+	ListNode* NewList = One;
+
+	while (NewList != nullptr)
+	{
+		cout << NewList->val << endl;
+		NewList = NewList->Next;
+	}
+
+	NewList = SwapTwoPointers(One, 2);
+
+	while (NewList != nullptr)
+	{
+		cout << NewList->val << endl;
+		NewList = NewList->Next;
+	}
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -371,5 +427,133 @@ int main(int argc, char** argv)
 	glfwTerminate();
 	Editor.DeletePage();
 	GUI.DeletePage();
+	MasterElement::EraseBook(&EditorBook);
 	return 0;
+}
+
+
+ListNode* swapPairs(ListNode* Head)
+{
+	//Validate
+	if (Head == nullptr) { return Head; }
+	if (Head->Next == nullptr) { return Head; }
+
+	ListNode* NewHead = Head->Next;
+	ListNode* CurrentPair = Head;
+	ListNode* LastPairSecond = nullptr;
+
+	while (CurrentPair != nullptr && CurrentPair->Next != nullptr)
+	{
+		//Working
+		ListNode* First   = CurrentPair;
+		ListNode* Second  = CurrentPair->Next;
+		ListNode* NextPair = Second->Next;
+
+		//Swaps
+		First->Next = NextPair;
+		Second->Next = First;
+
+		if (LastPairSecond != nullptr)
+		{
+			LastPairSecond->Next = Second;
+		}
+
+		//Working
+		LastPairSecond = First;
+		CurrentPair = NextPair;
+	}
+
+	//1234 //Start
+	//2134 //Transition
+	//2143 //Answer
+	return NewHead;
+}
+
+
+ListNode* swapPairs2(ListNode* Head)
+{
+	//Validate
+	if (Head == nullptr) { return Head; }
+
+
+	//Loop through Swaps
+
+	//Swap
+
+	//Prev
+	ListNode* FirstPrevious;
+	ListNode* SecondPrevious;
+
+	//Actuals
+	ListNode* First;
+	ListNode* Second;
+	ListNode* CopySecond = Second;
+
+	//Attach New Beginning
+	FirstPrevious->Next = Second; // Second Must Be Valid
+	Second->Next = First->Next; //First Must Be Valid 
+
+	//Attach New End
+	First->Next = CopySecond->Next;
+	SecondPrevious = First;
+
+	return Head;
+}
+
+
+
+ListNode* SwapTwoPointers(ListNode* Head, int k)
+{
+	if (Head == nullptr) { return Head; }
+
+	ListNode* First = nullptr;
+	ListNode* FirstPrev = nullptr;
+
+	ListNode* Second = nullptr;
+	ListNode* SecondPrev = nullptr;
+	ListNode* CopySecond = nullptr;
+	ListNode* LastLink = nullptr;
+
+	ListNode* Sift = Head;
+
+	int Track = 0;
+
+	map<int, ListNode*> NodeList;
+
+	while (Sift != nullptr)
+	{
+		NodeList[Track] = Sift;
+		Track++;
+		Sift = Sift->Next;
+	}
+
+	//Setup Pointers
+    First = NodeList[k - 1]; //Starts from    0 1 2 3 4 5 6
+    FirstPrev = NodeList[k - 2];
+	Second = NodeList[NodeList.size() - k];
+	SecondPrev = NodeList[NodeList.size() - k - 1];
+	CopySecond = Second;
+	LastLink = Second->Next;
+
+	cout << "First" << " " << k - 1 << endl;
+	cout << "FirstPrev" << " " << k - 2 << endl;
+	cout << "Second" << " " << NodeList.size() - k << endl;
+	cout << "SecondPrev" << " " << NodeList.size() - k - 1 << endl;
+
+
+	//////////////////////SWAP:
+
+	//Attach New Beginning
+	FirstPrev->Next = Second; // Second Must Be Valid
+	Second->Next = First->Next; //First Must Be Valid 
+
+	//Attach New End
+	First->Next = LastLink;
+	SecondPrev->Next = First;	
+	
+	
+	///////////////////END SWAP
+	Track = 0;
+
+	return Head;
 }

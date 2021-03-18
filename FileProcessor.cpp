@@ -76,26 +76,26 @@ void FileSystem::SaveBook(Book& Book)
 }
 
 
-void FileSystem::SavellBook(llBookData* Book, string FilePath)
+void FileSystem::SavellBook(llBookData& Book, string FilePath)
 {
 	ofstream File;
 	ofstream txtFile;
 
-	THISBOOK = Book;
+	THISBOOK = &Book;
 
-	//File.open(FilePath, ios::trunc);
-	//
-	//if (File.is_open())
-	//{
-	//	cout << "Loading File" << endl;
-	//	File << Book;
-	//	cout << "Book Saved" << endl;
-	//}
-	//else
-	//{
-	//	cout << "FILE ERROR::Cannot Open File" << endl;
-	//}
-	//File.close();
+	File.open(FilePath, ios::trunc);
+	
+	if (File.is_open())
+	{
+		cout << "Loading File" << endl;
+		File << Book;
+		cout << "Book Saved" << endl;
+	}
+	else
+	{
+		cout << "FILE ERROR::Cannot Open File" << endl;
+	}
+	File.close();
 
 	txtFile.open("ProgramFiles/GUIData.txt", ios::trunc);
 
@@ -114,8 +114,10 @@ void FileSystem::SavellBook(llBookData* Book, string FilePath)
 
 }
 
-void FileSystem::LoadllBook(llBookData* Book, string FilePath)
+void FileSystem::LoadllBook(llBookData& Book, string FilePath)
 {
+	THISBOOK = &Book;
+
 	ifstream File;
 	File.open(FilePath);
 	if (File.is_open())
@@ -447,15 +449,15 @@ istream& operator>>(istream& in, glm::vec4& Vec4)
 	return in;
 }
 
-ostream& operator<<(ostream& out, glm::vec4& Vec4)
+ostream& operator<<(ostream& out, const glm::vec4& Vec4)
 {
-	out  << Vec4[0] << "  " << Vec4[1] << "  " << Vec4[2] << "  " << Vec4[3]  << endl;
+	out  << Vec4[0] << "  " << Vec4[1] << "  " << Vec4[2] << "  " << Vec4[3];
 	return out;
 }
 
-ostream& operator<<(ostream& out, glm::vec2& Vec2)
+ostream& operator<<(ostream& out, const glm::vec2& Vec2)
 {
-	out << Vec2[0] << " " << Vec2[1] << endl;
+	out << Vec2[0] << " " << Vec2[1];
 	return out;
 }
 istream& operator>>(istream& in, glm::vec2& Vec2)
@@ -465,53 +467,53 @@ istream& operator>>(istream& in, glm::vec2& Vec2)
 }
 
 // Linked List
-ostream& operator<<(ostream& out, llVertexData* VertexData) 
+ostream& operator<<(ostream& out, const llVertexData& VertexData) 
 {
-	//out << "VERTEX" << endl;
-	out << VertexData->Position << endl;
-	out << VertexData->TexCoords << endl;
-	out << VertexData->Color << endl;
-	out << VertexData->TexIndex << endl;
-	out << VertexData->CentralPoint << endl;
-	out << VertexData->GUIAction << endl;
+	out << "VERTEX" << endl;
+	out << VertexData.Position << endl;
+	out << VertexData.TexCoords << endl;
+	out << VertexData.Color << endl;
+	out << VertexData.TexIndex << endl;
+	out << VertexData.CentralPoint << endl;
+	out << VertexData.GUIAction << endl;
 
 	return out;
 }
 
-ostream& operator<<(ostream& out, llShapeData* ShapeData) 
+ostream& operator<<(ostream& out, const llShapeData& ShapeData) 
 {
 	//Write Shape Data
-	//out << "Trying to load SHAPE" << endl;
-	out << ShapeData->Ascii << endl;
-	out << ShapeData->ActiveTexture << endl;
-	out << ShapeData->Action << endl;
-	out << ShapeData->Type << endl;
-	out << ShapeData->InputType << endl;
-	out << ShapeData->Position << endl;
-	out << ShapeData->Size << endl;
-	out << ShapeData->Color << endl;
-	out << ShapeData->PositionOffset << endl;
-	out << ShapeData->SizeOffset << endl;
-	out << ShapeData->ColorOffset << endl;
-	out << ShapeData->HighlightColor << endl;
-	out << ShapeData->MouseAccess << endl;
-	out << ShapeData->Centered << endl;
-	out << ShapeData->Highlighted << endl;
-	out << ShapeData->Hide << endl;
-	out << ShapeData->Top << endl;
-	out << ShapeData->Bottom << endl;
-	out << ShapeData->Left << endl;
-	out << ShapeData->Right<< endl;
-	out << ShapeData->Text << endl; //Not Needed
-	out << ShapeData->EndStart << endl; //Not Needed
-	out << ShapeData->TextCentered << endl; //Not Needed
-	out << ShapeData->ChangeAsGroup << endl; //Not Needed
+	out << "SHAPE" << endl;
+	out << ShapeData.Ascii << endl;
+	out << ShapeData.ActiveTexture << endl;
+	out << ShapeData.Action << endl;
+	out << ShapeData.Type << endl;
+	out << ShapeData.InputType << endl;
+	out << ShapeData.Position << endl;
+	out << ShapeData.Size << endl;
+	out << ShapeData.Color << endl;
+	out << ShapeData.PositionOffset << endl;
+	out << ShapeData.SizeOffset << endl;
+	out << ShapeData.ColorOffset << endl;
+	out << ShapeData.HighlightColor << endl;
+	out << ShapeData.MouseAccess << endl;
+	out << ShapeData.Centered << endl;
+	out << ShapeData.Highlighted << endl;
+	out << ShapeData.Hide << endl;
+	out << ShapeData.Top << endl;
+	out << ShapeData.Bottom << endl;
+	out << ShapeData.Left << endl;
+	out << ShapeData.Right<< endl;
+	out << ShapeData.Text + " `" << endl; //Not Needed
+	out << ShapeData.EndStart << endl; //Not Needed
+	out << ShapeData.TextCentered << endl; //Not Needed
+	out << ShapeData.ChangeAsGroup << endl; //Not Needed
 
 	//Write Shape Data's Vertices (if it has any)
-	if (ShapeData->Vertexx != nullptr)
+	if (ShapeData.Vertexx != nullptr)
 	{
 		//Get Shape's Vertices
-		llVertexData* CurrentVertex = ShapeData->Vertexx;
+		llVertexData* CurrentVertex = ShapeData.Vertexx;
 
 		//Go to Vertex head
 		while (CurrentVertex->Previous != nullptr)
@@ -522,7 +524,7 @@ ostream& operator<<(ostream& out, llShapeData* ShapeData)
 		//Write All Shape Vertices
 		while (CurrentVertex != nullptr)
 		{
-			out << CurrentVertex;
+			out << *CurrentVertex;
 			CurrentVertex = CurrentVertex->Next;
 		}
 	}
@@ -530,36 +532,36 @@ ostream& operator<<(ostream& out, llShapeData* ShapeData)
 	return out;
 }
 
-ostream& operator<<(ostream& out, llShapeGroupData* ShapeGroupData)
+ostream& operator<<(ostream& out, const llShapeGroupData& ShapeGroupData)
 {
 	//Write ShapeGroup Data
-	//out << "Trying to load SHAPEGROUP: # of Shapes:" << endl;
-	out << ShapeGroupData->ShapeCount << endl;
-	out << ShapeGroupData->Type << endl;
-	out << ShapeGroupData->XYShapePerRow << endl;
-	out << ShapeGroupData->ShapeSize << endl;
-	out << ShapeGroupData->Position << endl;
-	out << ShapeGroupData->Size << endl;
-	out << ShapeGroupData->Color << endl;
-	out << ShapeGroupData->PositionOffset << endl;
-	out << ShapeGroupData->SizeOffset << endl;
-	out << ShapeGroupData->ColorOffset << endl;
-	out << ShapeGroupData->HighlightColor << endl;
-	out << ShapeGroupData->Centered << endl;
-	out << ShapeGroupData->Highlighted << endl;
-	out << ShapeGroupData->MouseAccess << endl;
-	out << ShapeGroupData->Hide << endl;
-	out << ShapeGroupData->ChangeAsGroup << endl;
-	out << ShapeGroupData->Top << endl;
-	out << ShapeGroupData->Bottom << endl;
-	out << ShapeGroupData->Left << endl;
-	out << ShapeGroupData->Right << endl;
+	out << "SHAPEGROUP" << endl;
+	out << ShapeGroupData.ShapeCount << endl;
+	out << ShapeGroupData.Type << endl;
+	out << ShapeGroupData.XYShapePerRow << endl;
+	out << ShapeGroupData.ShapeSize << endl;
+	out << ShapeGroupData.Position << endl;
+	out << ShapeGroupData.Size << endl;
+	out << ShapeGroupData.Color << endl;
+	out << ShapeGroupData.PositionOffset << endl;
+	out << ShapeGroupData.SizeOffset << endl;
+	out << ShapeGroupData.ColorOffset << endl;
+	out << ShapeGroupData.HighlightColor << endl;
+	out << ShapeGroupData.Centered << endl;
+	out << ShapeGroupData.Highlighted << endl;
+	out << ShapeGroupData.MouseAccess << endl;
+	out << ShapeGroupData.Hide << endl;
+	out << ShapeGroupData.ChangeAsGroup << endl;
+	out << ShapeGroupData.Top << endl;
+	out << ShapeGroupData.Bottom << endl;
+	out << ShapeGroupData.Left << endl;
+	out << ShapeGroupData.Right << endl;
 
 	//Write ShapeGroup Data's Shapes (if it has any)
-	if (ShapeGroupData->Shape != nullptr)
+	if (ShapeGroupData.Shape != nullptr)
 	{
 		//Get ShapeGroup's Shape
-		llShapeData* CurrentShape = ShapeGroupData->Shape;
+		llShapeData* CurrentShape = ShapeGroupData.Shape;
 
 		//Go to Shape head
 		while (CurrentShape->Previous != nullptr) {CurrentShape = CurrentShape->Previous;}
@@ -567,7 +569,7 @@ ostream& operator<<(ostream& out, llShapeGroupData* ShapeGroupData)
 		//Write All ShapeGroup Shape
 		while (CurrentShape != nullptr)
 		{
-			out << CurrentShape;
+			out << *CurrentShape;
 			CurrentShape = CurrentShape->Next;
 		}
 	}
@@ -575,36 +577,36 @@ ostream& operator<<(ostream& out, llShapeGroupData* ShapeGroupData)
 	return out;
 }
 
-ostream& operator<<(ostream& out, llPageItemData* PageItemData)
+ostream& operator<<(ostream& out, const llPageItemData& PageItemData)
 {
 	//Write PageItem
-	//out << "Trying to load PAGEITEM: # of ShapeGroups:" << endl;
-	out << PageItemData->ShapeGroupCount << endl;
-	out << PageItemData->Type << endl;
-	out << PageItemData->Position << endl;
-	out << PageItemData->Size << endl;
-	out << PageItemData->Color << endl;
-	out << PageItemData->PositionOffset << endl;
-	out << PageItemData->SizeOffset << endl;
-	out << PageItemData->ColorOffset << endl;
-	out << PageItemData->XYShapePerRow << endl;
-	out << PageItemData->ShapeSize << endl;
-	out << PageItemData->HighlightColor << endl;
-	out << PageItemData->Centered << endl;
-	out << PageItemData->Highlighted << endl;
-	out << PageItemData->MouseAccess << endl;
-	out << PageItemData->ChangeAsGroup << endl;
-	out << PageItemData->Top << endl;
-	out << PageItemData->Bottom << endl;
-	out << PageItemData->Left << endl;
-	out << PageItemData->Right << endl;
+	out << "PAGEITEM" << endl;
+	out << PageItemData.ShapeGroupCount << endl;
+	out << PageItemData.Type << endl;
+	out << PageItemData.Position << endl;
+	out << PageItemData.Size << endl;
+	out << PageItemData.Color << endl;
+	out << PageItemData.PositionOffset << endl;
+	out << PageItemData.SizeOffset << endl;
+	out << PageItemData.ColorOffset << endl;
+	out << PageItemData.XYShapePerRow << endl;
+	out << PageItemData.ShapeSize << endl;
+	out << PageItemData.HighlightColor << endl;
+	out << PageItemData.Centered << endl;
+	out << PageItemData.Highlighted << endl;
+	out << PageItemData.MouseAccess << endl;
+	out << PageItemData.ChangeAsGroup << endl;
+	out << PageItemData.Top << endl;
+	out << PageItemData.Bottom << endl;
+	out << PageItemData.Left << endl;
+	out << PageItemData.Right << endl;
 
 
 	//Write PageItem Data's ShapeGroups (if it has any)
-	if (PageItemData->ShapeGroup != nullptr)
+	if (PageItemData.ShapeGroup != nullptr)
 	{
 		//Get ShapeGroup's Shape
-		llShapeGroupData* CurrentShapeGroup = PageItemData->ShapeGroup;
+		llShapeGroupData* CurrentShapeGroup = PageItemData.ShapeGroup;
 
 		//Go to ShapeGroup head
 		while (CurrentShapeGroup->Previous != nullptr) { CurrentShapeGroup = CurrentShapeGroup->Previous; }
@@ -612,7 +614,7 @@ ostream& operator<<(ostream& out, llPageItemData* PageItemData)
 		//Write All ShapeGroups
 		while (CurrentShapeGroup != nullptr)
 		{
-			out << CurrentShapeGroup;
+			out << *CurrentShapeGroup;
 			CurrentShapeGroup = CurrentShapeGroup->Next;
 		}
 	}
@@ -623,32 +625,32 @@ ostream& operator<<(ostream& out, llPageItemData* PageItemData)
 	//out << PageItemData->SliderData;             // PLEASE COMPLETE
 }
 
-ostream& operator<<(ostream& out, llPageGroupData* PageGroupData)
+ostream& operator<<(ostream& out, const llPageGroupData& PageGroupData)
 {
-    //out << "Trying to load PAGEGROUP: # of PageItems " << endl;
-	out << PageGroupData->PageItemCount << endl;
-	out << PageGroupData->Type << endl;
-	out << PageGroupData->Position << endl;
-	out << PageGroupData->Size << endl;
-	out << PageGroupData->Color << endl;
-	out << PageGroupData->XYShapePerRow << endl;
-	out << PageGroupData->ShapeSize << endl;
-	out << PageGroupData->HighlightColor << endl;
-	out << PageGroupData->Centered << endl;
-	out << PageGroupData->Highlighted << endl;
-	out << PageGroupData->MouseAccess << endl;
-	out << PageGroupData->ChangeAsGroup << endl;
-	out << PageGroupData->Top << endl;
-	out << PageGroupData->Bottom << endl;
-	out << PageGroupData->Left << endl;
-	out << PageGroupData->Right<< endl;
+    out << "PAGEGROUP" << endl;
+	out << PageGroupData.PageItemCount << endl;
+	out << PageGroupData.Type << endl;
+	out << PageGroupData.Position << endl;
+	out << PageGroupData.Size << endl;
+	out << PageGroupData.Color << endl;
+	out << PageGroupData.XYShapePerRow << endl;
+	out << PageGroupData.ShapeSize << endl;
+	out << PageGroupData.HighlightColor << endl;
+	out << PageGroupData.Centered << endl;
+	out << PageGroupData.Highlighted << endl;
+	out << PageGroupData.MouseAccess << endl;
+	out << PageGroupData.ChangeAsGroup << endl;
+	out << PageGroupData.Top << endl;
+	out << PageGroupData.Bottom << endl;
+	out << PageGroupData.Left << endl;
+	out << PageGroupData.Right<< endl;
 
 
 	//Write PageGroup Data's PageItems (if it has any)
-	if (PageGroupData->PageItem != nullptr)
+	if (PageGroupData.PageItem != nullptr)
 	{
 		//Get ShapeGroup's Shape
-		llPageItemData* CurrentPageItem = PageGroupData->PageItem;
+		llPageItemData* CurrentPageItem = PageGroupData.PageItem;
 
 		//Go to PageItem head
 		while (CurrentPageItem->Previous != nullptr) { CurrentPageItem = CurrentPageItem->Previous; }
@@ -656,7 +658,7 @@ ostream& operator<<(ostream& out, llPageGroupData* PageGroupData)
 		//Write All PageItems
 		while (CurrentPageItem != nullptr)
 		{
-			out << CurrentPageItem;
+			out << *CurrentPageItem;
 			CurrentPageItem = CurrentPageItem->Next;
 		}
 	}
@@ -666,16 +668,16 @@ ostream& operator<<(ostream& out, llPageGroupData* PageGroupData)
 	//out << PageGroupData->PageGroupButton;  //PLEASE COMPLETE
 }
 
-ostream& operator<<(ostream& out, llPageData* PageData) 
+ostream& operator<<(ostream& out, const llPageData& PageData) 
 {
-	//out << "Trying to load PAGE: # of PageGroups" << endl;
-	out << PageData->PageGroupCount << endl;
+	out << "PAGE" << endl;
+	out << PageData.PageGroupCount << endl;
 
 	//Write PageGroup Data's PageItems (if it has any)
-	if (PageData->PageGroup != nullptr)
+	if (PageData.PageGroup != nullptr)
 	{
 		//Get ShapeGroup's Shape
-		llPageGroupData* CurrentPageGroup = PageData->PageGroup;
+		llPageGroupData* CurrentPageGroup = PageData.PageGroup;
 
 		//Go to PageItem head
 		while (CurrentPageGroup->Previous != nullptr) { CurrentPageGroup = CurrentPageGroup->Previous; }
@@ -683,24 +685,23 @@ ostream& operator<<(ostream& out, llPageData* PageData)
 		//Write All PageItems
 		while (CurrentPageGroup != nullptr)
 		{
-			out << CurrentPageGroup;
+			out << *CurrentPageGroup;
 			CurrentPageGroup = CurrentPageGroup->Next;
 		}
 	}
 
 	return out;
 }
-ostream& operator<<(ostream& out, llBookData* BookData)
+ostream& operator<<(ostream& out, const llBookData& BookData)
 {
-	//out << "Trying to load BOOK: # of Pages:" << endl;
-	out << BookData->PageCount << endl;
-	out << BookData->PageCount + 10 << endl;
+	out << "BOOK" << endl;
+	out << BookData.PageCount << endl;
 
 	//Write PageGroup Data's PageItems (if it has any)
-	if (BookData->Page != nullptr)
+	if (BookData.Page != nullptr)
 	{
 		//Get ShapeGroup's Shape
-		llPageData* CurrentPage = BookData->Page;
+		llPageData* CurrentPage = BookData.Page;
 
 		//Go to PageItem head
 		while (CurrentPage->Previous != nullptr) { CurrentPage = CurrentPage->Previous; }
@@ -708,7 +709,7 @@ ostream& operator<<(ostream& out, llBookData* BookData)
 		//Write All PageItems
 		while (CurrentPage != nullptr)
 		{
-			out << CurrentPage;
+			out << *CurrentPage;
 			CurrentPage = CurrentPage->Next;
 		}
 	}
@@ -716,66 +717,77 @@ ostream& operator<<(ostream& out, llBookData* BookData)
 	return out;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Linked List in
-istream& operator>>(istream& in, llVertexData* VertexData)
+istream& operator>>(istream& in, llVertexData& VertexData)
 {
 	//Read Vertex Data
-	cout << "Loading Vertex" << endl;
-	if (VertexData != nullptr)
+	string BookMarker;
+	in >> BookMarker;
+	if (BookMarker == "VERTEX")
 	{
-		//string Dead;
-		//in >> Dead;
-		in >> VertexData->Position;
-		in >> VertexData->TexCoords;
-		in >> VertexData->Color;
-		in >> VertexData->TexIndex;
-		in >> VertexData->CentralPoint;
-		in >> VertexData->GUIAction;
+		in >> VertexData.Position;
+		in >> VertexData.TexCoords;
+		in >> VertexData.Color;
+		in >> VertexData.TexIndex;
+		in >> VertexData.CentralPoint;
+		in >> VertexData.GUIAction;
 	}
 	else
 	{
-		Log::LogString("ERROR:: Vertex Load FAILED, No Vertex Provided");
+	Log::LogString("Incorrect Match! Vertex not lined up");
 	}
 
 	return in;
 }
 
-istream& operator>>(istream& in, llShapeData* ShapeData)
+istream& operator>>(istream& in, llShapeData& ShapeData)
 {
-	cout << "Loading Shape" << endl;
-	if (ShapeData != nullptr)
+	string BookMarker;
+	in >> BookMarker;
+	if (BookMarker == "SHAPE")
 	{
-		//string Dead;
-		//in >> Dead;
-		in >> ShapeData->Ascii;
-		in >> ShapeData->ActiveTexture;
-		in >> ShapeData->Action;
-		in >> ShapeData->Type;
-		in >> ShapeData->InputType;
-		in >> ShapeData->Position;
-		in >> ShapeData->Size;
-		in >> ShapeData->Color;
-		in >> ShapeData->PositionOffset;
-		in >> ShapeData->SizeOffset;
-		in >> ShapeData->ColorOffset;
-		in >> ShapeData->HighlightColor;
-		in >> ShapeData->MouseAccess;
-		in >> ShapeData->Centered;
-		in >> ShapeData->Highlighted;
-		in >> ShapeData->Hide;
-		in >> ShapeData->Top;
-		in >> ShapeData->Bottom;
-		in >> ShapeData->Left;
-		in >> ShapeData->Right;
-		in >> ShapeData->Text; //Not Needed
-		in >> ShapeData->EndStart; //Not Needed
-		in >> ShapeData->TextCentered; //Not Needed
-		in >> ShapeData->ChangeAsGroup; //Not Needed
+		in >> ShapeData.Ascii;
+		in >> ShapeData.ActiveTexture;
+		in >> ShapeData.Action;
+		in >> ShapeData.Type;
+		in >> ShapeData.InputType;
+		in >> ShapeData.Position;
+		in >> ShapeData.Size;
+		in >> ShapeData.Color;
+		in >> ShapeData.PositionOffset;
+		in >> ShapeData.SizeOffset;
+		in >> ShapeData.ColorOffset;
+		in >> ShapeData.HighlightColor;
+		in >> ShapeData.MouseAccess;
+		in >> ShapeData.Centered;
+		in >> ShapeData.Highlighted;
+		in >> ShapeData.Hide;
+		in >> ShapeData.Top;
+		in >> ShapeData.Bottom;
+		in >> ShapeData.Left;
+		in >> ShapeData.Right;
+
+		string PartText;
+		//Load entire string
+		while(PartText != "`")
+		{
+			in >> PartText; //Not Needed
+			ShapeData.Text += PartText;
+		}
+
+		in >> ShapeData.EndStart; //Not Needed
+		in >> ShapeData.TextCentered; //Not Needed
+		in >> ShapeData.ChangeAsGroup; //Not Needed
 		llVertexData* CurrentVertex = nullptr;
 		//Get Current Vertex
-		if (ShapeData->Vertexx != nullptr) { CurrentVertex = ShapeData->Vertexx; }
+		if (ShapeData.Vertexx != nullptr) { CurrentVertex = ShapeData.Vertexx; }
 		else { Log::LogString("Error no vertices in shape"); }
 
 		//Go to Vertex head
@@ -784,240 +796,271 @@ istream& operator>>(istream& in, llShapeData* ShapeData)
 		//Load Data into all Vertices
 		while (CurrentVertex != nullptr)
 		{
-			in >> CurrentVertex;
+			if (CurrentVertex != nullptr)
+			{
+				in >> *CurrentVertex;
+			}
+			else
+			{
+				cout << "Vertex Load error" << endl;
+			}
 			CurrentVertex = CurrentVertex->Next;
 		}
 	}
 	else
 	{
-		Log::LogString("ERROR:: Shape Load FAILED, No Shape Provided");
+		Log::LogString("Incorrect Match! Shape not lined up");
 	}
 
 	return in;
 }
 
-istream& operator>>(istream& in, llShapeGroupData* ShapeGroupData)
+istream& operator>>(istream& in, llShapeGroupData& ShapeGroupData)
 {
-	cout << "Loading ShapeGroup" << endl;
-	if (ShapeGroupData != nullptr)
+	string BookMarker;
+	in >> BookMarker;
+	if (BookMarker == "SHAPEGROUP")
 	{
-	
 		llShapeData* NewShape = nullptr;
 		int PreviousShapeCount;
 		//string Dead;
 		//in >> Dead;
 		in >> PreviousShapeCount;
-		in >> ShapeGroupData->Type;
-		in >> ShapeGroupData->XYShapePerRow;
-		in >> ShapeGroupData->ShapeSize;
-		in >> ShapeGroupData->Position;
-		in >> ShapeGroupData->Size;
-		in >> ShapeGroupData->Color;
-		in >> ShapeGroupData->PositionOffset;
-		in >> ShapeGroupData->SizeOffset;
-		in >> ShapeGroupData->ColorOffset;
-		in >> ShapeGroupData->HighlightColor;
-		in >> ShapeGroupData->Centered;
-		in >> ShapeGroupData->Highlighted;
-		in >> ShapeGroupData->MouseAccess;
-		in >> ShapeGroupData->Hide;
-		in >> ShapeGroupData->ChangeAsGroup;
-		in >> ShapeGroupData->Top;
-		in >> ShapeGroupData->Bottom;
-		in >> ShapeGroupData->Left;
-		in >> ShapeGroupData->Right;
+		in >> ShapeGroupData.Type;
+		in >> ShapeGroupData.XYShapePerRow;
+		in >> ShapeGroupData.ShapeSize;
+		in >> ShapeGroupData.Position;
+		in >> ShapeGroupData.Size;
+		in >> ShapeGroupData.Color;
+		in >> ShapeGroupData.PositionOffset;
+		in >> ShapeGroupData.SizeOffset;
+		in >> ShapeGroupData.ColorOffset;
+		in >> ShapeGroupData.HighlightColor;
+		in >> ShapeGroupData.Centered;
+		in >> ShapeGroupData.Highlighted;
+		in >> ShapeGroupData.MouseAccess;
+		in >> ShapeGroupData.Hide;
+		in >> ShapeGroupData.ChangeAsGroup;
+		in >> ShapeGroupData.Top;
+		in >> ShapeGroupData.Bottom;
+		in >> ShapeGroupData.Left;
+		in >> ShapeGroupData.Right;
 
-		ShapeGroupData->ShapeCount = 0;
-
-		int AnswerCount;
-
-		if (PreviousShapeCount < 4)
-		{
-			AnswerCount = PreviousShapeCount;
-		}
-		else
-		{
-			AnswerCount = 4;
-		}
-
+		ShapeGroupData.ShapeCount = 0;
 
 		//Count needs to be >= 1
-		for (int i = 0; i < AnswerCount; i++)
+		for (int i = 0; i < PreviousShapeCount; i++)
 		{
 			//Add Shape
 			NewShape = MasterElement::AddShape(FileSystem::THISBOOK);
-			cout << "Loop Count " << AnswerCount << endl;
 			//Load Data into Shape
-			in >> NewShape;
+
+			if (NewShape != nullptr)
+			{
+				in >> *NewShape;
+			}
+			else
+			{
+				cout << "Shape Load error" << endl;
+			}
 		}
 	}
 	else
 	{
-		Log::LogString("ERROR:: ShapeGroup Load FAILED, No ShapeGroup Provided");
+		Log::LogString("Incorrect Match! ShapeGroup not lined up");
 	}
-
 	return in;
 }
-istream& operator>>(istream& in, llPageItemData* PageItemData)
+istream& operator>>(istream& in, llPageItemData& PageItemData)
 {
-	cout << "Loading PageItem" << endl;
-	if (PageItemData != nullptr)
+	string BookMarker;
+	in >> BookMarker;
+	if (BookMarker == "PAGEITEM")
 	{
-
 		llShapeGroupData* NewShapeGroup = nullptr;
 		int PreviousShapeGroupCount;
 		//string Dead;
 		//in >> Dead;
 		in >> PreviousShapeGroupCount;
-		in >> PageItemData->Type;
-		in >> PageItemData->Position;
-		in >> PageItemData->Size;
-		in >> PageItemData->Color;
-		in >> PageItemData->PositionOffset;
-		in >> PageItemData->SizeOffset;
-		in >> PageItemData->ColorOffset;
-		in >> PageItemData->XYShapePerRow;
-		in >> PageItemData->ShapeSize;
-		in >> PageItemData->HighlightColor;
-		in >> PageItemData->Centered;
-		in >> PageItemData->Highlighted;
-		in >> PageItemData->MouseAccess;
-		in >> PageItemData->ChangeAsGroup;
-		in >> PageItemData->Top;
-		in >> PageItemData->Bottom;
-		in >> PageItemData->Left;
-		in >> PageItemData->Right;
+		in >> PageItemData.Type;
+		in >> PageItemData.Position;
+		in >> PageItemData.Size;
+		in >> PageItemData.Color;
+		in >> PageItemData.PositionOffset;
+		in >> PageItemData.SizeOffset;
+		in >> PageItemData.ColorOffset;
+		in >> PageItemData.XYShapePerRow;
+		in >> PageItemData.ShapeSize;
+		in >> PageItemData.HighlightColor;
+		in >> PageItemData.Centered;
+		in >> PageItemData.Highlighted;
+		in >> PageItemData.MouseAccess;
+		in >> PageItemData.ChangeAsGroup;
+		in >> PageItemData.Top;
+		in >> PageItemData.Bottom;
+		in >> PageItemData.Left;
+		in >> PageItemData.Right;
 
-		PageItemData->ShapeGroupCount = 0;
+		PageItemData.ShapeGroupCount = 0;
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < PreviousShapeGroupCount; i++)
 		{
 			//Add ShapeGroup
 			NewShapeGroup = MasterElement::AddShapeGroup(FileSystem::THISBOOK);
 
 			//Load Data into ShapeGroup
-			in >> NewShapeGroup;
+			if (NewShapeGroup != nullptr)
+			{
+				in >> *NewShapeGroup;
+			}
+			else
+			{
+				cout << "ShapeGroup Load error" << endl;
+			}
 		}
 	}
 	else
 	{
-		Log::LogString("ERROR:: PageItem Load FAILED, No PageItem Provided");
+		Log::LogString("Incorrect Match! PageItem not lined up");
 	}
 
 	return in;
 }
-istream& operator>>(istream& in, llPageGroupData* PageGroupData)
+istream& operator>>(istream& in, llPageGroupData& PageGroupData)
 {
-	cout << "Loading PageGroup" << endl;
-	if (PageGroupData != nullptr)
+	string BookMarker;
+	in >> BookMarker;
+	if (BookMarker == "PAGEGROUP")
 	{
 		int PreviousPageItemCount;
 		llPageItemData* NewPageItem = nullptr;
 		//string Dead;
 		//in >> Dead;
 		in >> PreviousPageItemCount;
-		in >> PageGroupData->Type;
-		in >> PageGroupData->Position;
-		in >> PageGroupData->Size;
-		in >> PageGroupData->Color;
-		in >> PageGroupData->XYShapePerRow;
-		in >> PageGroupData->ShapeSize;
-		in >> PageGroupData->HighlightColor;
-		in >> PageGroupData->Centered;
-		in >> PageGroupData->Highlighted;
-		in >> PageGroupData->MouseAccess;
-		in >> PageGroupData->ChangeAsGroup;
-		in >> PageGroupData->Top;
-		in >> PageGroupData->Bottom;
-		in >> PageGroupData->Left;
-		in >> PageGroupData->Right;
 
-		PageGroupData->PageItemCount = 0;
+		Log::LogInt("PreviousPageItemCount", PreviousPageItemCount);
 
-		for (int i = 0; i < 1; i++)
+		in >> PageGroupData.Type;
+		in >> PageGroupData.Position;
+		in >> PageGroupData.Size;
+		in >> PageGroupData.Color;
+		in >> PageGroupData.XYShapePerRow;
+		in >> PageGroupData.ShapeSize;
+		in >> PageGroupData.HighlightColor;
+		in >> PageGroupData.Centered;
+		in >> PageGroupData.Highlighted;
+		in >> PageGroupData.MouseAccess;
+		in >> PageGroupData.ChangeAsGroup;
+		in >> PageGroupData.Top;
+		in >> PageGroupData.Bottom;
+		in >> PageGroupData.Left;
+		in >> PageGroupData.Right;
+
+		PageGroupData.PageItemCount = 0;
+
+		for (int i = 0; i < PreviousPageItemCount; i++) 
 		{
 			//Add PageItem
 			NewPageItem = MasterElement::AddPageItem(FileSystem::THISBOOK);
 
 			//Load Data into PageItem
-			in >> NewPageItem;
+			if (NewPageItem != nullptr)
+			{
+				in >> *NewPageItem;
+			}
+			else
+			{
+				cout << "PageItem Load error" << endl;
+			}
+		
 		}
 	}
 	else
 	{
-		Log::LogString("ERROR:: PageGroup Load FAILED, No PageGroup Provided");
-
+		Log::LogString("Incorrect Match! PageGroup not lined up");
+	
 	}
 	
 
 	return in;
 }
-istream& operator>>(istream& in, llPageData* Page)
+istream& operator>>(istream& in, llPageData& Page)
 {
-	cout << "Loading Page" << endl;
-	if (Page != nullptr)
+	string BookMarker;
+	in >> BookMarker;
+	if (BookMarker == "PAGE")
 	{
 		int PreviousPageGroupCount;
 		llPageGroupData* NewPageGroup = nullptr;
 		//string Dead;
 		//in >> Dead;
 		in >> PreviousPageGroupCount;
-		Page->PageGroupCount = 0;
+		Page.PageGroupCount = 0;
 
 
 		Log::LogInt("Previous PageGroup Count", PreviousPageGroupCount);
 
-	//	for (int i = 0; i < 1; i++)
-	//	{
-	//		//Add PageGroup
-	//		NewPageGroup = MasterElement::AddPageGroup(FileSystem::THISBOOK);
-	//
-	//		//Load Data into PageGroup
-	//		in >> NewPageGroup;
-	//
-	//		cout << Page->PageGroupCount << endl;
-	//	}
+		for (int i = 0; i < PreviousPageGroupCount; i++)
+		{
+			//Add PageGroup
+			NewPageGroup = MasterElement::AddPageGroup(FileSystem::THISBOOK);
+
+			//Load Data into PageGroup
+			if (NewPageGroup != nullptr)
+			{
+				in >> *NewPageGroup;
+			}
+			else
+			{
+				cout << "PageGroup Load error" << endl;
+			}
+
+			cout << Page.PageGroupCount << endl;
+		}
 	}
 	else
 	{
-		Log::LogString("ERROR:: Page Load FAILED, No Page Provided"); 
-
+		Log::LogString("Incorrect Match! Page not lined up");
 	}
 	return in;
 }
 
-istream& operator>>(istream& in, llBookData* Book)
+istream& operator>>(istream& in, llBookData& Book)
 {
-	llPageData* NewPage = nullptr;
-	cout << "Loading Book" << endl;
-	if (Book != nullptr)
-	{
-		int PreviousPageCount;
-		int NextPageGroupCount;
-		int NextPageGroupCount1;
-		//string Dead;
-		//in >> Dead;
-		in >> PreviousPageCount;
-		in >> NextPageGroupCount;
-		in >> NextPageGroupCount1;
-		Log::LogInt("Previous PageCount Count", PreviousPageCount);
-		Log::LogInt("next PageGroup Count", NextPageGroupCount);
-		Log::LogInt("next PageGroup Count", NextPageGroupCount1);
+	string BookMarker;
+	in >> BookMarker;
 
-		Book->PageCount = 0;
+	cout << BookMarker << endl;
+	if (BookMarker == "BOOK")
+	{
+		llPageData* NewPage = nullptr;
+		int PreviousPageCount;
+		in >> PreviousPageCount;
+		Log::LogInt("Previous PageCount Count", PreviousPageCount);
+
+		Book.PageCount = 0;
 
 		for (int i = 0; i < PreviousPageCount; i++) //needs to at least have one to enter
 		{
 			//Add Page
 			NewPage = MasterElement::AddPage(FileSystem::THISBOOK);
-		
+
 			//Load Data into Page
-			in >> NewPage;
+			if (NewPage != nullptr)
+			{
+				in >> *NewPage;
+
+				cout << "PagePointer " << FileSystem::THISBOOK->Page << endl;
+			}
+			else
+			{
+				cout << "Page Load error" << endl;
+			}
 		}
 	}
 	else
 	{
-		Log::LogString("ERROR:: Book Load FAILED, No Book Provided");
+		Log::LogString("Incorrect Match! Book not lined up");
 	}
 
 	return in;
