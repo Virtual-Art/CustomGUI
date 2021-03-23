@@ -1,5 +1,7 @@
 #include <iostream>
 #include <map>
+#include <unordered_map>
+#include <vector>
 #include <fstream>
 #include <sstream>
 #include <GL/glew.h>
@@ -54,6 +56,7 @@
 #include "NumberPrinter.h"
 #include "Toggle.h"
 #include "DropDownList.h"
+#include <forward_list>
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -155,9 +158,53 @@ int main(int argc, char** argv)
 	Slider FileTester3(&FILEBook);
 	llShapeGroupData fail_data;
 	TextData Fail_text;
-	Fail_text.Phrase = "This will not fail no matter how many times i write stuff i just can't write squiggly";
+	Fail_text.Phrase = "This will not fail no matter ";
 	Text Thiswillfail(&FILEBook, &fail_data, Fail_text);
 
+	PageCreator::BuildCustomerDetailElements();
+
+	CustomerDetails JohnDoe;
+	JohnDoe.FirstName = "John";
+	JohnDoe.LastName = "Doe";
+	JohnDoe.Phone = "012 345 6789";
+	JohnDoe.Email = "JohnDoe@hotmail.com";
+	JohnDoe.Address = "465 SomeStreet Dr, Peterborough, ON";
+
+	CustomerDetails KadenCardenasMarett;
+	KadenCardenasMarett.FirstName = "Kaden";
+	KadenCardenasMarett.LastName = "Cardenas-Marett";
+	KadenCardenasMarett.Phone = "905 269 4265";
+	KadenCardenasMarett.Email = "Kadencardenasm@gmail.com";
+	KadenCardenasMarett.Address = "836 Talwood Dr, Peterborough, ON";
+
+	CustomerDetails Customer1;
+	Customer1.FirstName = "sandy"; 
+	CustomerDetails Customer2;
+	Customer2.FirstName = "sara";
+	CustomerDetails Customer3;
+	Customer3.FirstName = "slow";
+	CustomerDetails Customer4;
+	Customer4.FirstName = "smere";
+
+	using DataBase = map<string, CustomerDetails>;
+	DataBase CustomerDataBase;
+	
+	CustomerDataBase[KadenCardenasMarett.FirstName] = KadenCardenasMarett;
+	CustomerDataBase[JohnDoe.FirstName] = JohnDoe;
+	CustomerDataBase[Customer1.FirstName] = Customer1;
+	CustomerDataBase[Customer2.FirstName] = Customer2;
+	CustomerDataBase[Customer3.FirstName] = Customer3;
+	CustomerDataBase[Customer4.FirstName] = Customer4;
+	
+	for (auto kv : CustomerDataBase)
+	{
+		auto& Key = kv.first;
+
+		if (Key[0] == 's' && Key[1] == 'a')
+		{
+			cout << "Key:" << Key << endl;
+		}
+	}
 
 	//WHYY.SetllText("WHYYYYYYYYYY");
     //WHYY.SetllPosition({0.0, 0.9});
@@ -306,15 +353,15 @@ int main(int argc, char** argv)
 
 	llBookData NEWBOOK;
 
-	FileSystem.SavellBook(FILEBook, "ProgramFiles/FirstGUI.Book");
+	//FileSystem.SavellBook(FILEBook, "ProgramFiles/FirstGUI.Book");
 
 	cout << "+--------------------------------+" << endl;
-	FileSystem.LoadllBook(FILEBook, "ProgramFiles/FirstGUI.Book");
+	//FileSystem.LoadllBook(FILEBook, "ProgramFiles/FirstGUI.Book");
 
-	MasterElement::PrintBookStats(&FILEBook);
+	//MasterElement::PrintBookStats(&FILEBook);
 
 	//Create
-	ListNode* One = new ListNode;
+	/*ListNode* One = new ListNode;
 	ListNode* Two = new ListNode;
 	ListNode* Three = new ListNode;
 	ListNode* Four = new ListNode;
@@ -334,12 +381,27 @@ int main(int argc, char** argv)
 	Five->Next = Six;
 	Six->val = 6;
 
+
+
 	ListNode* NewList = One;
+	forward_list<ListNode*> Node_List = {One};
+
+	auto iter = Node_List.begin();
+
+	iter = Node_List.insert_after(iter, Two);
+	iter = Node_List.insert_after(iter, Three);
+	iter = Node_List.insert_after(iter, Four);
+	iter = Node_List.insert_after(iter, Five);
+	iter = Node_List.insert_after(iter, Six);
 
 	while (NewList != nullptr)
 	{
-		cout << NewList->val << endl;
 		NewList = NewList->Next;
+	}
+
+	for (auto it: Node_List)
+	{
+		cout << "val in container " << it->val << endl;
 	}
 
 	NewList = SwapTwoPointers(One, 2);
@@ -348,7 +410,7 @@ int main(int argc, char** argv)
 	{
 		cout << NewList->val << endl;
 		NewList = NewList->Next;
-	}
+	} */
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -408,7 +470,24 @@ int main(int argc, char** argv)
 		//(SliderExecute.*VirtualTest_Function)();
 		//this exact line of code can play any Slider Function
 
-		
+		//Working
+		if (KeyState.Key1 == GUI_P_CLICKED)
+		{
+			PageCreator::SetCustomerDetails(&JohnDoe);
+		}
+
+		//Working
+		if (KeyState.Key1 == GUI_H_CLICKED)
+		{
+			PageCreator::SetCustomerDetails(&KadenCardenasMarett);
+		}
+
+		//Working
+		if (KeyState.Key1 == GUI_G_CLICKED)
+		{
+			PageCreator::SetCustomerDetails(nullptr);
+		}
+
 
 		if (KeyState.Key1 == GUI_G_CLICKED)
 		{
@@ -506,12 +585,15 @@ ListNode* SwapTwoPointers(ListNode* Head, int k)
 {
 	if (Head == nullptr) { return Head; }
 
+
+	//My Attempt at starting to use STL//
+
+
 	ListNode* First = nullptr;
 	ListNode* FirstPrev = nullptr;
 
 	ListNode* Second = nullptr;
 	ListNode* SecondPrev = nullptr;
-	ListNode* CopySecond = nullptr;
 	ListNode* LastLink = nullptr;
 
 	ListNode* Sift = Head;
@@ -527,33 +609,45 @@ ListNode* SwapTwoPointers(ListNode* Head, int k)
 		Sift = Sift->Next;
 	}
 
-	//Setup Pointers
-    First = NodeList[k - 1]; //Starts from    0 1 2 3 4 5 6
-    FirstPrev = NodeList[k - 2];
-	Second = NodeList[NodeList.size() - k];
-	SecondPrev = NodeList[NodeList.size() - k - 1];
-	CopySecond = Second;
-	LastLink = Second->Next;
+	int SwapPosition = k;
 
-	cout << "First" << " " << k - 1 << endl;
-	cout << "FirstPrev" << " " << k - 2 << endl;
-	cout << "Second" << " " << NodeList.size() - k << endl;
-	cout << "SecondPrev" << " " << NodeList.size() - k - 1 << endl;
+	while (SwapPosition != (NodeList.size()/2))
+	{
+
+		//Setup Pointers
+		First = NodeList[SwapPosition - 1];
+		FirstPrev = NodeList[SwapPosition - 2];
+		Second = NodeList[NodeList.size() - SwapPosition];
+		SecondPrev = NodeList[NodeList.size() - SwapPosition - 1];
+		LastLink = Second->Next;
 
 
-	//////////////////////SWAP:
+		//////////////////////SWAP:
 
-	//Attach New Beginning
-	FirstPrev->Next = Second; // Second Must Be Valid
-	Second->Next = First->Next; //First Must Be Valid 
+		//Attach New Beginning
+		FirstPrev->Next = Second; // Second Must Be Valid
 
-	//Attach New End
-	First->Next = LastLink;
-	SecondPrev->Next = First;	
-	
+		//Non Side by Side Case
+		if (Second->Next != First->Next)
+		{
+			//Normal
+			Second->Next = First->Next; //First Must Be Valid 
+			First->Next = LastLink;
+			SecondPrev->Next = First;
+		}
+		else
+		{
+			//Side By Side case
+			First->Next = LastLink;
+			Second->Next = First;
+		}
+
+		//Attach New End
+
+		++SwapPosition;
+	}
 	
 	///////////////////END SWAP
-	Track = 0;
 
 	return Head;
 }

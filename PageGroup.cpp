@@ -676,6 +676,69 @@ float PageGroup::SetMouseAccess(glm::vec2 Position, glm::vec2 Size)
 //}
 //
 
+void PageGroup::SetllMouseAccess()
+{
+	//Checks
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::ShapeGroup is null "); return; };
+	if (CurrentllPageGroup->PageItem == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No ShapeGroups in Pageitem"); return; };
+
+	//Setup
+	llPageItemData* CurrentPageItem = CurrentllPageGroup->PageItem;
+
+
+	//Go to Head Shape
+	while (CurrentPageItem->Previous != nullptr)
+	{
+		CurrentPageItem = CurrentPageItem->Previous;
+	}
+
+	float FurthestRight = CurrentPageItem->Right;
+	float FurthestLeft = CurrentPageItem->Left;
+	float FurthestTop = CurrentPageItem->Top;
+	float FurthestBottom = CurrentPageItem->Bottom;
+
+	if (CurrentPageItem->Next != nullptr)
+	{
+		CurrentPageItem = CurrentPageItem->Next;
+	}
+	//Compare CurrentShape's Access variables with all other shapes
+	while (CurrentPageItem != nullptr)
+	{
+		//Furthest Right is the most positive number
+		if (FurthestRight < CurrentPageItem->Right) //
+		{
+			FurthestRight = CurrentPageItem->Right;
+		}
+
+		//Furthest Left is the most negative number
+		if (FurthestLeft > CurrentPageItem->Left) //
+		{
+			FurthestLeft = CurrentPageItem->Left;
+		}
+
+		//Furthest Top is the most positive number
+		if (FurthestTop < CurrentPageItem->Top) //
+		{
+			FurthestTop = CurrentPageItem->Top;
+		}
+
+		//Furthest Bottom is the most negative number
+		if (FurthestBottom > CurrentPageItem->Bottom) //
+		{
+			FurthestBottom = CurrentPageItem->Bottom;
+		}
+
+		CurrentPageItem = CurrentPageItem->Next;
+	}
+
+	//Set ShapeGroup
+	CurrentllPageGroup->Right = FurthestRight;
+	CurrentllPageGroup->Left = FurthestLeft;
+	CurrentllPageGroup->Top = FurthestTop;
+	CurrentllPageGroup->Bottom = FurthestBottom;
+
+}
+
 
 void PageGroup::llUpdate()
 {

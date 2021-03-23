@@ -10,24 +10,31 @@
 #include "MouseManager.h"
 #include "KeyboardManager.h"
 #include "ElementAction.h"
+#include <vector>
 
 
 using namespace std;
 
 typedef void(*ButtonFunction)();
 
-
 class Button 
 {
 public:
+
+	static vector<ButtonFunction*> ActiveFunctions;
 
 	//Behaviours
 	ElementAction*** TriggeredActions;
 	ElementAction* AutoActions;
 
+	//Static Actions
 	ButtonFunction* LogicalActions;
 
+	//Continuous Actions
+	ButtonFunction* ContinuousActions;
+
 	void PlayLogicalActions();
+	void PlayActiveActions();
 
 	void ProcessMouseButtons(int MouseState);
 

@@ -11,6 +11,8 @@
 #define LEVEL_BOOK 6
 
 
+#define GUI_HOVERED 10
+
 
 //Level Type Function
 #define FUNCTION_POSITION  9
@@ -92,6 +94,7 @@
 #define TYPE_VEC2 3
 #define TYPE_VEC3 4 
 #define TYPE_VEC4 5
+#define TYPE_STRING 6
 
 #define TOPRIGHT 0
 #define	TOPLEFT 1
@@ -139,7 +142,7 @@ struct SliderData
 
 struct NumberPrinterData
 {
-	string Description;
+	string Description = "Description";
 	int FontSize = 16;
 	int Type = -1;
 	string* String = nullptr;
@@ -249,6 +252,7 @@ struct llShapeGroupData
 	}
 
 	TextData TextData;
+	Button* ShapeGroupButton = nullptr;
 };
 
 struct llPageItemData

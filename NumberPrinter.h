@@ -4,8 +4,10 @@
 #include <iostream>
 #include "PageGroupItem.h"
 
-using namespace std;
+#define GROUP_DESCRIPTION 0
+#define GROUP_PRINT 1
 
+using namespace std;
 
 class NumberPrinter : public PageGroupItem
 {
@@ -20,23 +22,34 @@ public:
 
 	void llInit(llBookData* llBook, llPageItemData* llPageItem, NumberPrinterData NumberPrinter);
 
-	void llUpdate();
-	void CreateString() {};
+	//Creation Functions
 	void CreateNumber();
+	void CreateString();
 	void CreateInt();
 	void CreateFloat();
 	void CreateDouble();
 	void CreateVec2();
 	void CreateVec3();
 	void CreateVec4();
-	void ReplaceNumber();
+
+	//Update Functions
+	void llUpdate();
+	void ReplaceVec2();
+	void ReplaceString();
 
 	void SetDescriptionColor(glm::vec4 Color);
 
-	void ReplaceVec2();
-	void SetVec2(glm::vec2* NewVec2);
+	//Set NumberPrinter Pointers
+	void SetVec2(const glm::vec2& vec2);
+	void SetString(const string& NewString);
+	void SetInt(const int& Int);
 
-	void ReplaceString() {};           //INCOMPLETE
+	//Change NumberPrinterPointers
+	void ChangeVec2(glm::vec2* NewVec2);
+	void ChangeString(string* NewString);
+
+
+	//void ReplaceString() {};           //INCOMPLETE
 	void SetString(string* String) {}; //INCOMPLETE
 
 	void Add_Default() override {};

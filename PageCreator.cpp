@@ -86,6 +86,16 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	NumberPrinter_Data.Type = TYPE_VEC2;
 	PageItem_Data.Position = { -0.98, 0.3 };
 	NumberPrinter_Element_Size.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
+	NumberPrinter_Element_Size.SetDescriptionColor(HighlightColor);
+
+	NumberPrinter_Data.Description = "Name";
+	NumberPrinter_Data.Type = TYPE_STRING;
+	PageItem_Data.Position = { -0.98, -0.3 };
+	PageItem_Data.Color = { 0.0, 0.5, 1.0, 1.0 };
+	Number_Printer_String_Helper = "Name";
+	NumberPrinter_Data.String = &Number_Printer_String_Helper;
+	NumberPrinter_Name.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
+
 
 	//Red
 	Slider_Data.Description = 'R';
@@ -115,6 +125,7 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Toggle_Data.Description = "Hide";
 	PageItem_Data.Position = { -0.93, -0.2 };
 	Toggle_Hide.llToggleInit(&CreatorBook, &PageItem_Data, Toggle_Data);
+
 
 
 	//////////////////////////////////////Instructions//////////////////////////////////////////////
@@ -164,6 +175,13 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Button_G_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderG;
 	Button_B_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderB;
 	Button_A_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderA;
+
+	Button_Name_NumberPrinter.LogicalActions[GUI_HOVERED] = SetName;
+
+	llShapeGroupData* ShapeGroup_Name;
+
+	ShapeGroup_Name = NumberPrinter_Name.GetShapeGroup(GROUP_DESCRIPTION);
+	ShapeGroup_Name->ShapeGroupButton = &Button_Name_NumberPrinter;
 
 	//Set Slider Quad Button to Change Slider Position
 	Shape_Slider = Slider_Color_R.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
@@ -279,7 +297,8 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 		TextEditor.SetllText(CurrentText);
 	}
 	
-	MasterElement::FindElement(&CreatorBook, LEVEL_SHAPE);
+	MasterElement::FindElement(&CreatorBook, CurrentLevel);
+	//MasterElement::FindElement(CurrentBook, CurrentLevel);
 }
 
 //void PageCreator::Init(Page& Creatorpage, Page& GUIpage, Book& Book)
@@ -1467,6 +1486,17 @@ void PageCreator::SetSliderA()
 	EditorSelected->llUpdate();
 }
 
+void PageCreator::SetName()
+{
+	string hi = CurrentText;
+	if (CurrentText == "")
+	{
+		hi = " ";
+	}
+
+	NumberPrinter_Name.SetString(hi);
+}
+
 ///////////Update////////
 
 void PageCreator::UpdateSliderR()
@@ -1526,3 +1556,69 @@ void PageCreator::TestFunction()
 {
 	Log::LogString("TestFunction");
 }
+
+
+void PageCreator::BuildCustomerDetailElements()
+{
+	//Basic Printer Data Setup
+	NumberPrinterData PrinterData_Customer_Details;
+	PrinterData_Customer_Details.Type = TYPE_STRING;
+
+	//Basic PageItem Data Setup
+	llPageItemData PageItem_Customer_Details;
+	PageItem_Customer_Details.Color = { 0.0, 0.5, 1.0, 1.0 };
+
+	//////////////*------- GUI --------*////////////////
+
+	//First Name
+	PageItem_Customer_Details.Position = Origin;
+	PrinterData_Customer_Details.Description = "First Name";
+	Printer_First_Name.llInit(&CreatorBook, &PageItem_Customer_Details, PrinterData_Customer_Details);
+
+	//Last Name
+	PageItem_Customer_Details.Position = {0.0, -0.1};
+	PrinterData_Customer_Details.Description = "Last Name";
+	Printer_Last_Name.llInit(&CreatorBook, &PageItem_Customer_Details, PrinterData_Customer_Details);
+
+	//Phone
+	PageItem_Customer_Details.Position = { 0.0, -0.2 };
+	PrinterData_Customer_Details.Description = "Phone #";
+	Printer_Phone.llInit(&CreatorBook, &PageItem_Customer_Details, PrinterData_Customer_Details);
+
+	//Email
+	PageItem_Customer_Details.Position = { 0.0, -0.3 };
+	PrinterData_Customer_Details.Description = "Email";
+	Printer_Email.llInit(&CreatorBook, &PageItem_Customer_Details, PrinterData_Customer_Details);
+
+	//Address
+	PageItem_Customer_Details.Position = { 0.0, -0.4 };
+	PrinterData_Customer_Details.Description = "Address";
+	Printer_Address.llInit(&CreatorBook, &PageItem_Customer_Details, PrinterData_Customer_Details);
+}
+
+void PageCreator::AttachCustomerDetailButtons()
+{
+	//Button_First_Name.LogicalActions[] = Empty;
+
+}
+
+void PageCreator::SetCustomerDetails(CustomerDetails* CustomerDetails)
+{
+	if (CustomerDetails != nullptr)
+	{
+		Printer_First_Name.ChangeString(&CustomerDetails->FirstName);
+		Printer_Last_Name.ChangeString(&CustomerDetails->LastName);
+		Printer_Phone.ChangeString(&CustomerDetails->Phone);
+		Printer_Email.ChangeString(&CustomerDetails->Email);
+		Printer_Address.ChangeString(&CustomerDetails->Address);
+	}
+	else
+	{
+		Printer_First_Name.ChangeString(nullptr);
+		Printer_Last_Name.ChangeString(nullptr);
+		Printer_Phone.ChangeString(nullptr);
+		Printer_Email.ChangeString(nullptr);
+		Printer_Address.ChangeString(nullptr);
+	}
+}
+

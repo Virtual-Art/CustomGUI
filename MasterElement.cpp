@@ -190,6 +190,14 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 		/////////////////////////////////////////////////////
 		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
 		{
+			if (ElementLevel == LEVEL_PAGEITEM)
+			{
+				if (xMouse < CurrentPageGroup->Right && xMouse >  CurrentPageGroup->Left&& yMouse < CurrentPageGroup->Top && yMouse >  CurrentPageGroup->Bottom)
+				{
+					cout << " [PageGroup Found] | P:" << PageCount << " | PG:" << PageGroupCount << endl;
+				}
+			}
+
 			PageGroupCount++;
 			//PageItem
 			llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
@@ -234,7 +242,11 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 						{
 							if (ElementLevel == LEVEL_SHAPEGROUP)
 							{
-								cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
+								{
+									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+								}
 							}
 						}
 						//Set shape to beginning
@@ -1307,7 +1319,7 @@ void MasterElement::CopyBook(llBookData* NewBook, llBookData* BookReference)
 void MasterElement::DeleteShape(llBookData* llBook, llShapeData* ReferenceShape)
 {
 	//Validate
-	if (llBook == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: No Book Provided"); return; }
+	//if (llBook == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: No Book Provided"); return; }
 	if (ReferenceShape == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: No Shape Provided"); return; }
 	if (ReferenceShape->Vertexx == nullptr) { Log::LogString("ERROR:: Delete Shape FAILED:: Shape Does not Contain Vertices"); return; }
 

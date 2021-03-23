@@ -28,7 +28,15 @@ struct GUIEditor
 	GUIEditor* Previous;
 };
 
+struct CustomerDetails
+{
+	string FirstName = "FirstName";
+	string LastName = "LastName";
+	string Phone = "Phone#";
+	string Email = "Email";
+	string Address = "Address";
 
+};
 //We are going to need to store functions for specific functions inside objects
 //Only these objects can call these functions
 
@@ -128,11 +136,14 @@ namespace PageCreator
 	static Slider Slider_Color_A;
 	static Toggle Toggle_Hide;
 	static NumberPrinter Mouse_Position;
+	static NumberPrinter NumberPrinter_Name;
+	static string Number_Printer_String_Helper;
 
 	static Button Button_R_Slider;
 	static Button Button_G_Slider;
 	static Button Button_B_Slider;
 	static Button Button_A_Slider;
+	static Button Button_Name_NumberPrinter;
 
 	//Rememeber we are not ever using a pointer to point to data in the book
     //The Editor Objects edit all the books and switch between books on their own
@@ -167,6 +178,23 @@ namespace PageCreator
 	void SetCreatorFunctions();
 	//void CreateGUIObjects();
 	///////////////////////////////////////////////KEYBOARD FUNCTIONS////////////////////////////////
+
+	//Customer Details Page Group
+	static NumberPrinter Printer_First_Name;
+	static NumberPrinter Printer_Last_Name;
+	static NumberPrinter Printer_Phone;
+	static NumberPrinter Printer_Email;
+	static NumberPrinter Printer_Address;
+
+	static Button Button_First_Name;
+	static Button Button_Last_Name;
+	static Button Button_Phone;
+	static Button Button_Email;
+	static Button Button_Address;
+
+	void BuildCustomerDetailElements();
+	void AttachCustomerDetailButtons();
+	void SetCustomerDetails(CustomerDetails* Reference);
 
 	void PointerTest();
 	void SetKeyboardKeys();
@@ -245,11 +273,12 @@ namespace PageCreator
 	void SetSliderB();
 	void SetSliderA();
 
+	void SetName();
+
 	void UpdateSliderR();
 	void UpdateSliderG();
 	void UpdateSliderB();
 	void UpdateSliderA();
-
 
 	void SetCurrentSlider();
 	void SetCurrentToggle();

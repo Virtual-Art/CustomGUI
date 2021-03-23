@@ -104,6 +104,8 @@ public:
 	int FindChildGroup(int ChildGroupID);
 	int FindPageItem(bool FromBottom, double xMouse, double yMouse);
 
+	void SetllMouseAccess();
+
 	float SetMouseAccess(glm::vec2 Position, glm::vec2 Size);
 };
 

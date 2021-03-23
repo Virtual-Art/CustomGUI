@@ -16,6 +16,13 @@ Button::Button()
 	{
 		LogicalActions[i] = Empty;
 	}
+
+	ContinuousActions = new ButtonFunction[11];
+
+	for (int i = 0; i < 11; i++)
+	{
+		ContinuousActions[i] = Empty;
+	}
 }
 
 void Button::Empty()
@@ -35,6 +42,8 @@ Button::~Button()
 	delete[] TriggeredActions;
 
 	delete[] LogicalActions;
+
+	delete[] ContinuousActions;
 }
 
 void Button::PlayLogicalActions()
@@ -45,12 +54,24 @@ void Button::PlayLogicalActions()
 	}
 }
 
+void Button::PlayActiveActions()
+{
+	for (int i = 0; i < 11; i++)
+	{
+		LogicalActions[i]();
+	}
+}
+
 void Button::ProcessMouseButtons(int MouseState)
 {
-
 	LogicalActions[MouseState]();
 
 	LogicalActions[10]();
+
+	if (ContinuousActions[MouseState] != Empty)
+	{
+	//	ActiveFunctions[ActiveFunctions.size()] = ContinuousActions[MouseState];
+	}
 }
 
 //Helper Function

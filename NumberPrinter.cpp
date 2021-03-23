@@ -37,8 +37,42 @@ void NumberPrinter::llInit(llBookData* llBook, llPageItemData* llPageItem, Numbe
 	CreateNumber();
 }
 
+void NumberPrinter::SetString(const string& NewString)
+{
+	if (CurrentNumberPrinter.Type != TYPE_STRING) { Log::LogString("ERROR:: Printer Set String FAILED:: Type is Not String"); return; }
+	if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: Printer Set String FAILED:: No String Provided"); return;}
+	if (*CurrentNumberPrinter.String == NewString) { return; }
 
-void NumberPrinter::SetVec2(glm::vec2* NewVec2)
+	*CurrentNumberPrinter.String = NewString;
+	llUpdate();
+}
+
+void NumberPrinter::SetInt(const int& Int)
+{
+	if (CurrentNumberPrinter.Type != TYPE_INT) { return; }
+	if (CurrentNumberPrinter.Integer == nullptr) { return; }
+
+	*CurrentNumberPrinter.Integer = Int;
+	llUpdate();
+}
+
+
+void NumberPrinter::SetVec2(const glm::vec2& Vec2)
+{
+	if (CurrentNumberPrinter.Type != TYPE_VEC2) { return; }
+	if (CurrentNumberPrinter.VEC2 == nullptr) { return; }
+
+	*CurrentNumberPrinter.VEC2 = Vec2;
+	llUpdate();
+}
+
+void NumberPrinter::ChangeString(string* NewString)
+{
+	CurrentNumberPrinter.String = NewString;
+	llUpdate();
+}
+
+void NumberPrinter::ChangeVec2(glm::vec2* NewVec2)
 {
 	CurrentNumberPrinter.VEC2 = NewVec2;
 }
@@ -70,7 +104,11 @@ void NumberPrinter::llUpdate()
 	case TYPE_VEC4:
 		//CreateVec4();
 		break;
+	case TYPE_STRING:
+		ReplaceString();
 	}
+
+	UpdatellMouseAccess();
 }
 
 void NumberPrinter::CreateNumber()
@@ -101,7 +139,49 @@ void NumberPrinter::CreateNumber()
 	case TYPE_VEC4:
 		CreateVec4();
 		break;
+	case TYPE_STRING:
+		CreateString();
+		break;
 	}
+
+	UpdatellMouseAccess();
+}
+
+void NumberPrinter::CreateString()
+{
+	llShapeGroupData TextShapeGroup;
+	TextShapeGroup.Position = CurrentllPageItem->Position;
+	TextShapeGroup.Color = CurrentllPageItem->Color;
+	string MainString = CurrentNumberPrinter.Description;
+	bool StringConnected = false;
+
+	if (CurrentNumberPrinter.String != nullptr)
+	{
+		StringConnected = true;
+		MainString = *CurrentNumberPrinter.String;
+	}
+
+	CurrentText.Centered = false;
+	CurrentText.FontSize = 16;
+
+	//Description
+	CurrentText.Phrase = CurrentNumberPrinter.Description;
+	TextShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 }; // White
+	Text Description(LoadedBook, &TextShapeGroup, CurrentText);
+
+	//Main String
+	CurrentText.Phrase = MainString;
+	TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
+	if (StringConnected == true)
+	{
+		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.8 }; // Azure
+	}
+	else
+	{
+		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
+	}
+	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
+
 }
 
 void NumberPrinter::CreateInt()
@@ -155,7 +235,7 @@ void NumberPrinter::CreateVec2()
 
 	// X:
 	CurrentText.Phrase = X;
-	TextShapeGroup.Position = { Description.GetAccessRight(), CurrentllPageItem->Position[Y_AXIS] };
+	TextShapeGroup.Position = { Description.GetAccessLeft(50), CurrentllPageItem->Position[Y_AXIS] };
 	TextShapeGroup.Color = { 0.0, 0.5, 1.0, 0.8 }; // Azure
 	Text Text_X(LoadedBook, &TextShapeGroup, CurrentText);
 
@@ -195,6 +275,43 @@ void NumberPrinter::SetDescriptionColor(glm::vec4 Color)
 	Description.SetllTextGroup(CurrentShapeGroup, CurrentText);
 	
 }
+
+
+void NumberPrinter::ReplaceString()
+{
+	//Validate
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: Invalid Book State"); return; }
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: Invalid PageItem State"); return; }
+	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Contents Found in PageItem"); return; }
+	//if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Vector Provided"); return; }
+
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+	string MainString;
+	bool StringConnected = false;
+
+	if (CurrentNumberPrinter.String != nullptr)
+	{
+		StringConnected = true;
+		MainString = *CurrentNumberPrinter.String;
+	}
+	else
+	{
+		MainString = CurrentNumberPrinter.Description;
+	}
+	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
+
+	Text Text_Reference(CurrentShapeGroup);
+
+	//Description
+	Text_Reference.llSwitch(CurrentShapeGroup);
+
+	CurrentText.Phrase = MainString;
+	CurrentShapeGroup = CurrentShapeGroup->Next;
+	CurrentShapeGroup->Position = { Text_Reference.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
+	Text_Reference.llSwitch(CurrentShapeGroup);
+	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+}
+
 
 void NumberPrinter::ReplaceVec2()
 {
@@ -264,11 +381,6 @@ void NumberPrinter::CreateVec3()
 }
 
 void NumberPrinter::CreateVec4()
-{
-
-}
-
-void NumberPrinter::ReplaceNumber()
 {
 
 }
