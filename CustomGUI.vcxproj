@@ -172,6 +172,7 @@
     <ClCompile Include="PageGroupItem.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="SearchBar.cpp" />
     <ClCompile Include="Selection.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Shape.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="RawTexture.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SearchBar.h" />
     <ClInclude Include="Selection.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Shape.h" />

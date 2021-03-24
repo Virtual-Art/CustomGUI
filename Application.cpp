@@ -62,6 +62,10 @@
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+void WordSearch(map<string, string>& map, string Search);
+void AddWord(map<string, string>& map, string Search);
+void PrintMap(map<string, string>& map);
+void PerfectFit(string TestString, string ReferenceString);
 
 struct ListNode
 {
@@ -162,20 +166,21 @@ int main(int argc, char** argv)
 	Text Thiswillfail(&FILEBook, &fail_data, Fail_text);
 
 	PageCreator::BuildCustomerDetailElements();
+	PageCreator::AttachCustomerDetailButtons();
 
 	CustomerDetails JohnDoe;
-	JohnDoe.FirstName = "John";
-	JohnDoe.LastName = "Doe";
-	JohnDoe.Phone = "012 345 6789";
-	JohnDoe.Email = "JohnDoe@hotmail.com";
-	JohnDoe.Address = "465 SomeStreet Dr, Peterborough, ON";
+	//JohnDoe.FirstName = "First Name";
+	//JohnDoe.LastName = "Doe";
+	//JohnDoe.Phone = "012 345 6789";
+	//JohnDoe.Email = "JohnDoe@hotmail.com";
+	//JohnDoe.Address = "465 SomeStreet Dr, Peterborough, ON";
 
 	CustomerDetails KadenCardenasMarett;
-	KadenCardenasMarett.FirstName = "Kaden";
-	KadenCardenasMarett.LastName = "Cardenas-Marett";
-	KadenCardenasMarett.Phone = "905 269 4265";
-	KadenCardenasMarett.Email = "Kadencardenasm@gmail.com";
-	KadenCardenasMarett.Address = "836 Talwood Dr, Peterborough, ON";
+	KadenCardenasMarett.FirstName = "Random";
+	KadenCardenasMarett.LastName = "Asshole";
+	KadenCardenasMarett.Phone = "78454789537";
+	KadenCardenasMarett.Email = "Example@gmail.com";
+	KadenCardenasMarett.Address = "Weird";
 
 	CustomerDetails Customer1;
 	Customer1.FirstName = "sandy"; 
@@ -188,13 +193,44 @@ int main(int argc, char** argv)
 
 	using DataBase = map<string, CustomerDetails>;
 	DataBase CustomerDataBase;
-	
+
+	using StringBase = map<string, string>;
+	StringBase StringDataBase;
+
+	StringDataBase["Sally"] = "Sally";
+
+	AddWord(StringDataBase, "Hello");
+	AddWord(StringDataBase, "Sally");
+	AddWord(StringDataBase, "Mary");
+	AddWord(StringDataBase, "Monday");
+	AddWord(StringDataBase, "Home");
+	AddWord(StringDataBase, "Perfect");
+	AddWord(StringDataBase, "joy");
+	AddWord(StringDataBase, "Comfort");
+	AddWord(StringDataBase, "Saling");
+	AddWord(StringDataBase, "Store");
+	AddWord(StringDataBase, "Walmart");
+	AddWord(StringDataBase, "Bullshit");
+	AddWord(StringDataBase, "wtf");
+	AddWord(StringDataBase, "Random");
+	AddWord(StringDataBase, "Computer");
+	AddWord(StringDataBase, "Order");
+	AddWord(StringDataBase, "Judge");
+	AddWord(StringDataBase, "Judy");
+	AddWord(StringDataBase, "Shly");
+	AddWord(StringDataBase, "Shy");
+	AddWord(StringDataBase, "BaseBall");
+
+
+
 	CustomerDataBase[KadenCardenasMarett.FirstName] = KadenCardenasMarett;
 	CustomerDataBase[JohnDoe.FirstName] = JohnDoe;
 	CustomerDataBase[Customer1.FirstName] = Customer1;
 	CustomerDataBase[Customer2.FirstName] = Customer2;
 	CustomerDataBase[Customer3.FirstName] = Customer3;
 	CustomerDataBase[Customer4.FirstName] = Customer4;
+
+
 	
 	for (auto kv : CustomerDataBase)
 	{
@@ -412,6 +448,10 @@ int main(int argc, char** argv)
 		NewList = NewList->Next;
 	} */
 
+
+	//PrintMap(StringDataBase);
+	WordSearch(StringDataBase, "Mo");
+
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -445,13 +485,15 @@ int main(int argc, char** argv)
 		
 		if (KeyState.Key1 == GUI_O_CLICKED)
 		{
-			MasterElement::PrintBookStats(&EditorBook);
+			MasterElement::PrintBookStats(&PageCreator::CreatorBook);
 		}
 
 		if (KeyState.Key1 == GUI_M_CLICKED)
 		{
 			PageCreator::PrintCreatorStats();
 		}
+
+		//Log::LogVec2("", MousePosition);
 
 		//a SliderPointer points to a function that belongs to slider
 		typedef void(MasterElement::* MasterElementFunction)();
@@ -471,22 +513,22 @@ int main(int argc, char** argv)
 		//this exact line of code can play any Slider Function
 
 		//Working
-		if (KeyState.Key1 == GUI_P_CLICKED)
+		if (KeyState.Key1 == GUI_P_CLICKED && KeyState.Ctrl == true)
 		{
 			PageCreator::SetCustomerDetails(&JohnDoe);
 		}
 
 		//Working
-		if (KeyState.Key1 == GUI_H_CLICKED)
+		if (KeyState.Key1 == GUI_H_CLICKED && KeyState.Ctrl == true)
 		{
 			PageCreator::SetCustomerDetails(&KadenCardenasMarett);
 		}
 
 		//Working
-		if (KeyState.Key1 == GUI_G_CLICKED)
-		{
-			PageCreator::SetCustomerDetails(nullptr);
-		}
+		//if (KeyState.Key1 == GUI_G_CLICKED)
+		//{
+		//	PageCreator::SetCustomerDetails(nullptr);
+		//}
 
 
 		if (KeyState.Key1 == GUI_G_CLICKED)
@@ -650,4 +692,67 @@ ListNode* SwapTwoPointers(ListNode* Head, int k)
 	///////////////////END SWAP
 
 	return Head;
+}
+
+void AddWord(map<string, string>& map, string Word)
+{
+	map[Word] = Word;
+}
+
+void WordSearch(map<string, string>& map, string Search)
+{
+	float Time1 = glfwGetTime();
+	//Go through Entire List
+	for (auto kv : map)
+	{
+		auto& Key = kv.first;
+
+		//Check to see if the string matches up 
+		PerfectFit(Key, Search);
+	}
+	float Time2 = glfwGetTime();
+
+	Log::LogFloat("Execution Time", Time2 - Time1);
+}
+
+void PrintMap(map<string, string>& map)
+{
+	for (auto kv : map)
+	{
+		auto& Key = kv.first;
+
+
+		cout << "Key:" << Key << endl;
+	}
+
+}
+
+void PerfectFit(string TestString, string ReferenceString)
+{
+
+	if (TestString.size() < ReferenceString.size()) {return;}
+
+	//Go through all Characters in Reference String 
+	for (int i = 0; i < ReferenceString.size(); ++i)
+	{
+		int AddorSub = 0;
+
+		if (ReferenceString[i] > 97)
+		{
+			AddorSub = -32;
+		}
+		else
+		{
+			AddorSub = 32;
+		}
+
+		//Compare letters
+		if (TestString[i] != ReferenceString[i] && TestString[0] != ReferenceString[i] + AddorSub)
+		{
+			//Exit if strings stop matching
+			return;
+		}
+	}
+
+	cout << "Key:" << TestString << endl;
 }
