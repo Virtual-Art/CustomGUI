@@ -1099,8 +1099,18 @@ void ShapeGroup::SetllMouseAccess()
 		CurrentllShapeGroup->Top = FurthestTop;
 		CurrentllShapeGroup->Bottom = FurthestBottom;
 
-		CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft;
-		CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom;
+		CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
+		CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
+
+		//Left + Right/ 2 gives you position center
+
+		//Set Input if not already set
+		if (CurrentllShapeGroup->InputType != INPUT_LEFT)
+		{
+			ConvertInputToInputLeft();
+			WithNewInput = true;
+			llUpdate();
+		}
 	}
 }
 
@@ -1247,6 +1257,10 @@ void ShapeGroup::NewllUpdate()
 	}
 }
 
+glm::vec4 ShapeGroup::GetEdges()
+{
+	return {CurrentllShapeGroup->Left, CurrentllShapeGroup->Right, CurrentllShapeGroup->Top, CurrentllShapeGroup->Bottom} ;
+}
 
 
 float ShapeGroup::GetAccessRight()
@@ -1316,4 +1330,105 @@ float ShapeGroup::GetAccessBottom(int PixelOffset)
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: GetAccessBottom FAILED:: Invalid ShapeGroup State"); return 0.0; };
 
 	return CurrentllShapeGroup->Bottom + PIXEL * PixelOffset;
+}
+
+
+void ShapeGroup::PlaceBelow(ShapeGroup& ShapeReference, int PlacementType)
+{
+	ManualPlaceBelow(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	llUpdate();
+}
+
+void ShapeGroup::PlaceAbove(ShapeGroup& ShapeReference, int PlacementType)
+{
+	ManualPlaceAbove(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	llUpdate();
+}
+
+void ShapeGroup::PlaceRight(ShapeGroup& ShapeReference, int PlacementType)
+{
+	ManualPlaceRight(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	llUpdate();
+}
+
+void ShapeGroup::PlaceLeft(ShapeGroup& ShapeReference, int PlacementType)
+{
+	ManualPlaceLeft(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	llUpdate();
+}
+
+//////////////////////////////////////
+
+void ShapeGroup::PlaceBelow(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+{
+	ManualPlaceBelow(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	llUpdate();
+}
+
+void ShapeGroup::PlaceAbove(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+{
+	ManualPlaceAbove(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	llUpdate();
+}
+
+void ShapeGroup::PlaceRight(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+{
+	ManualPlaceRight(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	llUpdate();
+}
+
+void ShapeGroup::PlaceLeft(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+{
+	ManualPlaceLeft(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	llUpdate();
+}
+
+
+//Text is Created Based on INPUT_LEFT
+//Set all Inputs to INPUT_LEFT
+void ShapeGroup::ConvertInputToInputLeft()
+{
+	//Validate 
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: SetPositionInput FAILED:: Invalid ShapeGroup State"); return; };
+
+	switch (CurrentllShapeGroup->InputType)
+	{
+	case INPUT_LEFT: //To Left
+
+		//Text is Created based off of INPUT_LEFT Already
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	case INPUT_RIGHT: //Converted to INPUT_LEFT
+		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS];
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	case INPUT_TOP: //Converted to INPUT_LEFT    ///////////////////// Not Working
+		CurrentllShapeGroup->Position[Y_AXIS] -= CurrentllShapeGroup->Size[Y_AXIS] / 2;
+		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS] / 2;
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	case INPUT_BOTTOM: //Converted to INPUT_LEFT
+		CurrentllShapeGroup->Position[Y_AXIS] += CurrentllShapeGroup->Size[Y_AXIS] / 2;
+		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS] / 2;
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	case INPUT_TOPLEFT: //Converted to INPUT_LEFT     ///////////////////// Not Working
+		CurrentllShapeGroup->Position[Y_AXIS] -= CurrentllShapeGroup->Size[Y_AXIS] / 2;
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	case INPUT_TOPRIGHT: //Converted to INPUT_LEFT    ///////////////////// Not Working
+		CurrentllShapeGroup->Position[Y_AXIS] -= CurrentllShapeGroup->Size[Y_AXIS] / 2;
+		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS];
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	case INPUT_BOTTOMLEFT: //Converted to INPUT_LEFT
+		CurrentllShapeGroup->Position[Y_AXIS] += CurrentllShapeGroup->Size[Y_AXIS] / 2;
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	case INPUT_BOTTOMRIGHT: //Converted to INPUT_LEFT
+		CurrentllShapeGroup->Position[Y_AXIS] += CurrentllShapeGroup->Size[Y_AXIS] / 2;
+		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS];
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		break;
+	}
 }

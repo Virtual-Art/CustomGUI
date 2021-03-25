@@ -43,8 +43,18 @@ void NumberPrinter::SetString(const string& NewString)
 	if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: Printer Set String FAILED:: No String Provided"); return;}
 	if (*CurrentNumberPrinter.String == NewString) { return; }
 
+	//if the string already has a string in there that isn't "Description" don't change it to discription
 	*CurrentNumberPrinter.String = NewString;
 	llUpdate();
+}
+
+
+string& NumberPrinter::GetCurrentString()
+{
+	if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: GetCurrentString FAILED:: No String Attached");  return Empty; }
+	if (CurrentNumberPrinter.Type != TYPE_STRING) { Log::LogString("ERROR:: GetCurrentString FAILED:: Incorrect Type");  return Empty; }
+
+	return *CurrentNumberPrinter.String;
 }
 
 void NumberPrinter::SetInt(const int& Int)
@@ -152,6 +162,7 @@ void NumberPrinter::CreateString()
 	llShapeGroupData TextShapeGroup;
 	TextShapeGroup.Position = CurrentllPageItem->Position;
 	TextShapeGroup.Color = CurrentllPageItem->Color;
+
 	string MainString = CurrentNumberPrinter.Description;
 	bool StringConnected = false;
 
@@ -167,11 +178,12 @@ void NumberPrinter::CreateString()
 	//Description
 	CurrentText.Phrase = CurrentNumberPrinter.Description;
 	TextShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 }; // White
+	ProcessDescriptionHighlight(&TextShapeGroup);
 	Text Description(LoadedBook, &TextShapeGroup, CurrentText);
 
 	//Main String
 	CurrentText.Phrase = MainString;
-	TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
+	//TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
 	if (StringConnected == true)
 	{
 		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.8 }; // Azure
@@ -181,7 +193,8 @@ void NumberPrinter::CreateString()
 		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
 	}
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
-
+	MainText.PlaceRight(Description, MATCH_FLOORS, 10);
+	MainText.SetllPosition({ 0.0, Description.GetData()->Position[1]});
 }
 
 void NumberPrinter::CreateInt()
@@ -259,22 +272,22 @@ void NumberPrinter::CreateVec2()
 
 }
 
-void NumberPrinter::SetDescriptionColor(glm::vec4 Color)
-{
-	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
-
-	while (CurrentShapeGroup->Previous != nullptr)
-	{
-		CurrentShapeGroup = CurrentShapeGroup->Previous;
-	}
-
-	Text Description(CurrentShapeGroup);
-	Description.llSwitch(CurrentShapeGroup);
-	CurrentShapeGroup->Color = Color;
-	CurrentText.Phrase = CurrentNumberPrinter.Description;
-	Description.SetllTextGroup(CurrentShapeGroup, CurrentText);
-	
-}
+//void NumberPrinter::SetDescriptionColor(glm::vec4 Color)
+//{
+//	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+//
+//	while (CurrentShapeGroup->Previous != nullptr)
+//	{
+//		CurrentShapeGroup = CurrentShapeGroup->Previous;
+//	}
+//
+//	Text Description(CurrentShapeGroup);
+//	Description.llSwitch(CurrentShapeGroup);
+//	CurrentShapeGroup->Color = Color;
+//	CurrentText.Phrase = CurrentNumberPrinter.Description;
+//	Description.SetllTextGroup(CurrentShapeGroup, CurrentText);
+//	
+//}
 
 
 void NumberPrinter::ReplaceString()
@@ -304,6 +317,11 @@ void NumberPrinter::ReplaceString()
 
 	//Description
 	Text_Reference.llSwitch(CurrentShapeGroup);
+	CurrentText = CurrentShapeGroup->TextData;
+	ProcessDescriptionHighlight(CurrentShapeGroup);
+	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+
+	Log::LogString(MainString);
 
 	CurrentText.Phrase = MainString;
 	CurrentShapeGroup = CurrentShapeGroup->Next;
@@ -383,4 +401,46 @@ void NumberPrinter::CreateVec3()
 void NumberPrinter::CreateVec4()
 {
 
+}
+
+void NumberPrinter::ProcessDescriptionHighlight(llShapeGroupData* DescriptionGroup)
+{
+
+	//Should Description be Highlighted?
+	if (CurrentNumberPrinter.DescriptionHighlighted == true)
+	{
+		//Yes
+		DescriptionGroup->HighlightColor = CurrentNumberPrinter.DescriptionHighlightColor;
+		DescriptionGroup->Highlighted = true;
+	}
+	else
+	{
+		//No
+		DescriptionGroup->Highlighted = false;
+	}
+
+
+}
+
+void NumberPrinter::HighlightDescription(glm::vec4 Color)
+{
+	//Already in desired state
+	if (CurrentNumberPrinter.DescriptionHighlighted == true) { return; }
+
+	//Set Highlight Variables
+	CurrentNumberPrinter.DescriptionHighlighted = true;
+	CurrentNumberPrinter.DescriptionHighlightColor = Color;
+
+	llUpdate();
+}
+
+void NumberPrinter::HighlightDescriptionOff()
+{
+	//Already in desired state
+	if (CurrentNumberPrinter.DescriptionHighlighted = false) { return; }
+
+	//Set Highlight Data
+	CurrentNumberPrinter.DescriptionHighlighted = false;
+
+	llUpdate();
 }

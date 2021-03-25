@@ -35,6 +35,21 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
 
+	glm::vec4 GetEdges();
+
+	//Shape Placement Functions + Padding
+	void PlaceBelow(ShapeGroup& ShapeReference, int PlacementType);
+	void PlaceAbove(ShapeGroup& ShapeReference, int PlacementType);
+	void PlaceRight(ShapeGroup& ShapeReference, int PlacementType);
+	void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType);
+
+	void PlaceBelow(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceAbove(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceRight(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
+
+	void ConvertInputToInputLeft();
+
 	void llInit(llBookData* llBook);
 	void llShapeGroupInit(llBookData* llBook, llShapeGroupData* ShapeGroup);
 	llShapeGroupData* GetData() { return CurrentllShapeGroup; };
@@ -187,6 +202,8 @@ protected:
 	virtual void Update() {};
 	void NewllUpdate();
 	void ReCalibrateID();
+
+	bool WithNewInput = false;
 	//void ShapeToGroup(ShapeData& ShapeData);
 	//void GroupToShape(GroupData& GroupData);
 	void SetGroup(ShapeData& ShapeData);

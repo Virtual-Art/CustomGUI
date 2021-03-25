@@ -765,7 +765,18 @@ void PageGroupItem::UpdatellMouseAccess()
 	CurrentllPageItem->Top = FurthestTop;
 	CurrentllPageItem->Bottom = FurthestBottom;
 
+	//Set Input if not already set
+	if (CurrentllPageItem->InputType != INPUT_CENTER)
+	{
+		TranslateInput();
+		WithNewInput = true;
+		llUpdate();
+	}
+
 }
+
+
+
 
 void PageGroupItem::ReCalibrateID()
 {
@@ -1145,4 +1156,119 @@ float PageGroupItem::GetAccessBottom(int PixelOffset)
 	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: GetAccessBottom FAILED:: Invalid PageItem State"); return 0.0; };
 
 	return CurrentllPageItem->Bottom + PIXEL * PixelOffset;
+}
+
+
+
+void PageGroupItem::PlaceBelow(PageGroupItem& PageItem, int PlacementType)
+{
+	ManualPlaceBelow(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	llUpdate();
+}
+
+void PageGroupItem::PlaceAbove(PageGroupItem& PageItem, int PlacementType)
+{
+	ManualPlaceAbove(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	llUpdate();
+}
+
+void PageGroupItem::PlaceRight(PageGroupItem& PageItem, int PlacementType)
+{
+	ManualPlaceRight(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	llUpdate();
+}
+
+void PageGroupItem::PlaceLeft(PageGroupItem& PageItem, int PlacementType)
+{
+	ManualPlaceLeft(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	llUpdate();
+}
+
+//////////////////////////////////////
+
+void PageGroupItem::PlaceBelow(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+{
+	ManualPlaceBelow(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	llUpdate();
+}
+
+void PageGroupItem::PlaceAbove(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+{
+	ManualPlaceAbove(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	llUpdate();
+}
+
+void PageGroupItem::PlaceRight(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+{
+	ManualPlaceRight(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	llUpdate();
+}
+
+void PageGroupItem::PlaceLeft(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+{
+	ManualPlaceLeft(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	llUpdate();
+}
+
+glm::vec4 PageGroupItem::GetEdges()
+{
+	return { CurrentllPageItem->Left, CurrentllPageItem->Right, CurrentllPageItem->Top, CurrentllPageItem->Bottom };
+}
+
+
+void PageGroupItem::TranslateInput()
+{
+	glm::vec2 PositionBias;
+	float x_CenterofPageItem = CurrentllPageItem->Left + CurrentllPageItem->Right / 2;
+	float y_CenterofPageItem = CurrentllPageItem->Top + CurrentllPageItem->Bottom / 2;
+	PositionBias[0] = x_CenterofPageItem + CurrentllPageItem->Position[X_AXIS];
+	PositionBias[1] = y_CenterofPageItem + CurrentllPageItem->Position[Y_AXIS];
+
+	switch (CurrentllPageItem->InputType)
+	{
+	case INPUT_LEFT: //Center
+		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_RIGHT: //Center
+		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_TOP: //Center
+		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_BOTTOM: //Center
+		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_TOPLEFT: //Corner
+		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
+		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_TOPRIGHT: //Corner
+		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
+		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_BOTTOMLEFT: //Corner
+		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
+		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_BOTTOMRIGHT: //Corner
+		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
+		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
+		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	}
 }

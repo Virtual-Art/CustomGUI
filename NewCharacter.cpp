@@ -401,6 +401,8 @@ void NewCharacter::SetShape(ShapeData& ShapeData)
 //ShapeData needs to have ID initialized.
 void NewCharacter::SetllShape(llShapeData* llShapeData)
 {
+	if (CurrentllShape == nullptr) { Log::LogString("ERROR:: SetllShape FAILED:: Invalid Shape State"); return; }
+
 	if (llShapeData != nullptr)
 	{
 		*CurrentllShape = *llShapeData;

@@ -2,6 +2,7 @@
 #define PAGECREATOR
 
 #include <iostream>
+#include <list>
 #include <string>
 #include "ShaderProgram.h"
 #include "RawTexture.h"
@@ -15,6 +16,8 @@
 #include "FileProcessor.h"
 
 using namespace std;
+
+typedef void(*PrinterFunction)();
 
 
 //Can Edit all objects
@@ -30,11 +33,20 @@ struct GUIEditor
 
 struct CustomerDetails
 {
-	string FirstName = "FirstName";
-	string LastName = "LastName";
-	string Phone = "Phone#";
-	string Email = "Email";
-	string Address = "Address";
+	string FirstName;
+	string LastName;
+	string Phone;
+	string Email;
+	string Address;
+
+	CustomerDetails()
+	{
+		FirstName = "First Name";
+		LastName  = "Last Name";
+		Phone     = "Phone #";
+		Email     = "Email";
+		Address   = "Address";
+	}
 
 };
 //We are going to need to store functions for specific functions inside objects
@@ -106,6 +118,8 @@ namespace PageCreator
 	static llPageData* CurrentPage;
 	static llBookData* CurrentBook;
 	static llBookData CreatorBook;
+
+	static BookDirectory CreatorDirectory;
 	
 	//These variables dictate what function we are going to call
 	static int CurrentLevel = 1; //Shape
@@ -179,18 +193,52 @@ namespace PageCreator
 	//void CreateGUIObjects();
 	///////////////////////////////////////////////KEYBOARD FUNCTIONS////////////////////////////////
 
+	const static glm::vec4 CustomerInfoHighlightColor = {0.0, 1.0, 0.0, 1.0};
+
 	//Customer Details Page Group
+	static NumberPrinter CreatorNumberPrinterSelected;
+
+	//Customer Details with Add Button
 	static NumberPrinter Printer_First_Name;
 	static NumberPrinter Printer_Last_Name;
 	static NumberPrinter Printer_Phone;
 	static NumberPrinter Printer_Email;
 	static NumberPrinter Printer_Address;
+	static Text Text_Add_Customer;
 
 	static Button Button_First_Name;
 	static Button Button_Last_Name;
 	static Button Button_Phone;
 	static Button Button_Email;
 	static Button Button_Address;
+	static Button Button_Add_Customer;
+
+	static list<CustomerDetails> CustomerDataBase;
+
+	static PrinterFunction PrinterToEdit;
+
+	void ResetKeyboardText();
+
+	//SwitchPrinters
+	void SwitchStringPrinter();
+
+	void ResetCustomerDetailHighlights();
+	void SetCustomerDetailDefaults();
+
+	//Set Customer Details with keyboard & Mouse
+	void SetFirstName();
+	void SetLastName();
+	void SetPhone();
+	void SetEmail();
+	void SetAddress();
+
+	void AddCustomer();
+
+	void ProcessFirstName();
+	void ProcessLastName();
+	void ProcessPhone();
+	void ProcessEmail();
+	void ProcessAddress();
 
 	void BuildCustomerDetailElements();
 	void AttachCustomerDetailButtons();
@@ -273,7 +321,6 @@ namespace PageCreator
 	void SetSliderB();
 	void SetSliderA();
 
-	void SetName();
 
 	void UpdateSliderR();
 	void UpdateSliderG();

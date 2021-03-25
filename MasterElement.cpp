@@ -143,10 +143,12 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 }
 
 
-void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
+BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 {
 	//if (llBook->Page == nullptr) { return; };
 	//Log::LogString("Printing Book Stats");
+
+	BookDirectory CurrentDirectory;
 
 	float xMouse = MouseManager::xPos;
 	float yMouse = MouseManager::yPos;
@@ -175,11 +177,14 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 		CurrentPage = CurrentPage->Previous;
 	}
 
+	CurrentDirectory.Page = CurrentPage;
+
 	while (CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
 	{
 		PageCount++;
 		//Page Group
 		llPageGroupData* CurrentPageGroup = CurrentPage->PageGroup;
+
 		//Set PageGroup Beginning
 		/////////////////////////////////////////////////////
 		while (CurrentPageGroup->Previous != nullptr)
@@ -195,6 +200,8 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 				if (xMouse < CurrentPageGroup->Right && xMouse >  CurrentPageGroup->Left&& yMouse < CurrentPageGroup->Top && yMouse >  CurrentPageGroup->Bottom)
 				{
 					cout << " [PageGroup Found] | P:" << PageCount << " | PG:" << PageGroupCount << endl;
+					CurrentDirectory.PageGroup = CurrentPageGroup;
+					CurrentDirectory.NoDirectoryFound = false;
 				}
 			}
 
@@ -215,6 +222,8 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 					if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left&& yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom)
 					{
 						cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
+						CurrentDirectory.PageItem = CurrentPageItem;
+						CurrentDirectory.NoDirectoryFound = false;
 					}
 				}
 
@@ -246,6 +255,8 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
 									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+									CurrentDirectory.ShapeGroup = CurrentShapeGroup;
+									CurrentDirectory.NoDirectoryFound = false;
 								}
 							}
 						}
@@ -268,6 +279,8 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 									{
 										cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
 										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+										CurrentDirectory.Shape;
+										CurrentDirectory.NoDirectoryFound = false;
 									}
 								}
 							}
@@ -294,6 +307,8 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 	llBook->Page->PageGroup->PageItem->ShapeGroup = SavedShapeGroup;
 	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape = SavedShape;
 	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = SavedVertex;
+
+	return CurrentDirectory;
 }
 
 void MasterElement::PrintBook(llBookData* llBook)
@@ -1970,4 +1985,205 @@ glm::vec2 MasterElement::ApplySizeConversion(glm::vec2 Size, int Conversion)
 	}
 
 	return Size;
+}
+
+void MasterElement::ManualPlaceBelow(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+{
+	switch (PlacementType)
+	{
+	case MATCH_BEGINNINGS:
+	{
+		float Left = ElementEdges[0];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		NewPosition = { Left, Bottom };
+		NewInputType = INPUT_TOPLEFT;
+		break;
+	}
+	case MATCH_ENDS:
+	{
+		float Right = ElementEdges[1];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		NewPosition = { Right, Bottom };
+		NewInputType = INPUT_TOPRIGHT;
+		break;
+	}
+	case MATCH_CENTERS:
+	{
+		float Center_x = (ElementEdges[1] + ElementEdges[0]) / 2; // (Left + Right) / Half
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		NewPosition = { Center_x, Bottom };
+		NewInputType = INPUT_TOP;
+		break;
+	}
+	case MATCH_BEGINNING_TO_END:
+	{
+		float Left = ElementEdges[0];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		NewPosition = { Left, Bottom };
+		NewInputType = INPUT_TOPRIGHT; //New Position is the new element's Top Right
+		break;
+	}
+	case MATCH_END_TO_BEGINNING:
+	{
+		float Right = ElementEdges[1];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		NewPosition = { Right, Bottom };
+		NewInputType = INPUT_TOPLEFT; //New Position is the new element's Top Right
+		break;
+	}
+	}
+}
+void MasterElement::ManualPlaceAbove(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+{
+	switch (PlacementType)
+	{
+	case MATCH_BEGINNINGS:
+	{
+		float Left = ElementEdges[0];
+		float Top = ElementEdges[2] + (PixelPadding * PIXEL);
+		NewPosition = { Left, Top };
+		NewInputType = INPUT_BOTTOMLEFT; //
+		break;
+	}
+	case MATCH_ENDS:
+	{
+		float Right = ElementEdges[1];
+		float Top = ElementEdges[2] + (PixelPadding * PIXEL);
+		NewPosition = { Right, Top };
+		NewInputType = INPUT_BOTTOMRIGHT;
+		break;
+	}
+	case MATCH_CENTERS:
+	{
+		float Center_x = (ElementEdges[1] + ElementEdges[0]) / 2; // (Left + Right) / Half
+		float Top = ElementEdges[2] + (PixelPadding * PIXEL);
+		NewPosition = { Center_x, Top };
+		NewInputType = INPUT_BOTTOM;
+		break;
+	}
+	case MATCH_BEGINNING_TO_END:
+	{
+		float Left = ElementEdges[0];
+		float Top = ElementEdges[2] + (PixelPadding * PIXEL);
+		NewPosition = { Left, Top };
+		NewInputType = INPUT_BOTTOMRIGHT; //New Position is the new element's Top Right
+		break;
+	}
+	case MATCH_END_TO_BEGINNING:
+	{
+		float Right = ElementEdges[1];
+		float Top = ElementEdges[2] + (PixelPadding * PIXEL);
+		NewPosition = { Right, Top };
+		NewInputType = INPUT_BOTTOMLEFT; //New Position is the new element's Top Right
+		break;
+	}
+	}
+}
+
+//Left. Right. Top. Bottom
+void MasterElement::ManualPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+{
+	switch (PlacementType)
+	{
+	case MATCH_FLOORS:
+	{
+		float Right = ElementEdges[1] + (PixelPadding * PIXEL);
+		float Bottom = ElementEdges[3];
+		NewPosition = { Right, Bottom };
+		NewInputType = INPUT_BOTTOMLEFT; 
+		break;
+	}
+	case MATCH_CEILINGS:
+	{
+		float Right = ElementEdges[1] + (PixelPadding * PIXEL);
+		float Top = ElementEdges[2];
+		NewPosition = { Right, Top };
+		NewInputType = INPUT_TOPLEFT;
+		break;
+	}
+	case MATCH_CENTERS:
+	{
+		float Right = ElementEdges[1] + (PixelPadding * PIXEL); // (Left + Right) / Half
+		float Center_y = (ElementEdges[3] + ElementEdges[2]) / 2;
+		NewPosition = { Right, Center_y };
+		NewInputType = INPUT_LEFT;
+		break;
+	}
+	}
+}
+
+void MasterElement::ManualPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+{
+	////Get Position X Y
+	//float Left = ElementEdges[0] - (PixelPadding * PIXEL);
+	//float Center_y = (ElementEdges[2] + ElementEdges[3]) / 2; //(Top - Bottom) / Half
+	//
+	////Set New Element
+	//NewPosition = { Left, Center_y };
+	//NewInputType = INPUT_RIGHT;
+
+	switch (PlacementType)
+	{
+	case MATCH_FLOORS:
+	{
+		float Left = ElementEdges[0] - (PixelPadding * PIXEL);
+		float Bottom = ElementEdges[3];
+		NewPosition = { Left, Bottom };
+		NewInputType = INPUT_BOTTOMRIGHT; 
+		break;
+	}
+	case MATCH_CEILINGS:
+	{
+		float Left = ElementEdges[0] - (PixelPadding * PIXEL);
+		float Top = ElementEdges[2];
+		NewPosition = { Left, Top };
+		NewInputType = INPUT_TOPRIGHT;
+		break;
+	}
+	case MATCH_CENTERS:
+	{
+		float Left = ElementEdges[0] - (PixelPadding * PIXEL); // (Left + Right) / Half
+		float Center_y = (ElementEdges[3] + ElementEdges[2]) / 2;
+		NewPosition = { Left, Center_y };
+		NewInputType = INPUT_RIGHT;
+		break;
+	}
+	}
+}
+
+
+void TextPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+{
+
+}
+
+void TextPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+{
+	switch (PlacementType)
+	{
+	case MATCH_FLOORS:
+	{
+		float Left = ElementEdges[0] - (PixelPadding * PIXEL);
+		float Bottom = ElementEdges[3];
+		NewPosition = { Left, Bottom };
+		NewInputType = INPUT_BOTTOMRIGHT;
+		break;
+	}
+	case MATCH_CEILINGS:
+	{
+		float Left = ElementEdges[0] - (PixelPadding * PIXEL);
+		float Top = ElementEdges[2];
+		NewPosition = { Left, Top };
+		NewInputType = INPUT_TOPRIGHT;
+		break;
+	}
+	case MATCH_CENTERS:
+	{
+		float Left = ElementEdges[0] - (PixelPadding * PIXEL); // (Left + Right) / Half
+		float Center_y = (ElementEdges[3] + ElementEdges[2]) / 2;
+		NewPosition = { Left, Center_y };
+		NewInputType = INPUT_RIGHT;
+		break;
+	}
+	}
 }

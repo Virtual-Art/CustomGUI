@@ -33,6 +33,13 @@
 #define ARROW_RIGHT 2
 #define ARROW_LEFT 3
 
+#define MATCH_CENTERS 0
+#define MATCH_ENDS 1
+#define MATCH_BEGINNINGS 2
+#define MATCH_BEGINNING_TO_END 3
+#define MATCH_END_TO_BEGINNING 4
+#define MATCH_FLOORS 5
+#define MATCH_CEILINGS 6
 
 //Level Type
 #define TYPE_VERTEX 0 
@@ -64,6 +71,7 @@
 #define MIN_COLOR_VALUE 0.0
 #define MAX_COLOR_VALUE 1.0
 
+#define INPUT_NONE -1
 #define INPUT_CENTER 0
 #define INPUT_LEFT 1
 #define INPUT_RIGHT 2
@@ -116,7 +124,7 @@ using namespace std;
 
 struct TextData
 {
-	string Phrase;
+	string Phrase = "Text";
 	string FontFile;
 	float FontSize = 16.0;
 	float CharSpacing = -10.0; //in pixels 0.535
@@ -151,6 +159,8 @@ struct NumberPrinterData
 	glm::vec2* VEC2 = nullptr;
 	glm::vec3* VEC3 = nullptr;
 	glm::vec4* VEC4 = nullptr;
+	bool DescriptionHighlighted = false;
+	glm::vec4 DescriptionHighlightColor = {1.0, 1.0, 1.0, 1.0};
 };
 
 
@@ -221,6 +231,7 @@ struct llShapeGroupData
 	//Page* Page;
 	int ID = -1;
 	int Type = 0;
+	int InputType = INPUT_LEFT;
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
 	glm::vec2 Position = { 0.0, 0.0 };
@@ -264,6 +275,7 @@ struct llPageItemData
 	int ShapeCount = -1;
 	int ShapeOffset = -1;
 	int Type = 0;
+	int InputType = INPUT_CENTER;
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
@@ -496,6 +508,16 @@ struct llBookData
 	llPageData* PageHead = nullptr;
 };
 
+struct BookDirectory
+{
+	llVertexData* Vertex = nullptr;
+	llShapeData* Shape = nullptr;
+	llShapeGroupData* ShapeGroup = nullptr;
+	llPageItemData* PageItem = nullptr;
+	llPageGroupData* PageGroup = nullptr;
+	llPageData* Page = nullptr;
+	bool NoDirectoryFound = true;
+};
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -549,6 +571,16 @@ public:
 
 	static void CurrentDirectory(llBookData* llBook);
 
+	//Quick Element Placement
+	static void ManualPlaceBelow(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
+	static void ManualPlaceAbove(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
+	static void ManualPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchCenters
+	static void ManualPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding);  //MatchCenters
+
+	static void TextPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchCenters
+	static void TextPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding);  //MatchCenters
+
+
 	//Get Head Element
 	static llVertexData* HeadVertex(llVertexData* VertexReference);
 	static llShapeData* HeadShape(llShapeData* ShapeReference);
@@ -595,7 +627,7 @@ public:
 	static void EraseBook(llBookData* llBook);
 
 	static void ToggleToggle(bool& ToToggle);
-	static void FindElement(llBookData* llBook, int ElementLevel);
+	static BookDirectory FindElement(llBookData* llBook, int ElementLevel);
 
 	//Print Book
 	static void PrintBookStats(llBookData* llBook);

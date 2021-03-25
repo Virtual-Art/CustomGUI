@@ -144,7 +144,7 @@ int main(int argc, char** argv)
 	RawTexture RoundedCorners = Texture.CreateTexture("1_SkFEBcaoea9WXIdQg2GsTw.png", "FontAtlas", GL_TEXTURE2, 2, GL_ALPHA);
 	NewCharacter AnyCharacter(MainBook.Page[0], "Resources/segoe.fnt");
 
-	Page Editor(400); 
+	Page Editor(400);
 	Editor.Init(ShapeShader);
 
 	Page* PageSelected = &MainBook.Page[0];
@@ -154,6 +154,30 @@ int main(int argc, char** argv)
 	//WHY.SetPosition({-2.0, 0.0});
 	////Text WHYY(&EditorBook);
 	PageCreator::llInit(&EditorBook, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
+	string hiya = "Hello there";
+
+	llPageItemData Grid_Quad;
+	Grid_Quad.Position = { 0.0, 0.6 };
+	Grid_Quad.InputType = INPUT_CENTER;
+	NumberPrinterData DataText_Grid;
+	DataText_Grid.Description = "Desp";
+	DataText_Grid.Type = TYPE_STRING;
+	DataText_Grid.String = &hiya;
+	NumberPrinter SLIDER_1(&EditorBook, &Grid_Quad, DataText_Grid);
+
+
+	Grid_Quad.Position = { 0.0, 0.5 };
+	DataText_Grid.Description = "Desp22";
+	NumberPrinter SLIDER_2(&EditorBook, &Grid_Quad, DataText_Grid);
+	//SLIDER_2.OffsetPosition({ 0.0, -0.3 }, {false, true});
+	//SLIDER_2.PlaceRight(SLIDER_1, MATCH_CENTERS, 100);
+
+	//DataText_Grid.Phrase = "H";
+	//DataText_Grid.FontSize = 16;
+	////Grid_Quad.Color = PageCreator::Blue;
+	//Text TEXT3(&EditorBook, &Grid_Quad, DataText_Grid);
+	//TEXT3.PlaceLeft(TEXT2, MATCH_CEILINGS);
 
 	llBookData FILEBook;
 

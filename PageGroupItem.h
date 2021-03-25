@@ -5,7 +5,6 @@
 #define P_END_TO_MIDDLE 1
 #define P_BEGINNING_TO_MIDDLE 2
 
-
 #include <iostream>
 #include "MasterElement.h"
 #include "ElementGroup.h" //Parent
@@ -15,7 +14,6 @@
 
 #define TYPE_CUSTOM 0
 #define TYPE_SLIDER 1
-
 
 using namespace std;
 
@@ -107,7 +105,6 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
-
 	void HighlightPageItem(glm::vec4 Color);
 	void HighlightOff();
 
@@ -120,6 +117,21 @@ public:
 	float GetAccessLeft(int PixelOffset);
 	float GetAccessTop(int PixelOffset);
 	float GetAccessBottom(int PixelOffset);
+
+	glm::vec4 GetEdges();
+
+	//Shape Placement Functions + Padding
+	void PlaceBelow(PageGroupItem& ShapeReference, int PlacementType);
+	void PlaceAbove(PageGroupItem& ShapeReference, int PlacementType);
+	void PlaceRight(PageGroupItem& ShapeReference, int PlacementType);
+	void PlaceLeft(PageGroupItem& ShapeReference, int PlacementType);
+
+	void PlaceBelow(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceAbove(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceRight(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceLeft(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
+
+	void UpdatellMouseAccess();
 
 	//float* GetColorR() { return &CurrentllPageItem->Color[0]; };
 	//float* GetColorG() { return &CurrentllPageItem->Color[1]; };
@@ -175,7 +187,7 @@ public:
 	void OffsetPosition(glm::vec2 PositionOffset);
 
 	void UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size, int PositionConversion);
-	void UpdatellMouseAccess();
+
 	//void SetllMouseAccess(); //This one
 	void SetMouseAccess();
 	glm::vec2 ConvertEndToMiddle(glm::vec2 Position, glm::vec2 Size);
@@ -215,6 +227,10 @@ public:
 
 
 	glm::vec2 GetBiggestMouseAccess(glm::vec2 Position, glm::vec2 Size);
+
+	private:
+		bool WithNewInput = false;
+		void TranslateInput();
 };
 
 

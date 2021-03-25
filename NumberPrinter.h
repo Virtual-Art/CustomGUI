@@ -14,6 +14,7 @@ class NumberPrinter : public PageGroupItem
 public: 
 
 	NumberPrinterData CurrentNumberPrinter;
+	string Empty = "";
 
 	NumberPrinter() {};
 	NumberPrinter(llBookData* llBook);
@@ -37,7 +38,8 @@ public:
 	void ReplaceVec2();
 	void ReplaceString();
 
-	void SetDescriptionColor(glm::vec4 Color);
+	void HighlightDescription(glm::vec4 Color);
+	void HighlightDescriptionOff();
 
 	//Set NumberPrinter Pointers
 	void SetVec2(const glm::vec2& vec2);
@@ -48,12 +50,20 @@ public:
 	void ChangeVec2(glm::vec2* NewVec2);
 	void ChangeString(string* NewString);
 
+	string& GetCurrentString();
+
 
 	//void ReplaceString() {};           //INCOMPLETE
 	void SetString(string* String) {}; //INCOMPLETE
 
 	void Add_Default() override {};
 	void Add_Insert() override {};
+
+
+private:
+
+	void ProcessDescriptionHighlight(llShapeGroupData* DescriptionGroup);
+
 };
 
 #endif
