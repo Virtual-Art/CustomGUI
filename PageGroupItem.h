@@ -131,6 +131,7 @@ public:
 	void PlaceRight(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
 	void PlaceLeft(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
 
+	void TranslateInput();
 	void UpdatellMouseAccess();
 
 	//float* GetColorR() { return &CurrentllPageItem->Color[0]; };
@@ -150,6 +151,8 @@ public:
 	//glm::vec2 GetPosition() override { return CurrentllPageItem->Position; };
 	//glm::vec2 GetSize() override { return CurrentllPageItem->Size; };
 	//glm::vec4 GetColor() override { return  CurrentllPageItem->Color; };
+
+	void SetllPosition(glm::vec2 Position) { CurrentllPageItem->Position = Position; llUpdate(); }
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...
@@ -230,7 +233,7 @@ public:
 
 	private:
 		bool WithNewInput = false;
-		void TranslateInput();
+
 };
 
 

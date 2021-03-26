@@ -713,7 +713,6 @@ void PageGroupItem::UpdatellMouseAccess()
 	//Setup
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 
-
 	//Go to Head Shape
 	while (CurrentShapeGroup->Previous != nullptr)
 	{
@@ -765,6 +764,9 @@ void PageGroupItem::UpdatellMouseAccess()
 	CurrentllPageItem->Top = FurthestTop;
 	CurrentllPageItem->Bottom = FurthestBottom;
 
+	CurrentllPageItem->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
+	CurrentllPageItem->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
+
 	//Set Input if not already set
 	if (CurrentllPageItem->InputType != INPUT_CENTER)
 	{
@@ -772,7 +774,6 @@ void PageGroupItem::UpdatellMouseAccess()
 		WithNewInput = true;
 		llUpdate();
 	}
-
 }
 
 
@@ -1219,56 +1220,67 @@ glm::vec4 PageGroupItem::GetEdges()
 void PageGroupItem::TranslateInput()
 {
 	glm::vec2 PositionBias;
-	float x_CenterofPageItem = CurrentllPageItem->Left + CurrentllPageItem->Right / 2;
-	float y_CenterofPageItem = CurrentllPageItem->Top + CurrentllPageItem->Bottom / 2;
-	PositionBias[0] = x_CenterofPageItem + CurrentllPageItem->Position[X_AXIS];
-	PositionBias[1] = y_CenterofPageItem + CurrentllPageItem->Position[Y_AXIS];
+	float x_CenterofPageItem = (CurrentllPageItem->Left + CurrentllPageItem->Right )/ 2;
+	float y_CenterofPageItem = (CurrentllPageItem->Bottom + CurrentllPageItem->Top) / 2;
+
+	Log::LogFloat("x_CenterofPageItem", x_CenterofPageItem);
+	Log::LogFloat("y_CenterofPageItem", y_CenterofPageItem);
+	Log::LogVec2("Size", CurrentllPageItem->Size);
+
+	//The position bias is how much the actual position deviates from the pageitem's center
+	//The page item's center is the default input so we translate the given input to the center Input (default)
+	//And then tack on the Position bias
+	PositionBias[0] = x_CenterofPageItem - CurrentllPageItem->Position[X_AXIS];
+	PositionBias[1] = y_CenterofPageItem - CurrentllPageItem->Position[Y_AXIS];
 
 	switch (CurrentllPageItem->InputType)
 	{
 	case INPUT_LEFT: //Center
 		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_RIGHT: //Center
+		// This should be going -= half it's size
 		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_TOP: //Center
 		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_BOTTOM: //Center
 		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_TOPLEFT: //Corner
 		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
 		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_TOPRIGHT: //Corner
 		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
 		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_BOTTOMLEFT: //Corner
 		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
 		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_BOTTOMRIGHT: //Corner
 		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
 		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
-		//CurrentllPageItem->Position += PositionBias;
+		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	}
+
+	CurrentllPageItem->InputType = INPUT_CENTER;
 }

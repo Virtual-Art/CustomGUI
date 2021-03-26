@@ -1345,10 +1345,12 @@ void ShapeGroup::PlaceAbove(ShapeGroup& ShapeReference, int PlacementType)
 	llUpdate();
 }
 
-void ShapeGroup::PlaceRight(ShapeGroup& ShapeReference, int PlacementType)
+llShapeGroupData* ShapeGroup::PlaceRight(ShapeGroup& ShapeReference, int PlacementType)
 {
 	ManualPlaceRight(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
 	llUpdate();
+
+	return CurrentllShapeGroup;
 }
 
 void ShapeGroup::PlaceLeft(ShapeGroup& ShapeReference, int PlacementType)

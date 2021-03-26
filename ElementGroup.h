@@ -40,13 +40,13 @@ class ShapeGroup : public MasterElement
 	//Shape Placement Functions + Padding
 	void PlaceBelow(ShapeGroup& ShapeReference, int PlacementType);
 	void PlaceAbove(ShapeGroup& ShapeReference, int PlacementType);
-	void PlaceRight(ShapeGroup& ShapeReference, int PlacementType);
-	void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType);
+	virtual llShapeGroupData* PlaceRight(ShapeGroup& ShapeReference, int PlacementType);
+	virtual void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType);
 
 	void PlaceBelow(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
 	void PlaceAbove(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
-	void PlaceRight(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
-	void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
+	virtual void PlaceRight(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
+	virtual void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
 
 	void ConvertInputToInputLeft();
 

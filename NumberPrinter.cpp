@@ -193,8 +193,8 @@ void NumberPrinter::CreateString()
 		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
 	}
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
-	MainText.PlaceRight(Description, MATCH_FLOORS, 10);
-	MainText.SetllPosition({ 0.0, Description.GetData()->Position[1]});
+	MainText.PlaceRight(Description, MATCH_CENTERS, 10);
+	//MainText.SetllPosition({ 0.0, Description.GetData()->Position[1]});
 }
 
 void NumberPrinter::CreateInt()
@@ -319,14 +319,17 @@ void NumberPrinter::ReplaceString()
 	Text_Reference.llSwitch(CurrentShapeGroup);
 	CurrentText = CurrentShapeGroup->TextData;
 	ProcessDescriptionHighlight(CurrentShapeGroup);
+	CurrentShapeGroup->Position = CurrentllPageItem->Position;
+	CurrentShapeGroup->Color = CurrentllPageItem->Color;
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
-
-	Log::LogString(MainString);
 
 	CurrentText.Phrase = MainString;
 	CurrentShapeGroup = CurrentShapeGroup->Next;
 	CurrentShapeGroup->Position = { Text_Reference.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
+	//*CurrentShapeGroup = *
+	//glm::vec4 PreviousGroupEdges = Text_Reference.GetEdges();
 	Text_Reference.llSwitch(CurrentShapeGroup);
+	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 }
 

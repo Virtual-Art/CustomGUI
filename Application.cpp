@@ -156,22 +156,24 @@ int main(int argc, char** argv)
 	PageCreator::llInit(&EditorBook, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	string hiya = "Hello there";
-
 	llPageItemData Grid_Quad;
 	Grid_Quad.Position = { 0.0, 0.6 };
-	Grid_Quad.InputType = INPUT_CENTER;
+	Grid_Quad.InputType = INPUT_LEFT;
 	NumberPrinterData DataText_Grid;
 	DataText_Grid.Description = "Desp";
 	DataText_Grid.Type = TYPE_STRING;
 	DataText_Grid.String = &hiya;
 	NumberPrinter SLIDER_1(&EditorBook, &Grid_Quad, DataText_Grid);
-
-
+	
+	SliderData DataText_Grid1;
+	DataText_Grid1.Description = "Desp";
+	//SLIDER_1.SetllPosition({0.5, 0.5});
+	Grid_Quad.InputType = INPUT_CENTER;
 	Grid_Quad.Position = { 0.0, 0.5 };
-	DataText_Grid.Description = "Desp22";
-	NumberPrinter SLIDER_2(&EditorBook, &Grid_Quad, DataText_Grid);
+	DataText_Grid.Description = "what is going on";
+	Slider SLIDER_2(&EditorBook, &Grid_Quad, DataText_Grid1);
 	//SLIDER_2.OffsetPosition({ 0.0, -0.3 }, {false, true});
-	//SLIDER_2.PlaceRight(SLIDER_1, MATCH_CENTERS, 100);
+	SLIDER_2.PlaceLeft(SLIDER_1, MATCH_CEILINGS, 10);
 
 	//DataText_Grid.Phrase = "H";
 	//DataText_Grid.FontSize = 16;
@@ -517,7 +519,7 @@ int main(int argc, char** argv)
 			PageCreator::PrintCreatorStats();
 		}
 
-		//Log::LogVec2("", MousePosition);
+		Log::LogVec2("", MousePosition);
 
 		//a SliderPointer points to a function that belongs to slider
 		typedef void(MasterElement::* MasterElementFunction)();

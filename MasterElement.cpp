@@ -251,7 +251,7 @@ BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 						{
 							if (ElementLevel == LEVEL_SHAPEGROUP)
 							{
-								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+								cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
 									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
@@ -2114,14 +2114,6 @@ void MasterElement::ManualPlaceRight(const int PlacementType, const glm::vec4& E
 
 void MasterElement::ManualPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
 {
-	////Get Position X Y
-	//float Left = ElementEdges[0] - (PixelPadding * PIXEL);
-	//float Center_y = (ElementEdges[2] + ElementEdges[3]) / 2; //(Top - Bottom) / Half
-	//
-	////Set New Element
-	//NewPosition = { Left, Center_y };
-	//NewInputType = INPUT_RIGHT;
-
 	switch (PlacementType)
 	{
 	case MATCH_FLOORS:
@@ -2152,12 +2144,37 @@ void MasterElement::ManualPlaceLeft(const int PlacementType, const glm::vec4& El
 }
 
 
-void TextPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+void MasterElement::TextPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
 {
-
+	switch (PlacementType)
+	{
+	case MATCH_FLOORS:
+	{
+		float Right = ElementEdges[1] + (PixelPadding * PIXEL);
+		float Bottom = ElementEdges[3];
+		NewPosition = { Right, Bottom };
+		NewInputType = INPUT_BOTTOMLEFT; 
+		break;
+	}
+	case MATCH_CEILINGS:
+	{
+		float Right = ElementEdges[1] + (PixelPadding * PIXEL);
+		float Top = ElementEdges[2];
+		NewPosition = { Right, Top };
+		NewInputType = INPUT_TOPLEFT;
+		break;
+	}
+	case MATCH_CENTERS:
+	{
+		float Right = ElementEdges[1] + (PixelPadding * PIXEL); // (Left + Right) / Half
+		NewPosition[X_AXIS] = Right;
+		NewInputType = INPUT_LEFT;
+		break;
+	}
+	}
 }
 
-void TextPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+void MasterElement::TextPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
 {
 	switch (PlacementType)
 	{
@@ -2180,7 +2197,7 @@ void TextPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& 
 	case MATCH_CENTERS:
 	{
 		float Left = ElementEdges[0] - (PixelPadding * PIXEL); // (Left + Right) / Half
-		float Center_y = (ElementEdges[3] + ElementEdges[2]) / 2;
+		float Center_y = NewPosition[Y_AXIS];
 		NewPosition = { Left, Center_y };
 		NewInputType = INPUT_RIGHT;
 		break;
