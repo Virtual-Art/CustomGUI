@@ -14,8 +14,8 @@
 
 
 using namespace std;
-
 typedef void(*ButtonFunction)();
+
 
 class Button 
 {

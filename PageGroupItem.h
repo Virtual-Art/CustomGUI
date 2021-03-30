@@ -131,7 +131,7 @@ public:
 	void PlaceRight(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
 	void PlaceLeft(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
 
-	void TranslateInput();
+	void TranslateInput(); // Working
 	void UpdatellMouseAccess();
 
 	//float* GetColorR() { return &CurrentllPageItem->Color[0]; };

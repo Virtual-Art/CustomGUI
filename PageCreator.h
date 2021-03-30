@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <list>
+#include <map>
 #include <string>
 #include "ShaderProgram.h"
 #include "RawTexture.h"
@@ -14,6 +15,7 @@
 #include "Toggle.h"
 #include "DropDownList.h"
 #include "FileProcessor.h"
+#include "SearchBar.h"
 
 using namespace std;
 
@@ -205,6 +207,7 @@ namespace PageCreator
 	static NumberPrinter Printer_Email;
 	static NumberPrinter Printer_Address;
 	static Text Text_Add_Customer;
+	static SearchBar SearchBar_Customer_Search;
 
 	static Button Button_First_Name;
 	static Button Button_Last_Name;
@@ -212,8 +215,12 @@ namespace PageCreator
 	static Button Button_Email;
 	static Button Button_Address;
 	static Button Button_Add_Customer;
+	static Button Button_Customer_Search;
+	static Button Button_Customer_Search_Result;
 
 	static list<CustomerDetails> CustomerDataBase;
+	static map<string, CustomerDetails> map_CustomerDataBase;
+	static CustomerDetails DefaultCustomer;
 
 	static PrinterFunction PrinterToEdit;
 
@@ -222,27 +229,36 @@ namespace PageCreator
 	//SwitchPrinters
 	void SwitchStringPrinter();
 
-	void ResetCustomerDetailHighlights();
-	void SetCustomerDetailDefaults();
+
 
 	//Set Customer Details with keyboard & Mouse
+	void SetCustomerSearch();
 	void SetFirstName();
 	void SetLastName();
 	void SetPhone();
 	void SetEmail();
 	void SetAddress();
 
-	void AddCustomer();
 
+	void ProcessCustomerSearch();
 	void ProcessFirstName();
 	void ProcessLastName();
 	void ProcessPhone();
 	void ProcessEmail();
 	void ProcessAddress();
-
+	
+	//Search Customer DataBase
+	void WordSearch(string Search);
+	string PerfectFit(string TestString, string ReferenceString);
 	void BuildCustomerDetailElements();
 	void AttachCustomerDetailButtons();
 	void SetCustomerDetails(CustomerDetails* Reference);
+	void ResetSearch();
+	void ResetCustomerDetails();
+	void SetSearchResult();
+	void ResetCustomerDetailHighlights();
+	void SetCustomerDetailDefaults();
+	void AddCustomer();
 
 	void PointerTest();
 	void SetKeyboardKeys();

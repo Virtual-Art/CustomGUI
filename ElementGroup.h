@@ -38,15 +38,15 @@ class ShapeGroup : public MasterElement
 	glm::vec4 GetEdges();
 
 	//Shape Placement Functions + Padding
-	void PlaceBelow(ShapeGroup& ShapeReference, int PlacementType);
-	void PlaceAbove(ShapeGroup& ShapeReference, int PlacementType);
-	virtual llShapeGroupData* PlaceRight(ShapeGroup& ShapeReference, int PlacementType);
-	virtual void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType);
+	void PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType);
+	void PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType);
+	virtual void PlaceRight(llShapeGroupData* ShapeReference, int PlacementType);
+	virtual void PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType);
 
-	void PlaceBelow(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
-	void PlaceAbove(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
-	virtual void PlaceRight(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
-	virtual void PlaceLeft(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
+	virtual void PlaceRight(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
+	virtual void PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
 
 	void ConvertInputToInputLeft();
 

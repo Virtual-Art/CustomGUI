@@ -57,15 +57,16 @@
 #include "Toggle.h"
 #include "DropDownList.h"
 #include <forward_list>
+#include "SearchBar.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-void WordSearch(map<string, string>& map, string Search);
+void WordSearch(map<string, string>& map, string Search, SearchBar* WorkingSearchBar);
 void AddWord(map<string, string>& map, string Search);
 void PrintMap(map<string, string>& map);
-void PerfectFit(string TestString, string ReferenceString);
+string PerfectFit(string TestString, string ReferenceString);
 
 struct ListNode
 {
@@ -155,25 +156,26 @@ int main(int argc, char** argv)
 	////Text WHYY(&EditorBook);
 	PageCreator::llInit(&EditorBook, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
-	string hiya = "Hello there";
-	llPageItemData Grid_Quad;
-	Grid_Quad.Position = { 0.0, 0.6 };
-	Grid_Quad.InputType = INPUT_LEFT;
-	NumberPrinterData DataText_Grid;
-	DataText_Grid.Description = "Desp";
-	DataText_Grid.Type = TYPE_STRING;
-	DataText_Grid.String = &hiya;
-	NumberPrinter SLIDER_1(&EditorBook, &Grid_Quad, DataText_Grid);
-	
-	SliderData DataText_Grid1;
-	DataText_Grid1.Description = "Desp";
-	//SLIDER_1.SetllPosition({0.5, 0.5});
-	Grid_Quad.InputType = INPUT_CENTER;
-	Grid_Quad.Position = { 0.0, 0.5 };
-	DataText_Grid.Description = "what is going on";
-	Slider SLIDER_2(&EditorBook, &Grid_Quad, DataText_Grid1);
-	//SLIDER_2.OffsetPosition({ 0.0, -0.3 }, {false, true});
-	SLIDER_2.PlaceLeft(SLIDER_1, MATCH_CEILINGS, 10);
+	//string hiya = "Hello there";
+	//llPageItemData Grid_Quad;
+	//Grid_Quad.Position = { 0.0, 0.6 };
+	//Grid_Quad.InputType = INPUT_LEFT;
+	//NumberPrinterData DataText_Grid;
+	//DataText_Grid.Description = "Desp";
+	//DataText_Grid.Type = TYPE_STRING;
+	//DataText_Grid.String = &hiya;
+	//NumberPrinter SLIDER_1(&EditorBook, &Grid_Quad, DataText_Grid);
+	//
+	//NumberPrinterData DataText_Grid1;
+	//DataText_Grid1.Description = "Desp";
+	////SLIDER_1.SetllPosition({0.5, 0.5});
+	////Grid_Quad.InputType = INPUT_CENTER;
+	////Grid_Quad.Position = { 0.0, 0.5 };
+	//DataText_Grid.Description = "what is going on";
+	//NumberPrinter SLIDER_2(&EditorBook, &Grid_Quad, DataText_Grid1);
+	////SLIDER_2.OffsetPosition({ 0.0, -0.3 }, {false, true});
+	//SLIDER_2.PlaceLeft(SLIDER_1, MATCH_CEILINGS, 10);
+
 
 	//DataText_Grid.Phrase = "H";
 	//DataText_Grid.FontSize = 16;
@@ -190,9 +192,6 @@ int main(int argc, char** argv)
 	TextData Fail_text;
 	Fail_text.Phrase = "This will not fail no matter ";
 	Text Thiswillfail(&FILEBook, &fail_data, Fail_text);
-
-	PageCreator::BuildCustomerDetailElements();
-	PageCreator::AttachCustomerDetailButtons();
 
 	CustomerDetails JohnDoe;
 	//JohnDoe.FirstName = "First Name";
@@ -475,9 +474,6 @@ int main(int argc, char** argv)
 	} */
 
 
-	//PrintMap(StringDataBase);
-	WordSearch(StringDataBase, "Mo");
-
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -506,20 +502,20 @@ int main(int argc, char** argv)
 
 		if (KeyState.Key1 == GUI_I_CLICKED)
 		{
-			MasterElement::CurrentDirectory(&EditorBook);
+			//WordSearch(StringDataBase, "S", &FirstSearchBar);
 		}
 		
 		if (KeyState.Key1 == GUI_O_CLICKED)
 		{
-			MasterElement::PrintBookStats(&PageCreator::CreatorBook);
+			//MasterElement::PrintBookStats(&PageCreator::CreatorBook);
 		}
 
 		if (KeyState.Key1 == GUI_M_CLICKED)
 		{
-			PageCreator::PrintCreatorStats();
+			//PageCreator::PrintCreatorStats();
 		}
 
-		Log::LogVec2("", MousePosition);
+		//Log::LogVec2("", MousePosition);
 
 		//a SliderPointer points to a function that belongs to slider
 		typedef void(MasterElement::* MasterElementFunction)();
@@ -725,38 +721,42 @@ void AddWord(map<string, string>& map, string Word)
 	map[Word] = Word;
 }
 
-void WordSearch(map<string, string>& map, string Search)
+void WordSearch(map<string, string>& map, string Search, SearchBar* WorkingSearchBar)
 {
+	Log::LogString("WordSearch");
 	float Time1 = glfwGetTime();
+	int Count = 0;
+	//WorkingSearchBar->SetCount(Count);
+	WorkingSearchBar->CurrentSearchBar.SearchString = Search;
 	//Go through Entire List
 	for (auto kv : map)
 	{
 		auto& Key = kv.first;
 
+		string Match;
 		//Check to see if the string matches up 
-		PerfectFit(Key, Search);
+
+
+		Match = PerfectFit(Key, Search);
+
+		if (Match != " " && Count < 19)
+		{
+			WorkingSearchBar->CurrentSearchBar.Results[Count] = Match;
+			//WorkingSearchBar->SetCount(Count + 1);
+			Log::LogString("Adding Match");
+			Log::LogString(Match);
+			Log::LogInt(" ", Count);
+			Count++;
+		}
 	}
 	float Time2 = glfwGetTime();
 
 	Log::LogFloat("Execution Time", Time2 - Time1);
 }
 
-void PrintMap(map<string, string>& map)
+string PerfectFit(string TestString, string ReferenceString)
 {
-	for (auto kv : map)
-	{
-		auto& Key = kv.first;
-
-
-		cout << "Key:" << Key << endl;
-	}
-
-}
-
-void PerfectFit(string TestString, string ReferenceString)
-{
-
-	if (TestString.size() < ReferenceString.size()) {return;}
+	if (TestString.size() < ReferenceString.size()) { return " "; }
 
 	//Go through all Characters in Reference String 
 	for (int i = 0; i < ReferenceString.size(); ++i)
@@ -776,9 +776,22 @@ void PerfectFit(string TestString, string ReferenceString)
 		if (TestString[i] != ReferenceString[i] && TestString[0] != ReferenceString[i] + AddorSub)
 		{
 			//Exit if strings stop matching
-			return;
+			return " ";
 		}
 	}
 
-	cout << "Key:" << TestString << endl;
+	return TestString;
 }
+
+void PrintMap(map<string, string>& map)
+{
+	for (auto kv : map)
+	{
+		auto& Key = kv.first;
+
+
+		cout << "Key:" << Key << endl;
+	}
+
+}
+

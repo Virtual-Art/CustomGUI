@@ -30,7 +30,6 @@ public:
 
 	void llDropDownListInit(llBookData* llBook, llPageItemData* llPageItem, DropDownListData& DropDownListData);
 
-	
 	void CreateDropDownList();
 	void llUpdate();
 	void llReplaceDropDownList();

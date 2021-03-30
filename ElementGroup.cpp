@@ -69,7 +69,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 		//Completely new object
 		if (TestingShapeGroup == nullptr)
 		{
-			Log::LogString("New ShapeGroup Linked");
+			//Log::LogString("New ShapeGroup Linked");
 			llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 			llBook->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 			llBook->Page->PageGroup->PageItem->ShapeGroupCount++;
@@ -86,7 +86,7 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 				FoundTail = FoundTail->Next;
 				LinkCount++;
 			}
-			Log::LogString("New ShapeGroup Linked");
+			//Log::LogString("New ShapeGroup Linked");
 			FoundTail->Next = CurrentllShapeGroup;
 			CurrentllShapeGroup->Previous = FoundTail;
 			llBook->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
@@ -110,7 +110,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 	{
 		if (llBookData->Page == nullptr)
 		{
-			Log::LogString("Book Is Brand New");
+			//Log::LogString("Book Is Brand New");
 			llPageData* CreatedPage = new llPageData;
 			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 			llPageItemData* CreatedPageItem = new llPageItemData;
@@ -160,7 +160,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 		//Completely new shapegroup object
 		if (TestingShapeGroup == nullptr)
 		{
-			Log::LogString("New ShapeGroup Linked");
+			//Log::LogString("New ShapeGroup Linked");
 			llBookData->Page->PageGroup->PageItem->ShapeGroup = CurrentllShapeGroup;
 			llBookData->Page->PageGroup->PageItem->ShapeGroupHead = CurrentllShapeGroup;
 			llBookData->Page->PageGroup->PageItem->ShapeGroupCount++;
@@ -178,7 +178,7 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 				LinkCount++;
 			}
 
-			Log::LogString("New ShapeGroup Linked");
+			//Log::LogString("New ShapeGroup Linked");
 			FoundTail->Next = CurrentllShapeGroup;
 			CurrentllShapeGroup->Previous = FoundTail;
 			//We are setting the book to point to this new shape group because that's where we want to load shapes
@@ -397,6 +397,15 @@ void ShapeGroup::Delete()
 	//Save ShapeGroup Before and After Current
 	llShapeGroupData* PreviousllShapeGroup = CurrentllShapeGroup->Previous;
 	llShapeGroupData* NextllShapeGroup = CurrentllShapeGroup->Next;
+
+	if (NextllShapeGroup != nullptr)
+	{
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = NextllShapeGroup;
+	}
+	else
+	{
+		LoadedBook->Page->PageGroup->PageItem->ShapeGroup = PreviousllShapeGroup;
+	}
 
 	//Delete all Shapes
 	while (CurrentShape != nullptr)
@@ -1333,55 +1342,67 @@ float ShapeGroup::GetAccessBottom(int PixelOffset)
 }
 
 
-void ShapeGroup::PlaceBelow(ShapeGroup& ShapeReference, int PlacementType)
+void ShapeGroup::PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType)
 {
-	ManualPlaceBelow(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	Log::LogVec2("Before Below", ShapeReference->Position);
+	Log::LogVec4("Edges", { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom });
+	ManualPlaceBelow(PlacementType,  ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom , CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	Log::LogVec2("After Below", ShapeReference->Position);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceAbove(ShapeGroup& ShapeReference, int PlacementType)
+void ShapeGroup::PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType)
 {
-	ManualPlaceAbove(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceAbove FAILED:: Invalid ShapeGroup State");  return; }
+
+	ManualPlaceAbove(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, 0);
 	llUpdate();
 }
 
-llShapeGroupData* ShapeGroup::PlaceRight(ShapeGroup& ShapeReference, int PlacementType)
+void ShapeGroup::PlaceRight(llShapeGroupData* ShapeReference, int PlacementType)
 {
-	ManualPlaceRight(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
-	llUpdate();
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceRight FAILED:: Invalid ShapeGroup State");  return; }
 
-	return CurrentllShapeGroup;
+	ManualPlaceRight(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, 0);
+	llUpdate();
 }
 
-void ShapeGroup::PlaceLeft(ShapeGroup& ShapeReference, int PlacementType)
+void ShapeGroup::PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType)
 {
-	ManualPlaceLeft(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceLeft FAILED:: Invalid ShapeGroup State");  return; }
+
+	ManualPlaceLeft(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, 0);
 	llUpdate();
 }
 
 //////////////////////////////////////
 
-void ShapeGroup::PlaceBelow(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
 {
-	ManualPlaceBelow(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup Place Below FAILED:: Invalid ShapeGroup State");  return; }
+	if (ShapeReference == nullptr) { Log::LogString("ERROR:: ShapeGroup Place Below FAILED:: No ShapeGroup to Align with ");  return; }
+	ManualPlaceBelow(PlacementType,  ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceAbove(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
 {
-	ManualPlaceAbove(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceAbove FAILED:: Invalid ShapeGroup State");  return; }
+	ManualPlaceAbove(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, PixelPadding);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceRight(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceRight(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
 {
-	ManualPlaceRight(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceRight FAILED:: Invalid ShapeGroup State");  return; }
+	ManualPlaceRight(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, PixelPadding);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceLeft(ShapeGroup& ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
 {
-	ManualPlaceLeft(PlacementType, ShapeReference.GetEdges(), CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceLeft FAILED:: Invalid ShapeGroup State");  return; }
+	ManualPlaceLeft(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, PixelPadding);
 	llUpdate();
 }
 

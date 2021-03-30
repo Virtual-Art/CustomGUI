@@ -18,7 +18,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 		if (llBook->Page == nullptr)
 		{
-			Log::LogString("Book Is Brand New");
+			//Log::LogString("Book Is Brand New");
 			llPageData* CreatedPage = new llPageData;
 			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
@@ -33,7 +33,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 		if (llBook->Page->PageGroup == nullptr)
 		{
-			Log::LogString("Book Is Brand New");
+			//Log::LogString("Book Is Brand New");
 			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
 			llBook->Page->PageGroup = CreatedPageGroup;
@@ -49,7 +49,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 		//Completely new object
 		if (TestingPageItem == nullptr)
 		{
-			Log::LogString("PageGroup Empty. First PageItem!");
+			//Log::LogString("PageGroup Empty. First PageItem!");
 			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
 			llBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
 			llBook->Page->PageGroup->PageItemCount++;
@@ -66,7 +66,7 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 				FoundTail = FoundTail->Next;
 				LinkCount++;
 			}
-			Log::LogString("PageItem Linked");
+			//Log::LogString("PageItem Linked");
 			FoundTail->Next = CurrentllPageItem;
 			CurrentllPageItem->Previous = FoundTail;
 			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
@@ -91,7 +91,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 		if (llBookData->Page == nullptr)
 		{
 			//Create a new Page & PageGroup for the PageItem we are about to create
-			Log::LogString("Book Is Brand New");
+		//	Log::LogString("Book Is Brand New");
 			llPageData* CreatedPage = new llPageData;
 			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
@@ -127,7 +127,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 		if (TestingPageItem == nullptr)
 		{
 			//Set the book to include and point to the newly created PageItem
-			Log::LogString("PageGroup Empty. First PageItem!");
+			//Log::LogString("PageGroup Empty. First PageItem!");
 			llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
 			llBookData->Page->PageGroup->PageItemHead = CurrentllPageItem;
 			llBookData->Page->PageGroup->PageItemCount++;
@@ -146,7 +146,7 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			}
 
 			//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
-			Log::LogString("PageItem Linked");
+			//Log::LogString("PageItem Linked");
 			FoundTail->Next = CurrentllPageItem;
 			CurrentllPageItem->Previous = FoundTail;
 			
@@ -1163,7 +1163,7 @@ float PageGroupItem::GetAccessBottom(int PixelOffset)
 
 void PageGroupItem::PlaceBelow(PageGroupItem& PageItem, int PlacementType)
 {
-	ManualPlaceBelow(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	//ManualPlaceBelow(PlacementType, PageItem.GetEdges(), &CurrentllPageItem->InputType, &CurrentllPageItem->Position, 0);
 	llUpdate();
 }
 
@@ -1189,7 +1189,7 @@ void PageGroupItem::PlaceLeft(PageGroupItem& PageItem, int PlacementType)
 
 void PageGroupItem::PlaceBelow(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
 {
-	ManualPlaceBelow(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	//ManualPlaceBelow(PlacementType, PageItem.GetEdges(), &CurrentllPageItem->InputType, &CurrentllPageItem->Position, PixelPadding);
 	llUpdate();
 }
 
@@ -1223,12 +1223,8 @@ void PageGroupItem::TranslateInput()
 	float x_CenterofPageItem = (CurrentllPageItem->Left + CurrentllPageItem->Right )/ 2;
 	float y_CenterofPageItem = (CurrentllPageItem->Bottom + CurrentllPageItem->Top) / 2;
 
-	Log::LogFloat("x_CenterofPageItem", x_CenterofPageItem);
-	Log::LogFloat("y_CenterofPageItem", y_CenterofPageItem);
-	Log::LogVec2("Size", CurrentllPageItem->Size);
-
-	//The position bias is how much the actual position deviates from the pageitem's center
-	//The page item's center is the default input so we translate the given input to the center Input (default)
+	//The position bias is how much the actual position deviates from the PageItem's center
+	//The PageItem's center is the default input so we translate the given input to the center Input (default)
 	//And then tack on the Position bias
 	PositionBias[0] = x_CenterofPageItem - CurrentllPageItem->Position[X_AXIS];
 	PositionBias[1] = y_CenterofPageItem - CurrentllPageItem->Position[Y_AXIS];
@@ -1241,7 +1237,6 @@ void PageGroupItem::TranslateInput()
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_RIGHT: //Center
-		// This should be going -= half it's size
 		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
 		CurrentllPageItem->Position -= PositionBias;
 		CurrentllPageItem->InputType = INPUT_CENTER;

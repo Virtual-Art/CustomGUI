@@ -143,13 +143,8 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 }
 
 
-BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
+void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirectory& BookDirectory)
 {
-	//if (llBook->Page == nullptr) { return; };
-	//Log::LogString("Printing Book Stats");
-
-	BookDirectory CurrentDirectory;
-
 	float xMouse = MouseManager::xPos;
 	float yMouse = MouseManager::yPos;
 
@@ -161,23 +156,33 @@ BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 	int ShapeCount = 0;
 	int VertexCount = 0;
 
-	llVertexData* SavedVertex = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
-	llShapeData* SavedShape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
-	llShapeGroupData* SavedShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
-	llPageItemData* SavedPageItem = llBook->Page->PageGroup->PageItem;
-	llPageGroupData* SavedPageGroup = llBook->Page->PageGroup;
+	//llVertexData* SavedVertex = GetBookVertex(llBook);
+	//llShapeData* SavedShape = GetBookShape(llBook);
+	//llShapeGroupData* SavedShapeGroup = GetBookShapeGroup(llBook);
+	//llPageItemData* SavedPageItem = GetBookPageItem(llBook);
+	//llPageGroupData* SavedPageGroup = GetBookPageGroup(llBook);
+	//llPageData* SavedPage = GetBookPage(llBook);
+
+	//Nothing in PageGroup
 	llPageData* SavedPage = llBook->Page;
+	llPageGroupData* SavedPageGroup = llBook->Page->PageGroup;
+	llPageItemData* SavedPageItem = llBook->Page->PageGroup->PageItem;
+	llShapeGroupData* SavedShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
+	llShapeData* SavedShape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+	llVertexData* SavedVertex = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
 
 	//Page
-	llPageData* CurrentPage = llBook->Page;
+	llPageData* CurrentPage = SavedPage;
 
-	//Set to beginning
+	////Set to beginning
 	while (CurrentPage->Previous != nullptr)
 	{
 		CurrentPage = CurrentPage->Previous;
 	}
 
-	CurrentDirectory.Page = CurrentPage;
+	//CurrentPage = HeadPage(CurrentPage);
+
+	BookDirectory.Page = CurrentPage;
 
 	while (CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
 	{
@@ -200,8 +205,8 @@ BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 				if (xMouse < CurrentPageGroup->Right && xMouse >  CurrentPageGroup->Left&& yMouse < CurrentPageGroup->Top && yMouse >  CurrentPageGroup->Bottom)
 				{
 					cout << " [PageGroup Found] | P:" << PageCount << " | PG:" << PageGroupCount << endl;
-					CurrentDirectory.PageGroup = CurrentPageGroup;
-					CurrentDirectory.NoDirectoryFound = false;
+					BookDirectory.PageGroup = CurrentPageGroup;
+					BookDirectory.NoDirectoryFound = false;
 				}
 			}
 
@@ -222,8 +227,8 @@ BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 					if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left&& yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom)
 					{
 						cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
-						CurrentDirectory.PageItem = CurrentPageItem;
-						CurrentDirectory.NoDirectoryFound = false;
+						BookDirectory.PageItem = CurrentPageItem;
+						BookDirectory.NoDirectoryFound = false;
 					}
 				}
 
@@ -255,8 +260,8 @@ BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
 									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
-									CurrentDirectory.ShapeGroup = CurrentShapeGroup;
-									CurrentDirectory.NoDirectoryFound = false;
+									BookDirectory.ShapeGroup = CurrentShapeGroup;
+									BookDirectory.NoDirectoryFound = false;
 								}
 							}
 						}
@@ -279,8 +284,8 @@ BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 									{
 										cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
 										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
-										CurrentDirectory.Shape;
-										CurrentDirectory.NoDirectoryFound = false;
+										BookDirectory.Shape;
+										BookDirectory.NoDirectoryFound = false;
 									}
 								}
 							}
@@ -300,20 +305,90 @@ BookDirectory MasterElement::FindElement(llBookData* llBook, int ElementLevel)
 		CurrentPage = CurrentPage->Next;
 	}
 
+	if (llBook != nullptr)
+	{
+		llBook->Page = SavedPage;
+		if (llBook->Page != nullptr)
+		{
+			llBook->Page->PageGroup = SavedPageGroup;
+			if (llBook->Page->PageGroup != nullptr)
+			{
+				llBook->Page->PageGroup->PageItem = SavedPageItem;
+				if (llBook->Page->PageGroup->PageItem != nullptr)
+				{
+					llBook->Page->PageGroup->PageItem->ShapeGroup = SavedShapeGroup;
+					if (llBook->Page->PageGroup->PageItem->ShapeGroup != nullptr)
+					{
+						llBook->Page->PageGroup->PageItem->ShapeGroup->Shape = SavedShape;
+						if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape != nullptr)
+						{
+							llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = SavedVertex;
+						}
+					}
+				}
+			}
+		}
+	}
 
-	llBook->Page = SavedPage;
-	llBook->Page->PageGroup = SavedPageGroup;
-	llBook->Page->PageGroup->PageItem = SavedPageItem;
-	llBook->Page->PageGroup->PageItem->ShapeGroup = SavedShapeGroup;
-	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape = SavedShape;
-	llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = SavedVertex;
-
-	return CurrentDirectory;
 }
 
 void MasterElement::PrintBook(llBookData* llBook)
 {
 
+}
+
+ llVertexData* MasterElement::GetBookVertex(llBookData* llBook)
+{
+	 if (llBook == nullptr) {return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Book Provided");           
+	 if (llBook->Page == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Page in Book");            
+	 if (llBook->Page->PageGroup == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No PageGroup in Page");       
+	 if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No ShapeGroup in PageItem");  
+	 if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Shape in ShapeGroup");     
+
+	 return llBook->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+}
+
+ llShapeData* MasterElement::GetBookShape(llBookData* llBook)
+{
+	 if (llBook == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Book Provided");           
+	 if (llBook->Page == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Page in Book");            
+	 if (llBook->Page->PageGroup == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No PageGroup in Page");       
+	 if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No ShapeGroup in PageItem");  
+
+	 return llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+}
+
+ llShapeGroupData* MasterElement::GetBookShapeGroup(llBookData* llBook)
+{
+	 if (llBook == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Book Provided");           
+	 if (llBook->Page == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Page in Book");            
+	 if (llBook->Page->PageGroup == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No PageGroup in Page");       
+	 if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No ShapeGroup in PageItem");  
+
+	 return llBook->Page->PageGroup->PageItem->ShapeGroup;
+}
+
+ llPageItemData* MasterElement::GetBookPageItem(llBookData* llBook)
+{
+	 if (llBook == nullptr) { Log::LogString("ERROR:: GetBookVertex FAILED:: No Book Provided"); return nullptr; } //            
+	 if (llBook->Page == nullptr) {  Log::LogString("ERROR:: GetBookVertex FAILED:: No Page in Book");return nullptr; }             
+	 if (llBook->Page->PageGroup == nullptr) { Log::LogString("ERROR:: GetBookVertex FAILED:: No PageGroup in Page");  return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No PageGroup in Page");       
+
+	 return llBook->Page->PageGroup->PageItem;
+}
+
+ llPageGroupData* MasterElement::GetBookPageGroup(llBookData* llBook)
+{
+	 if (llBook == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Book Provided");           
+	 if (llBook->Page == nullptr) { return nullptr; } // Log::LogString("ERROR:: GetBookVertex FAILED:: No Page in Book");            
+
+	 return llBook->Page->PageGroup;
+}
+
+ llPageData* MasterElement::GetBookPage(llBookData* llBook)
+{
+	 if (llBook == nullptr) { return nullptr; }
+	 return llBook->Page;
 }
 
 
@@ -1366,7 +1441,7 @@ void MasterElement::DeleteShape(llBookData* llBook, llShapeData* ReferenceShape)
 	if (NextllShape != nullptr) { NextllShape->Previous = PreviousllShape; }
 
 
-	Log::LogString("Shape & Vertices Deleted");
+	//Log::LogString("Shape & Vertices Deleted");
 }
 
 void MasterElement::DeleteShapeGroup(llBookData* llBook, llShapeGroupData* ShapeGroupReference)
@@ -1402,7 +1477,7 @@ void MasterElement::DeleteShapeGroup(llBookData* llBook, llShapeGroupData* Shape
 	if (PreviousllShapeGroup != nullptr) { PreviousllShapeGroup->Next = NextllShapeGroup; }
 	if (NextllShapeGroup != nullptr) { NextllShapeGroup->Previous = PreviousllShapeGroup; }
 
-	Log::LogString("ShapeGroup Deleted");
+	//Log::LogString("ShapeGroup Deleted");
 }
 
 
@@ -1439,7 +1514,7 @@ void MasterElement::DeletePageItem(llBookData* llBook, llPageItemData* PageItemR
 	if (PreviousllPageItem != nullptr) { PreviousllPageItem->Next = NextllPageItem; }
 	if (NextllPageItem != nullptr) { NextllPageItem->Previous = PreviousllPageItem; }
 
-	Log::LogString("PageItem Deleted");
+	//Log::LogString("PageItem Deleted");
 }
 
 void MasterElement::DeletePageGroup(llBookData* llBook, llPageGroupData* PageGroupReference)
@@ -1475,7 +1550,7 @@ void MasterElement::DeletePageGroup(llBookData* llBook, llPageGroupData* PageGro
 	if (PreviousllPageGroup != nullptr) { PreviousllPageGroup->Next = NextllPageGroup; }
 	if (NextllPageGroup != nullptr) { NextllPageGroup->Previous = PreviousllPageGroup; }
 
-	Log::LogString("PageGroup Deleted");
+	//Log::LogString("PageGroup Deleted");
 }
 ///////////////////////////////////////////////////////////////
 void MasterElement::DeletePage(llBookData* llBook, llPageData* PageReference)
@@ -1511,7 +1586,7 @@ void MasterElement::DeletePage(llBookData* llBook, llPageData* PageReference)
 	if (PreviousllPage != nullptr) { PreviousllPage->Next = NextllPage; }
 	if (NextllPage != nullptr) { NextllPage->Previous = PreviousllPage; }
 
-	Log::LogString("Page Deleted");
+	//Log::LogString("Page Deleted");
 }
 
 void MasterElement::EraseBook(llBookData* llBook)
@@ -1987,46 +2062,46 @@ glm::vec2 MasterElement::ApplySizeConversion(glm::vec2 Size, int Conversion)
 	return Size;
 }
 
-void MasterElement::ManualPlaceBelow(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+void MasterElement::ManualPlaceBelow(const int PlacementType, const float& LeftEdge, const float& RightEdge, const float& TopEdge, const float& BottomEdge, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
 {
 	switch (PlacementType)
 	{
 	case MATCH_BEGINNINGS:
 	{
-		float Left = ElementEdges[0];
-		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		float Left = LeftEdge;
+		float Bottom = BottomEdge - (PixelPadding * PIXEL);
 		NewPosition = { Left, Bottom };
 		NewInputType = INPUT_TOPLEFT;
 		break;
 	}
 	case MATCH_ENDS:
 	{
-		float Right = ElementEdges[1];
-		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		float Right = RightEdge;
+		float Bottom = BottomEdge - (PixelPadding * PIXEL);
 		NewPosition = { Right, Bottom };
 		NewInputType = INPUT_TOPRIGHT;
 		break;
 	}
 	case MATCH_CENTERS:
 	{
-		float Center_x = (ElementEdges[1] + ElementEdges[0]) / 2; // (Left + Right) / Half
-		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		float Center_x = (RightEdge + LeftEdge) / 2; // (Left + Right) / Half
+		float Bottom = BottomEdge - (PixelPadding * PIXEL);
 		NewPosition = { Center_x, Bottom };
 		NewInputType = INPUT_TOP;
 		break;
 	}
 	case MATCH_BEGINNING_TO_END:
 	{
-		float Left = ElementEdges[0];
-		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		float Left = LeftEdge;
+		float Bottom = BottomEdge - (PixelPadding * PIXEL);
 		NewPosition = { Left, Bottom };
 		NewInputType = INPUT_TOPRIGHT; //New Position is the new element's Top Right
 		break;
 	}
 	case MATCH_END_TO_BEGINNING:
 	{
-		float Right = ElementEdges[1];
-		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
+		float Right = RightEdge;
+		float Bottom = BottomEdge - (PixelPadding * PIXEL);
 		NewPosition = { Right, Bottom };
 		NewInputType = INPUT_TOPLEFT; //New Position is the new element's Top Right
 		break;

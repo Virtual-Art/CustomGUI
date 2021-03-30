@@ -37,7 +37,7 @@ PageGroup::PageGroup(llBookData* llBook)
 		//Completely new object
 		if (TestingPageGroup == nullptr)
 		{
-			Log::LogString("New PageGroup Linked");
+			//Log::LogString("New PageGroup Linked");
 			llBook->Page->PageGroup = CurrentllPageGroup;
 			llBook->Page->PageGroupHead = CurrentllPageGroup;
 			llBook->Page->PageGroupCount++;
@@ -54,7 +54,7 @@ PageGroup::PageGroup(llBookData* llBook)
 				FoundTail = FoundTail->Next;
 				LinkCount++;
 			}
-			Log::LogString("New PageGroup Linked");
+			//Log::LogString("New PageGroup Linked");
 			FoundTail->Next = CurrentllPageGroup;
 			CurrentllPageGroup->Previous = FoundTail;
 			llBook->Page->PageGroup = CurrentllPageGroup;
@@ -79,7 +79,7 @@ PageGroup::PageGroup(llBookData* llBookData, llPageGroupData* llPageGroup)
 		if (llBookData->Page == nullptr)
 		{
 			//Create a new Page & PageGroup for the PageItem we are about to create
-			Log::LogString("Book Is Brand New");
+			//Log::LogString("Book Is Brand New");
 			llPageData* CreatedPage = new llPageData;
 			llPageGroupData* CreatedPageGroup = new llPageGroupData;
 
@@ -103,7 +103,7 @@ PageGroup::PageGroup(llBookData* llBookData, llPageGroupData* llPageGroup)
 		if (TestingPageGroup == nullptr)
 		{
 			//Set the book to include and point to the newly created PageItem
-			Log::LogString("New PageGroup Linked");
+			//Log::LogString("New PageGroup Linked");
 			llBookData->Page->PageGroup = CurrentllPageGroup;
 			llBookData->Page->PageGroupHead = CurrentllPageGroup;
 		}
@@ -121,7 +121,7 @@ PageGroup::PageGroup(llBookData* llBookData, llPageGroupData* llPageGroup)
 			}
 
 			//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
-			Log::LogString("New PageGroup Linked");
+			//Log::LogString("New PageGroup Linked");
 			FoundTail->Next = CurrentllPageGroup;
 			CurrentllPageGroup->Previous = FoundTail;
 

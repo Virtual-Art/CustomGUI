@@ -91,13 +91,13 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	NumberPrinter_Element_Size.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
 	NumberPrinter_Element_Size.HighlightDescription(HighlightColor);
 
-	NumberPrinter_Data.Description = "Name";
-	NumberPrinter_Data.Type = TYPE_STRING;
-	PageItem_Data.Position = { -0.98, -0.3 };
-	PageItem_Data.Color = { 0.0, 0.5, 1.0, 1.0 };
-	Number_Printer_String_Helper = "Name";
-	NumberPrinter_Data.String = &Number_Printer_String_Helper;
-	NumberPrinter_Name.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
+	//NumberPrinter_Data.Description = "Name";
+	//NumberPrinter_Data.Type = TYPE_STRING;
+	//PageItem_Data.Position = { -0.98, -0.3 };
+	//PageItem_Data.Color = { 0.0, 0.5, 1.0, 1.0 };
+	//Number_Printer_String_Helper = "Name";
+	//NumberPrinter_Data.String = &Number_Printer_String_Helper;
+	//NumberPrinter_Name.llInit(&CreatorBook, &PageItem_Data, NumberPrinter_Data);
 
 
 	//Red
@@ -179,12 +179,12 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Button_B_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderB;
 	Button_A_Slider.LogicalActions[GUI_MOUSELEFT_PRESSED] = SetSliderA;
 
-	Button_Name_NumberPrinter.LogicalActions[GUI_HOVERED] = SetFirstName;
-
-	llShapeGroupData* ShapeGroup_Name;
-
-	ShapeGroup_Name = NumberPrinter_Name.GetShapeGroup(GROUP_DESCRIPTION);
-	ShapeGroup_Name->ShapeGroupButton = &Button_Name_NumberPrinter;
+	//Button_Name_NumberPrinter.LogicalActions[GUI_HOVERED] = SetFirstName;
+	//
+	//llShapeGroupData* ShapeGroup_Name;
+	//
+	//ShapeGroup_Name = NumberPrinter_Name.GetShapeGroup(GROUP_DESCRIPTION);
+	//ShapeGroup_Name->ShapeGroupButton = &Button_Name_NumberPrinter;
 
 	//Set Slider Quad Button to Change Slider Position
 	Shape_Slider = Slider_Color_R.GetShapeGroupShape(GROUP_SLIDER, SLIDER);
@@ -257,7 +257,10 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Shape_DropDown = Edit.GetShapeGroupShape(GROUP_BACKGROUND, 0);
 	Shape_DropDown->ShapeButton = &Button_Edit_Driver;
 
-	CurrentText = "Hello";
+
+	BuildCustomerDetailElements();
+	AttachCustomerDetailButtons();
+	SetCustomerDetails(&DefaultCustomer);
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
@@ -305,7 +308,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 	
 	PrinterToEdit();
 
-	CreatorDirectory = MasterElement::FindElement(CurrentBook, 2);
+	MasterElement::FindElement(&CreatorBook, 2, CreatorDirectory);
 	//MasterElement::FindElement(CurrentBook, CurrentLevel);
 }
 
@@ -1499,6 +1502,21 @@ void PageCreator::ResetKeyboardText()
 	CurrentText = "";
 }
 
+void PageCreator::ResetSearch()
+{
+	SearchBar_Customer_Search.ResetSearchBar();
+}
+
+void PageCreator::ResetCustomerDetails()
+{
+	//Reset 
+	Printer_First_Name.SetString("First Name");
+	Printer_Last_Name.SetString("Last Name");
+	Printer_Phone.SetString("Phone #");
+	Printer_Address.SetString("Address");
+	Printer_Email.SetString("Email");
+}
+
 //Reset any blank spaces to default string
 void PageCreator::SetCustomerDetailDefaults()
 {
@@ -1544,10 +1562,29 @@ void PageCreator::SwitchStringPrinter()
 	CreatorNumberPrinterSelected.llSwitch(CreatorDirectory.PageItem);
 }
 
+void PageCreator::SetCustomerSearch()
+{
+	PrinterToEdit = ProcessCustomerSearch;
+	//SetCustomerDetailDefaults();
+	CurrentText = " ";
+	string Search = CurrentText;
+
+	//Keep Valid State
+	if (CurrentText == "") { Search = " "; }
+
+	if (CurrentText == SearchBar_Customer_Search.CurrentSearchBar.SearchString)
+	{
+		Search = " "; CurrentText = " ";
+	}
+
+	SearchBar_Customer_Search.SetSearch(Search);
+}
+
 void PageCreator::SetFirstName()
 {
 	PrinterToEdit = ProcessFirstName;
 	SetCustomerDetailDefaults();
+	ResetSearch();
 	CurrentText = Printer_First_Name.GetCurrentString();
 	string FirstName = CurrentText;
 
@@ -1567,6 +1604,7 @@ void PageCreator::SetLastName()
 {
 	PrinterToEdit = ProcessLastName;
 	SetCustomerDetailDefaults();
+	ResetSearch();
 	CurrentText = Printer_Last_Name.GetCurrentString();
 	string LastName = CurrentText;
 	if (CurrentText == "")
@@ -1590,6 +1628,7 @@ void PageCreator::SetPhone()
 {
 	PrinterToEdit = ProcessPhone;
 	SetCustomerDetailDefaults();
+	ResetSearch();
 	CurrentText = Printer_Phone.GetCurrentString();
 	string Phone = CurrentText;
 	if (CurrentText == "")
@@ -1613,6 +1652,7 @@ void PageCreator::SetAddress()
 {
 	PrinterToEdit = ProcessAddress;
 	SetCustomerDetailDefaults();
+	ResetSearch();
 	CurrentText = Printer_Address.GetCurrentString();
 	string Address = CurrentText;
 	if (CurrentText == "")
@@ -1636,6 +1676,7 @@ void PageCreator::SetEmail()
 {
 	PrinterToEdit = ProcessEmail;
 	SetCustomerDetailDefaults();
+	ResetSearch();
 	CurrentText = Printer_Email.GetCurrentString();
 	string Email = CurrentText;
 	if (CurrentText == "")
@@ -1658,18 +1699,25 @@ void PageCreator::SetEmail()
 
 void PageCreator::AddCustomer()
 {
-	static int hi = 0;
+	if (DefaultCustomer.FirstName !=  "First Name")
+	{
+		map_CustomerDataBase[DefaultCustomer.FirstName] = DefaultCustomer;
+	}
 
-	CustomerDetails NewCustomer;
-	CustomerDataBase.push_back(NewCustomer);
+	PrinterToEdit = Empty;
+	ResetCustomerDetails();
+	ResetCustomerDetailHighlights();
+}
 
-	//Get Customer just added
-	auto FirstNode = CustomerDataBase.begin();
-	advance(FirstNode, CustomerDataBase.size() - 1);
-	CustomerDetails* NewestCustomer = &*FirstNode;
+void PageCreator::ProcessCustomerSearch()
+{
+	//Never Allow Text to go to zero
+	if (CurrentText == "")
+	{
+		CurrentText = " ";
+	}
 
-	SetCustomerDetails(NewestCustomer);
-
+	WordSearch(CurrentText);
 }
 
 void PageCreator::ProcessFirstName()
@@ -1789,11 +1837,84 @@ void PageCreator::TestFunction()
 }
 
 
+void PageCreator::WordSearch(string Search)
+{
+	Log::LogString("Inside Word Search");
+	int Count = 0;
+	string Match;
+	SearchBar_Customer_Search.SetResultCount(Count);
+	SearchBar_Customer_Search.CurrentSearchBar.SearchString = Search;
+
+	//Go through entire CustomerDataBase
+	for (auto kv : map_CustomerDataBase)
+	{
+		auto& Key = kv.first;
+
+		//Check to see if the string matches up 
+		Match = PerfectFit(Key, Search);
+
+		if (Match != " " && Count < 19)
+		{
+			SearchBar_Customer_Search.CurrentSearchBar.Results[Count] = Match;
+			SearchBar_Customer_Search.SetResultCount(Count + 1);
+			SearchBar_Customer_Search.GetShapeGroup(Count + 1)->ShapeGroupButton = &Button_Customer_Search_Result;
+			Count++;
+		}
+	}
+
+}
+
+string PageCreator::PerfectFit(string TestString, string ReferenceString)
+{
+	if (TestString.size() < ReferenceString.size()) { return " "; }
+
+	//Go through all Characters in Reference String 
+	for (int i = 0; i < ReferenceString.size(); ++i)
+	{
+		int AddorSub = 0;
+
+		if (ReferenceString[i] > 97)
+		{
+			AddorSub = -32;
+		}
+		else
+		{
+			AddorSub = 32;
+		}
+
+		//Compare letters
+		if (TestString[i] != ReferenceString[i] && TestString[0] != ReferenceString[i] + AddorSub)
+		{
+			//Exit if strings stop matching
+			return " ";
+		}
+	}
+
+	return TestString;
+}
+
+void PageCreator::SetSearchResult()
+{
+	Log::LogString("Set Search Result");
+
+	if (CreatorDirectory.ShapeGroup != nullptr)
+	{
+		SearchBar_Customer_Search.SetResultSelected(CreatorDirectory.ShapeGroup);
+		CustomerDetails* CustomerSelected = &map_CustomerDataBase[SearchBar_Customer_Search.CurrentSearchBar.ResultSelected];
+		SetCustomerDetails(CustomerSelected);
+		//ResetSearch();
+	}
+}
+
 void PageCreator::BuildCustomerDetailElements()
 {
 	//Basic Printer Data Setup
 	NumberPrinterData PrinterData_Customer_Details;
 	PrinterData_Customer_Details.Type = TYPE_STRING;
+
+	//Basic SearchBar Data Setup
+	SearchBarData SearchBarData_Customer_Search;
+	SearchBarData_Customer_Search.AmountOfResults = 0;
 
 	//Basic Text Data Setup
 	TextData TextData_Customer_Details;
@@ -1812,7 +1933,9 @@ void PageCreator::BuildCustomerDetailElements()
 
 	//////////////*------- GUI --------*////////////////
 
+	//Add Customer
 	Text_Add_Customer.llInit(&CreatorBook, &ShapeGroup_Customer_Details, TextData_Customer_Details);
+
 
 	//First Name
 	PageItem_Customer_Details.Position = Origin;
@@ -1838,6 +1961,29 @@ void PageCreator::BuildCustomerDetailElements()
 	PageItem_Customer_Details.Position = { 0.0, -0.4 };
 	PrinterData_Customer_Details.Description = "Address";
 	Printer_Address.llInit(&CreatorBook, &PageItem_Customer_Details, PrinterData_Customer_Details);
+
+	////Customer Search
+	PageItem_Customer_Details.Position = {0.0, 0.5};
+	SearchBar_Customer_Search.llInit(&CreatorBook, &PageItem_Customer_Details, SearchBarData_Customer_Search);
+
+	DefaultCustomer.FirstName = "Kaden";
+	DefaultCustomer.LastName = "Cardenas-Marett";
+	DefaultCustomer.Address = "836 Talwood Dr, Peterborough, ON";
+	DefaultCustomer.Phone = "905 269 4265";
+	map_CustomerDataBase[DefaultCustomer.FirstName] = DefaultCustomer;
+	ResetCustomerDetails();
+	DefaultCustomer.FirstName = "Jarret";
+	DefaultCustomer.LastName = "Oak";
+	DefaultCustomer.Address = "Toronto Ontario";
+	DefaultCustomer.Phone = "Phone";
+	map_CustomerDataBase[DefaultCustomer.FirstName] = DefaultCustomer;
+	ResetCustomerDetails();
+	DefaultCustomer.FirstName = "Walmart";
+	DefaultCustomer.LastName = "Last Name";
+	DefaultCustomer.Address = "73 Strathy rd, cobourg, ON, Canada";
+	DefaultCustomer.Phone = "Phone";
+	map_CustomerDataBase[DefaultCustomer.FirstName] = DefaultCustomer;
+	ResetCustomerDetails();
 }
 
 void PageCreator::AttachCustomerDetailButtons()
@@ -1849,6 +1995,8 @@ void PageCreator::AttachCustomerDetailButtons()
 	Button_Address.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetAddress;
 	Button_Email.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetEmail;
 	Button_Add_Customer.LogicalActions[GUI_MOUSELEFT_CLICKED] = AddCustomer;
+	Button_Customer_Search.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetCustomerSearch;
+	Button_Customer_Search_Result.LogicalActions[GUI_MOUSELEFT_CLICKED] = SetSearchResult;
 
 	//Attach Buttons to Print-Text UI 
 	Printer_First_Name.GetShapeGroup(GROUP_PRINT)->ShapeGroupButton = &Button_First_Name;
@@ -1857,6 +2005,7 @@ void PageCreator::AttachCustomerDetailButtons()
 	Printer_Address.GetShapeGroup(GROUP_PRINT)->ShapeGroupButton = &Button_Address;
 	Printer_Email.GetShapeGroup(GROUP_PRINT)->ShapeGroupButton = &Button_Email;
 	Text_Add_Customer.GetShapeGroup()->ShapeGroupButton = &Button_Add_Customer;
+	SearchBar_Customer_Search.GetShapeGroup(GROUP_SEARCH)->ShapeGroupButton = &Button_Customer_Search;
 }
 
 void PageCreator::SetCustomerDetails(CustomerDetails* CustomerDetails)

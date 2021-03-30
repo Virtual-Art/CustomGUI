@@ -52,6 +52,7 @@
 #define TYPE_PAGEITEM_SLIDER 1
 #define TYPE_PAGEITEM_NUMBER 2
 #define TYPE_PAGEITEM_TOGGLE 3
+#define TYPE_PAGEITEM_SEARCHBAR 4
 #define TYPE_PAGEITEM_DROPDOWNLIST 4
 #define TYPE_PAGEGROUP 0
 #define TYPE_PAGE 0
@@ -572,7 +573,7 @@ public:
 	static void CurrentDirectory(llBookData* llBook);
 
 	//Quick Element Placement
-	static void ManualPlaceBelow(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
+	static void ManualPlaceBelow(const int PlacementType, const float& LeftEdge, const float& RightEdge, const float& TopEdge, const float& BottomEdge, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
 	static void ManualPlaceAbove(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
 	static void ManualPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchCenters
 	static void ManualPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding);  //MatchCenters
@@ -580,6 +581,13 @@ public:
 	static void TextPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchCenters
 	static void TextPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding);  //MatchCenters
 
+
+	static llVertexData* GetBookVertex(llBookData* llBook);
+	static llShapeData* GetBookShape(llBookData* llBook);
+	static llShapeGroupData* GetBookShapeGroup(llBookData* llBook);
+	static llPageItemData* GetBookPageItem(llBookData* llBook);
+	static llPageGroupData* GetBookPageGroup(llBookData* llBook);
+	static llPageData* GetBookPage(llBookData* llBook);
 
 	//Get Head Element
 	static llVertexData* HeadVertex(llVertexData* VertexReference);
@@ -627,7 +635,7 @@ public:
 	static void EraseBook(llBookData* llBook);
 
 	static void ToggleToggle(bool& ToToggle);
-	static BookDirectory FindElement(llBookData* llBook, int ElementLevel);
+	static void FindElement(llBookData* llBook, int ElementLevel, BookDirectory& BookDirectory);
 
 	//Print Book
 	static void PrintBookStats(llBookData* llBook);

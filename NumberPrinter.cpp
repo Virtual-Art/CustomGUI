@@ -314,6 +314,7 @@ void NumberPrinter::ReplaceString()
 	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
 
 	Text Text_Reference(CurrentShapeGroup);
+	//Text Second_Text_Reference(CurrentShapeGroup->Next);
 
 	//Description
 	Text_Reference.llSwitch(CurrentShapeGroup);
@@ -326,11 +327,10 @@ void NumberPrinter::ReplaceString()
 	CurrentText.Phrase = MainString;
 	CurrentShapeGroup = CurrentShapeGroup->Next;
 	CurrentShapeGroup->Position = { Text_Reference.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
-	//*CurrentShapeGroup = *
-	//glm::vec4 PreviousGroupEdges = Text_Reference.GetEdges();
 	Text_Reference.llSwitch(CurrentShapeGroup);
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);
 }
 
 
