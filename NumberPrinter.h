@@ -36,6 +36,8 @@ public:
 	//Update Functions
 	void llUpdate();
 	void ReplaceVec2();
+	void ReplaceFloat();
+	void ReplaceInteger();
 	void ReplaceString();
 
 	void HighlightDescription(glm::vec4 Color);
@@ -63,6 +65,7 @@ public:
 private:
 
 	void ProcessDescriptionHighlight(llShapeGroupData* DescriptionGroup);
+	glm::vec2 ProcessAnswerPlacement(Text* Text_Reference);
 
 };
 

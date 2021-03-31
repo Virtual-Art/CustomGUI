@@ -258,9 +258,9 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	Shape_DropDown->ShapeButton = &Button_Edit_Driver;
 
 
-	BuildCustomerDetailElements();
-	AttachCustomerDetailButtons();
-	SetCustomerDetails(&DefaultCustomer);
+	//BuildCustomerDetailElements();
+	//AttachCustomerDetailButtons();
+	//SetCustomerDetails(&DefaultCustomer);
 }
 
 void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)

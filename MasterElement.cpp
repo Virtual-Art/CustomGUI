@@ -2062,46 +2062,46 @@ glm::vec2 MasterElement::ApplySizeConversion(glm::vec2 Size, int Conversion)
 	return Size;
 }
 
-void MasterElement::ManualPlaceBelow(const int PlacementType, const float& LeftEdge, const float& RightEdge, const float& TopEdge, const float& BottomEdge, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
+void MasterElement::ManualPlaceBelow(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding)
 {
 	switch (PlacementType)
 	{
 	case MATCH_BEGINNINGS:
 	{
-		float Left = LeftEdge;
-		float Bottom = BottomEdge - (PixelPadding * PIXEL);
+		float Left = ElementEdges[0];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
 		NewPosition = { Left, Bottom };
 		NewInputType = INPUT_TOPLEFT;
 		break;
 	}
 	case MATCH_ENDS:
 	{
-		float Right = RightEdge;
-		float Bottom = BottomEdge - (PixelPadding * PIXEL);
+		float Right = ElementEdges[1];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
 		NewPosition = { Right, Bottom };
 		NewInputType = INPUT_TOPRIGHT;
 		break;
 	}
 	case MATCH_CENTERS:
 	{
-		float Center_x = (RightEdge + LeftEdge) / 2; // (Left + Right) / Half
-		float Bottom = BottomEdge - (PixelPadding * PIXEL);
+		float Center_x = (ElementEdges[1] + ElementEdges[0]) / 2; // (Left + Right) / Half
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
 		NewPosition = { Center_x, Bottom };
 		NewInputType = INPUT_TOP;
 		break;
 	}
 	case MATCH_BEGINNING_TO_END:
 	{
-		float Left = LeftEdge;
-		float Bottom = BottomEdge - (PixelPadding * PIXEL);
+		float Left = ElementEdges[0];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
 		NewPosition = { Left, Bottom };
 		NewInputType = INPUT_TOPRIGHT; //New Position is the new element's Top Right
 		break;
 	}
 	case MATCH_END_TO_BEGINNING:
 	{
-		float Right = RightEdge;
-		float Bottom = BottomEdge - (PixelPadding * PIXEL);
+		float Right = ElementEdges[1];
+		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
 		NewPosition = { Right, Bottom };
 		NewInputType = INPUT_TOPLEFT; //New Position is the new element's Top Right
 		break;

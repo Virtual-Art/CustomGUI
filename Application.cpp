@@ -58,6 +58,7 @@
 #include "DropDownList.h"
 #include <forward_list>
 #include "SearchBar.h"
+#include "SubmitOrder.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -473,6 +474,9 @@ int main(int argc, char** argv)
 		NewList = NewList->Next;
 	} */
 
+	llBookData Book_Restaurant_POS;
+	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -490,6 +494,7 @@ int main(int argc, char** argv)
 		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		PageCreator::OnUpdate(KeyState, MouseState);
+		SubmitOrder::Update();
 
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
@@ -515,7 +520,7 @@ int main(int argc, char** argv)
 			//PageCreator::PrintCreatorStats();
 		}
 
-		//Log::LogVec2("", MousePosition);
+		Log::LogVec2("", MousePosition);
 
 		//a SliderPointer points to a function that belongs to slider
 		typedef void(MasterElement::* MasterElementFunction)();
@@ -571,6 +576,8 @@ int main(int argc, char** argv)
 	Editor.DeletePage();
 	GUI.DeletePage();
 	MasterElement::EraseBook(&EditorBook);
+	MasterElement::EraseBook(&Book_Restaurant_POS);
+	MasterElement::EraseBook(&PageCreator::CreatorBook);
 	return 0;
 }
 

@@ -35,20 +35,41 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
 
+
+	void ProcessBackGround()
+	{
+		if (CurrentllShapeGroup == nullptr) { return; }
+
+		if (CurrentllShapeGroup->BackGround == true)
+		{
+			Quad Quad_Reference(LoadedBook);
+		}
+	}
+
+	//Call function after Edges have been updated
+	void SetBackGround();
+
+
 	glm::vec4 GetEdges();
+	void ConvertInputToInputLeft();
 
 	//Shape Placement Functions + Padding
-	void PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType);
-	void PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType);
-	virtual void PlaceRight(llShapeGroupData* ShapeReference, int PlacementType);
-	virtual void PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType);
+	void PlaceBelow(const glm::vec4& ElementEdges, int PlacementType);
+	void PlaceAbove(const glm::vec4& ElementEdges, int PlacementType);
+	void PlaceRight(const glm::vec4& ElementEdges, int PlacementType);
+	void PlaceLeft (const glm::vec4& ElementEdges, int PlacementType);
 
-	void PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
-	void PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
-	virtual void PlaceRight(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
-	virtual void PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
+	void PlaceAbove(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
+	void PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
+	void PlaceLeft (const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
 
-	void ConvertInputToInputLeft();
+	void AllignX(const float& X);
+	void AllignY(const float& Y);
+
+	void AllignX(const float& X, int PlacementType);
+	void AllignY(const float& Y, int PlacementType);
+
 
 	void llInit(llBookData* llBook);
 	void llShapeGroupInit(llBookData* llBook, llShapeGroupData* ShapeGroup);

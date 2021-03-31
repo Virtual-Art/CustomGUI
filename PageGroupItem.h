@@ -121,15 +121,21 @@ public:
 	glm::vec4 GetEdges();
 
 	//Shape Placement Functions + Padding
-	void PlaceBelow(PageGroupItem& ShapeReference, int PlacementType);
-	void PlaceAbove(PageGroupItem& ShapeReference, int PlacementType);
-	void PlaceRight(PageGroupItem& ShapeReference, int PlacementType);
-	void PlaceLeft(PageGroupItem& ShapeReference, int PlacementType);
+	void PlaceBelow(const glm::vec4& Edges, int PlacementType);
+	void PlaceAbove(const glm::vec4& Edges, int PlacementType);
+	void PlaceRight(const glm::vec4& Edges, int PlacementType);
+	void PlaceLeft (const glm::vec4& Edges, int PlacementType);
 
-	void PlaceBelow(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
-	void PlaceAbove(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
-	void PlaceRight(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
-	void PlaceLeft(PageGroupItem& ShapeReference, int PlacementType, int PixelPadding);
+	void PlaceBelow(const glm::vec4& Edges, int PlacementType, int PixelPadding);
+	void PlaceAbove(const glm::vec4& Edges, int PlacementType, int PixelPadding);
+	void PlaceRight(const glm::vec4& Edges, int PlacementType, int PixelPadding);
+	void PlaceLeft (const glm::vec4& Edges, int PlacementType, int PixelPadding);
+
+	void AllignX(const float& X);
+	void AllignY(const float& Y);
+
+	void AllignX(const float& X, int PlacementType);
+	void AllignY(const float& Y, int PlacementType);
 
 	void TranslateInput(); // Working
 	void UpdatellMouseAccess();

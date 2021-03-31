@@ -1112,6 +1112,7 @@ void ShapeGroup::SetllMouseAccess()
 		CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
 
 		//Left + Right/ 2 gives you position center
+		SetBackGround();
 
 		//Set Input if not already set
 		if (CurrentllShapeGroup->InputType != INPUT_LEFT)
@@ -1342,67 +1343,91 @@ float ShapeGroup::GetAccessBottom(int PixelOffset)
 }
 
 
-void ShapeGroup::PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType)
+void ShapeGroup::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType)
 {
-	Log::LogVec2("Before Below", ShapeReference->Position);
-	Log::LogVec4("Edges", { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom });
-	ManualPlaceBelow(PlacementType,  ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom , CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
-	Log::LogVec2("After Below", ShapeReference->Position);
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup Place Below FAILED:: Invalid ShapeGroup State");  return; }
+	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType)
+void ShapeGroup::PlaceAbove(const glm::vec4& ElementEdges, int PlacementType)
 {
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceAbove FAILED:: Invalid ShapeGroup State");  return; }
 
-	ManualPlaceAbove(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, 0);
+	ManualPlaceAbove(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceRight(llShapeGroupData* ShapeReference, int PlacementType)
+void ShapeGroup::PlaceRight(const glm::vec4& ElementEdges, int PlacementType)
 {
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceRight FAILED:: Invalid ShapeGroup State");  return; }
 
-	ManualPlaceRight(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, 0);
+	ManualPlaceRight(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType)
+void ShapeGroup::PlaceLeft(const glm::vec4& ElementEdges, int PlacementType)
 {
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceLeft FAILED:: Invalid ShapeGroup State");  return; }
 
-	ManualPlaceLeft(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, 0);
+	ManualPlaceLeft(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, 0);
 	llUpdate();
 }
 
 //////////////////////////////////////
 
-void ShapeGroup::PlaceBelow(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup Place Below FAILED:: Invalid ShapeGroup State");  return; }
-	if (ShapeReference == nullptr) { Log::LogString("ERROR:: ShapeGroup Place Below FAILED:: No ShapeGroup to Align with ");  return; }
-	ManualPlaceBelow(PlacementType,  ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceAbove(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceAbove(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceAbove FAILED:: Invalid ShapeGroup State");  return; }
-	ManualPlaceAbove(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, PixelPadding);
+	ManualPlaceAbove(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceRight(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceRight FAILED:: Invalid ShapeGroup State");  return; }
-	ManualPlaceRight(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, PixelPadding);
+	ManualPlaceRight(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
 	llUpdate();
 }
 
-void ShapeGroup::PlaceLeft(llShapeGroupData* ShapeReference, int PlacementType, int PixelPadding)
+void ShapeGroup::PlaceLeft(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup PlaceLeft FAILED:: Invalid ShapeGroup State");  return; }
-	ManualPlaceLeft(PlacementType, { ShapeReference->Left, ShapeReference->Right, ShapeReference->Top, ShapeReference->Bottom }, ShapeReference->InputType, ShapeReference->Position, PixelPadding);
+	ManualPlaceLeft(PlacementType, ElementEdges, CurrentllShapeGroup->InputType, CurrentllShapeGroup->Position, PixelPadding);
+	llUpdate();
+}
+
+void ShapeGroup::AllignX(const float& X)
+{
+	CurrentllShapeGroup->Position[X_AXIS] = X;
+	llUpdate();
+}
+
+void ShapeGroup::AllignY(const float& Y)
+{
+	CurrentllShapeGroup->Position[Y_AXIS] = Y;
+	llUpdate();
+}
+
+
+void ShapeGroup::AllignX(const float& X, int INPUT_TYPE)
+{
+	CurrentllShapeGroup->Position[X_AXIS] = X;
+	CurrentllShapeGroup->InputType = INPUT_TYPE;
+	llUpdate();
+}
+
+void ShapeGroup::AllignY(const float& Y, int INPUT_TYPE)
+{
+	CurrentllShapeGroup->Position[Y_AXIS] = Y;
+	CurrentllShapeGroup->InputType = INPUT_TYPE;
 	llUpdate();
 }
 
@@ -1417,7 +1442,6 @@ void ShapeGroup::ConvertInputToInputLeft()
 	switch (CurrentllShapeGroup->InputType)
 	{
 	case INPUT_LEFT: //To Left
-
 		//Text is Created based off of INPUT_LEFT Already
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
@@ -1453,5 +1477,30 @@ void ShapeGroup::ConvertInputToInputLeft()
 		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS];
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
+	case INPUT_CENTER:
+		CurrentllShapeGroup->Position[X_AXIS] += CurrentllShapeGroup->Size[X_AXIS] / 2;
+		CurrentllShapeGroup->InputType = INPUT_LEFT;
+	}
+
+	CurrentllShapeGroup->InputType = INPUT_LEFT;
+}
+
+
+void ShapeGroup::SetBackGround()
+{
+	if (CurrentllShapeGroup == nullptr) { return; }
+
+	if (CurrentllShapeGroup->BackGround == true)
+	{
+		llShapeData* BackGround = nullptr;
+		while (BackGround->Previous != nullptr)
+		{
+			BackGround = BackGround->Next;
+		}
+
+		Quad Quad_Reference(BackGround);
+		Quad_Reference.SetSize(CurrentllShapeGroup->Size);
+		glm::vec2 Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
+		Quad_Reference.SetllPosition(Position);
 	}
 }

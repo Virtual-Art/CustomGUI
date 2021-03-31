@@ -92,11 +92,11 @@ void NumberPrinter::llUpdate()
 	switch (CurrentNumberPrinter.Type)
 	{
 	case TYPE_INT:
-		//CreateInt();
+		ReplaceInteger();
 		break;
 
 	case TYPE_FLOAT:
-		//CreateFloat();
+		ReplaceFloat();
 		break;
 
 	case TYPE_DOUBLE:
@@ -199,12 +199,82 @@ void NumberPrinter::CreateString()
 
 void NumberPrinter::CreateInt()
 {
+	llShapeGroupData TextShapeGroup;
+	TextShapeGroup.Position = CurrentllPageItem->Position;
+	TextShapeGroup.Color = CurrentllPageItem->Color;
 
+	int MainInteger = 0.0;
+	bool IntegerConnected = false;
+
+	//Make Sure we are connected 
+	if (CurrentNumberPrinter.Integer != nullptr)
+	{
+		IntegerConnected = true;
+		MainInteger = *CurrentNumberPrinter.Integer;
+	}
+
+	CurrentText.Centered = false;
+	CurrentText.FontSize = 16;
+
+	//Description
+	CurrentText.Phrase = CurrentNumberPrinter.Description;
+	TextShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 }; // White
+	ProcessDescriptionHighlight(&TextShapeGroup);
+	Text Description(LoadedBook, &TextShapeGroup, CurrentText);
+
+	//Main String
+	CurrentText.Phrase = to_string(MainInteger);
+	//TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
+	if (IntegerConnected == true)
+	{
+		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.8 }; // Azure
+	}
+	else
+	{
+		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
+	}
+	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
+	MainText.PlaceRight(Description, MATCH_CENTERS, 10);
 }
 
 void NumberPrinter::CreateFloat()
 {
+	llShapeGroupData TextShapeGroup;
+	TextShapeGroup.Position = CurrentllPageItem->Position;
+	TextShapeGroup.Color = CurrentllPageItem->Color;
 
+	float MainFloat = 0.0;
+	bool FloatConnected = false;
+
+	//Make Sure we are connected 
+	if (CurrentNumberPrinter.Float != nullptr)
+	{
+		FloatConnected = true;
+		MainFloat = *CurrentNumberPrinter.Float;
+	}
+
+	CurrentText.Centered = false;
+	CurrentText.FontSize = 16;
+
+	//Description
+	CurrentText.Phrase = CurrentNumberPrinter.Description;
+	TextShapeGroup.Color = CurrentllPageItem->Color; // White
+	ProcessDescriptionHighlight(&TextShapeGroup);
+	Text Description(LoadedBook, &TextShapeGroup, CurrentText);
+
+	//Main String
+	CurrentText.Phrase = to_string(MainFloat);
+	//TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
+	if (FloatConnected == true)
+	{
+		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.8 }; // Azure
+	}
+	else
+	{
+		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
+	}
+	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
+	MainText.PlaceRight(Description, MATCH_CENTERS, 87);
 }
 
 void NumberPrinter::CreateDouble()
@@ -326,7 +396,7 @@ void NumberPrinter::ReplaceString()
 
 	CurrentText.Phrase = MainString;
 	CurrentShapeGroup = CurrentShapeGroup->Next;
-	CurrentShapeGroup->Position = { Text_Reference.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
+	CurrentShapeGroup->Position = ProcessAnswerPlacement(&Text_Reference);
 	Text_Reference.llSwitch(CurrentShapeGroup);
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
@@ -396,6 +466,82 @@ void NumberPrinter::ReplaceVec2()
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 }
 
+void NumberPrinter::ReplaceFloat()
+{
+	//Validate
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: Invalid Book State"); return; }
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: Invalid PageItem State"); return; }
+	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Contents Found in PageItem"); return; }
+	//if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Vector Provided"); return; }
+
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+	float MainFloat = 0.0;
+	bool FloatConnected = false;
+
+	if (CurrentNumberPrinter.String != nullptr)
+	{
+		FloatConnected = true;
+		MainFloat= *CurrentNumberPrinter.Float;
+	}
+
+	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
+
+	Text Text_Reference(CurrentShapeGroup);
+	//Text Second_Text_Reference(CurrentShapeGroup->Next);
+
+	//Description
+	Text_Reference.llSwitch(CurrentShapeGroup);
+	CurrentText = CurrentShapeGroup->TextData;
+	ProcessDescriptionHighlight(CurrentShapeGroup);
+	CurrentShapeGroup->Position = CurrentllPageItem->Position;
+	CurrentShapeGroup->Color = CurrentllPageItem->Color;
+	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+
+	CurrentText.Phrase = to_string(MainFloat);
+	CurrentShapeGroup = CurrentShapeGroup->Next;
+	CurrentShapeGroup->Position = { Text_Reference.GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
+	Text_Reference.llSwitch(CurrentShapeGroup);
+	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
+	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);
+}
+
+void NumberPrinter::ReplaceInteger()
+{
+
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+	int MainInteger = 0;
+	bool IntegerConnected = false;
+
+	if (CurrentNumberPrinter.String != nullptr)
+	{
+		IntegerConnected = true;
+		MainInteger = *CurrentNumberPrinter.Integer;
+	}
+
+	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
+
+	Text Text_Reference(CurrentShapeGroup);
+	//Text Second_Text_Reference(CurrentShapeGroup->Next);
+
+	//Description
+	Text_Reference.llSwitch(CurrentShapeGroup);
+	CurrentText = CurrentShapeGroup->TextData;
+	ProcessDescriptionHighlight(CurrentShapeGroup);
+	CurrentShapeGroup->Position = CurrentllPageItem->Position;
+	CurrentShapeGroup->Color = CurrentllPageItem->Color;
+	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+
+	CurrentText.Phrase = to_string(MainInteger);
+	CurrentShapeGroup = CurrentShapeGroup->Next;
+	CurrentShapeGroup->Position = { Text_Reference.GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
+	Text_Reference.llSwitch(CurrentShapeGroup);
+	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
+	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);
+}
+
+
 void NumberPrinter::CreateVec3()
 {
 
@@ -447,3 +593,16 @@ void NumberPrinter::HighlightDescriptionOff()
 
 	llUpdate();
 }
+
+glm::vec2 NumberPrinter::ProcessAnswerPlacement(Text* Text_Reference)
+{
+	//Place below
+	if (CurrentNumberPrinter.Below == true)
+	{
+		return  { Text_Reference->GetAccessLeft(0), Text_Reference->GetAccessBottom(-20)};
+	}
+	
+	//Place Right
+	return  { Text_Reference->GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
+}
+

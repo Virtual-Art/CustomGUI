@@ -56,6 +56,7 @@
 #define TYPE_PAGEITEM_DROPDOWNLIST 4
 #define TYPE_PAGEGROUP 0
 #define TYPE_PAGE 0
+#define TYPE_BACKGROUND 33
 
 //Position Conversions
 #define P_PIXEL_TO_COMPUTER 1
@@ -162,6 +163,8 @@ struct NumberPrinterData
 	glm::vec4* VEC4 = nullptr;
 	bool DescriptionHighlighted = false;
 	glm::vec4 DescriptionHighlightColor = {1.0, 1.0, 1.0, 1.0};
+	int AnswerSpacing = 50;
+	bool Below = false;
 };
 
 
@@ -193,6 +196,7 @@ struct llShapeData
 	int Layer = 0;
 	int Type = 0;
 	int InputType = INPUT_CENTER;
+	bool IsBackGround = false;
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.05, 0.05 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
@@ -233,6 +237,7 @@ struct llShapeGroupData
 	int ID = -1;
 	int Type = 0;
 	int InputType = INPUT_LEFT;
+	bool BackGround = false;
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
 	glm::vec2 Position = { 0.0, 0.0 };
@@ -277,6 +282,7 @@ struct llPageItemData
 	int ShapeOffset = -1;
 	int Type = 0;
 	int InputType = INPUT_CENTER;
+	bool BackGround = false;
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
@@ -314,6 +320,7 @@ struct llPageGroupData
 	int ShapeCount = -1;  //Lowest level //EX: PageItem owns 40 Shapes 
 	int ShapeOffset = -1;      //Lowest level //EX: This Shape is 10 Shapes from PageItem start Shape (120)
 	int Type = 0;
+	bool BackGround = false;
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
@@ -573,7 +580,7 @@ public:
 	static void CurrentDirectory(llBookData* llBook);
 
 	//Quick Element Placement
-	static void ManualPlaceBelow(const int PlacementType, const float& LeftEdge, const float& RightEdge, const float& TopEdge, const float& BottomEdge, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
+	static void ManualPlaceBelow(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
 	static void ManualPlaceAbove(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchEnds, MatchCenters, MatchBeginnings, MatchBeginningtoEnd, MatchEndtoBeginning
 	static void ManualPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchCenters
 	static void ManualPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding);  //MatchCenters

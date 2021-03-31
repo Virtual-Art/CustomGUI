@@ -301,6 +301,18 @@ void PageGroupItem::llPageItemInit(llBookData* llBookData, llPageItemData* llPag
 		llBookData->Page->PageGroupHead = CreatedPageGroup;
 	}
 
+	//Look at the book, is there a Page in the book? no?
+	if (llBookData->Page->PageGroup == nullptr)
+	{
+		//Create a new Page & PageGroup for the PageItem we are about to create
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		//Link the Created groups to the book we are looking at
+
+		llBookData->Page->PageGroup = CreatedPageGroup;
+		llBookData->Page->PageGroupHead = CreatedPageGroup;
+	}
+
 	//Create a new PageItem & Copy the provided data
 	CurrentllPageItem = new llPageItemData;
 	*CurrentllPageItem = *llPageItem;
@@ -1030,6 +1042,7 @@ void SwithToPageItem(int ShapeID)
 
 llShapeGroupData* PageGroupItem::GetShapeGroup(int Index)
 {
+
 	int LoopIndex = 0;
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 
@@ -1161,55 +1174,82 @@ float PageGroupItem::GetAccessBottom(int PixelOffset)
 
 
 
-void PageGroupItem::PlaceBelow(PageGroupItem& PageItem, int PlacementType)
+void PageGroupItem::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType)
 {
-	//ManualPlaceBelow(PlacementType, PageItem.GetEdges(), &CurrentllPageItem->InputType, &CurrentllPageItem->Position, 0);
+	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
 	llUpdate();
 }
 
-void PageGroupItem::PlaceAbove(PageGroupItem& PageItem, int PlacementType)
+void PageGroupItem::PlaceAbove(const glm::vec4& ElementEdges, int PlacementType)
 {
-	ManualPlaceAbove(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	ManualPlaceAbove(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
 	llUpdate();
 }
 
-void PageGroupItem::PlaceRight(PageGroupItem& PageItem, int PlacementType)
+void PageGroupItem::PlaceRight(const glm::vec4& ElementEdges, int PlacementType)
 {
-	ManualPlaceRight(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	ManualPlaceRight(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
 	llUpdate();
 }
 
-void PageGroupItem::PlaceLeft(PageGroupItem& PageItem, int PlacementType)
+void PageGroupItem::PlaceLeft(const glm::vec4& ElementEdges, int PlacementType)
 {
-	ManualPlaceLeft(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
+	ManualPlaceLeft(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, 0);
 	llUpdate();
 }
 
 //////////////////////////////////////
 
-void PageGroupItem::PlaceBelow(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+void PageGroupItem::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
-	//ManualPlaceBelow(PlacementType, PageItem.GetEdges(), &CurrentllPageItem->InputType, &CurrentllPageItem->Position, PixelPadding);
+	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
 	llUpdate();
 }
 
-void PageGroupItem::PlaceAbove(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+void PageGroupItem::PlaceAbove(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
-	ManualPlaceAbove(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	ManualPlaceAbove(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
 	llUpdate();
 }
 
-void PageGroupItem::PlaceRight(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+void PageGroupItem::PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
-	ManualPlaceRight(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	ManualPlaceRight(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
 	llUpdate();
 }
 
-void PageGroupItem::PlaceLeft(PageGroupItem& PageItem, int PlacementType, int PixelPadding)
+void PageGroupItem::PlaceLeft(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
-	ManualPlaceLeft(PlacementType, PageItem.GetEdges(), CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
+	ManualPlaceLeft(PlacementType, ElementEdges, CurrentllPageItem->InputType, CurrentllPageItem->Position, PixelPadding);
 	llUpdate();
 }
+
+void PageGroupItem::AllignX(const float& X)
+{
+	CurrentllPageItem->Position[X_AXIS] = X;
+	llUpdate();
+}
+
+void PageGroupItem::AllignY(const float& Y)
+{
+	CurrentllPageItem->Position[Y_AXIS] = Y;
+	llUpdate();
+}
+
+void PageGroupItem::AllignX(const float& X, int INPUT_TYPE)
+{
+	CurrentllPageItem->Position[X_AXIS] = X;
+	CurrentllPageItem->InputType = INPUT_TYPE;
+	llUpdate();
+}
+
+void PageGroupItem::AllignY(const float& Y, int INPUT_TYPE)
+{
+	CurrentllPageItem->Position[Y_AXIS] = Y;
+	CurrentllPageItem->InputType = INPUT_TYPE;
+	llUpdate();
+}
+
 
 glm::vec4 PageGroupItem::GetEdges()
 {
