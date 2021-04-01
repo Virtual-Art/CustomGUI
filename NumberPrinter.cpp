@@ -599,7 +599,7 @@ glm::vec2 NumberPrinter::ProcessAnswerPlacement(Text* Text_Reference)
 	//Place below
 	if (CurrentNumberPrinter.Below == true)
 	{
-		return  { Text_Reference->GetAccessLeft(0), Text_Reference->GetAccessBottom(-20)};
+		return  { Text_Reference->GetAccessLeft(0), Text_Reference->GetAccessBottom(-30)};
 	}
 	
 	//Place Right

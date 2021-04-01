@@ -270,12 +270,12 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 		MasterElement::ToggleToggle(HideCreatorPage);
 	}
 	
-	if (HideCreatorPage == false)
-	{
-		BookCreatorPage.DrawPage();
-	}
+	//if (HideCreatorPage == false)
+	//{
+	//	BookCreatorPage.DrawPage();
+	//}
 
-	PageEditor.DrawPage();
+	//PageEditor.DrawPage();
 
 	CurrentKeyResult = &KeyState;
 	CurrentMouseState = MouseState;

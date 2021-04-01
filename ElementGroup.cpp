@@ -1057,6 +1057,12 @@ void ShapeGroup::SetllMouseAccess()
 			CurrentShape = CurrentShape->Previous;
 		}
 
+		//Skip BackGround Shape
+		if (CurrentllShapeGroup->BackGround == true && CurrentShape->Next != nullptr)
+		{
+			CurrentShape = CurrentShape->Next;
+		}
+
 		float FurthestRight = CurrentShape->Right;
 		float FurthestLeft = CurrentShape->Left;
 		float FurthestTop = CurrentShape->Top;
@@ -1111,9 +1117,7 @@ void ShapeGroup::SetllMouseAccess()
 		CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
 		CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
 
-		//Left + Right/ 2 gives you position center
-		SetBackGround();
-
+		
 		//Set Input if not already set
 		if (CurrentllShapeGroup->InputType != INPUT_LEFT)
 		{
@@ -1121,6 +1125,8 @@ void ShapeGroup::SetllMouseAccess()
 			WithNewInput = true;
 			llUpdate();
 		}
+
+		SetBackGround();
 	}
 }
 
@@ -1492,15 +1498,20 @@ void ShapeGroup::SetBackGround()
 
 	if (CurrentllShapeGroup->BackGround == true)
 	{
-		llShapeData* BackGround = nullptr;
+
+		llShapeData* BackGround = CurrentllShapeGroup->Shape;
+
 		while (BackGround->Previous != nullptr)
 		{
-			BackGround = BackGround->Next;
+			BackGround = BackGround->Previous;
 		}
 
 		Quad Quad_Reference(BackGround);
-		Quad_Reference.SetSize(CurrentllShapeGroup->Size);
-		glm::vec2 Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
-		Quad_Reference.SetllPosition(Position);
+		Quad_Reference.llSwitch(BackGround);
+		Quad_Reference.LoadedBook = LoadedBook;
+		glm::vec2 PixelMultiplier = { PIXEL, PIXEL };
+		BackGround->Size = CurrentllShapeGroup->Size + (CurrentllShapeGroup->BackGroundPadding * PixelMultiplier);
+		BackGround->Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
+		Quad_Reference.SetllShape(BackGround);
 	}
 }

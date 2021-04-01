@@ -238,6 +238,8 @@ struct llShapeGroupData
 	int Type = 0;
 	int InputType = INPUT_LEFT;
 	bool BackGround = false;
+	glm::vec4 BackGroundColor = {0.5, 0.5, 0.5, 0.5};
+	glm::vec2 BackGroundPadding = {4,4};
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
 	glm::vec2 Position = { 0.0, 0.0 };

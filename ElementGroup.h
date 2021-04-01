@@ -43,6 +43,7 @@ class ShapeGroup : public MasterElement
 		if (CurrentllShapeGroup->BackGround == true)
 		{
 			Quad Quad_Reference(LoadedBook);
+			Quad_Reference.SetColor(CurrentllShapeGroup->BackGroundColor);
 		}
 	}
 
