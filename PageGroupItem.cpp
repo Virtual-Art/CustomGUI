@@ -356,7 +356,7 @@ void PageGroupItem::llPageItemInit(llBookData* llBookData, llPageItemData* llPag
 	CurrentllPageItem->Type = TYPE_CUSTOM;
 	LoadedBook = llBookData;
 	
-		
+	ProcessBackGround();
 	
 }
 
@@ -446,6 +446,11 @@ void PageGroupItem::llUpdate()
 		CurrentShapeGroup = CurrentShapeGroup->Previous;
 	}
 
+	if (CurrentllPageItem->BackGround == true)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+	}
+
 	if (CurrentllPageItem->ChangeAsGroup == false)
 	{
 		//Set PageItem Position Offset
@@ -492,6 +497,8 @@ void PageGroupItem::llUpdate()
 		CurrentShapeGroup = CurrentShapeGroup->Next;
 
 	}
+
+	UpdatellMouseAccess();
 }
 
 void PageGroupItem::SetPosition(glm::vec2 Position)
@@ -731,6 +738,11 @@ void PageGroupItem::UpdatellMouseAccess()
 		CurrentShapeGroup = CurrentShapeGroup->Previous;
 	}
 
+	if (CurrentllPageItem->BackGround == true)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+	}
+
 	float FurthestRight = CurrentShapeGroup->Right;
 	float FurthestLeft = CurrentShapeGroup->Left;
 	float FurthestTop = CurrentShapeGroup->Top;
@@ -786,8 +798,47 @@ void PageGroupItem::UpdatellMouseAccess()
 		WithNewInput = true;
 		llUpdate();
 	}
+
+	SetBackGround();
 }
 
+
+void PageGroupItem::ProcessBackGround()
+{
+	if (CurrentllPageItem == nullptr) { return; }
+
+	if (CurrentllPageItem->BackGround == true)
+	{
+		Quad Quad_Reference(LoadedBook);
+		Quad_Reference.SetColor(CurrentllPageItem->BackGroundColor);
+	}
+}
+
+void PageGroupItem::SetBackGround()
+{
+	if (CurrentllPageItem == nullptr) { return; }
+
+	if (CurrentllPageItem->BackGround == true)
+	{
+
+		llShapeGroupData* BackGround_ShapeGroup = CurrentllPageItem->ShapeGroup;
+
+		BackGround_ShapeGroup = HeadShapeGroup(BackGround_ShapeGroup);
+
+		if (BackGround_ShapeGroup->Shape == nullptr) { return; }
+
+		llShapeData* BackGround = HeadShape(BackGround_ShapeGroup->Shape);
+
+		Quad Quad_Reference(BackGround);
+		Quad_Reference.llSwitch(BackGround);
+		Quad_Reference.LoadedBook = LoadedBook;
+		glm::vec2 PixelMultiplier = { PIXEL, PIXEL };
+		BackGround->Size = CurrentllPageItem->Size + (CurrentllPageItem->BackGroundPadding * PixelMultiplier);
+		BackGround->Position = { (CurrentllPageItem->Left + CurrentllPageItem->Right) / 2, (CurrentllPageItem->Top + CurrentllPageItem->Bottom) / 2 };
+		Quad_Reference.SetllShape(BackGround);
+		Log::LogString("yes quad set");
+	}
+}
 
 
 

@@ -1491,6 +1491,16 @@ void ShapeGroup::ConvertInputToInputLeft()
 	CurrentllShapeGroup->InputType = INPUT_LEFT;
 }
 
+void ShapeGroup::ProcessBackGround()
+{
+	if (CurrentllShapeGroup == nullptr) { return; }
+
+	if (CurrentllShapeGroup->BackGround == true)
+	{
+		Quad Quad_Reference(LoadedBook);
+		Quad_Reference.SetColor(CurrentllShapeGroup->BackGroundColor);
+	}
+}
 
 void ShapeGroup::SetBackGround()
 {

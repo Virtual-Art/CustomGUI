@@ -123,6 +123,8 @@ void NumberPrinter::llUpdate()
 
 void NumberPrinter::CreateNumber()
 {
+	ProcessBackGround();
+	Log::LogString("Passed Process Background");
 
 	switch (CurrentNumberPrinter.Type)
 	{
@@ -193,7 +195,7 @@ void NumberPrinter::CreateString()
 		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
 	}
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
-	MainText.PlaceRight(Description, MATCH_CENTERS, 10);
+	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 10);
 	//MainText.SetllPosition({ 0.0, Description.GetData()->Position[1]});
 }
 
@@ -234,7 +236,7 @@ void NumberPrinter::CreateInt()
 		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
 	}
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
-	MainText.PlaceRight(Description, MATCH_CENTERS, 10);
+	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 10);
 }
 
 void NumberPrinter::CreateFloat()
@@ -274,7 +276,7 @@ void NumberPrinter::CreateFloat()
 		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
 	}
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
-	MainText.PlaceRight(Description, MATCH_CENTERS, 87);
+	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 87);
 }
 
 void NumberPrinter::CreateDouble()
@@ -368,6 +370,8 @@ void NumberPrinter::ReplaceString()
 	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Contents Found in PageItem"); return; }
 	//if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Vector Provided"); return; }
 
+	Log::LogString("ReplaceString");
+
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 	string MainString;
 	bool StringConnected = false;
@@ -385,6 +389,11 @@ void NumberPrinter::ReplaceString()
 
 	Text Text_Reference(CurrentShapeGroup);
 	//Text Second_Text_Reference(CurrentShapeGroup->Next);
+	
+	if (CurrentllPageItem->BackGround == true)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+	}
 
 	//Description
 	Text_Reference.llSwitch(CurrentShapeGroup);

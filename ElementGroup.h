@@ -36,18 +36,8 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page, int GroupID);
 
 
-	void ProcessBackGround()
-	{
-		if (CurrentllShapeGroup == nullptr) { return; }
-
-		if (CurrentllShapeGroup->BackGround == true)
-		{
-			Quad Quad_Reference(LoadedBook);
-			Quad_Reference.SetColor(CurrentllShapeGroup->BackGroundColor);
-		}
-	}
-
 	//Call function after Edges have been updated
+	void ProcessBackGround();
 	void SetBackGround();
 
 

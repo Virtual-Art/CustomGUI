@@ -217,7 +217,6 @@ void PageGroup::Add_Default()
 	CurrentllPageGroup->Type = TYPE_PAGEGROUP;
 }
 
-
 void PageGroup::HighlightPageGroup(glm::vec4 HighlightColor)
 {
 	//Validate

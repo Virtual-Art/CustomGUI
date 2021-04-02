@@ -140,6 +140,10 @@ public:
 	void TranslateInput(); // Working
 	void UpdatellMouseAccess();
 
+	//Call function after Edges have been updated
+	void ProcessBackGround();
+	void SetBackGround();
+
 	//float* GetColorR() { return &CurrentllPageItem->Color[0]; };
 	//float* GetColorG() { return &CurrentllPageItem->Color[1]; };
 	//float* GetColorB() { return &CurrentllPageItem->Color[2]; };

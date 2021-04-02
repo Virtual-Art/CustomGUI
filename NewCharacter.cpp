@@ -318,6 +318,7 @@ NewCharacter::NewCharacter(Page& Page, string FontFilePath)
 		AlignFlatBottoms(AllCharacters['I' - 32], AllCharacters['7' - 32]);
 		AlignFlatBottoms(AllCharacters['I' - 32], AllCharacters['8' - 32]);
 		AlignFlatBottoms(AllCharacters['I' - 32], AllCharacters['9' - 32]);
+		AlignFlatBottoms(AllCharacters['I' - 32], AllCharacters['&' - 32]);
 		
 		AlignFlatMiddlePoints(AllCharacters['0' - 32], AllCharacters['{' - 32]);
 		AlignFlatMiddlePoints(AllCharacters['0' - 32], AllCharacters['}' - 32]);
