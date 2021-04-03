@@ -123,7 +123,7 @@ void NumberPrinter::llUpdate()
 
 void NumberPrinter::CreateNumber()
 {
-	ProcessBackGround();
+	//ProcessBackGround();
 	Log::LogString("Passed Process Background");
 
 	switch (CurrentNumberPrinter.Type)
@@ -186,17 +186,11 @@ void NumberPrinter::CreateString()
 	//Main String
 	CurrentText.Phrase = MainString;
 	//TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
-	if (StringConnected == true)
-	{
-		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.8 }; // Azure
-	}
-	else
-	{
-		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
-	}
+
+	TextShapeGroup.Color = CurrentNumberPrinter.AnswerColor;
+	if (StringConnected == false) { TextShapeGroup.Color[3] = 0.3;}	//Dim Color
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
 	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 10);
-	//MainText.SetllPosition({ 0.0, Description.GetData()->Position[1]});
 }
 
 void NumberPrinter::CreateInt()
@@ -405,6 +399,7 @@ void NumberPrinter::ReplaceString()
 
 	CurrentText.Phrase = MainString;
 	CurrentShapeGroup = CurrentShapeGroup->Next;
+	CurrentShapeGroup->Color = CurrentNumberPrinter.AnswerColor;
 	CurrentShapeGroup->Position = ProcessAnswerPlacement(&Text_Reference);
 	Text_Reference.llSwitch(CurrentShapeGroup);
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);

@@ -438,7 +438,7 @@ void PageGroupItem::llUpdate()
 	if (LoadedBook == nullptr ) { Log::LogString("ERROR:: PageItem Update FAILED:: Invalid Book State");  return; }
 	if (CurrentllPageItem == nullptr ) { Log::LogString("ERROR:: PageItem Update FAILED:: Invalid PageItem State"); return; }
 	if (CurrentllPageItem->ShapeGroup == nullptr ) { Log::LogString("WARNING:: PageItem Update FAILED:: No Contents to Update"); return; }
-	
+
 	//Go To ShapeGroup Head
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 	while (CurrentShapeGroup->Previous != nullptr)
@@ -465,6 +465,7 @@ void PageGroupItem::llUpdate()
 		{
 		case TYPE_SHAPEGROUP:
 		{
+			
 			ShapeGroup ShapeGroupSelected(CurrentShapeGroup);
 			ShapeGroupSelected.llSwitch(CurrentShapeGroup);
 			ShapeGroupSelected.LoadedBook = LoadedBook;
@@ -480,17 +481,17 @@ void PageGroupItem::llUpdate()
 		}
 		case TYPE_SHAPEGROUP_TEXT:
 		{
-			//TextData INCOMPLETE;
-			Text TextSelected(CurrentShapeGroup);
-			TextSelected.llSwitch(CurrentShapeGroup);
-			TextSelected.LoadedBook = LoadedBook;
-			CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
-			CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
-			CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
-			//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
-			//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
-			CurrentShapeGroup->ChangeAsGroup = true;
-			TextSelected.SetllTextGroup(CurrentShapeGroup);
+			////TextData INCOMPLETE;
+			//Text TextSelected(CurrentShapeGroup);
+			//TextSelected.llSwitch(CurrentShapeGroup);
+			//TextSelected.LoadedBook = LoadedBook;
+			//CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+			//CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
+			//CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
+			////CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+			////CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+			//CurrentShapeGroup->ChangeAsGroup = true;
+			//TextSelected.SetllTextGroup(CurrentShapeGroup);
 			break;
 		}
 		}
@@ -729,6 +730,8 @@ void PageGroupItem::UpdatellMouseAccess()
 	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::ShapeGroup is null "); return; };
 	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No ShapeGroups in Pageitem"); return; };
 
+	//Log::LogString("Start Of Groups");
+
 	//Setup
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 
@@ -755,6 +758,10 @@ void PageGroupItem::UpdatellMouseAccess()
 	//Compare CurrentShape's Access variables with all other shapes
 	while (CurrentShapeGroup != nullptr)
 	{
+		if (CurrentllPageItem->BackGround == true)
+		{
+			Log::LogVec4(CurrentShapeGroup->TextData.Phrase, { CurrentShapeGroup->Left, CurrentShapeGroup->Right, CurrentShapeGroup->Top, CurrentShapeGroup->Bottom });
+		}
 		//Furthest Right is the most positive number
 		if (FurthestRight < CurrentShapeGroup->Right) //
 		{
@@ -778,6 +785,12 @@ void PageGroupItem::UpdatellMouseAccess()
 		{
 			FurthestBottom = CurrentShapeGroup->Bottom;
 		}
+
+		if (CurrentllPageItem->BackGround == true)
+		{
+			//Log::LogVec4("Shape Group Edges", { CurrentShapeGroup->Left, CurrentShapeGroup->Right, CurrentShapeGroup->Top, CurrentShapeGroup->Bottom });
+		}
+	
 
 		CurrentShapeGroup = CurrentShapeGroup->Next;
 	}
@@ -836,7 +849,6 @@ void PageGroupItem::SetBackGround()
 		BackGround->Size = CurrentllPageItem->Size + (CurrentllPageItem->BackGroundPadding * PixelMultiplier);
 		BackGround->Position = { (CurrentllPageItem->Left + CurrentllPageItem->Right) / 2, (CurrentllPageItem->Top + CurrentllPageItem->Bottom) / 2 };
 		Quad_Reference.SetllShape(BackGround);
-		Log::LogString("yes quad set");
 	}
 }
 
@@ -1304,6 +1316,8 @@ void PageGroupItem::AllignY(const float& Y, int INPUT_TYPE)
 
 glm::vec4 PageGroupItem::GetEdges()
 {
+	if (CurrentllPageItem == nullptr) { return {0.0, 0.0, 0.0, 0.0}; }
+
 	return { CurrentllPageItem->Left, CurrentllPageItem->Right, CurrentllPageItem->Top, CurrentllPageItem->Bottom };
 }
 

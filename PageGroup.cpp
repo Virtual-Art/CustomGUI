@@ -138,6 +138,91 @@ PageGroup::PageGroup(llBookData* llBookData, llPageGroupData* llPageGroup)
 	}
 }
 
+void PageGroup::llInit(llBookData* llBookData, llPageGroupData* llPageGroup)
+{
+	//Make sure we are provided with data
+	if (llPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Init FAILED:: No PageItem Provided ");  return; }
+	if (llBookData == nullptr) { Log::LogString("ERROR:: PageGroup Init FAILED:: No Book Provided ");  return; }
+
+	//Look at the book, is there a Page in the book? no?
+	if (llBookData->Page == nullptr)
+	{
+		//Create a new Page & PageGroup for the PageItem we are about to create
+		Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		//Link the Created groups to the book we are looking at
+		llBookData->Page = CreatedPage;
+		llBookData->PageHead = CreatedPage;
+
+	}
+
+	//Create a new PageItem & Copy the provided data
+	CurrentllPageGroup = new llPageGroupData;
+	*CurrentllPageGroup = *llPageGroup;
+	//Log::LogString("PageItem Created and ShapeGroup Created?");
+
+	//Take a look at the current PageItem in the current PageGroup
+	llPageGroupData* TestingPageGroup = llBookData->Page->PageGroup;
+
+	//The book doesn't have a PageItem in the current PageGroup
+	if (TestingPageGroup == nullptr)
+	{
+		//Set the book to include and point to the newly created PageItem
+		Log::LogString("Page Empty. First PageGroup!");
+		llBookData->Page->PageGroup = CurrentllPageGroup;
+		llBookData->Page->PageGroupHead = CurrentllPageGroup;
+	}
+	else //A Page Item already exists in the current Page Group
+	{
+		while (TestingPageGroup->Next != nullptr)
+		{
+			TestingPageGroup = TestingPageGroup->Next;
+		}
+
+		//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
+		Log::LogString("PageGroup Linked");
+		TestingPageGroup->Next = TestingPageGroup;
+		TestingPageGroup->Previous = TestingPageGroup;
+
+		//Then set the book to point to the new PageItem we created
+		llBookData->Page->PageGroup = TestingPageGroup;
+	}
+
+	CurrentllPageGroup->Type = TYPE_PAGEGROUP;
+	LoadedBook = llBookData;
+
+	ProcessBackGround();
+}
+
+//PageItem Provided Ready Pre-Made 
+void PageGroup::CreateGrid(llPageItemData* PageItem_Reference, glm::vec2 Colomns_Rows, llBookData* llBookData)
+{
+	//Keep Track of lastest column Page Item
+	PageGroupItem PageItem_Copy(PageItem_Reference);
+	PageItem_Copy.llSwitch(PageItem_Reference);
+	PageItem_Copy.LoadedBook = llBookData;
+
+	glm::vec4 LastColumnEdges = PageItem_Copy.GetEdges();
+	glm::vec4 LastRowEdges = PageItem_Copy.GetEdges();
+
+	//Coloums
+	for (int i = 0; i < Colomns_Rows[0]; i++)
+	{
+		//Rows
+		for (int i = 0; i < Colomns_Rows[1]; i++)
+		{
+		//Place in New Row
+		PageItem_Copy.Second_Add_Duplicate(llBookData);
+		PageItem_Copy.PlaceBelow(LastRowEdges, MATCH_CENTERS);
+		LastRowEdges = PageItem_Copy.GetEdges();
+		}
+	}
+
+	//SetllMouseAccess();
+}
+
 PageGroup::PageGroup(llPageGroupData* llPageGroup)
 {
 	//If it exists
@@ -236,6 +321,51 @@ void PageGroup::HighlightOff()
 	llUpdate();
 }
 
+
+void PageGroup::ProcessBackGround()
+{
+	if (CurrentllPageGroup == nullptr) { return; }
+
+	if (CurrentllPageGroup->BackGround == true)
+	{
+		Quad Quad_Reference(LoadedBook);
+		Quad_Reference.SetColor(CurrentllPageGroup->BackGroundColor);
+	}
+}
+
+void PageGroup::SetBackGround()
+{
+	if (CurrentllPageGroup == nullptr) { return; }
+
+	if (CurrentllPageGroup->BackGround == true)
+	{
+		//Go to PageGroup BackGround Address
+		llPageItemData* BackGround_PageItem = CurrentllPageGroup->PageItem;
+		BackGround_PageItem = HeadPageItem(BackGround_PageItem);
+		if (BackGround_PageItem->ShapeGroup == nullptr) { return; }
+		llShapeGroupData* ShapeGroup_BackGround = HeadShapeGroup(BackGround_PageItem->ShapeGroup);
+		if (BackGround_PageItem->ShapeGroup->Shape == nullptr) { return; }
+		llShapeData* BackGround = HeadShape(ShapeGroup_BackGround->Shape);
+
+		Quad Quad_Reference(BackGround);
+		Quad_Reference.llSwitch(BackGround);
+		Quad_Reference.LoadedBook = LoadedBook;
+		glm::vec2 PixelMultiplier = { PIXEL, PIXEL };
+		BackGround->Size = CurrentllPageGroup->Size + (CurrentllPageGroup->BackGroundPadding * PixelMultiplier);
+		BackGround->Position = { (CurrentllPageGroup->Left + CurrentllPageGroup->Right) / 2, (CurrentllPageGroup->Top + CurrentllPageGroup->Bottom) / 2 };
+		Quad_Reference.SetllShape(BackGround);
+	}
+}
+
+
+void PageGroup::SetPosition(glm::vec2 Position)
+{
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageGroup nullptr"); return; };
+
+	CurrentllPageGroup->Position = Position;
+	llUpdate();
+	Log::LogString("Position offseted");
+}
 
 void PageGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
@@ -691,6 +821,11 @@ void PageGroup::SetllMouseAccess()
 		CurrentPageItem = CurrentPageItem->Previous;
 	}
 
+	if (CurrentllPageGroup->BackGround == true)
+	{
+		CurrentPageItem = CurrentPageItem->Next;
+	}
+
 	float FurthestRight = CurrentPageItem->Right;
 	float FurthestLeft = CurrentPageItem->Left;
 	float FurthestTop = CurrentPageItem->Top;
@@ -736,6 +871,10 @@ void PageGroup::SetllMouseAccess()
 	CurrentllPageGroup->Top = FurthestTop;
 	CurrentllPageGroup->Bottom = FurthestBottom;
 
+	CurrentllPageGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
+	CurrentllPageGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
+
+	SetBackGround();
 }
 
 

@@ -618,6 +618,8 @@ void ShapeGroup::llUpdate()
 		CurrentShape = CurrentShape->Next;
 	
 	}
+
+	SetllMouseAccess();
 }
 
 void ShapeGroup::SetGroup(ShapeData& ShapeData)

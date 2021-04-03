@@ -1348,6 +1348,8 @@ void MasterElement::CopyPageItem(llBookData* Book, llPageItemData* PageItemRefer
 		CopyShapeGroup(Book, CurrentReferenceShapeGroup);
 		CurrentReferenceShapeGroup = CurrentReferenceShapeGroup->Next;
 	}
+
+	PageItemReference = Book->Page->PageGroup->PageItem;
 }
 
 //Copy the same PageGroup into new PageGroup in the same page

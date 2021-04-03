@@ -69,7 +69,12 @@ public:
 	PageGroup(Page& Page, PageGroupData& PageGroup);
 	PageGroup(Page& Page, ShapeData& ShapeData);
 	PageGroup(Page& Page, int ID);
+
 	void llInit(llBookData* llBook);
+	void llInit(llBookData* llBook, llPageGroupData* PageGroupData);
+
+	void CreateGrid(llPageItemData* PageItem_Reference, glm::vec2 Coloms_Rows, llBookData* llBookData);
+
 	void llSwitch(llPageGroupData* llPageGroup);
 	llPageGroupData* GetData() { return CurrentllPageGroup; };
 
@@ -80,6 +85,12 @@ public:
 
 	void HighlightPageGroup(glm::vec4 Color);
 	void HighlightOff();
+
+	//Call function after Edges have been updated
+	void ProcessBackGround();
+	void SetBackGround();
+
+	void SetPosition(glm::vec2 Position) override; //...
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...

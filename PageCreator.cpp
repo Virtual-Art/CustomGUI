@@ -308,7 +308,7 @@ void PageCreator::OnUpdate(KeyResult& KeyState, int MouseState)
 	
 	PrinterToEdit();
 
-	MasterElement::FindElement(&CreatorBook, 2, CreatorDirectory);
+	//MasterElement::FindElement(&CreatorBook, 2, CreatorDirectory);
 	//MasterElement::FindElement(CurrentBook, CurrentLevel);
 }
 

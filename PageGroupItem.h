@@ -105,6 +105,17 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
+
+	void Second_Add_Duplicate(llBookData* llBook)
+	{
+		//Validate
+		if (llBook == nullptr) { Log::LogString("ERROR:: Duplicate PageItem FAILED:: Invalid Book State"); return; }
+		if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: Duplicate PageItem FAILED:: Invalid PageItem State"); return; }
+
+		CopyPageItem(llBook, CurrentllPageItem);
+	}
+
+
 	void HighlightPageItem(glm::vec4 Color);
 	void HighlightOff();
 
@@ -162,7 +173,10 @@ public:
 	//glm::vec2 GetSize() override { return CurrentllPageItem->Size; };
 	//glm::vec4 GetColor() override { return  CurrentllPageItem->Color; };
 
-	void SetllPosition(glm::vec2 Position) { CurrentllPageItem->Position = Position; llUpdate(); }
+	void SetllPosition(glm::vec2 Position)
+	{
+		Log::LogString("PageItem Position Changed"); CurrentllPageItem->Position = Position; llUpdate();
+	}
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...

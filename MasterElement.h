@@ -163,6 +163,7 @@ struct NumberPrinterData
 	glm::vec4* VEC4 = nullptr;
 	bool DescriptionHighlighted = false;
 	glm::vec4 DescriptionHighlightColor = {1.0, 1.0, 1.0, 1.0};
+	glm::vec4 AnswerColor = {0.0, 1.0, 1.0, 1.0};
 	int AnswerSpacing = 50;
 	bool Below = false;
 };
