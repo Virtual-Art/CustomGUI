@@ -105,7 +105,6 @@ public:
 	void Add_Insert() override; //Editor/None Set in Stone
 	void Delete();
 
-
 	void Second_Add_Duplicate(llBookData* llBook)
 	{
 		//Validate

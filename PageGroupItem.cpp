@@ -75,6 +75,9 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 
 		CurrentllPageItem->Type = TYPE_CUSTOM;
 		LoadedBook = llBook;
+
+
+		ProcessBackGround();
 	}
 	else
 	{
@@ -157,6 +160,9 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 
 		CurrentllPageItem->Type = TYPE_CUSTOM;
 		LoadedBook = llBookData;
+
+
+		ProcessBackGround();
 	}
 	else
 	{

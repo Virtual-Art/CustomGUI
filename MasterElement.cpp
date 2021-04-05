@@ -1206,10 +1206,8 @@ void MasterElement::CopyShape(llBookData* Book, llShapeData* ShapeReference)
 		while (FoundTail->Next != nullptr)
 		{
 			FoundTail = FoundTail->Next;
-			//Log::LogChar("Finding ttail..", FoundTail->Ascii);
-			cout << "Finding TTail " << FoundTail << endl;
 		}
-		Log::LogChar("New Shape Linked", char(FoundTail->Ascii));
+
 		FoundTail->Next = NewShape;
 		NewShape->Previous = FoundTail;
 	}
@@ -1268,7 +1266,6 @@ void MasterElement::CopyShapeGroup(llBookData* Book, llShapeGroupData* ShapeGrou
 	llShapeGroupData* FoundTail = Book->Page->PageGroup->PageItem->ShapeGroup;
 	if (FoundTail == nullptr)
 	{
-		Log::LogString("New ShapeGroup Linked");
 		Book->Page->PageGroup->PageItem->ShapeGroup = NewShapeGroup;
 		Book->Page->PageGroup->PageItem->ShapeGroupHead = NewShapeGroup;
 	}
@@ -1278,7 +1275,7 @@ void MasterElement::CopyShapeGroup(llBookData* Book, llShapeGroupData* ShapeGrou
 		{
 			FoundTail = FoundTail->Next;
 		}
-		Log::LogString("New ShapeGroup Linked");
+
 		FoundTail->Next = NewShapeGroup;
 		NewShapeGroup->Previous = FoundTail;
 	}
@@ -1318,7 +1315,6 @@ void MasterElement::CopyPageItem(llBookData* Book, llPageItemData* PageItemRefer
 	llPageItemData* FoundTail = Book->Page->PageGroup->PageItem;
 	if (FoundTail == nullptr)
 	{
-		Log::LogString("New PageItem Linked");
 		Book->Page->PageGroup->PageItem = NewPageItem;
 		Book->Page->PageGroup->PageItemHead = NewPageItem;
 	}
@@ -1327,9 +1323,7 @@ void MasterElement::CopyPageItem(llBookData* Book, llPageItemData* PageItemRefer
 		while (FoundTail->Next != nullptr)
 		{
 			FoundTail = FoundTail->Next;
-			Log::LogInt("Count ", Count);
 		}
-		Log::LogString("New PageItem Linked");
 		FoundTail->Next = NewPageItem;
 		NewPageItem->Previous = FoundTail;
 	}
@@ -1376,7 +1370,6 @@ void MasterElement::CopyPageGroup(llBookData* Book, llPageGroupData* PageGroupRe
 	{
 		FoundTail = FoundTail->Next;
 	}
-	Log::LogString("New PageGroup Linked");
 	FoundTail->Next = NewPageGroup;
 	NewPageGroup->Previous = FoundTail;
 

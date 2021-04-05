@@ -66,6 +66,7 @@ private:
 
 	void ProcessDescriptionHighlight(llShapeGroupData* DescriptionGroup);
 	glm::vec2 ProcessAnswerPlacement(Text* Text_Reference);
+	string ProcessDecimalPlace(string& Reference_String);
 
 };
 

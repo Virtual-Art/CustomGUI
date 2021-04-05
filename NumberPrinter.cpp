@@ -124,8 +124,6 @@ void NumberPrinter::llUpdate()
 void NumberPrinter::CreateNumber()
 {
 	//ProcessBackGround();
-	Log::LogString("Passed Process Background");
-
 	switch (CurrentNumberPrinter.Type)
 	{
 	case TYPE_INT:
@@ -259,16 +257,16 @@ void NumberPrinter::CreateFloat()
 	Text Description(LoadedBook, &TextShapeGroup, CurrentText);
 
 	//Main String
-	CurrentText.Phrase = to_string(MainFloat);
+	string RawString = to_string(MainFloat);
+	CurrentText.Phrase = ProcessDecimalPlace(RawString);
 	//TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
-	if (FloatConnected == true)
+	TextShapeGroup.Color = CurrentNumberPrinter.AnswerColor;
+	if (FloatConnected != true)
 	{
-		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.8 }; // Azure
+		//Dim
+		TextShapeGroup.Color[3] = 0.3;
 	}
-	else
-	{
-		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
-	}
+
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
 	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 87);
 }
@@ -482,10 +480,10 @@ void NumberPrinter::ReplaceFloat()
 	float MainFloat = 0.0;
 	bool FloatConnected = false;
 
-	if (CurrentNumberPrinter.String != nullptr)
+	if (CurrentNumberPrinter.Float != nullptr)
 	{
 		FloatConnected = true;
-		MainFloat= *CurrentNumberPrinter.Float;
+		MainFloat = *CurrentNumberPrinter.Float;
 	}
 
 	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
@@ -501,10 +499,16 @@ void NumberPrinter::ReplaceFloat()
 	CurrentShapeGroup->Color = CurrentllPageItem->Color;
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 
-	CurrentText.Phrase = to_string(MainFloat);
+	string RawString = to_string(MainFloat);
+	CurrentText.Phrase = ProcessDecimalPlace(RawString);
 	CurrentShapeGroup = CurrentShapeGroup->Next;
 	CurrentShapeGroup->Position = { Text_Reference.GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
 	Text_Reference.llSwitch(CurrentShapeGroup);
+	CurrentShapeGroup->Color = CurrentNumberPrinter.AnswerColor;
+
+	//Dim
+	if (FloatConnected != true) { CurrentShapeGroup->Color[3] = 0.3;}
+
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);
@@ -608,5 +612,30 @@ glm::vec2 NumberPrinter::ProcessAnswerPlacement(Text* Text_Reference)
 	
 	//Place Right
 	return  { Text_Reference->GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
+}
+
+string NumberPrinter::ProcessDecimalPlace(string& Reference_String)
+{
+	int EraseCount = 1;
+
+	for (char& c : Reference_String)
+	{
+		if (c == '.')
+		{
+			//String with decimal
+			Reference_String.erase(EraseCount + CurrentNumberPrinter.DecimalPlaces);
+			
+			//Process Dolar Sign
+			if (CurrentNumberPrinter.DollarSign == true)
+			{
+				Reference_String = '$' + Reference_String;
+			}
+
+			return Reference_String;
+		}
+		EraseCount++;
+	}
+
+	return Reference_String;
 }
 

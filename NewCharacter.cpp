@@ -329,6 +329,7 @@ NewCharacter::NewCharacter(Page& Page, string FontFilePath)
 		AlignFlatMiddlePoints(AllCharacters['i' - 32], AllCharacters['>' - 32]);
 		AlignFlatMiddlePoints(AllCharacters['i' - 32], AllCharacters['<' - 32]);
 		AlignFlatMiddlePoints(AllCharacters['0' - 32], AllCharacters['/' - 32]);
+		AlignFlatMiddlePoints(AllCharacters['0' - 32], AllCharacters['$' - 32]);
 		
 		AlignFlatMiddlePoints(AllCharacters['o' - 32], AllCharacters[':' - 32]);
 		AlignFlatMiddlePoints(AllCharacters['o' - 32], AllCharacters['+' - 32]);
@@ -338,9 +339,10 @@ NewCharacter::NewCharacter(Page& Page, string FontFilePath)
 		AlignFlatTops(AllCharacters[':' - 32], AllCharacters[';' - 32]);
 
 
-		AlignCurvedBottoms(AllCharacters[':' - 32], AllCharacters['.' - 32]);
-		AlignFlatTops(AllCharacters['.' - 32], AllCharacters[',' - 32]);
+		//AlignCurvedBottoms(AllCharacters[':' - 32], AllCharacters['.' - 32]);
 		AlignFlatBottoms(AllCharacters[':' - 32], AllCharacters['?' - 32]);
+		AlignFlatBottoms(AllCharacters['1' - 32], AllCharacters['.' - 32]);
+		AlignFlatTops(AllCharacters['.' - 32], AllCharacters[',' - 32]);
 		
 		AlignFlatTops(AllCharacters['?' - 32], AllCharacters[ 39 - 32]);
 		AlignFlatTops(AllCharacters['i' - 32], AllCharacters['*' - 32]);

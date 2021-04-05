@@ -53,7 +53,8 @@
 #define TYPE_PAGEITEM_NUMBER 2
 #define TYPE_PAGEITEM_TOGGLE 3
 #define TYPE_PAGEITEM_SEARCHBAR 4
-#define TYPE_PAGEITEM_DROPDOWNLIST 4
+#define TYPE_PAGEITEM_DROPDOWNLIST 5
+#define TYPE_PAGEITEM_SELECTOR 6
 #define TYPE_PAGEGROUP 0
 #define TYPE_PAGE 0
 #define TYPE_BACKGROUND 33
@@ -155,6 +156,7 @@ struct NumberPrinterData
 	string Description = "Description";
 	int FontSize = 16;
 	int Type = -1;
+	int DecimalPlaces = 2;
 	string* String = nullptr;
 	int* Integer = nullptr;
 	float* Float = nullptr;
@@ -162,6 +164,7 @@ struct NumberPrinterData
 	glm::vec3* VEC3 = nullptr;
 	glm::vec4* VEC4 = nullptr;
 	bool DescriptionHighlighted = false;
+	bool DollarSign = false;
 	glm::vec4 DescriptionHighlightColor = {1.0, 1.0, 1.0, 1.0};
 	glm::vec4 AnswerColor = {0.0, 1.0, 1.0, 1.0};
 	int AnswerSpacing = 50;
@@ -510,8 +513,6 @@ struct llPageData
 		MaxSize = (uint8_t*)UsagePointer - (uint8_t*)VertexContainer;
 		return MaxSize;
 	}
-
-
 };
 
 struct llBookData

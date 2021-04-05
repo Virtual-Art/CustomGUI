@@ -59,6 +59,7 @@
 #include <forward_list>
 #include "SearchBar.h"
 #include "SubmitOrder.h"
+#include "Selector.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -477,6 +478,27 @@ int main(int argc, char** argv)
 	llBookData Book_Restaurant_POS;
 	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
+
+	llPageItemData PageItem_Template;
+	PageItem_Template.Position = {-0.3, 0.95};
+	PageItem_Template.BackGround = true;
+	PageItem_Template.BackGroundColor = {1.0, 0.0, 1.0, 1.0};
+	PageItem_Template.BackGroundPadding = { 40, 40 };
+	SelectorData Selector_Template;
+	Selector_Template.Selector[0] = "Soups";
+	Selector_Template.Selector[1] = "Frozen";
+	Selector_Template.Selector[2] = "Hot Ready";
+	Selector_Template.Selector[3] = "Food Box";
+	Selector_Template.Selector[4] = "Smoked Meat";
+	Selector_Template.Selector[5] = "Keto Diet";
+	Selector_Template.Selector[6] = "Vegetarian";
+	Selector_Template.Selector[7] = "Gluten Free";
+	Selector_Template.ColumnsRows = {4, 2};
+	Selector_Template.XSpacing = 120;
+	Selector_Template.YSpacing = 50;
+
+	Log::LogString("No Issues yet");
+	Selector First_Selector(&Book_Restaurant_POS, &PageItem_Template, Selector_Template);
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))

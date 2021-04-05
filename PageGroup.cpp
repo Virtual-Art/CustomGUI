@@ -197,27 +197,39 @@ void PageGroup::llInit(llBookData* llBookData, llPageGroupData* llPageGroup)
 }
 
 //PageItem Provided Ready Pre-Made 
-void PageGroup::CreateGrid(llPageItemData* PageItem_Reference, glm::vec2 Colomns_Rows, llBookData* llBookData)
+void PageGroup::CreateGrid(llPageItemData* PageItem_Reference, glm::vec2 Colomns_Rows, llBookData* llBookData, int RowSpacing)
 {
 	//Keep Track of lastest column Page Item
+	bool FirstTime = true;
 	PageGroupItem PageItem_Copy(PageItem_Reference);
 	PageItem_Copy.llSwitch(PageItem_Reference);
 	PageItem_Copy.LoadedBook = llBookData;
 
-	glm::vec4 LastColumnEdges = PageItem_Copy.GetEdges();
 	glm::vec4 LastRowEdges = PageItem_Copy.GetEdges();
+	glm::vec4 LastColumnEdges = PageItem_Copy.GetEdges();
 
 	//Coloums
 	for (int i = 0; i < Colomns_Rows[0]; i++)
 	{
+		if (FirstTime != true)
+		{
+			//Place in New Column
+			PageItem_Copy.Second_Add_Duplicate(llBookData);
+			PageItem_Copy.PlaceRight(LastColumnEdges, MATCH_CENTERS, RowSpacing);
+			LastColumnEdges = PageItem_Copy.GetEdges();
+			LastRowEdges = PageItem_Copy.GetEdges();
+
+		}FirstTime = false;
+
 		//Rows
 		for (int i = 0; i < Colomns_Rows[1]; i++)
 		{
 		//Place in New Row
 		PageItem_Copy.Second_Add_Duplicate(llBookData);
-		PageItem_Copy.PlaceBelow(LastRowEdges, MATCH_CENTERS);
+		PageItem_Copy.PlaceBelow(LastRowEdges, MATCH_CENTERS, RowSpacing);
 		LastRowEdges = PageItem_Copy.GetEdges();
 		}
+
 	}
 
 	//SetllMouseAccess();
