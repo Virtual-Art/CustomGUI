@@ -230,6 +230,7 @@ struct llShapeData
 	llVertexData* Vertexx = nullptr; // Child
 	llVertexData* VertexxHead = nullptr; // Child
 	Button* ShapeButton = nullptr;
+	string DescriptiveData;
 };
 
 struct llShapeGroupData
@@ -276,6 +277,7 @@ struct llShapeGroupData
 
 	TextData TextData;
 	Button* ShapeGroupButton = nullptr;
+	string DescriptiveData;
 };
 
 struct llPageItemData
@@ -316,6 +318,7 @@ struct llPageItemData
 
 	NumberPrinterData NumberPrinterData;
 	SliderData SliderData;
+	string DescriptiveData;
 };
 
 struct llPageGroupData
@@ -350,13 +353,14 @@ struct llPageGroupData
 	llPageItemData* PageItem = nullptr; // Child
 	llPageItemData* PageItemHead = nullptr; // Child
 	Button PageGroupButton;
-
+	string DescriptiveData;
 };
 
 struct llPageData
 {
 	int PageGroupCount = 0;
 	bool PageReady = false;
+	string DescriptiveData;
 	llVertexData* VertexContainer = nullptr;
 	int* IndexContainer = nullptr;
 	llPageData* Next = nullptr;

@@ -66,6 +66,14 @@ void NumberPrinter::SetInt(const int& Int)
 	llUpdate();
 }
 
+void NumberPrinter::SetFloat(const float& Float)
+{
+	if (CurrentNumberPrinter.Type != TYPE_FLOAT) { return; }
+	if (CurrentNumberPrinter.Float == nullptr) { return; }
+
+	*CurrentNumberPrinter.Float = Float;
+	llUpdate();
+}
 
 void NumberPrinter::SetVec2(const glm::vec2& Vec2)
 {

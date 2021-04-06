@@ -256,9 +256,10 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 						{
 							if (ElementLevel == LEVEL_SHAPEGROUP)
 							{
-								cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
+									//Log::LogString("Button exists");
 									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
 									BookDirectory.ShapeGroup = CurrentShapeGroup;
 									BookDirectory.NoDirectoryFound = false;
@@ -1499,6 +1500,8 @@ void MasterElement::DeletePageItem(llBookData* llBook, llPageItemData* PageItemR
 		DeleteShapeGroup(llBook, CurrentShapeGroup);
 		CurrentShapeGroup = Next;
 	}
+
+	Log::LogString("Passed ShapeGroup Delete");
 
 	//Delete PageItem
 	PageItemReference->ShapeGroup = nullptr;

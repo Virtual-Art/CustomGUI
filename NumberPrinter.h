@@ -46,7 +46,8 @@ public:
 	//Set NumberPrinter Pointers
 	void SetVec2(const glm::vec2& vec2);
 	void SetString(const string& NewString);
-	void SetInt(const int& Int);
+	void SetInt(const int& Integer);
+	void SetFloat(const float& Float);
 
 	//Change NumberPrinterPointers
 	void ChangeVec2(glm::vec2* NewVec2);
@@ -64,9 +65,9 @@ public:
 
 private:
 
+	string ProcessDecimalPlace(string& Reference_String);
 	void ProcessDescriptionHighlight(llShapeGroupData* DescriptionGroup);
 	glm::vec2 ProcessAnswerPlacement(Text* Text_Reference);
-	string ProcessDecimalPlace(string& Reference_String);
 
 };
 
