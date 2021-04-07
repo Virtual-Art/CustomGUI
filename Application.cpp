@@ -58,8 +58,9 @@
 #include "DropDownList.h"
 #include <forward_list>
 #include "SearchBar.h"
-#include "SubmitOrder.h"
+//#include "SubmitOrder.h"
 #include "Selector.h"
+#include "MenuCreator.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -496,9 +497,11 @@ int main(int argc, char** argv)
 	Selector_Template.ColumnsRows = {4, 2};
 	Selector_Template.XSpacing = 120;
 	Selector_Template.YSpacing = 50;
-
-	Log::LogString("No Issues yet");
 	Selector First_Selector(&Book_Restaurant_POS, &PageItem_Template, Selector_Template);
+
+	MenuCreator::Prepare_MenuCreator(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+	Log::LogString("Passed Prepare");
+	//MasterElement::PrintBookStats(&Book_Restaurant_POS);
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -516,7 +519,14 @@ int main(int argc, char** argv)
 		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		PageCreator::OnUpdate(KeyState, MouseState);
-		SubmitOrder::Update();
+
+
+		//Restaurant POS
+		//+-------------------------+
+		//SubmitOrder::Update();
+		MenuCreator::Update();
+		//+-------------------------+
+
 
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());

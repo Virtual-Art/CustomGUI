@@ -1065,6 +1065,7 @@ void ShapeGroup::SetllMouseAccess()
 			CurrentShape = CurrentShape->Next;
 		}
 
+		//The First Shape
 		float FurthestRight = CurrentShape->Right;
 		float FurthestLeft = CurrentShape->Left;
 		float FurthestTop = CurrentShape->Top;
@@ -1280,6 +1281,10 @@ glm::vec4 ShapeGroup::GetEdges()
 	return {CurrentllShapeGroup->Left, CurrentllShapeGroup->Right, CurrentllShapeGroup->Top, CurrentllShapeGroup->Bottom} ;
 }
 
+glm::vec4 ShapeGroup::GetBackGroundEdges()
+{
+	return CurrentllShapeGroup->EdgesWithBackGround;
+}
 
 float ShapeGroup::GetAccessRight()
 {
@@ -1412,6 +1417,64 @@ void ShapeGroup::PlaceLeft(const glm::vec4& ElementEdges, int PlacementType, int
 	llUpdate();
 }
 
+//Function only works if there is a BackGround on each
+//If you get an error here it's because this function is thinking both ShapeGroup BackGrounds are at the very beginning
+void ShapeGroup::CopyBackGround(llShapeGroupData* CopyShapeGroup)
+{
+	//Validate
+	if (CurrentllShapeGroup == nullptr) { return; }
+	if (CopyShapeGroup == nullptr) { return; }
+	if (CurrentllShapeGroup->BackGround == false) { return; }
+	if (CopyShapeGroup->BackGround == false) { return; }
+
+	//Get Current BackGround
+	llShapeData* Current_BackGround_Data = CurrentllShapeGroup->Shape;
+	while (Current_BackGround_Data->Previous != nullptr) { Current_BackGround_Data = Current_BackGround_Data->Previous; }
+
+	//Get Copy BackGround
+	llShapeData* Copy_BackGround_Data = CopyShapeGroup->Shape;
+	while (Copy_BackGround_Data->Previous != nullptr) { Copy_BackGround_Data = Copy_BackGround_Data->Previous; }
+
+	Quad This_BackGround(Current_BackGround_Data);
+	This_BackGround.llSwitch(Current_BackGround_Data);
+	This_BackGround.LoadedBook = LoadedBook;
+	Log::LogVec2("CopyBackGround", Copy_BackGround_Data->Size);
+	Log::LogVec2("CurrentBackGround", Current_BackGround_Data->Size);
+	Current_BackGround_Data->Size = Copy_BackGround_Data->Size;
+	Current_BackGround_Data->InputType = INPUT_TOPLEFT;
+	Current_BackGround_Data->Position = { CurrentllShapeGroup->Left - (CopyShapeGroup->BackGroundPadding[PADDING_LEFT] * PIXEL), CurrentllShapeGroup->Top + (CopyShapeGroup->BackGroundPadding[PADDING_TOP] * PIXEL) };
+	This_BackGround.SetllShape(Current_BackGround_Data);
+
+	//Above, Below, Leftof, Rightof
+	switch (CopyShapeGroup->BackGroundPlacementType)
+	{
+	case PLACEMENT_ABOVE:
+	{
+		This_BackGround.PlaceAbove(GetEdges(), CopyShapeGroup->BackGroundMatchType, CopyShapeGroup->BackGroundPadding[PADDING_BOTTOM]);
+		break;
+	}
+	case PLACEMENT_BELOW:
+	
+		This_BackGround.PlaceBelow(GetEdges(), CopyShapeGroup->BackGroundMatchType, CopyShapeGroup->BackGroundPadding[PADDING_TOP]);
+		break;
+	
+	case PLACEMENT_LEFTOF:
+	
+		This_BackGround.PlaceLeft(GetEdges(), CopyShapeGroup->BackGroundMatchType, CopyShapeGroup->BackGroundPadding[PADDING_RIGHT]);
+		break;
+	
+	case PLACEMENT_RIGHTOF:
+	
+		This_BackGround.PlaceRight(GetEdges(), CopyShapeGroup->BackGroundMatchType, CopyShapeGroup->BackGroundPadding[PADDING_LEFT]);
+		break;
+	}
+	
+	//Set EdgesWithBackGround
+	CurrentllShapeGroup->EdgesWithBackGround = UpdateEdges(This_BackGround.GetEdges(), CurrentllShapeGroup->EdgesWithBackGround);
+}
+
+
+
 void ShapeGroup::AllignX(const float& X)
 {
 	CurrentllShapeGroup->Position[X_AXIS] = X;
@@ -1521,9 +1584,39 @@ void ShapeGroup::SetBackGround()
 		Quad Quad_Reference(BackGround);
 		Quad_Reference.llSwitch(BackGround);
 		Quad_Reference.LoadedBook = LoadedBook;
-		glm::vec2 PixelMultiplier = { PIXEL, PIXEL };
-		BackGround->Size = CurrentllShapeGroup->Size + (CurrentllShapeGroup->BackGroundPadding * PixelMultiplier);
-		BackGround->Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
+		BackGround->Size[X_AXIS] = CurrentllShapeGroup->Size[X_AXIS] + ((CurrentllShapeGroup->BackGroundPadding[PADDING_LEFT] + CurrentllShapeGroup->BackGroundPadding[PADDING_RIGHT])* PIXEL);
+		BackGround->Size[Y_AXIS] = CurrentllShapeGroup->Size[Y_AXIS] + ((CurrentllShapeGroup->BackGroundPadding[PADDING_TOP] + CurrentllShapeGroup->BackGroundPadding[PADDING_BOTTOM]) * PIXEL);
+		//BackGround->Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
+
+		BackGround->InputType = INPUT_TOPLEFT;
+		BackGround->Position = { CurrentllShapeGroup->Left - (CurrentllShapeGroup->BackGroundPadding[PADDING_LEFT] * PIXEL), CurrentllShapeGroup->Top + (CurrentllShapeGroup->BackGroundPadding[PADDING_TOP] * PIXEL)};
 		Quad_Reference.SetllShape(BackGround);
+
+		//Above, Below, Leftof, Rightof
+		switch (CurrentllShapeGroup->BackGroundPlacementType)
+		{
+		case PLACEMENT_ABOVE:
+		{
+			Quad_Reference.PlaceAbove(GetEdges(), CurrentllShapeGroup->BackGroundMatchType, CurrentllShapeGroup->BackGroundPadding[PADDING_BOTTOM]);
+			break;
+		}
+		case PLACEMENT_BELOW:
+
+			Quad_Reference.PlaceBelow(GetEdges(), CurrentllShapeGroup->BackGroundMatchType, CurrentllShapeGroup->BackGroundPadding[PADDING_TOP]);
+			break;
+
+		case PLACEMENT_LEFTOF:
+
+			Quad_Reference.PlaceLeft(GetEdges(), CurrentllShapeGroup->BackGroundMatchType, CurrentllShapeGroup->BackGroundPadding[PADDING_RIGHT]);
+			break;
+
+		case PLACEMENT_RIGHTOF:
+
+			Quad_Reference.PlaceRight(GetEdges(), CurrentllShapeGroup->BackGroundMatchType, CurrentllShapeGroup->BackGroundPadding[PADDING_LEFT]);
+			break;
+		}
+		
+		//Set EdgesWithBackGround
+		CurrentllShapeGroup->EdgesWithBackGround = UpdateEdges(Quad_Reference.GetEdges(), CurrentllShapeGroup->EdgesWithBackGround);
 	}
 }

@@ -10,10 +10,7 @@
 #define LEVEL_PAGE 5
 #define LEVEL_BOOK 6
 
-
 #define GUI_HOVERED 10
-
-
 //Level Type Function
 #define FUNCTION_POSITION  9
 #define FUNCTION_SIZE  8
@@ -33,6 +30,7 @@
 #define ARROW_RIGHT 2
 #define ARROW_LEFT 3
 
+#define MATCH_NONE -1
 #define MATCH_CENTERS 0
 #define MATCH_ENDS 1
 #define MATCH_BEGINNINGS 2
@@ -84,6 +82,23 @@
 #define INPUT_TOPRIGHT 6
 #define INPUT_BOTTOMLEFT 7
 #define INPUT_BOTTOMRIGHT 8
+
+
+#define PADDING_LEFT 0
+#define PADDING_RIGHT 1
+#define PADDING_TOP 2
+#define PADDING_BOTTOM 3
+
+#define EDGE_LEFT 0
+#define EDGE_RIGHT 1
+#define EDGE_TOP 2
+#define EDGE_BOTTOM 3
+
+#define PLACEMENT_NORMAL 0
+#define PLACEMENT_ABOVE 1
+#define PLACEMENT_BELOW 2
+#define PLACEMENT_RIGHTOF 3
+#define PLACEMENT_LEFTOF 4
 
 #define RED 0
 #define GREEN 1
@@ -243,8 +258,10 @@ struct llShapeGroupData
 	int Type = 0;
 	int InputType = INPUT_LEFT;
 	bool BackGround = false;
+	int BackGroundPlacementType = PLACEMENT_NORMAL; //Place Background above, below..
+	int BackGroundMatchType = MATCH_NONE; //MATCH_CENTERS (BackGround Center to Group Center)
 	glm::vec4 BackGroundColor = {0.5, 0.5, 0.5, 0.5};
-	glm::vec2 BackGroundPadding = {4,4};
+	glm::vec4 BackGroundPadding = {4,4,4,4};
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
 	glm::vec2 ShapeSize = { -1.0, -1.0 };
 	glm::vec2 Position = { 0.0, 0.0 };
@@ -263,6 +280,7 @@ struct llShapeGroupData
 	float Bottom = -3;
 	float Left = -3;
 	float Right = -3;
+	glm::vec4 EdgesWithBackGround = {3, -3, -3, 3};
 	llShapeGroupData* Next = nullptr;
 	llShapeGroupData* Previous = nullptr;
 	llShapeData* Shape = nullptr; // Child
@@ -600,6 +618,9 @@ public:
 	static void TextPlaceRight(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding); //MatchCenters
 	static void TextPlaceLeft(const int PlacementType, const glm::vec4& ElementEdges, int& NewInputType, glm::vec2& NewPosition, int PixelPadding);  //MatchCenters
 
+
+	static glm::vec4 UpdateEdges(glm::vec4 TestEdges, glm::vec4 EdgesToUpdate);
+	static void SizeFromEdges(glm::vec4 Edges, glm::vec2& Size);
 
 	static llVertexData* GetBookVertex(llBookData* llBook);
 	static llShapeData* GetBookShape(llBookData* llBook);

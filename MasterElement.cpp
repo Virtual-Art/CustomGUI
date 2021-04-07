@@ -1165,8 +1165,6 @@ llPageData* MasterElement::AddPage(llBookData* Book)
 		Book->Page = NewPage;
 	}
 
-	cout << "PagePointer " << Book->Page << endl;
-
 	Book->PageCount++;
 	return NewPage;
 }
@@ -2276,4 +2274,44 @@ void MasterElement::TextPlaceLeft(const int PlacementType, const glm::vec4& Elem
 		break;
 	}
 	}
+}
+
+
+glm::vec4 MasterElement::UpdateEdges(glm::vec4 TestEdges, glm::vec4 EdgesToUpdate)
+{
+	//Most Positive == Most Right
+	if (EdgesToUpdate[EDGE_RIGHT] < TestEdges[EDGE_RIGHT]) 
+	{
+		//Set Most Right
+		EdgesToUpdate[EDGE_RIGHT] = TestEdges[EDGE_RIGHT];
+	}
+
+	//Most Negative == Most Left
+	if (EdgesToUpdate[EDGE_LEFT] > TestEdges[EDGE_LEFT]) 
+	{
+		//Set Most Left
+		EdgesToUpdate[EDGE_LEFT] = TestEdges[EDGE_LEFT];
+	}
+
+	//Most Positive == Most Top
+	if (EdgesToUpdate[EDGE_TOP] < TestEdges[EDGE_TOP]) //
+	{
+		//Set Most Top
+		EdgesToUpdate[EDGE_TOP] = TestEdges[EDGE_TOP];
+	}
+
+	//Most Negative == Most Bottom
+	if (EdgesToUpdate[EDGE_BOTTOM] > TestEdges[EDGE_BOTTOM]) //
+	{
+		//Set Most Bottom
+		EdgesToUpdate[EDGE_BOTTOM] = TestEdges[EDGE_BOTTOM];
+	}
+
+	return EdgesToUpdate;
+}
+
+void MasterElement::SizeFromEdges(glm::vec4 Edges, glm::vec2& Size)
+{
+	Size[X_AXIS] = Edges[EDGE_RIGHT] - Edges[EDGE_LEFT]; //Correct
+	Size[Y_AXIS] = Edges[EDGE_TOP] - Edges[EDGE_BOTTOM]; //Correct
 }

@@ -21,27 +21,27 @@ void NewPage::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTextur
 		CurrentllPage->VB = 0;
 		CurrentllPage->IB = 0;
 
-		llPageData* TestingPage = llBook->Page;
+		llPageData* CurrentPage = llBook->Page;
 
 		//Completely new object
-		if (TestingPage == nullptr)
+		if (CurrentPage == nullptr)
 		{
-			Log::LogString("New Page Linked");
+			Log::LogString("Book Empty New Page Linked");
 			llBook->Page = CurrentllPage;
 			llBook->PageHead = CurrentllPage;
 		}
-		else //Shapes already created
+		else //Page already created
 		{
-			llPageData* FoundTail = TestingPage;
 
 			//Find tail then add
-			while (FoundTail->Next != nullptr)
+			while (CurrentPage->Next != nullptr)
 			{
-				FoundTail = FoundTail->Next;
+				CurrentPage = CurrentPage->Next;
+				Log::LogString("Passed a Page");
 			}
 			Log::LogString("New Page Linked");
-			FoundTail->Next = TestingPage;
-			TestingPage->Previous = FoundTail;
+			CurrentPage->Next = CurrentllPage;
+			CurrentllPage->Previous = CurrentPage;
 			llBook->Page = CurrentllPage;
 		}
 		//TestingPage->Type = TYPE_CUSTOM;

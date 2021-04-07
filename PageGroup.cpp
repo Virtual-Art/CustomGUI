@@ -183,8 +183,8 @@ void PageGroup::llInit(llBookData* llBookData, llPageGroupData* llPageGroup)
 
 		//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
 		Log::LogString("PageGroup Linked");
-		TestingPageGroup->Next = TestingPageGroup;
-		TestingPageGroup->Previous = TestingPageGroup;
+		TestingPageGroup->Next = CurrentllPageGroup;
+		CurrentllPageGroup->Previous = TestingPageGroup;
 
 		//Then set the book to point to the new PageItem we created
 		llBookData->Page->PageGroup = TestingPageGroup;

@@ -42,7 +42,10 @@ class ShapeGroup : public MasterElement
 
 
 	glm::vec4 GetEdges();
+	glm::vec4 GetBackGroundEdges();
+	//glm::vec2 GetPosition(int OutputType);
 	void ConvertInputToInputLeft();
+
 
 	//Shape Placement Functions + Padding
 	void PlaceBelow(const glm::vec4& ElementEdges, int PlacementType);
@@ -54,6 +57,8 @@ class ShapeGroup : public MasterElement
 	void PlaceAbove(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
 	void PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
 	void PlaceLeft (const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
+
+	void CopyBackGround(llShapeGroupData* CopyShapeGroup);
 
 	void AllignX(const float& X);
 	void AllignY(const float& Y);

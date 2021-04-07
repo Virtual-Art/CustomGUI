@@ -160,6 +160,7 @@
     <ClCompile Include="MasterElement.cpp" />
     <ClCompile Include="Maths.cpp" />
     <ClCompile Include="MemoryManagement.cpp" />
+    <ClCompile Include="MenuCreator.cpp" />
     <ClCompile Include="MouseManager.cpp" />
     <ClCompile Include="NewCharacter.cpp" />
     <ClCompile Include="NewPage.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="MasterElement.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="MemoryManagement.h" />
+    <ClInclude Include="MenuCreator.h" />
     <ClInclude Include="MouseManager.h" />
     <ClInclude Include="NewCharacter.h" />
     <ClInclude Include="NewPage.h" />
