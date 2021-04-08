@@ -192,11 +192,12 @@ void NumberPrinter::CreateString()
 	//Main String
 	CurrentText.Phrase = MainString;
 	//TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
-
+	TextShapeGroup.Position = ProcessAnswerPlacement(&Description);
 	TextShapeGroup.Color = CurrentNumberPrinter.AnswerColor;
 	if (StringConnected == false) { TextShapeGroup.Color[3] = 0.3;}	//Dim Color
+	CurrentText.FontSize = 14;
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
-	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 10);
+	//MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 10);
 }
 
 void NumberPrinter::CreateInt()
@@ -216,7 +217,7 @@ void NumberPrinter::CreateInt()
 	}
 
 	CurrentText.Centered = false;
-	CurrentText.FontSize = 16;
+	CurrentText.FontSize = CurrentNumberPrinter.FontSize;
 
 	//Description
 	CurrentText.Phrase = CurrentNumberPrinter.Description;
@@ -235,6 +236,8 @@ void NumberPrinter::CreateInt()
 	{
 		TextShapeGroup.Color = { 0.0, 1.0, 1.0, 0.3 }; // Azure
 	}
+	CurrentText.FontSize = CurrentNumberPrinter.AnswerFontSize;
+	TextShapeGroup.Position = ProcessAnswerPlacement(&Description);
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
 	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 10);
 }
@@ -256,7 +259,7 @@ void NumberPrinter::CreateFloat()
 	}
 
 	CurrentText.Centered = false;
-	CurrentText.FontSize = 16;
+	CurrentText.FontSize = CurrentNumberPrinter.FontSize;
 
 	//Description
 	CurrentText.Phrase = CurrentNumberPrinter.Description;
@@ -274,7 +277,8 @@ void NumberPrinter::CreateFloat()
 		//Dim
 		TextShapeGroup.Color[3] = 0.3;
 	}
-
+	CurrentText.FontSize = CurrentNumberPrinter.AnswerFontSize;
+	TextShapeGroup.Position = ProcessAnswerPlacement(&Description);
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
 	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 87);
 }
@@ -401,6 +405,7 @@ void NumberPrinter::ReplaceString()
 	ProcessDescriptionHighlight(CurrentShapeGroup);
 	CurrentShapeGroup->Position = CurrentllPageItem->Position;
 	CurrentShapeGroup->Color = CurrentllPageItem->Color;
+	CurrentText.FontSize = CurrentNumberPrinter.FontSize;
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 
 	CurrentText.Phrase = MainString;
@@ -409,6 +414,7 @@ void NumberPrinter::ReplaceString()
 	CurrentShapeGroup->Position = ProcessAnswerPlacement(&Text_Reference);
 	Text_Reference.llSwitch(CurrentShapeGroup);
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
+	CurrentText.FontSize = CurrentNumberPrinter.AnswerFontSize;
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);
 }
@@ -505,18 +511,21 @@ void NumberPrinter::ReplaceFloat()
 	ProcessDescriptionHighlight(CurrentShapeGroup);
 	CurrentShapeGroup->Position = CurrentllPageItem->Position;
 	CurrentShapeGroup->Color = CurrentllPageItem->Color;
+	CurrentText.FontSize = CurrentNumberPrinter.FontSize;
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 
 	string RawString = to_string(MainFloat);
 	CurrentText.Phrase = ProcessDecimalPlace(RawString);
 	CurrentShapeGroup = CurrentShapeGroup->Next;
-	CurrentShapeGroup->Position = { Text_Reference.GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
+	CurrentShapeGroup->Position = ProcessAnswerPlacement(&Text_Reference);
+	//CurrentShapeGroup->Position = { Text_Reference.GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
 	Text_Reference.llSwitch(CurrentShapeGroup);
 	CurrentShapeGroup->Color = CurrentNumberPrinter.AnswerColor;
 
 	//Dim
 	if (FloatConnected != true) { CurrentShapeGroup->Color[3] = 0.3;}
 
+	CurrentText.FontSize = CurrentNumberPrinter.AnswerFontSize;
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);

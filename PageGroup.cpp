@@ -192,7 +192,6 @@ void PageGroup::llInit(llBookData* llBookData, llPageGroupData* llPageGroup)
 
 	CurrentllPageGroup->Type = TYPE_PAGEGROUP;
 	LoadedBook = llBookData;
-
 	ProcessBackGround();
 }
 
@@ -337,11 +336,11 @@ void PageGroup::HighlightOff()
 void PageGroup::ProcessBackGround()
 {
 	if (CurrentllPageGroup == nullptr) { return; }
-
+	
 	if (CurrentllPageGroup->BackGround == true)
 	{
-		Quad Quad_Reference(LoadedBook);
-		Quad_Reference.SetColor(CurrentllPageGroup->BackGroundColor);
+		//Quad Quad_Reference(LoadedBook);
+		//Quad_Reference.SetColor(CurrentllPageGroup->BackGroundColor);
 	}
 }
 
@@ -358,15 +357,53 @@ void PageGroup::SetBackGround()
 		llShapeGroupData* ShapeGroup_BackGround = HeadShapeGroup(BackGround_PageItem->ShapeGroup);
 		if (BackGround_PageItem->ShapeGroup->Shape == nullptr) { return; }
 		llShapeData* BackGround = HeadShape(ShapeGroup_BackGround->Shape);
+		/////////////////////////////////////////////////////////////
 
 		Quad Quad_Reference(BackGround);
 		Quad_Reference.llSwitch(BackGround);
 		Quad_Reference.LoadedBook = LoadedBook;
-		glm::vec2 PixelMultiplier = { PIXEL, PIXEL };
-		BackGround->Size = CurrentllPageGroup->Size + (CurrentllPageGroup->BackGroundPadding * PixelMultiplier);
-		BackGround->Position = { (CurrentllPageGroup->Left + CurrentllPageGroup->Right) / 2, (CurrentllPageGroup->Top + CurrentllPageGroup->Bottom) / 2 };
+		BackGround->Size[X_AXIS] = CurrentllPageGroup->Size[X_AXIS] + ((CurrentllPageGroup->BackGroundPadding[PADDING_LEFT] + CurrentllPageGroup->BackGroundPadding[PADDING_RIGHT]) * PIXEL);
+		BackGround->Size[Y_AXIS] = CurrentllPageGroup->Size[Y_AXIS] + ((CurrentllPageGroup->BackGroundPadding[PADDING_TOP] + CurrentllPageGroup->BackGroundPadding[PADDING_BOTTOM]) * PIXEL);
+		//BackGround->Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
+
+		BackGround->InputType = INPUT_TOPLEFT;
+		BackGround->Position = { CurrentllPageGroup->Left - (CurrentllPageGroup->BackGroundPadding[PADDING_LEFT] * PIXEL), CurrentllPageGroup->Top + (CurrentllPageGroup->BackGroundPadding[PADDING_TOP] * PIXEL) };
 		Quad_Reference.SetllShape(BackGround);
+
+		//Above, Below, Leftof, Rightof
+		switch (CurrentllPageGroup->BackGroundPlacementType)
+		{
+		case PLACEMENT_ABOVE:
+		{
+			Quad_Reference.PlaceAbove(GetEdges(), CurrentllPageGroup->BackGroundMatchType, CurrentllPageGroup->BackGroundPadding[PADDING_BOTTOM]);
+			break;
+		}
+		case PLACEMENT_BELOW:
+
+			Quad_Reference.PlaceBelow(GetEdges(), CurrentllPageGroup->BackGroundMatchType, CurrentllPageGroup->BackGroundPadding[PADDING_TOP]);
+			break;
+
+		case PLACEMENT_LEFTOF:
+
+			Quad_Reference.PlaceLeft(GetEdges(), CurrentllPageGroup->BackGroundMatchType, CurrentllPageGroup->BackGroundPadding[PADDING_RIGHT]);
+			break;
+
+		case PLACEMENT_RIGHTOF:
+
+			Quad_Reference.PlaceRight(GetEdges(), CurrentllPageGroup->BackGroundMatchType, CurrentllPageGroup->BackGroundPadding[PADDING_LEFT]);
+			break;
+		}
+
+		//Set EdgesWithBackGround
+		CurrentllPageGroup->EdgesWithBackGround = UpdateEdges(Quad_Reference.GetEdges(), CurrentllPageGroup->EdgesWithBackGround);
 	}
+}
+
+glm::vec4 PageGroup::GetEdges()
+{
+	if (CurrentllPageGroup == nullptr) { return { 0.0, 0.0, 0.0, 0.0 }; }
+
+	return { CurrentllPageGroup->Left, CurrentllPageGroup->Right, CurrentllPageGroup->Top, CurrentllPageGroup->Bottom };
 }
 
 

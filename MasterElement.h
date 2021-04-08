@@ -170,6 +170,7 @@ struct NumberPrinterData
 {
 	string Description = "Description";
 	int FontSize = 16;
+	int AnswerFontSize = 14;
 	int Type = -1;
 	int DecimalPlaces = 2;
 	string* String = nullptr;
@@ -309,8 +310,10 @@ struct llPageItemData
 	int Type = 0;
 	int InputType = INPUT_CENTER;
 	bool BackGround = false;
+	int BackGroundPlacementType = PLACEMENT_NORMAL; //Place Background above, below..
+	int BackGroundMatchType = MATCH_NONE; //MATCH_CENTERS (BackGround Center to Group Center)
 	glm::vec4 BackGroundColor = { 0.5, 0.5, 0.5, 0.5 };
-	glm::vec2 BackGroundPadding = { 4,4 };
+	glm::vec4 BackGroundPadding = { 4,4,4,4 };
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
@@ -328,6 +331,7 @@ struct llPageItemData
 	float Bottom = -3;
 	float Left = -3;
 	float Right = -3;
+	glm::vec4 EdgesWithBackGround = { 3, -3, -3, 3 };
 	llPageItemData* Next = nullptr;
 	llPageItemData* Previous = nullptr;
 	llShapeGroupData* ShapeGroup = nullptr; // Child
@@ -350,8 +354,10 @@ struct llPageGroupData
 	int ShapeOffset = -1;      //Lowest level //EX: This Shape is 10 Shapes from PageItem start Shape (120)
 	int Type = 0;
 	bool BackGround = false;
+	int BackGroundPlacementType = PLACEMENT_NORMAL; //Place Background above, below..
+	int BackGroundMatchType = MATCH_NONE; //MATCH_CENTERS (BackGround Center to Group Center)
 	glm::vec4 BackGroundColor = { 0.5, 0.5, 0.5, 0.5 };
-	glm::vec2 BackGroundPadding = { 4,4 };
+	glm::vec4 BackGroundPadding = { 4,4,4,4 };
 	glm::vec2 Position = { 0.0, 0.0 };
 	glm::vec2 Size = { 0.0, 0.0 };
 	glm::vec4 Color = { 1.0, 1.0, 1.0, 1.0 };
@@ -366,6 +372,7 @@ struct llPageGroupData
 	float Bottom = -3;
 	float Left = -3;
 	float Right = -3;
+	glm::vec4 EdgesWithBackGround = { 3, -3, -3, 3 };
 	llPageGroupData* Next = nullptr;
 	llPageGroupData* Previous = nullptr;
 	llPageItemData* PageItem = nullptr; // Child

@@ -484,7 +484,7 @@ int main(int argc, char** argv)
 	PageItem_Template.Position = {-0.3, 0.95};
 	PageItem_Template.BackGround = true;
 	PageItem_Template.BackGroundColor = {1.0, 0.0, 1.0, 1.0};
-	PageItem_Template.BackGroundPadding = { 40, 40 };
+	PageItem_Template.BackGroundPadding = { 20, 20, 20, 20};
 	SelectorData Selector_Template;
 	Selector_Template.Selector[0] = "Soups";
 	Selector_Template.Selector[1] = "Frozen";
@@ -510,7 +510,7 @@ int main(int argc, char** argv)
 
 		Time = glfwGetTime();
 		PreviousTime = glfwGetTime();
-		glClearColor(0.091, 0.14, 0.14, 1.0);
+		glClearColor(0.08, 0.05, 0.07, 1.0); //{} 0.091, 0.14, 0.14, 1.0
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		//Setup

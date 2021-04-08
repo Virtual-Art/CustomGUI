@@ -90,6 +90,8 @@ public:
 	void ProcessBackGround();
 	void SetBackGround();
 
+	glm::vec4 GetEdges();
+
 	void SetPosition(glm::vec2 Position) override; //...
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...

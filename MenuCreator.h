@@ -68,13 +68,14 @@ namespace MenuCreator
 	static DishSide* Current_Side;			 //(Object) Current Side to Modify
 	
 	static PageGroup PageGroup_Side;		 //(Graphic) All Existing Side Graphics
-	static PageGroup Side_Filler;		     //(Graphic) Input Side Details
+	static PageGroup PageGroup_Side_Filler;		     //(Graphic) Input Side Details
 	static PageGroupItem PageItem_Unused3;   // MUST FIX
 	static Text Text_Label_Side;			 //(Graphic) "Side" Title
 	static Text Text_Add_Side;				 //(Graphic) "Add" Button 
 	static NumberPrinter Printer_Side_Name;  //(Graphic) Input Side Name
 
 	void Prepare_Side();			         //Displays Side title with background
+	void Prepare_Side_Filler();			     //Prepares Filler GUI for usage
 	void Add_Side();				         //Displays Graphics to Fill in Side Details
 	void Submit_Side();                      //Pushes New Side into Side & Updates Graphics
 	void Update_Side_Graphics();             //Manages all Side Graphics 
@@ -92,7 +93,8 @@ namespace MenuCreator
 	
 	static PageGroup PageGroup_Ingredient;       //(Graphic) All Existing Ingredient Graphics
 	static PageGroup Ingredient_Filler;          //(Graphic) Input Ingredient Details
-	static PageGroupItem PageItem_Unused4;   // MUST FIX
+	static PageGroupItem PageItem_Unused4
+		;   // MUST FIX
 	static Text Text_Label_Ingredient;           //(Graphic) "Ingredient" Title
 	static Text Text_Add_Ingredient;             //(Graphic) "Add" Button 
 

@@ -764,10 +764,7 @@ void PageGroupItem::UpdatellMouseAccess()
 	//Compare CurrentShape's Access variables with all other shapes
 	while (CurrentShapeGroup != nullptr)
 	{
-		if (CurrentllPageItem->BackGround == true)
-		{
-			Log::LogVec4(CurrentShapeGroup->TextData.Phrase, { CurrentShapeGroup->Left, CurrentShapeGroup->Right, CurrentShapeGroup->Top, CurrentShapeGroup->Bottom });
-		}
+
 		//Furthest Right is the most positive number
 		if (FurthestRight < CurrentShapeGroup->Right) //
 		{
@@ -839,7 +836,6 @@ void PageGroupItem::SetBackGround()
 
 	if (CurrentllPageItem->BackGround == true)
 	{
-
 		llShapeGroupData* BackGround_ShapeGroup = CurrentllPageItem->ShapeGroup;
 
 		BackGround_ShapeGroup = HeadShapeGroup(BackGround_ShapeGroup);
@@ -847,14 +843,46 @@ void PageGroupItem::SetBackGround()
 		if (BackGround_ShapeGroup->Shape == nullptr) { return; }
 
 		llShapeData* BackGround = HeadShape(BackGround_ShapeGroup->Shape);
-
+		////////////////////////////////////////////////////
+	
 		Quad Quad_Reference(BackGround);
 		Quad_Reference.llSwitch(BackGround);
 		Quad_Reference.LoadedBook = LoadedBook;
-		glm::vec2 PixelMultiplier = { PIXEL, PIXEL };
-		BackGround->Size = CurrentllPageItem->Size + (CurrentllPageItem->BackGroundPadding * PixelMultiplier);
-		BackGround->Position = { (CurrentllPageItem->Left + CurrentllPageItem->Right) / 2, (CurrentllPageItem->Top + CurrentllPageItem->Bottom) / 2 };
+		BackGround->Size[X_AXIS] = CurrentllPageItem->Size[X_AXIS] + ((CurrentllPageItem->BackGroundPadding[PADDING_LEFT] + CurrentllPageItem->BackGroundPadding[PADDING_RIGHT]) * PIXEL);
+		BackGround->Size[Y_AXIS] = CurrentllPageItem->Size[Y_AXIS] + ((CurrentllPageItem->BackGroundPadding[PADDING_TOP] + CurrentllPageItem->BackGroundPadding[PADDING_BOTTOM]) * PIXEL);
+		//BackGround->Position = { (CurrentllPageItem->Left + CurrentllPageItem->Right) / 2, (CurrentllPageItem->Top + CurrentllPageItem->Bottom) / 2 };
+
+		BackGround->InputType = INPUT_TOPLEFT;
+		BackGround->Position = { CurrentllPageItem->Left - (CurrentllPageItem->BackGroundPadding[PADDING_LEFT] * PIXEL), CurrentllPageItem->Top + (CurrentllPageItem->BackGroundPadding[PADDING_TOP] * PIXEL) };
 		Quad_Reference.SetllShape(BackGround);
+
+		//Above, Below, Leftof, Rightof
+		switch (CurrentllPageItem->BackGroundPlacementType)
+		{
+		case PLACEMENT_ABOVE:
+		{
+			Quad_Reference.PlaceAbove(GetEdges(), CurrentllPageItem->BackGroundMatchType, CurrentllPageItem->BackGroundPadding[PADDING_BOTTOM]);
+			break;
+		}
+		case PLACEMENT_BELOW:
+
+			Quad_Reference.PlaceBelow(GetEdges(), CurrentllPageItem->BackGroundMatchType, CurrentllPageItem->BackGroundPadding[PADDING_TOP]);
+			break;
+
+		case PLACEMENT_LEFTOF:
+
+			Quad_Reference.PlaceLeft(GetEdges(), CurrentllPageItem->BackGroundMatchType, CurrentllPageItem->BackGroundPadding[PADDING_RIGHT]);
+			break;
+
+		case PLACEMENT_RIGHTOF:
+
+			Quad_Reference.PlaceRight(GetEdges(), CurrentllPageItem->BackGroundMatchType, CurrentllPageItem->BackGroundPadding[PADDING_LEFT]);
+			break;
+		}
+
+		//Set EdgesWithBackGround
+		CurrentllPageItem->EdgesWithBackGround = UpdateEdges(Quad_Reference.GetEdges(), CurrentllPageItem->EdgesWithBackGround);
+		
 	}
 }
 
