@@ -129,6 +129,7 @@ public:
 	float GetAccessBottom(int PixelOffset);
 
 	glm::vec4 GetEdges();
+	glm::vec4 GetEdgesWithBackGround();
 
 	//Shape Placement Functions + Padding
 	void PlaceBelow(const glm::vec4& Edges, int PlacementType);

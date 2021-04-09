@@ -88,16 +88,16 @@ public:
 
 	//Call function after Edges have been updated
 	void ProcessBackGround();
-	void SetBackGround();
 
+	void SetBackGround();
 	glm::vec4 GetEdges();
+	void llUpdate();
 
 	void SetPosition(glm::vec2 Position) override; //...
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...
 	void OffsetColor(glm::vec4 Color, glm::vec4 bools) override;       //...
-	void llUpdate();
 
 	void ReCalibrateID();
 	void SetllPageGroup(llPageGroupData* PageGroup);

@@ -187,7 +187,7 @@ void PageGroup::llInit(llBookData* llBookData, llPageGroupData* llPageGroup)
 		CurrentllPageGroup->Previous = TestingPageGroup;
 
 		//Then set the book to point to the new PageItem we created
-		llBookData->Page->PageGroup = TestingPageGroup;
+		llBookData->Page->PageGroup = CurrentllPageGroup;
 	}
 
 	CurrentllPageGroup->Type = TYPE_PAGEGROUP;
@@ -944,13 +944,19 @@ void PageGroup::llUpdate()
 			CurrentPageItem = CurrentPageItem->Previous;
 		}
 
+		if (CurrentllPageGroup->BackGround == true)
+		{
+			CurrentPageItem = CurrentPageItem->Next;
+		}
+
 		//Main Loop
 		while (CurrentPageItem != nullptr)
 		{
-			switch (CurrentPageItem->Type)
-			{
-			case TYPE_PAGEITEM: 
-			{
+			//switch (CurrentPageItem->Type)
+			//{
+			//case TYPE_PAGEITEM: 
+			//{
+				Log::LogString("Editing PageItem");
 				PageGroupItem PageItemSelected(CurrentPageItem);
 				PageItemSelected.llSwitch(CurrentPageItem);
 				PageItemSelected.LoadedBook = LoadedBook;
@@ -961,22 +967,23 @@ void PageGroup::llUpdate()
 				//CurrentPageItem->Color = CurrentllPageGroup->Color - CurrentPageItem->ColorOffset;
 				CurrentPageItem->ChangeAsGroup = true;
 				PageItemSelected.SetllPageItem(CurrentPageItem);
-				break;
-			}
-			case TYPE_PAGEITEM_SLIDER:
-			{
-				Slider SliderSelected(CurrentPageItem);
-				SliderSelected.llSwitch(CurrentPageItem);
-				SliderSelected.LoadedBook = LoadedBook;
-				CurrentPageItem->Position = CurrentllPageGroup->Position - CurrentPageItem->PositionOffset;
-				CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
-				CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
-				CurrentPageItem->ChangeAsGroup = true;
-				SliderSelected.SetllPageItem(CurrentPageItem);
-				break;
-			}
-			}
+				//break;
+			//}
+			//case TYPE_PAGEITEM_SLIDER:
+			//{
+			//	Slider SliderSelected(CurrentPageItem);
+			//	SliderSelected.llSwitch(CurrentPageItem);
+			//	SliderSelected.LoadedBook = LoadedBook;
+			//	CurrentPageItem->Position = CurrentllPageGroup->Position - CurrentPageItem->PositionOffset;
+			//	CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
+			//	CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
+			//	CurrentPageItem->ChangeAsGroup = true;
+			//	SliderSelected.SetllPageItem(CurrentPageItem);
+			//	break;
+			//}
+			//}
 			CurrentPageItem = CurrentPageItem->Next;
+				//CurrentPageItem = nullptr;
 		}
 	}
 }

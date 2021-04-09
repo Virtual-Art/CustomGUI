@@ -259,8 +259,11 @@ struct llShapeGroupData
 	int Type = 0;
 	int InputType = INPUT_LEFT;
 	bool BackGround = false;
+	bool BackGroundCopied = false;
 	int BackGroundPlacementType = PLACEMENT_NORMAL; //Place Background above, below..
 	int BackGroundMatchType = MATCH_NONE; //MATCH_CENTERS (BackGround Center to Group Center)
+	float BackGroundXDifference = 0.0;
+	float BackGroundYDifference = 0.0;
 	glm::vec4 BackGroundColor = {0.5, 0.5, 0.5, 0.5};
 	glm::vec4 BackGroundPadding = {4,4,4,4};
 	glm::vec2 XYShapePerRow = { -1.0, -1.0 };
@@ -562,6 +565,49 @@ struct BookDirectory
 	llPageGroupData* PageGroup = nullptr;
 	llPageData* Page = nullptr;
 	bool NoDirectoryFound = true;
+
+	void LoadUp(llBookData* llBook)
+	{
+		//Book
+		if (llBook == nullptr) { Log::LogString("ERROR:: Capture Directory FAILED:: No Book To Capture"); return; }
+		//Page
+		llBook->Page = Page;
+		if (llBook->Page == nullptr) { return; }
+		//PageGroup
+		llBook->Page->PageGroup = PageGroup;
+		if (llBook->Page->PageGroup == nullptr) { return; }
+		//PageItem
+		llBook->Page->PageGroup->PageItem = PageItem;
+		if (llBook->Page->PageGroup->PageItem == nullptr) { return; }
+		//ShapeGroup
+		llBook->Page->PageGroup->PageItem->ShapeGroup = ShapeGroup;
+		if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { return; }
+		//Shape
+		llBook->Page->PageGroup->PageItem->ShapeGroup->Shape = Shape;
+		if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape == nullptr) { return; }
+	}
+
+
+	void Capture(llBookData* llBook)
+	{
+		//Book
+		if (llBook == nullptr) { Log::LogString("ERROR:: Capture Directory FAILED:: No Book To Capture"); return; }
+		//Page
+		Page = llBook->Page;
+		if (llBook->Page == nullptr) { return; }
+		//PageGroup
+		PageGroup = llBook->Page->PageGroup;
+		if (llBook->Page->PageGroup == nullptr) { return; }
+		//PageItem
+		PageItem = llBook->Page->PageGroup->PageItem;
+		if (llBook->Page->PageGroup->PageItem == nullptr) { return; }
+		//ShapeGroup
+		ShapeGroup = llBook->Page->PageGroup->PageItem->ShapeGroup;
+		if (llBook->Page->PageGroup->PageItem->ShapeGroup == nullptr) { return; }
+		//Shape
+		Shape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
+		if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape == nullptr) { return; }
+	}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////

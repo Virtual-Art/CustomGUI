@@ -353,8 +353,6 @@ void PageGroupItem::llPageItemInit(llBookData* llBookData, llPageItemData* llPag
 		FoundTail->Next = CurrentllPageItem;
 		CurrentllPageItem->Previous = FoundTail;
 
-
-
 		//Then set the book to point to the new PageItem we created
 		llBookData->Page->PageGroup->PageItem = CurrentllPageItem;
 	}
@@ -467,11 +465,11 @@ void PageGroupItem::llUpdate()
 	//Update all ShapeGroups in Current PageItem
 	while (CurrentShapeGroup != nullptr)
 	{
-		switch (CurrentShapeGroup->Type)
-		{
-		case TYPE_SHAPEGROUP:
-		{
-			
+		//switch (CurrentShapeGroup->Type)
+		//{
+		//case TYPE_SHAPEGROUP:
+		//{
+			Log::LogString("Edting ShapeGroup");
 			ShapeGroup ShapeGroupSelected(CurrentShapeGroup);
 			ShapeGroupSelected.llSwitch(CurrentShapeGroup);
 			ShapeGroupSelected.LoadedBook = LoadedBook;
@@ -483,24 +481,24 @@ void PageGroupItem::llUpdate()
 			//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
 			CurrentShapeGroup->ChangeAsGroup = true;
 			ShapeGroupSelected.SetllShapeGroup(CurrentShapeGroup);
-			break;
-		}
-		case TYPE_SHAPEGROUP_TEXT:
-		{
-			////TextData INCOMPLETE;
-			//Text TextSelected(CurrentShapeGroup);
-			//TextSelected.llSwitch(CurrentShapeGroup);
-			//TextSelected.LoadedBook = LoadedBook;
-			//CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
-			//CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
-			//CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
-			////CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
-			////CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
-			//CurrentShapeGroup->ChangeAsGroup = true;
-			//TextSelected.SetllTextGroup(CurrentShapeGroup);
-			break;
-		}
-		}
+			//break;
+		//}
+		//case TYPE_SHAPEGROUP_TEXT:
+		//{
+		//	//TextData INCOMPLETE;
+		//	//Text TextSelected(CurrentShapeGroup);
+		//	//TextSelected.llSwitch(CurrentShapeGroup);
+		//	//TextSelected.LoadedBook = LoadedBook;
+		//	//CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+		//	//CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
+		//	//CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
+		//	////CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+		//	////CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+		//	//CurrentShapeGroup->ChangeAsGroup = true;
+		//	//TextSelected.SetllTextGroup(CurrentShapeGroup);
+		//	//break;
+		//}
+		//}
 		CurrentShapeGroup = CurrentShapeGroup->Next;
 
 	}
@@ -1353,6 +1351,11 @@ glm::vec4 PageGroupItem::GetEdges()
 	if (CurrentllPageItem == nullptr) { return {0.0, 0.0, 0.0, 0.0}; }
 
 	return { CurrentllPageItem->Left, CurrentllPageItem->Right, CurrentllPageItem->Top, CurrentllPageItem->Bottom };
+}
+
+glm::vec4 PageGroupItem::GetEdgesWithBackGround()
+{
+	return CurrentllPageItem->EdgesWithBackGround;
 }
 
 

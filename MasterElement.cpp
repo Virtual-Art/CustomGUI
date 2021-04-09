@@ -794,6 +794,7 @@ void MasterElement::CurrentDirectory(llBookData* llBook)
 
 }
 
+
 llShapeData* MasterElement::AddShape(llBookData* Book)
 {
 	//Validate

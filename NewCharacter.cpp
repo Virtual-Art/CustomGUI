@@ -332,7 +332,7 @@ NewCharacter::NewCharacter(Page& Page, string FontFilePath)
 		AlignFlatMiddlePoints(AllCharacters['0' - 32], AllCharacters['$' - 32]);
 		
 		AlignFlatMiddlePoints(AllCharacters['o' - 32], AllCharacters[':' - 32]);
-		AlignFlatMiddlePoints(AllCharacters['o' - 32], AllCharacters['+' - 32]);
+		AlignFlatMiddlePoints(AllCharacters['(' - 32], AllCharacters['+' - 32]);
 		AlignFlatMiddlePoints(AllCharacters['o' - 32], AllCharacters['-' - 32]);
 		AlignFlatMiddlePoints(AllCharacters['o' - 32], AllCharacters['=' - 32]);
 		AlignFlatBottoms(AllCharacters['j' - 32], AllCharacters['|' - 32]);
@@ -541,6 +541,7 @@ void NewCharacter::BuildShapeVertices()
 
 void NewCharacter::llUpdate()
 {
+	CalculateGroupOffset();
 	CurrentCharacter = GetCharacter(CurrentllShape->Ascii);
 	CreatellCharacter();
 	UpdatellMouseAccess();

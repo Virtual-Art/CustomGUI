@@ -17,16 +17,22 @@ namespace MenuCreator
 
 
 	//Section Editor
+
+	//*Clarification* Add Section Creates a dialogue to input Section Details
+	//*Clarification* Submit Section Pushes the Section Object into the vector and displays that under 
+	//the section label
+
 	//+----------------------------+
-	static Section New_Section;			   //(Object) New Section to Modify
+	static Section New_Section;			       //(Object) New Section to Modify
 	static Section* Current_Section;		   //(Object) Current Section to Modify
 	
-	static PageGroup PageGroup_Section;	   //(Graphic) Input Section Details 
-	static PageGroupItem PageItem_Unused1;    // MUST FIX
+	static PageGroup PageGroup_Section;	       //(Graphic) Input Section Details 
+	static PageGroupItem PageItem_Unused1;     // MUST FIX
 	static PageGroup Section_Filler; 		   //(Graphic) All Existing Section Graphics
-	static Text Text_Label_Section;		   //(Graphic) "Section" Title 
+	static Text Text_Label_Section;		       //(Graphic) "Section" Title 
 	static Text Text_Add_Section;			   //(Graphic) "Add" Button  
-	static NumberPrinter Printer_Section_Name;		   //(Graphic) Input Section Name 
+	static NumberPrinter Printer_Section_Name; //(Graphic) Input Section Name 
+	static Button Button_Add_Section;          //(Direct Function) Calls the Add_Section() Method
 
 	void Prepare_Section();			   //Displays Section title with background
 	void Add_Section();				   //Displays Graphics to Fill in Dish Details
@@ -47,7 +53,8 @@ namespace MenuCreator
 	static PageGroup Dish_Filler;  		      //(Graphic) Input Dish Details 
 	static PageGroupItem PageItem_Unused2;    // MUST FIX
 	static Text Text_Label_Dish;			  //(Graphic) "Dish" Title 
-	static Text Text_Add_Dish;				  //(Graphic) "Add" Button  
+	static Text Text_Add_Dish;				  //(Graphic) "Add" Button, (Display's Filler)
+	static Text Text_Submit_Dish;		      //(Graphic) Details Filled, Push into vector
 	static NumberPrinter Printer_Dish_Name;   //(Graphic) Input Dish Name 
 	static NumberPrinter Printer_Cost;		  //(Graphic) Input Dish Cost
 

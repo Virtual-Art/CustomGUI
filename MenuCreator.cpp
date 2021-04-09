@@ -12,7 +12,6 @@ void MenuCreator::Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram*
 	Prepare_Side();
 	Prepare_Side_Filler();
 	Prepare_Ingredient();
-
 }
 
 void MenuCreator::Update()
@@ -37,7 +36,7 @@ void MenuCreator::Prepare_Section()
 
 	//Section
 	TextData_Template.Phrase = "Section";
-	ShapeGroup_Template.Position = { -0.8, 0.8 };
+	ShapeGroup_Template.Position = { -0.78, 0.8 };
 	ShapeGroup_Template.BackGround = true;
 	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 100;
 	ShapeGroup_Template.BackGroundPadding[PADDING_RIGHT] = 100;
@@ -46,8 +45,23 @@ void MenuCreator::Prepare_Section()
 	ShapeGroup_Template.BackGroundPlacementType = PLACEMENT_BELOW;
 	ShapeGroup_Template.BackGroundMatchType = MATCH_CENTERS;
 	ShapeGroup_Template.BackGroundColor = {0.1, 0.1, 1.0, 1.0}; //Dark Blue
-	ShapeGroup_Template.Color = SubmitOrder::Pink;
+	ShapeGroup_Template.Color = PageCreator::White;
 	Text_Label_Section.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+
+
+	//Add
+	TextData_Template.Phrase = "Section +";
+	ShapeGroup_Template.BackGround = true;
+	ShapeGroup_Template.BackGroundPlacementType = PLACEMENT_NORMAL;
+	ShapeGroup_Template.BackGroundMatchType = MATCH_NONE;
+	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_RIGHT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_TOP] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
+	ShapeGroup_Template.BackGroundColor = SubmitOrder::DarkPurple;
+	ShapeGroup_Template.Color = SubmitOrder::Pink;
+	Text_Add_Section.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+	Text_Add_Section.PlaceBelow(Text_Label_Section.GetEdges(), MATCH_CENTERS, 100);
 }
 
 
@@ -81,11 +95,27 @@ void MenuCreator::Prepare_Dish()
 	//ShapeGroup_Template.BackGroundPadding[PADDING_TOP] = 5;
 	//ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 1000;
 	ShapeGroup_Template.BackGroundColor = { 0.5, 0.3, 0.5, 1.0 };
-	ShapeGroup_Template.Color = SubmitOrder::Pink;
+	ShapeGroup_Template.Color = PageCreator::White;
 	Text_Label_Dish.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
-	Text_Label_Dish.PlaceRight(Text_Label_Section.GetEdges(), MATCH_CEILINGS, 225);
 	Text_Label_Dish.CopyBackGround(Text_Label_Section.GetData());
+	Text_Label_Dish.PlaceRight(Text_Label_Section.GetEdgesWithBackGround(), MATCH_FLOORS, 20);
+	Text_Label_Dish.OffsetPosition({ 0.0, -PIXEL * 2 }, {false, true});
+
+	//Add
+	TextData_Template.Phrase = "Dish +";
+	ShapeGroup_Template.BackGround = true;
+	ShapeGroup_Template.BackGroundPlacementType = PLACEMENT_NORMAL;
+	ShapeGroup_Template.BackGroundMatchType = MATCH_NONE;
+	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_RIGHT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_TOP] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
+	ShapeGroup_Template.BackGroundColor = SubmitOrder::DarkPurple;
+	ShapeGroup_Template.Color = SubmitOrder::Pink;
+	Text_Add_Dish.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+	Text_Add_Dish.PlaceBelow(Text_Label_Dish.GetEdges(), MATCH_CENTERS, 100);
 }
+
 void MenuCreator::Add_Dish() {}
 void MenuCreator::Submit_Dish() {}
 void MenuCreator::Update_Dish_Graphics() {}
@@ -118,10 +148,23 @@ void MenuCreator::Prepare_Side()
 	ShapeGroup_Template.BackGroundColor = PageCreator::Yellow;
 	ShapeGroup_Template.Color = PageCreator::White;
 	Text_Label_Side.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
-	Text_Label_Side.PlaceRight(Text_Label_Dish.GetEdges(), MATCH_CEILINGS, 250);
 	Text_Label_Side.CopyBackGround(Text_Label_Section.GetData());
+	Text_Label_Side.PlaceRight(Text_Label_Dish.GetEdgesWithBackGround(), MATCH_FLOORS, 20);
+	Text_Label_Side.OffsetPosition({ 0.0, -PIXEL * 2 }, { false, true });
 
-	
+	//Add
+	TextData_Template.Phrase = "Side +";
+	ShapeGroup_Template.BackGround = true;
+	ShapeGroup_Template.BackGroundPlacementType = PLACEMENT_NORMAL;
+	ShapeGroup_Template.BackGroundMatchType = MATCH_NONE;
+	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_RIGHT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_TOP] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
+	ShapeGroup_Template.BackGroundColor = SubmitOrder::DarkPurple;
+	ShapeGroup_Template.Color = SubmitOrder::Pink;
+	Text_Add_Side.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+	Text_Add_Side.PlaceBelow(Text_Label_Side.GetEdges(), MATCH_CENTERS, 100);
 }
 
 void MenuCreator::Prepare_Side_Filler()
@@ -133,6 +176,7 @@ void MenuCreator::Prepare_Side_Filler()
 	TextData TextData_Template;
 	//
 	PageGroup_Side_Filler.llInit(RestaurantBook, &PageGroup_Template);
+
 	
 	Current_Side = &New_Side;
 	
@@ -152,6 +196,7 @@ void MenuCreator::Prepare_Side_Filler()
 	PageItem_Template.Position = { 0.1, -0.1 };
 	Printer_Side_Name.llInit(RestaurantBook, &PageItem_Template, NumberPrinter_Template);
 
+
 	//Cost
 	NumberPrinter_Template.AnswerFontSize = 12;
 	NumberPrinter_Template.Type = TYPE_FLOAT;
@@ -163,8 +208,23 @@ void MenuCreator::Prepare_Side_Filler()
 	PageItem_Template.BackGround = false;
 	Printer_Cost.llInit(RestaurantBook, &PageItem_Template, NumberPrinter_Template);
 	Printer_Cost.PlaceBelow(Printer_Side_Name.GetEdges(), MATCH_BEGINNINGS, 40);
+//	Printer_Cost.SetllPosition({-0.5, -0.5});
 
-	PageGroup_Side_Filler.SetPosition({0.18, -0.5});
+	//Submit
+	TextData_Template.Phrase = "Submit";
+	ShapeGroup_Template.BackGround = true;
+	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 40;
+	ShapeGroup_Template.BackGroundPadding[PADDING_RIGHT] = 40;
+	ShapeGroup_Template.BackGroundPadding[PADDING_TOP] = 20;
+	ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 20;
+	ShapeGroup_Template.BackGroundColor = SubmitOrder::DarkPurple;
+	ShapeGroup_Template.Color = PageCreator::White;
+	Text_Submit_Dish.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+	Text_Submit_Dish.PlaceBelow(Printer_Side_Name.GetEdgesWithBackGround(), MATCH_CENTERS, 50);
+
+	MasterElement::PrintBookStats(RestaurantBook);
+	Log::LogString("SETTING PAGEGROUP POSITION");
+	PageGroup_Side_Filler.SetPosition({-0.5, -0.5});
 }
 
 void MenuCreator::Add_Side() {}
@@ -201,8 +261,22 @@ void MenuCreator::Prepare_Ingredient()
 	ShapeGroup_Template.BackGroundColor = { 0.6, 0.1, 0.1, 1.0 };
 	ShapeGroup_Template.Color = SubmitOrder::Pink;
 	Text_Label_Ingredient.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
-	Text_Label_Ingredient.PlaceRight(Text_Label_Side.GetEdges(), MATCH_CEILINGS, 225);
 	Text_Label_Ingredient.CopyBackGround(Text_Label_Section.GetData());
+	Text_Label_Ingredient.PlaceRight(Text_Label_Side.GetEdgesWithBackGround(), MATCH_FLOORS, 20);
+
+	//Add
+	TextData_Template.Phrase = "Ingredient +";
+	ShapeGroup_Template.BackGround = true;
+	ShapeGroup_Template.BackGroundPlacementType = PLACEMENT_NORMAL;
+	ShapeGroup_Template.BackGroundMatchType = MATCH_NONE;
+	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_RIGHT] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_TOP] = 10;
+	ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
+	ShapeGroup_Template.BackGroundColor = SubmitOrder::DarkPurple;
+	ShapeGroup_Template.Color = SubmitOrder::Pink;
+	Text_Add_Ingredient.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+	Text_Add_Ingredient.PlaceBelow(Text_Label_Ingredient.GetEdges(), MATCH_CENTERS, 100);
 }
 void MenuCreator::Add_Ingredient() {}
 void MenuCreator::Submit_Ingredient() {}

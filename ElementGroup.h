@@ -21,6 +21,7 @@ class ShapeGroup : public MasterElement
 
  public:
 
+	BookDirectory ShapeGroupDirectory;
 	ShapeGroupData CurrentShapeGroup;
 	llShapeGroupData* CurrentllShapeGroup;
 	const bool SetInStone; //class cannot switch to another Shape 
@@ -42,7 +43,7 @@ class ShapeGroup : public MasterElement
 
 
 	glm::vec4 GetEdges();
-	glm::vec4 GetBackGroundEdges();
+	glm::vec4 GetEdgesWithBackGround();
 	//glm::vec2 GetPosition(int OutputType);
 	void ConvertInputToInputLeft();
 
@@ -220,13 +221,17 @@ protected:
 	void NewllUpdate();
 	void ReCalibrateID();
 
+	bool Input_Left_Once = false;
 	bool WithNewInput = false;
 	//void ShapeToGroup(ShapeData& ShapeData);
 	//void GroupToShape(GroupData& GroupData);
 	void SetGroup(ShapeData& ShapeData);
 	void SetMouseAccess();
 	void SetllMouseAccess();
+	void CalculateGroupOffset();
 	void UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size);
+
+
 	//void UpdatellMouseAccess(glm::vec2 Position, glm::vec2 Size);
 
 private:
