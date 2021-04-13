@@ -23,7 +23,10 @@ class ShapeGroup : public MasterElement
 
 	BookDirectory ShapeGroupDirectory;
 	ShapeGroupData CurrentShapeGroup;
+
+	llPageItemData* Parent_PageItem;
 	llShapeGroupData* CurrentllShapeGroup;
+
 	const bool SetInStone; //class cannot switch to another Shape 
 
 	ShapeGroup();
@@ -36,6 +39,10 @@ class ShapeGroup : public MasterElement
 	ShapeGroup(Page& Page, ShapeData& ShapeGroup);
 	ShapeGroup(Page& Page, int GroupID);
 
+	void llInit(llBookData* llBook);
+	void llShapeGroupInit(llBookData* llBook, llShapeGroupData* ShapeGroup);
+	llShapeGroupData* GetData() { return CurrentllShapeGroup; };
+	virtual void llSwitch(llShapeGroupData* llShapeGroup);
 
 	//Call function after Edges have been updated
 	void ProcessBackGround();
@@ -68,9 +75,6 @@ class ShapeGroup : public MasterElement
 	void AllignY(const float& Y, int PlacementType);
 
 
-	void llInit(llBookData* llBook);
-	void llShapeGroupInit(llBookData* llBook, llShapeGroupData* ShapeGroup);
-	llShapeGroupData* GetData() { return CurrentllShapeGroup; };
 
 	llShapeGroupData* operator*()
 	{
@@ -111,7 +115,6 @@ class ShapeGroup : public MasterElement
 
 	void SetllShapeGroup(llShapeGroupData* llShapeGroup);
 	void llUpdate() override;
-	virtual void llSwitch(llShapeGroupData* llShapeGroup);
 
 	void SetllPosition(glm::vec2 Position)
 	{

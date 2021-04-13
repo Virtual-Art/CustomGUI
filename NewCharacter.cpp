@@ -436,15 +436,15 @@ void NewCharacter::SetAction(int ShapeDataActionID){};
 
 void NewCharacter::CreatellCharacter()
 {
-	if (CurrentllShape->ChangeAsGroup == false && LoadedBook != nullptr)
-	{
-		//This will work with an assumption:
-		//the quad we are updating belongs to the current ShapeGroup Directory in the book
-		llShapeGroupData* CurrentShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
-		CurrentllShape->PositionOffset = CurrentllShape->Position - CurrentShapeGroup->Position;
-		//CurrentllShape->SizeOffset = CurrentllShape->Size + CurrentShapeGroup->Size;
-		//CurrentllShape->ColorOffset = CurrentllShape->Color + CurrentShapeGroup->Color;
-	}
+	//if (CurrentllShape->ChangeAsGroup == false && LoadedBook != nullptr)
+	//{
+	//	//This will work with an assumption:
+	//	//the quad we are updating belongs to the current ShapeGroup Directory in the book
+	//	llShapeGroupData* CurrentShapeGroup = LoadedBook->Page->PageGroup->PageItem->ShapeGroup;
+	//	CurrentllShape->PositionOffset = CurrentllShape->Position - CurrentShapeGroup->Position;
+	//	//CurrentllShape->SizeOffset = CurrentllShape->Size + CurrentShapeGroup->Size;
+	//	//CurrentllShape->ColorOffset = CurrentllShape->Color + CurrentShapeGroup->Color;
+	//}
 
 	TopRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / 2 };
 	BottomRightXYRatio = { CurrentllShape->Size[0] / 2, CurrentllShape->Size[1] / -2 };

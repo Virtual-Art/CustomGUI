@@ -17,6 +17,7 @@ void MenuCreator::Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram*
 void MenuCreator::Update()
 {
 	Page_MenuCreator.DrawPage();
+	PageGroup_Side_Filler.SetPosition({ MouseManager::xPos, MouseManager::yPos});
 }
 //+----------------------------+
 	 
@@ -176,10 +177,8 @@ void MenuCreator::Prepare_Side_Filler()
 	TextData TextData_Template;
 	//
 	PageGroup_Side_Filler.llInit(RestaurantBook, &PageGroup_Template);
-
-	
 	Current_Side = &New_Side;
-	
+
 	//Name
 	NumberPrinter_Template.AnswerFontSize = 14;
 	NumberPrinter_Template.Type = TYPE_STRING;
@@ -188,13 +187,15 @@ void MenuCreator::Prepare_Side_Filler()
 	NumberPrinter_Template.Description = "Name";
 	NumberPrinter_Template.AnswerColor = SubmitOrder::Pink;
 	PageItem_Template.BackGround = true;
-	PageItem_Template.BackGroundPadding[PADDING_LEFT]   = 20;
-	PageItem_Template.BackGroundPadding[PADDING_RIGHT]  = 60;
-	PageItem_Template.BackGroundPadding[PADDING_TOP]    = 40;
+	PageItem_Template.BackGroundPadding[PADDING_LEFT] = 20;
+	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 60;
+	PageItem_Template.BackGroundPadding[PADDING_TOP] = 40;
 	PageItem_Template.BackGroundPadding[PADDING_BOTTOM] = 200;
-	PageItem_Template.BackGroundColor = SubmitOrder::DarkPurple; 
-	PageItem_Template.Position = { 0.1, -0.1 };
+	PageItem_Template.BackGroundColor = SubmitOrder::DarkPurple;
+	//PageItem_Template.Position = { 0.1, -0.1 };
+	Log::LogString("SETTING NAME 1st---------------------------------------------------------------------------------");
 	Printer_Side_Name.llInit(RestaurantBook, &PageItem_Template, NumberPrinter_Template);
+	Log::LogString("SETTING NAME 2nd---------------------------------------------------------------------------------");
 
 
 	//Cost
@@ -206,11 +207,15 @@ void MenuCreator::Prepare_Side_Filler()
 	NumberPrinter_Template.Description = "Cost";
 	NumberPrinter_Template.AnswerColor = SubmitOrder::Pink;
 	PageItem_Template.BackGround = false;
+	Log::LogString("SETTING COST 1st---------------------------------------------------------------------------------");
 	Printer_Cost.llInit(RestaurantBook, &PageItem_Template, NumberPrinter_Template);
+	Log::LogString("SETTING COST 2nd---------------------------------------------------------------------------------");
 	Printer_Cost.PlaceBelow(Printer_Side_Name.GetEdges(), MATCH_BEGINNINGS, 40);
-//	Printer_Cost.SetllPosition({-0.5, -0.5});
+	Log::LogString("SETTING COST 3rd---------------------------------------------------------------------------------");
+	//Log::LogString("BETWEEN CREATION 2nd");
+	
 
-	//Submit
+	////Submit
 	TextData_Template.Phrase = "Submit";
 	ShapeGroup_Template.BackGround = true;
 	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 40;
@@ -219,12 +224,18 @@ void MenuCreator::Prepare_Side_Filler()
 	ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 20;
 	ShapeGroup_Template.BackGroundColor = SubmitOrder::DarkPurple;
 	ShapeGroup_Template.Color = PageCreator::White;
+	Log::LogString("BETWEEN TEXT SUBMIT 1st");
 	Text_Submit_Dish.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+	Log::LogString("BETWEEN TEXT SUBMIT 2nd");
 	Text_Submit_Dish.PlaceBelow(Printer_Side_Name.GetEdgesWithBackGround(), MATCH_CENTERS, 50);
+	Log::LogString("BETWEEN TEXT SUBMIT 3rd");
 
-	MasterElement::PrintBookStats(RestaurantBook);
-	Log::LogString("SETTING PAGEGROUP POSITION");
-	PageGroup_Side_Filler.SetPosition({-0.5, -0.5});
+	//PageGroupItem Reference_PageItem(Printer_Side_Name.GetData());
+	//Reference_PageItem.LoadedBook = RestaurantBook;
+	//Reference_PageItem.SetllPosition({-0.7, 0.0});
+	////Printer_Side_Name.SetllPosition({-0.6, 0.0});
+
+	PageGroup_Side_Filler.SetPosition({-0.5, 0.5});
 }
 
 void MenuCreator::Add_Side() {}

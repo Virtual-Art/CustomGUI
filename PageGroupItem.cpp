@@ -73,8 +73,11 @@ PageGroupItem::PageGroupItem(llBookData* llBook)
 			llBook->Page->PageGroup->PageItemCount++;
 		}
 
-		CurrentllPageItem->Type = TYPE_CUSTOM;
 		LoadedBook = llBook;
+		CurrentllPageItem->Type = TYPE_CUSTOM;
+		CurrentllPageItem->ParentGroup = llBook->Page->PageGroup;
+		Parent_PageGroup = (llPageGroupData*)CurrentllPageItem->ParentGroup;
+		CalculateGroupOffset();
 
 
 		ProcessBackGround();
@@ -158,10 +161,11 @@ PageGroupItem::PageGroupItem(llBookData* llBookData, llPageItemData* llPageItem)
 			llBookData->Page->PageGroup->PageItemCount++;
 		}
 
-		CurrentllPageItem->Type = TYPE_CUSTOM;
 		LoadedBook = llBookData;
-
-
+		CurrentllPageItem->Type = TYPE_CUSTOM;
+		CurrentllPageItem->ParentGroup = llBookData->Page->PageGroup;
+		Parent_PageGroup = (llPageGroupData*)CurrentllPageItem->ParentGroup;
+		CalculateGroupOffset();
 		ProcessBackGround();
 	}
 	else
@@ -359,7 +363,9 @@ void PageGroupItem::llPageItemInit(llBookData* llBookData, llPageItemData* llPag
 
 	CurrentllPageItem->Type = TYPE_CUSTOM;
 	LoadedBook = llBookData;
-	
+	CurrentllPageItem->ParentGroup = llBookData->Page->PageGroup;
+	Parent_PageGroup = (llPageGroupData*)CurrentllPageItem->ParentGroup;
+	CalculateGroupOffset();
 	ProcessBackGround();
 	
 }
@@ -371,6 +377,8 @@ void PageGroupItem::llSwitch(llPageItemData* llPageItem)
 
 	//Switch
 	CurrentllPageItem = llPageItem;
+	Parent_PageGroup = (llPageGroupData*)llPageItem->ParentGroup;
+	CalculateGroupOffset();
 }
 
 void PageGroupItem::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
@@ -443,6 +451,9 @@ void PageGroupItem::llUpdate()
 	if (CurrentllPageItem == nullptr ) { Log::LogString("ERROR:: PageItem Update FAILED:: Invalid PageItem State"); return; }
 	if (CurrentllPageItem->ShapeGroup == nullptr ) { Log::LogString("WARNING:: PageItem Update FAILED:: No Contents to Update"); return; }
 
+	//Log::LogString("Updating PageItem");
+	//CalculateGroupOffset();
+
 	//Go To ShapeGroup Head
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 	while (CurrentShapeGroup->Previous != nullptr)
@@ -450,17 +461,17 @@ void PageGroupItem::llUpdate()
 		CurrentShapeGroup = CurrentShapeGroup->Previous;
 	}
 
-	if (CurrentllPageItem->BackGround == true)
-	{
-		CurrentShapeGroup = CurrentShapeGroup->Next;
-	}
+	//if (CurrentllPageItem->BackGround == true)
+	//{
+	//	CurrentShapeGroup = CurrentShapeGroup->Next;
+	//}
 
-	if (CurrentllPageItem->ChangeAsGroup == false)
-	{
-		//Set PageItem Position Offset
-		llPageGroupData* CurrentPageGroup = LoadedBook->Page->PageGroup;
-		CurrentllPageItem->PositionOffset = CurrentPageGroup->Position - CurrentllPageItem->Position;
-	}
+	//if (CurrentllPageItem->ChangeAsGroup == false)
+	//{
+	//	//Set PageItem Position Offset
+	//	llPageGroupData* CurrentPageGroup = LoadedBook->Page->PageGroup;
+	//	CurrentllPageItem->PositionOffset = CurrentPageGroup->Position - CurrentllPageItem->Position;
+	//}
 
 	//Update all ShapeGroups in Current PageItem
 	while (CurrentShapeGroup != nullptr)
@@ -469,12 +480,19 @@ void PageGroupItem::llUpdate()
 		//{
 		//case TYPE_SHAPEGROUP:
 		//{
-			Log::LogString("Edting ShapeGroup");
+			//Log::LogString("Edting ShapeGroup");
 			ShapeGroup ShapeGroupSelected(CurrentShapeGroup);
 			ShapeGroupSelected.llSwitch(CurrentShapeGroup);
 			ShapeGroupSelected.LoadedBook = LoadedBook;
 			//No idea why it's negative this level positive on the Shape level?
-			CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+			//Log::LogString(" ");
+			//Log::LogVec2("Based on this offset: ", CurrentShapeGroup->PositionOffset);
+			CurrentShapeGroup->Position = CurrentllPageItem->Position + CurrentShapeGroup->PositionOffset;
+
+			//Log::LogVec2("New ShapeGroup Position", CurrentShapeGroup->Position);
+			//Log::LogVec2("from this PageItem position: ", CurrentllPageItem->Position);
+			//Log::LogString(" ");
+			//if (CurrentShapeGroup->Next == nullptr) { CurrentShapeGroup->Position = { -0.7, -0.06 }; };
 			CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
 			CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
 			//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
@@ -1420,4 +1438,15 @@ void PageGroupItem::TranslateInput()
 	}
 
 	CurrentllPageItem->InputType = INPUT_CENTER;
+}
+
+void PageGroupItem::CalculateGroupOffset()
+{
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: Calculate PageItem Offset FAILED:: Invalid Book State"); return; }
+	if (Parent_PageGroup == nullptr) { Log::LogString("ERROR:: Calculate PageItem Offset FAILED:: Can't Find Parent Group"); return; }
+	
+	//Distance between parent and child positions
+	CurrentllPageItem->PositionOffset = CurrentllPageItem->Position - Parent_PageGroup->Position;
+	//cout << "PageItem Position Offset: " << CurrentllPageItem->PositionOffset[0] << " , " << CurrentllPageItem->PositionOffset[1] <<  " = (PageItem Position) " << CurrentllPageItem->Position[0] << " , " << CurrentllPageItem->Position[1] << " - " << "(Parent Position) " << Parent_PageGroup->Position[0] << " , " << Parent_PageGroup->Position[1] << endl;
+
 }

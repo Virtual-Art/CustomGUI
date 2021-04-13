@@ -95,6 +95,9 @@ ShapeGroup::ShapeGroup(llBookData* llBook)
 
 		CurrentllShapeGroup->Type = TYPE_CUSTOM;
 		LoadedBook = llBook;
+		CurrentllShapeGroup->ParentGroup = llBook->Page->PageGroup->PageItem;
+		Parent_PageItem = (llPageItemData*)CurrentllShapeGroup->ParentGroup;
+		CalculateGroupOffset();
 		ShapeGroupDirectory.Capture(LoadedBook);
 	}
 	else
@@ -190,6 +193,9 @@ ShapeGroup::ShapeGroup(llBookData* llBookData, llShapeGroupData* llShapeGroup)
 
 		LoadedBook = llBookData;
 		CurrentllShapeGroup->Type = TYPE_CUSTOM;
+		CurrentllShapeGroup->ParentGroup = llBookData->Page->PageGroup->PageItem;
+		Parent_PageItem = (llPageItemData*)CurrentllShapeGroup->ParentGroup;
+		CalculateGroupOffset();
 		ShapeGroupDirectory.Capture(LoadedBook);
 	}
 	else{ Log::LogString("ERROR:: ShapeGroup FAILED:: No Book Provided "); }
@@ -533,6 +539,9 @@ void ShapeGroup::llShapeGroupInit(llBookData* llBookData, llShapeGroupData* llSh
 
 	LoadedBook = llBookData;
 	CurrentllShapeGroup->Type = TYPE_CUSTOM;
+	CurrentllShapeGroup->ParentGroup = llBookData->Page->PageGroup->PageItem;
+	Parent_PageItem = (llPageItemData*)CurrentllShapeGroup->ParentGroup;
+	CalculateGroupOffset();
 }
 
 void ShapeGroup::SetllShapeGroup(llShapeGroupData* llShapeGroup)
@@ -553,14 +562,17 @@ void ShapeGroup::llUpdate()
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: llUpdate FAILED:: ShapeGroup nullptr"); return; };
 	if (CurrentllShapeGroup->Shape == nullptr) { Log::LogString("WARNING:: llUpdate FAILED:: No Contents in Shape Group To Update"); return; };
 
-	if (CurrentllShapeGroup->ChangeAsGroup == false)
-	{
-		//Set PageItem Position Offset
-		llPageItemData* CurrentPageItem = LoadedBook->Page->PageGroup->PageItem;
-		CurrentllShapeGroup->PositionOffset = CurrentPageItem->Position - CurrentllShapeGroup->Position;
-	}
+	//CalculateGroupOffset();
 
-	Log::LogString("Updating ShapeGroup");
+	////Group is false by default
+	//if (CurrentllShapeGroup->ChangeAsGroup == false)
+	//{
+	//	//Set PageItem Position Offset
+	//	llPageItemData* CurrentPageItem = LoadedBook->Page->PageGroup->PageItem;
+	//	CurrentllShapeGroup->PositionOffset = CurrentPageItem->Position - CurrentllShapeGroup->Position;
+	//}
+
+	//Log::LogString("Updating ShapeGroup");
 	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
 
 	//Go to head Shape
@@ -1159,10 +1171,13 @@ void ShapeGroup::SetllMouseAccess()
 
 void ShapeGroup::CalculateGroupOffset()
 {
-	if (LoadedBook == nullptr) { Log::LogString("ERROR:: Calculate Group Offset FAILED:: Can't Find Parent Group"); return; }
-	ShapeGroupDirectory.LoadUp(LoadedBook);
-	llPageItemData* ParentGroup = LoadedBook->Page->PageGroup->PageItem;
-	CurrentllShapeGroup->PositionOffset = CurrentllShapeGroup->Position - ParentGroup->Position;
+	if (LoadedBook == nullptr) { Log::LogString("ERROR:: Calculate ShapeGroup Offset FAILED:: Invalid Book State"); return; }
+	if (Parent_PageItem == nullptr) { Log::LogString("ERROR:: Calculate ShapeGroup Offset FAILED:: Can't Find Parent Group"); return; }
+
+	CurrentllShapeGroup->PositionOffset = CurrentllShapeGroup->Position - Parent_PageItem->Position;
+
+	//cout << "ShapeGroup Position Offset: " << CurrentllShapeGroup->PositionOffset[0] << " , " << CurrentllShapeGroup->PositionOffset[1] << " = (ShapeGroup Position) " << CurrentllShapeGroup->Position[0] << " , " << CurrentllShapeGroup->Position[1] << " - " << "(Parent Position) " << Parent_PageItem->Position[0] << " , " << Parent_PageItem->Position[1] << endl;
+
 }
 
 void ShapeGroup::UpdateMouseAccess(glm::vec2 Position, glm::vec2 Size)
@@ -1249,6 +1264,7 @@ void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
 	if (llShapeGroup != nullptr)
 	{
 		CurrentllShapeGroup = llShapeGroup;
+		Parent_PageItem = (llPageItemData*)llShapeGroup->ParentGroup;
 	}
 	else
 	{

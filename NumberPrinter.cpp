@@ -97,6 +97,8 @@ void NumberPrinter::ChangeVec2(glm::vec2* NewVec2)
 
 void NumberPrinter::llUpdate()
 {
+	CalculateGroupOffset();
+
 	switch (CurrentNumberPrinter.Type)
 	{
 	case TYPE_INT:
@@ -131,7 +133,6 @@ void NumberPrinter::llUpdate()
 
 void NumberPrinter::CreateNumber()
 {
-	//ProcessBackGround();
 	switch (CurrentNumberPrinter.Type)
 	{
 	case TYPE_INT:
@@ -162,7 +163,7 @@ void NumberPrinter::CreateNumber()
 		break;
 	}
 
-	UpdatellMouseAccess();
+	UpdatellMouseAccess(); 
 }
 
 void NumberPrinter::CreateString()
@@ -187,7 +188,9 @@ void NumberPrinter::CreateString()
 	CurrentText.Phrase = CurrentNumberPrinter.Description;
 	TextShapeGroup.Color = { 1.0, 1.0, 1.0, 1.0 }; // White
 	ProcessDescriptionHighlight(&TextShapeGroup);
+	Log::LogString("CreateString ShapeGroup 1st");
 	Text Description(LoadedBook, &TextShapeGroup, CurrentText);
+	Log::LogString("CreateString ShapeGroup 2st");
 
 	//Main String
 	CurrentText.Phrase = MainString;
@@ -196,7 +199,9 @@ void NumberPrinter::CreateString()
 	TextShapeGroup.Color = CurrentNumberPrinter.AnswerColor;
 	if (StringConnected == false) { TextShapeGroup.Color[3] = 0.3;}	//Dim Color
 	CurrentText.FontSize = 14;
+	Log::LogString("CreateString ShapeGroup 3st");
 	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
+	Log::LogString("CreateString ShapeGroup 4st");
 	//MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 10);
 }
 
@@ -265,7 +270,9 @@ void NumberPrinter::CreateFloat()
 	CurrentText.Phrase = CurrentNumberPrinter.Description;
 	TextShapeGroup.Color = CurrentllPageItem->Color; // White
 	ProcessDescriptionHighlight(&TextShapeGroup);
-	Text Description(LoadedBook, &TextShapeGroup, CurrentText);
+	Log::LogString("Float Printer 1st");
+	Text Description(LoadedBook, &TextShapeGroup, CurrentText);  // 0.0, 0.0
+	Log::LogString("Float Printer 2nd");
 
 	//Main String
 	string RawString = to_string(MainFloat);
@@ -279,8 +286,11 @@ void NumberPrinter::CreateFloat()
 	}
 	CurrentText.FontSize = CurrentNumberPrinter.AnswerFontSize;
 	TextShapeGroup.Position = ProcessAnswerPlacement(&Description);
-	Text MainText(LoadedBook, &TextShapeGroup, CurrentText);
-	MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 87);
+	Log::LogString("Float Printer 3rd");
+	Text MainText(LoadedBook, &TextShapeGroup, CurrentText); // CAUSES THE ISSUE
+	//Log::LogString("Float Printer 4th");
+	//MainText.PlaceRight(Description.GetEdges(), MATCH_CENTERS, 87); //0.21, -0.026
+	//Log::LogString("Float Printer 5th");
 }
 
 void NumberPrinter::CreateDouble()
@@ -392,6 +402,7 @@ void NumberPrinter::ReplaceString()
 	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
 
 	Text Text_Reference(CurrentShapeGroup);
+	Text_Reference.LoadedBook = LoadedBook;
 	//Text Second_Text_Reference(CurrentShapeGroup->Next);
 	
 	if (CurrentllPageItem->BackGround == true)
@@ -503,6 +514,7 @@ void NumberPrinter::ReplaceFloat()
 	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
 
 	Text Text_Reference(CurrentShapeGroup);
+	Text_Reference.LoadedBook = LoadedBook;
 	//Text Second_Text_Reference(CurrentShapeGroup->Next);
 
 	//Description
@@ -527,7 +539,9 @@ void NumberPrinter::ReplaceFloat()
 
 	CurrentText.FontSize = CurrentNumberPrinter.AnswerFontSize;
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
+	Log::LogString("Cost Replace 1st");
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
+	Log::LogString("Cost Replace 2st");
 	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);
 }
 

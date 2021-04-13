@@ -934,6 +934,7 @@ void PageGroup::llUpdate()
 	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Update FAILED:: Invalid PageGroup State"); return; }
 	if (CurrentllPageGroup->PageItem == nullptr) { Log::LogString("WARNING:: PageGroup Update FAILED:: No Contents to Update"); return; }
 
+	//Log::LogString("Updating PageGroup");
 
 	if (CurrentllPageGroup != nullptr && LoadedBook != nullptr)
 	{
@@ -944,10 +945,10 @@ void PageGroup::llUpdate()
 			CurrentPageItem = CurrentPageItem->Previous;
 		}
 
-		if (CurrentllPageGroup->BackGround == true)
-		{
-			CurrentPageItem = CurrentPageItem->Next;
-		}
+		//if (CurrentllPageGroup->BackGround == true)
+		//{
+		//	CurrentPageItem = CurrentPageItem->Next;
+		//}
 
 		//Main Loop
 		while (CurrentPageItem != nullptr)
@@ -956,11 +957,16 @@ void PageGroup::llUpdate()
 			//{
 			//case TYPE_PAGEITEM: 
 			//{
-				Log::LogString("Editing PageItem");
 				PageGroupItem PageItemSelected(CurrentPageItem);
 				PageItemSelected.llSwitch(CurrentPageItem);
 				PageItemSelected.LoadedBook = LoadedBook;
-				CurrentPageItem->Position = CurrentllPageGroup->Position - CurrentPageItem->PositionOffset;
+				CurrentPageItem->Position = CurrentllPageGroup->Position + CurrentPageItem->PositionOffset;
+				//Log::LogString(" ");
+				//Log::LogVec2("New PageItem Position", CurrentPageItem->Position);
+				//Log::LogVec2("Based on this offset: ", CurrentPageItem->PositionOffset);
+				//Log::LogVec2("from this PageGroup position: ", CurrentllPageGroup->Position);
+				//Log::LogString(" ");
+
 				CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
 				CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
 				//CurrentPageItem->Size = CurrentllPageGroup->Size - CurrentPageItem->SizeOffset;

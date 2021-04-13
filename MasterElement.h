@@ -241,6 +241,7 @@ struct llShapeData
 	bool TextCentered = true;
 	bool ChangeAsGroup = false;
 	ShapeVertex Vertex[4];
+	void* ParentGroup = nullptr;
 	llShapeData* Next = nullptr;
 	llShapeData* Previous = nullptr;
 	llVertexData* Vertexx = nullptr; // Child
@@ -285,6 +286,7 @@ struct llShapeGroupData
 	float Left = -3;
 	float Right = -3;
 	glm::vec4 EdgesWithBackGround = {3, -3, -3, 3};
+	void* ParentGroup = nullptr;
 	llShapeGroupData* Next = nullptr;
 	llShapeGroupData* Previous = nullptr;
 	llShapeData* Shape = nullptr; // Child
@@ -335,6 +337,7 @@ struct llPageItemData
 	float Left = -3;
 	float Right = -3;
 	glm::vec4 EdgesWithBackGround = { 3, -3, -3, 3 };
+	void* ParentGroup = nullptr;
 	llPageItemData* Next = nullptr;
 	llPageItemData* Previous = nullptr;
 	llShapeGroupData* ShapeGroup = nullptr; // Child
@@ -376,6 +379,7 @@ struct llPageGroupData
 	float Left = -3;
 	float Right = -3;
 	glm::vec4 EdgesWithBackGround = { 3, -3, -3, 3 };
+	void* ParentGroup = nullptr;
 	llPageGroupData* Next = nullptr;
 	llPageGroupData* Previous = nullptr;
 	llPageItemData* PageItem = nullptr; // Child
@@ -391,6 +395,7 @@ struct llPageData
 	string DescriptiveData;
 	llVertexData* VertexContainer = nullptr;
 	int* IndexContainer = nullptr;
+	void* ParentGroup = nullptr;
 	llPageData* Next = nullptr;
 	llPageData* Previous = nullptr;
 	llPageGroupData* PageGroup = nullptr; // Child

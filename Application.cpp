@@ -499,9 +499,20 @@ int main(int argc, char** argv)
 	Selector_Template.YSpacing = 50;
 	Selector First_Selector(&Book_Restaurant_POS, &PageItem_Template, Selector_Template);
 
+	NumberPrinterData Tiredofthis;
+	Tiredofthis.Type = TYPE_VEC2;
+	Tiredofthis.VEC2 = &MousePosition;
+
+	llPageItemData boooo;
+	boooo.Position = {0.9, 0.95};
+
+	NumberPrinter sigh_MousePosition(&Book_Restaurant_POS, &boooo , Tiredofthis);
+
 	MenuCreator::Prepare_MenuCreator(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 	Log::LogString("Passed Prepare");
 	//MasterElement::PrintBookStats(&Book_Restaurant_POS);
+
+
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -520,7 +531,7 @@ int main(int argc, char** argv)
 		GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		PageCreator::OnUpdate(KeyState, MouseState);
 
-
+		//sigh_MousePosition.SetVec2(MousePosition);
 		//Restaurant POS
 		//+-------------------------+
 		//SubmitOrder::Update();

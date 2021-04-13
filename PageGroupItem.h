@@ -70,6 +70,7 @@ public:
 	PageItemData CurrentPageItem;
 	ShapeGroupData CurrentShapeGroup;
 
+	llPageGroupData* Parent_PageGroup;
 	llPageItemData* CurrentllPageItem;
 	llShapeGroupData* CurrentllShapeGroup; // for reference quad group
 
@@ -154,6 +155,7 @@ public:
 	//Call function after Edges have been updated
 	void ProcessBackGround();
 	void SetBackGround();
+	void CalculateGroupOffset();
 
 	//float* GetColorR() { return &CurrentllPageItem->Color[0]; };
 	//float* GetColorG() { return &CurrentllPageItem->Color[1]; };
