@@ -381,6 +381,29 @@ void PageGroupItem::llSwitch(llPageItemData* llPageItem)
 	CalculateGroupOffset();
 }
 
+void PageGroupItem::SetllPosition(glm::vec2 Position)
+{
+	CurrentllPageItem->Position = Position;
+	CurrentllPageItem->InputType = INPUT_CENTER;
+	Input_Left_Once = true;
+	llUpdate();
+}
+
+void PageGroupItem::SetllPosition(glm::vec2 Position, int InputType)
+{
+	PreviousPosition = CurrentllPageItem->Position;
+	CurrentllPageItem->Position = Position;
+	CurrentllPageItem->InputType = InputType;
+
+	if (InputType == INPUT_CENTER)
+	{
+		RePositionToCenter();
+		Input_Left_Once = true;
+	}
+
+	llUpdate();
+}
+
 void PageGroupItem::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
 	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageItem nullptr"); return; };
@@ -768,41 +791,41 @@ void PageGroupItem::UpdatellMouseAccess()
 		CurrentShapeGroup = CurrentShapeGroup->Next;
 	}
 
-	float FurthestRight = CurrentShapeGroup->Right;
-	float FurthestLeft = CurrentShapeGroup->Left;
-	float FurthestTop = CurrentShapeGroup->Top;
-	float FurthestBottom = CurrentShapeGroup->Bottom;
+	float FurthestRight = CurrentShapeGroup->EdgesWithBackGround[EDGE_RIGHT];
+	float FurthestLeft = CurrentShapeGroup->EdgesWithBackGround[EDGE_LEFT];
+	float FurthestTop = CurrentShapeGroup->EdgesWithBackGround[EDGE_TOP];
+	float FurthestBottom = CurrentShapeGroup->EdgesWithBackGround[EDGE_BOTTOM];
 
-	if (CurrentShapeGroup->Next != nullptr)
-	{
-		CurrentShapeGroup = CurrentShapeGroup->Next;
-	}
+	//if (CurrentShapeGroup->Next != nullptr)
+	//{
+	//	CurrentShapeGroup = CurrentShapeGroup->Next;
+	//}
 	//Compare CurrentShape's Access variables with all other shapes
 	while (CurrentShapeGroup != nullptr)
 	{
 
 		//Furthest Right is the most positive number
-		if (FurthestRight < CurrentShapeGroup->Right) //
+		if (FurthestRight < CurrentShapeGroup->EdgesWithBackGround[EDGE_RIGHT]) //
 		{
-			FurthestRight = CurrentShapeGroup->Right;
+			FurthestRight = CurrentShapeGroup->EdgesWithBackGround[EDGE_RIGHT];
 		}
 
 		//Furthest Left is the most negative number
-		if (FurthestLeft > CurrentShapeGroup->Left) //
+		if (FurthestLeft > CurrentShapeGroup->EdgesWithBackGround[EDGE_LEFT]) //
 		{
-			FurthestLeft = CurrentShapeGroup->Left;
+			FurthestLeft = CurrentShapeGroup->EdgesWithBackGround[EDGE_LEFT];
 		}
 
 		//Furthest Top is the most positive number
-		if (FurthestTop < CurrentShapeGroup->Top) //
+		if (FurthestTop < CurrentShapeGroup->EdgesWithBackGround[EDGE_TOP]) //
 		{
-			FurthestTop = CurrentShapeGroup->Top;
+			FurthestTop = CurrentShapeGroup->EdgesWithBackGround[EDGE_TOP];
 		}
 
 		//Furthest Bottom is the most negative number
-		if (FurthestBottom > CurrentShapeGroup->Bottom) //
+		if (FurthestBottom > CurrentShapeGroup->EdgesWithBackGround[EDGE_BOTTOM]) //
 		{
-			FurthestBottom = CurrentShapeGroup->Bottom;
+			FurthestBottom = CurrentShapeGroup->EdgesWithBackGround[EDGE_BOTTOM];
 		}
 
 		if (CurrentllPageItem->BackGround == true)
@@ -823,8 +846,10 @@ void PageGroupItem::UpdatellMouseAccess()
 	CurrentllPageItem->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
 	CurrentllPageItem->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
 
+	CurrentllPageItem->EdgesWithBackGround = { FurthestLeft , FurthestRight, FurthestTop, FurthestBottom};
+
 	//Set Input if not already set
-	if (CurrentllPageItem->InputType != INPUT_CENTER)
+	if (CurrentllPageItem->InputType != INPUT_CENTER || Input_Left_Once == true)
 	{
 		TranslateInput();
 		WithNewInput = true;
@@ -833,6 +858,7 @@ void PageGroupItem::UpdatellMouseAccess()
 
 	SetBackGround();
 }
+
 
 
 void PageGroupItem::ProcessBackGround()
@@ -1379,61 +1405,63 @@ glm::vec4 PageGroupItem::GetEdgesWithBackGround()
 
 void PageGroupItem::TranslateInput()
 {
-	glm::vec2 PositionBias;
-	float x_CenterofPageItem = (CurrentllPageItem->Left + CurrentllPageItem->Right )/ 2;
-	float y_CenterofPageItem = (CurrentllPageItem->Bottom + CurrentllPageItem->Top) / 2;
-
-	//The position bias is how much the actual position deviates from the PageItem's center
-	//The PageItem's center is the default input so we translate the given input to the center Input (default)
-	//And then tack on the Position bias
-	PositionBias[0] = x_CenterofPageItem - CurrentllPageItem->Position[X_AXIS];
-	PositionBias[1] = y_CenterofPageItem - CurrentllPageItem->Position[Y_AXIS];
+	float LeftEdgeOffset = CurrentllPageItem->Position[X_AXIS] - CurrentllPageItem->Left;
+	float RightEdgeOffset = CurrentllPageItem->Position[X_AXIS] - CurrentllPageItem->Right;
+	float TopEdgeOffset = CurrentllPageItem->Position[Y_AXIS] - CurrentllPageItem->Top;
+	float BottomEdgeOffset = CurrentllPageItem->Position[Y_AXIS] - CurrentllPageItem->Bottom;
 
 	switch (CurrentllPageItem->InputType)
 	{
 	case INPUT_LEFT: //Center
-		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[Y_AXIS] += TopEdgeOffset; 
+		CurrentllPageItem->Position[Y_AXIS] += (CurrentllPageItem->Size[Y_AXIS] / 2); 
+		CurrentllPageItem->Position[X_AXIS] += LeftEdgeOffset;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_RIGHT: //Center
-		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[Y_AXIS] += TopEdgeOffset; 
+		CurrentllPageItem->Position[Y_AXIS] += (CurrentllPageItem->Size[Y_AXIS] / 2); 
+		CurrentllPageItem->Position[X_AXIS] += RightEdgeOffset;
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_TOP: //Center
-		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[Y_AXIS] += TopEdgeOffset; 
+		CurrentllPageItem->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageItem->Position[X_AXIS] += (CurrentllPageItem->Size[X_AXIS] / 2);
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_BOTTOM: //Center
-		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[Y_AXIS] += BottomEdgeOffset; 
+		CurrentllPageItem->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageItem->Position[X_AXIS] += (CurrentllPageItem->Size[X_AXIS]/2);
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_TOPLEFT: //Corner
-		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
-		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[X_AXIS] += LeftEdgeOffset;
+		CurrentllPageItem->Position[Y_AXIS] += TopEdgeOffset; 
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_TOPRIGHT: //Corner
-		CurrentllPageItem->Position[Y_AXIS] -= CurrentllPageItem->Size[Y_AXIS] / 2;
-		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageItem->Position[Y_AXIS] += TopEdgeOffset;  
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_BOTTOMLEFT: //Corner
-		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
-		CurrentllPageItem->Position[X_AXIS] += CurrentllPageItem->Size[X_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[X_AXIS] += LeftEdgeOffset;   
+		CurrentllPageItem->Position[Y_AXIS] += BottomEdgeOffset; 
 		CurrentllPageItem->InputType = INPUT_CENTER;
 		break;
 	case INPUT_BOTTOMRIGHT: //Corner
-		CurrentllPageItem->Position[Y_AXIS] += CurrentllPageItem->Size[Y_AXIS] / 2;
-		CurrentllPageItem->Position[X_AXIS] -= CurrentllPageItem->Size[X_AXIS] / 2;
-		CurrentllPageItem->Position -= PositionBias;
+		CurrentllPageItem->Position[X_AXIS] += RightEdgeOffset;  
+		CurrentllPageItem->Position[Y_AXIS] += BottomEdgeOffset; 
 		CurrentllPageItem->InputType = INPUT_CENTER;
+		break;
+	case INPUT_CENTER:
+		CurrentllPageItem->Position[Y_AXIS] += TopEdgeOffset; 
+		CurrentllPageItem->Position[Y_AXIS] += (CurrentllPageItem->Size[Y_AXIS] / 2); 
+		CurrentllPageItem->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageItem->Position[X_AXIS] += (CurrentllPageItem->Size[X_AXIS] / 2);
+		Input_Left_Once = false;
 		break;
 	}
 

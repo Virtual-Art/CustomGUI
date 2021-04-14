@@ -17,7 +17,9 @@ void MenuCreator::Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram*
 void MenuCreator::Update()
 {
 	Page_MenuCreator.DrawPage();
-	PageGroup_Side_Filler.SetPosition({ MouseManager::xPos, MouseManager::yPos});
+	BookDirectory Random;
+	//MasterElement::FindElement(RestaurantBook, LEVEL_PAGEITEM, Random);
+	//PageGroup_Side_Filler.SetPosition({ MouseManager::xPos, MouseManager::yPos});
 }
 //+----------------------------+
 	 
@@ -192,7 +194,7 @@ void MenuCreator::Prepare_Side_Filler()
 	PageItem_Template.BackGroundPadding[PADDING_TOP] = 40;
 	PageItem_Template.BackGroundPadding[PADDING_BOTTOM] = 200;
 	PageItem_Template.BackGroundColor = SubmitOrder::DarkPurple;
-	//PageItem_Template.Position = { 0.1, -0.1 };
+	PageItem_Template.Position = { 0.1, -0.1 };
 	Log::LogString("SETTING NAME 1st---------------------------------------------------------------------------------");
 	Printer_Side_Name.llInit(RestaurantBook, &PageItem_Template, NumberPrinter_Template);
 	Log::LogString("SETTING NAME 2nd---------------------------------------------------------------------------------");
@@ -213,9 +215,10 @@ void MenuCreator::Prepare_Side_Filler()
 	Printer_Cost.PlaceBelow(Printer_Side_Name.GetEdges(), MATCH_BEGINNINGS, 40);
 	Log::LogString("SETTING COST 3rd---------------------------------------------------------------------------------");
 	//Log::LogString("BETWEEN CREATION 2nd");
-	
 
-	////Submit
+	PageGroupItem Filler(RestaurantBook);
+
+	//////Submit
 	TextData_Template.Phrase = "Submit";
 	ShapeGroup_Template.BackGround = true;
 	ShapeGroup_Template.BackGroundPadding[PADDING_LEFT] = 40;
@@ -227,15 +230,30 @@ void MenuCreator::Prepare_Side_Filler()
 	Log::LogString("BETWEEN TEXT SUBMIT 1st");
 	Text_Submit_Dish.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 	Log::LogString("BETWEEN TEXT SUBMIT 2nd");
-	Text_Submit_Dish.PlaceBelow(Printer_Side_Name.GetEdgesWithBackGround(), MATCH_CENTERS, 50);
-	Log::LogString("BETWEEN TEXT SUBMIT 3rd");
+	Text_Submit_Dish.PlaceBelow(Printer_Side_Name.GetEdgesWithBackGround(), MATCH_CENTERS, 20);
+	Log::LogString("BETWEEN TEXT SUBMIT 3rd-------------------------------------------------------------------------------------------------");
 
-	//PageGroupItem Reference_PageItem(Printer_Side_Name.GetData());
+
+	//glm::vec4 useless = { Printer_Cost.GetData()->Left, Printer_Cost.GetData()->Right, Printer_Cost.GetData()->Top, Printer_Cost.GetData()->Bottom };
+	//Log::LogVec4("Left, Right, Top, Bottom", useless);
+
+	//Log::LogFloat("Difference", Printer_Cost.GetData()->Position[X_AXIS] - Printer_Cost.GetData()->Right);
+
+	//Printer_Cost.SetllPosition({ -0.7, 0.0 });
+
+	//useless = { Printer_Cost.GetData()->Left, Printer_Cost.GetData()->Right, Printer_Cost.GetData()->Top, Printer_Cost.GetData()->Bottom };
+	//Log::LogVec4("Left, Right, Top, Bottom", useless);
+
+	//PageGroupItem Reference_PageItem(Printer_Cost.GetData());
 	//Reference_PageItem.LoadedBook = RestaurantBook;
-	//Reference_PageItem.SetllPosition({-0.7, 0.0});
-	////Printer_Side_Name.SetllPosition({-0.6, 0.0});
+	//Reference_PageItem.SetllPosition({-0.7, 0.0}, INPUT_TOP); //Not Working with extra
 
-	PageGroup_Side_Filler.SetPosition({-0.5, 0.5});
+	//PageGroup_Side_Filler.llUpdate();
+	//Log::LogString("This is where i set Position");
+	PageGroup_Side_Filler.PlaceRight(Text_Add_Dish.GetEdgesWithBackGround(), MATCH_CEILINGS, 10);
+	
+	//IT WORKS!!!!
+	
 }
 
 void MenuCreator::Add_Side() {}

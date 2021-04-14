@@ -1131,17 +1131,10 @@ void ShapeGroup::SetllMouseAccess()
 		CurrentllShapeGroup->Top = FurthestTop;
 		CurrentllShapeGroup->Bottom = FurthestBottom;
 
-		//In the case there is no background
-		CurrentllShapeGroup->EdgesWithBackGround[EDGE_LEFT] = CurrentllShapeGroup->Left;
-		CurrentllShapeGroup->EdgesWithBackGround[EDGE_RIGHT] = CurrentllShapeGroup->Right;
-		CurrentllShapeGroup->EdgesWithBackGround[EDGE_TOP] = CurrentllShapeGroup->Top;
-		CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM] = CurrentllShapeGroup->Bottom;
+		CurrentllShapeGroup->EdgesWithBackGround = { FurthestLeft , FurthestRight, FurthestTop, FurthestBottom };
 
 		CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
 		CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
-
-		//Uses Group Edges (Untouched)
-		//Uses Group Size (Untouched)
 
 		//Set BackGround Will update the Mouse Access
 		SetBackGround();
@@ -1575,47 +1568,54 @@ void ShapeGroup::ConvertInputToInputLeft()
 	float BottomEdges_Distance = (CurrentllShapeGroup->Bottom - CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM]);
 	float EntireY = CurrentllShapeGroup->EdgesWithBackGround[EDGE_TOP] - CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM];
 
+	//CurrentllShapeGroup->Position[Y_AXIS] -= 0.0666; //Offseted like this for some reason
+
 	switch (CurrentllShapeGroup->InputType)
 	{
 	case INPUT_LEFT: //To Left
 		//Text is Created based off of INPUT_LEFT Already
-		CurrentllShapeGroup->Position[Y_AXIS] += (EntireY/2) + (CurrentllShapeGroup->Size[Y_AXIS]/2);
+		CurrentllShapeGroup->Position[Y_AXIS]  = (CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM] + CurrentllShapeGroup->EdgesWithBackGround[EDGE_TOP]) / 2;// CurrentllShapeGroup->Size[X_AXIS] / 2;
 		CurrentllShapeGroup->Position[X_AXIS] += LeftEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		//Not Taking into account the distance between LeftEdges and bakground left
 		Input_Left_Once = false;
 		break;
 	case INPUT_RIGHT: //Converted to INPUT_LEFT
+		//Edges Distance special case
+		CurrentllShapeGroup->Position[Y_AXIS]  = (CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM] + CurrentllShapeGroup->EdgesWithBackGround[EDGE_TOP]) / 2;// CurrentllShapeGroup->Size[X_AXIS] / 2;
 		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS];
 		CurrentllShapeGroup->Position[X_AXIS] += RightEdges_Distance;
-
-		//Edges Distance special case
-		CurrentllShapeGroup->Position[Y_AXIS] += (EntireY/2) + (CurrentllShapeGroup->Size[Y_AXIS]/2);
-
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
 	case INPUT_TOP: //Converted to INPUT_LEFT    ///////////////////// Not Working
 		CurrentllShapeGroup->Position[Y_AXIS] -= CurrentllShapeGroup->Size[Y_AXIS] / 2;
 		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS] / 2;
-		CurrentllShapeGroup->Position[Y_AXIS] -= TopEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] += TopEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
 	case INPUT_BOTTOM: //Converted to INPUT_LEFT
 		CurrentllShapeGroup->Position[Y_AXIS] += CurrentllShapeGroup->Size[Y_AXIS] / 2;
 		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS] / 2;
 		CurrentllShapeGroup->Position[Y_AXIS] += BottomEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
 	case INPUT_TOPLEFT: //Converted to INPUT_LEFT     ///////////////////// Not Working
 		CurrentllShapeGroup->Position[Y_AXIS] -= CurrentllShapeGroup->Size[Y_AXIS] / 2;
-		CurrentllShapeGroup->Position[Y_AXIS] -= TopEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] += TopEdges_Distance;
 		CurrentllShapeGroup->Position[X_AXIS] += LeftEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
 	case INPUT_TOPRIGHT: //Converted to INPUT_LEFT    ///////////////////// Not Working
 		CurrentllShapeGroup->Position[Y_AXIS] -= CurrentllShapeGroup->Size[Y_AXIS] / 2;
 		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS];
-		CurrentllShapeGroup->Position[Y_AXIS] -= TopEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] += TopEdges_Distance;
 		CurrentllShapeGroup->Position[X_AXIS] += RightEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
 	case INPUT_BOTTOMLEFT: //Converted to INPUT_LEFT
@@ -1623,6 +1623,7 @@ void ShapeGroup::ConvertInputToInputLeft()
 		//Re-Position in accordance with any background
 		CurrentllShapeGroup->Position[Y_AXIS] += BottomEdges_Distance;
 		CurrentllShapeGroup->Position[X_AXIS] += LeftEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
@@ -1631,11 +1632,15 @@ void ShapeGroup::ConvertInputToInputLeft()
 		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS];
 		CurrentllShapeGroup->Position[Y_AXIS] += BottomEdges_Distance;
 		CurrentllShapeGroup->Position[X_AXIS] += RightEdges_Distance;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 5 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
 		break;
 	case INPUT_CENTER:
-		CurrentllShapeGroup->Position[X_AXIS] += CurrentllShapeGroup->Size[X_AXIS] / 2;
+		CurrentllShapeGroup->Position[Y_AXIS] = (CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM] + CurrentllShapeGroup->EdgesWithBackGround[EDGE_TOP])/2;// CurrentllShapeGroup->Size[X_AXIS] / 2;
+		CurrentllShapeGroup->Position[X_AXIS] -= CurrentllShapeGroup->Size[X_AXIS] / 2;
+		CurrentllShapeGroup->Position[Y_AXIS] -= 7 * PIXEL;
 		CurrentllShapeGroup->InputType = INPUT_LEFT;
+		Log::LogVec2("EntireY, Position.y", { EntireY, CurrentllShapeGroup->Position[Y_AXIS] });
 	}
 
 	CurrentllShapeGroup->InputType = INPUT_LEFT;

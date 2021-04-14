@@ -359,6 +359,7 @@ struct llPageGroupData
 	int ShapeCount = -1;  //Lowest level //EX: PageItem owns 40 Shapes 
 	int ShapeOffset = -1;      //Lowest level //EX: This Shape is 10 Shapes from PageItem start Shape (120)
 	int Type = 0;
+	int InputType = INPUT_CENTER;
 	bool BackGround = false;
 	int BackGroundPlacementType = PLACEMENT_NORMAL; //Place Background above, below..
 	int BackGroundMatchType = MATCH_NONE; //MATCH_CENTERS (BackGround Center to Group Center)

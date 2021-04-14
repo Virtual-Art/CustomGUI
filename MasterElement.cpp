@@ -174,12 +174,6 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 	//Page
 	llPageData* CurrentPage = SavedPage;
 
-	////Set to beginning
-	while (CurrentPage->Previous != nullptr)
-	{
-		CurrentPage = CurrentPage->Previous;
-	}
-
 	//CurrentPage = HeadPage(CurrentPage);
 
 	BookDirectory.Page = CurrentPage;

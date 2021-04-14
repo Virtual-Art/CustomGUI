@@ -149,8 +149,47 @@ public:
 	void AllignX(const float& X, int PlacementType);
 	void AllignY(const float& Y, int PlacementType);
 
-	void TranslateInput(); // Working
+	void TranslateInput(); // Working Not Quite
 	void UpdatellMouseAccess();
+
+	void RePositionToCenter() //Sets the group position to the center of the product of combined edges
+	{
+		///////////////////////In Parent/Current//////////////////////////
+		//CurrentPosition
+		glm::vec2 ActualPosition = CurrentllPageItem->Position; //CurrentllPageItem
+
+		//Center of Group
+		glm::vec2 CenterPosition = { (CurrentllPageItem->Left + CurrentllPageItem->Right)/2, (CurrentllPageItem->Top + CurrentllPageItem->Bottom)/2}; //Center Of PageItem
+
+		//Vector to go from Center of group position to Actual position
+		glm::vec2 CenterToActualTranslation = ActualPosition - CenterPosition;
+
+		///////////////////////Parent/Current Finished//////////////////////////
+
+		////////////////////////In Child///////////////////////////////
+		llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+
+		while (CurrentShapeGroup != nullptr)
+		{
+
+			//Previous Offset
+			glm::vec2 ActualOffset = CurrentShapeGroup->PositionOffset; //CurrentllShapeGroup->PositionOffset
+
+			//New Offset
+			glm::vec2 CenterOffset = ActualOffset + CenterToActualTranslation;
+
+			CurrentShapeGroup->PositionOffset = CenterOffset;
+
+			CurrentShapeGroup = CurrentShapeGroup->Next;
+		}
+
+		///////////////////////Child Finished
+
+		//Actual Position + Offset = FinalPosition (Same)    //Group Pos  +   GroupOffset  = Where the Group will be positioned
+		//Log::LogVec2("Group Position From Actual Position", ActualPosition + ActualOffset);
+		//Log::LogVec2("Group Position From Center Position", CenterPosition + CenterOffset);
+		//Center Position + Offset = FinalPosition (Same)
+	}
 
 	//Call function after Edges have been updated
 	void ProcessBackGround();
@@ -175,10 +214,8 @@ public:
 	//glm::vec2 GetSize() override { return CurrentllPageItem->Size; };
 	//glm::vec4 GetColor() override { return  CurrentllPageItem->Color; };
 
-	void SetllPosition(glm::vec2 Position)
-	{
-		Log::LogString("PageItem Position Changed"); CurrentllPageItem->Position = Position; llUpdate();
-	}
+	void SetllPosition(glm::vec2 Position);
+	void SetllPosition(glm::vec2 Position, int InputType);
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...
@@ -258,8 +295,10 @@ public:
 	glm::vec2 GetBiggestMouseAccess(glm::vec2 Position, glm::vec2 Size);
 
 	private:
-		bool WithNewInput = false;
 
+		bool WithNewInput = false;
+		bool Input_Left_Once = false;
+		glm::vec2 PreviousPosition = {0.0, 0.0};
 };
 
 

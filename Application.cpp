@@ -211,7 +211,7 @@ int main(int argc, char** argv)
 	KadenCardenasMarett.Address = "Weird";
 
 	CustomerDetails Customer1;
-	Customer1.FirstName = "sandy"; 
+	Customer1.FirstName = "sandy";
 	CustomerDetails Customer2;
 	Customer2.FirstName = "sara";
 	CustomerDetails Customer3;
@@ -259,7 +259,7 @@ int main(int argc, char** argv)
 	CustomerDataBase[Customer4.FirstName] = Customer4;
 
 
-	
+
 	for (auto kv : CustomerDataBase)
 	{
 		auto& Key = kv.first;
@@ -271,8 +271,8 @@ int main(int argc, char** argv)
 	}
 
 	//WHYY.SetllText("WHYYYYYYYYYY");
-    //WHYY.SetllPosition({0.0, 0.9});
-	
+	//WHYY.SetllPosition({0.0, 0.9});
+
 	PageItemData PageItem_FirstSlider;
 	SliderData Slider_FirstSlider;
 
@@ -302,8 +302,8 @@ int main(int argc, char** argv)
 	//UnusedSlider.SetPosition({ 0.6, -0.7 }); // to fix this we need to have the slider shape group count go back to it's spot in the shape group
 	UnusedSlider.SetSize({ 0.2, 0.1 });
 	UnusedSlider.SetDescription("HelloWorld");
-//	UnusedSlider.PrintGroupShapes();
-	//UnusedSlider.ReCalibrateID();
+	//	UnusedSlider.PrintGroupShapes();
+		//UnusedSlider.ReCalibrateID();
 
 	float Time;
 	float PreviousTime;
@@ -312,7 +312,7 @@ int main(int argc, char** argv)
 
 	llBookData Gamee;
 
-	
+
 	NewPage FistPage(&Gamee, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	//MasterElement::AddPageToBook(&Gamee);
@@ -361,7 +361,7 @@ int main(int argc, char** argv)
 	llSD.Description = "Desp";
 	llSD.Ratio = "34.3";
 	llPageItemData PID;
-	PID.Position = {0.3, 0.3};
+	PID.Position = { 0.3, 0.3 };
 
 	Slider llSlider(&Gamee, &PID, llSD);
 
@@ -396,7 +396,7 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < argc; i++)
 	{
-	    argv[i];
+		argv[i];
 	}
 
 	glm::vec2 MousePosition = { MouseManager::xPos, MouseManager::yPos };
@@ -406,14 +406,14 @@ int main(int argc, char** argv)
 	NumberGroup.Color = { 0.0, 0.5, 1.0, 1.0 };
 
 	NumberPrinterData NewVec2_Data;
-	NewVec2_Data.Description = "Mouse"; 
+	NewVec2_Data.Description = "Mouse";
 	NewVec2_Data.Type = TYPE_VEC2;
 	NewVec2_Data.VEC2 = &MousePosition;
 
 	//NumberPrinter NewVec2(&EditorBook, &NumberGroup, NewVec2_Data);
 
 	llPageItemData PageItem_Toggle;
-	PageItem_Toggle.Position = {-0.89, -0.3};
+	PageItem_Toggle.Position = { -0.89, -0.3 };
 
 	llBookData NEWBOOK;
 
@@ -481,10 +481,10 @@ int main(int argc, char** argv)
 
 
 	llPageItemData PageItem_Template;
-	PageItem_Template.Position = {-0.3, 0.95};
+	PageItem_Template.Position = { -0.3, 0.95 };
 	PageItem_Template.BackGround = true;
-	PageItem_Template.BackGroundColor = {1.0, 0.0, 1.0, 1.0};
-	PageItem_Template.BackGroundPadding = { 20, 20, 20, 20};
+	PageItem_Template.BackGroundColor = { 1.0, 0.0, 1.0, 1.0 };
+	PageItem_Template.BackGroundPadding = { 20, 20, 20, 20 };
 	SelectorData Selector_Template;
 	Selector_Template.Selector[0] = "Soups";
 	Selector_Template.Selector[1] = "Frozen";
@@ -494,7 +494,7 @@ int main(int argc, char** argv)
 	Selector_Template.Selector[5] = "Keto Diet";
 	Selector_Template.Selector[6] = "Vegetarian";
 	Selector_Template.Selector[7] = "Gluten Free";
-	Selector_Template.ColumnsRows = {4, 2};
+	Selector_Template.ColumnsRows = { 4, 2 };
 	Selector_Template.XSpacing = 120;
 	Selector_Template.YSpacing = 50;
 	Selector First_Selector(&Book_Restaurant_POS, &PageItem_Template, Selector_Template);
@@ -504,15 +504,13 @@ int main(int argc, char** argv)
 	Tiredofthis.VEC2 = &MousePosition;
 
 	llPageItemData boooo;
-	boooo.Position = {0.9, 0.95};
+	boooo.Position = { 0.9, 0.95 };
 
-	NumberPrinter sigh_MousePosition(&Book_Restaurant_POS, &boooo , Tiredofthis);
+	NumberPrinter sigh_MousePosition(&Book_Restaurant_POS, &boooo, Tiredofthis);
 
 	MenuCreator::Prepare_MenuCreator(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 	Log::LogString("Passed Prepare");
 	//MasterElement::PrintBookStats(&Book_Restaurant_POS);
-
-
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -563,7 +561,7 @@ int main(int argc, char** argv)
 			//PageCreator::PrintCreatorStats();
 		}
 
-		//Log::LogVec2("", MousePosition);
+		Log::LogVec2("", MousePosition);
 
 		//a SliderPointer points to a function that belongs to slider
 		typedef void(MasterElement::* MasterElementFunction)();

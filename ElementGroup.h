@@ -122,6 +122,18 @@ class ShapeGroup : public MasterElement
 		llUpdate();
 	}
 
+	void SetllPosition(glm::vec2 Position, int InputType)
+	{
+		CurrentllShapeGroup->Position = Position;
+		CurrentllShapeGroup->InputType = InputType;
+		if (InputType == INPUT_LEFT)
+		{
+			Input_Left_Once = true;
+		}
+
+		llUpdate();
+	}
+
 
 	ShapeData& Switch(Page& Page, int RequstedShapeID) override { return LoadedShape; };
 	ShapeData& Switch(int ShapeID) override

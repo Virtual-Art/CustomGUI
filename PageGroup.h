@@ -94,6 +94,7 @@ public:
 	void llUpdate();
 
 	void SetPosition(glm::vec2 Position) override; //...
+	void SetllPosition(glm::vec2 Position, int InputType);
 
 	void OffsetPosition(glm::vec2 Position, glm::vec2 bools) override; //...
 	void OffsetSize(glm::vec2 Size, glm::vec2 bools) override;         //...
@@ -117,9 +118,16 @@ public:
 	int FindChildGroup(int ChildGroupID);
 	int FindPageItem(bool FromBottom, double xMouse, double yMouse);
 
+	void PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
+	void PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
+
+	void TranslateInput();
 	void SetllMouseAccess();
 
 	float SetMouseAccess(glm::vec2 Position, glm::vec2 Size);
+
+
+	bool Input_Left_Once = false;
 };
 
 #endif

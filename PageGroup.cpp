@@ -416,6 +416,21 @@ void PageGroup::SetPosition(glm::vec2 Position)
 	Log::LogString("Position offseted");
 }
 
+void PageGroup::SetllPosition(glm::vec2 Position, int InputType)
+{
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageGroup nullptr"); return; };
+
+	CurrentllPageGroup->Position = Position;
+	CurrentllPageGroup->InputType = InputType;
+
+	if (InputType == INPUT_CENTER)
+	{
+		Input_Left_Once = true;
+	}
+
+	llUpdate();
+}
+
 void PageGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
 {
 	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageGroup nullptr"); return; };
@@ -875,40 +890,40 @@ void PageGroup::SetllMouseAccess()
 		CurrentPageItem = CurrentPageItem->Next;
 	}
 
-	float FurthestRight = CurrentPageItem->Right;
-	float FurthestLeft = CurrentPageItem->Left;
-	float FurthestTop = CurrentPageItem->Top;
-	float FurthestBottom = CurrentPageItem->Bottom;
+	float FurthestRight = CurrentPageItem->EdgesWithBackGround[EDGE_RIGHT];  //CurrentllPageGroup->EdgesWithBackGround[EDGE_RIGHT];  //
+	float FurthestLeft = CurrentPageItem->EdgesWithBackGround[EDGE_LEFT];	  //CurrentllPageGroup->EdgesWithBackGround[EDGE_LEFT];   //
+	float FurthestTop = CurrentPageItem->EdgesWithBackGround[EDGE_TOP];	      //CurrentllPageGroup->EdgesWithBackGround[EDGE_TOP];    //
+	float FurthestBottom = CurrentPageItem->EdgesWithBackGround[EDGE_BOTTOM]; //CurrentllPageGroup->EdgesWithBackGround[EDGE_BOTTOM]; //
 
-	if (CurrentPageItem->Next != nullptr)
-	{
-		CurrentPageItem = CurrentPageItem->Next;
-	}
+	//if (CurrentPageItem->Next != nullptr)
+	//{
+	//	CurrentPageItem = CurrentPageItem->Next;
+	//}
 	//Compare CurrentShape's Access variables with all other shapes
 	while (CurrentPageItem != nullptr)
 	{
 		//Furthest Right is the most positive number
-		if (FurthestRight < CurrentPageItem->Right) //
+		if (FurthestRight < CurrentPageItem->EdgesWithBackGround[EDGE_RIGHT]) //
 		{
-			FurthestRight = CurrentPageItem->Right;
+			FurthestRight = CurrentPageItem->EdgesWithBackGround[EDGE_RIGHT];
 		}
 
 		//Furthest Left is the most negative number
-		if (FurthestLeft > CurrentPageItem->Left) //
+		if (FurthestLeft > CurrentPageItem->EdgesWithBackGround[EDGE_LEFT]) //
 		{
-			FurthestLeft = CurrentPageItem->Left;
+			FurthestLeft = CurrentPageItem->EdgesWithBackGround[EDGE_LEFT];
 		}
 
 		//Furthest Top is the most positive number
-		if (FurthestTop < CurrentPageItem->Top) //
+		if (FurthestTop < CurrentPageItem->EdgesWithBackGround[EDGE_TOP]) //
 		{
-			FurthestTop = CurrentPageItem->Top;
+			FurthestTop = CurrentPageItem->EdgesWithBackGround[EDGE_TOP];
 		}
 
 		//Furthest Bottom is the most negative number
-		if (FurthestBottom > CurrentPageItem->Bottom) //
+		if (FurthestBottom > CurrentPageItem->EdgesWithBackGround[EDGE_BOTTOM]) //
 		{
-			FurthestBottom = CurrentPageItem->Bottom;
+			FurthestBottom = CurrentPageItem->EdgesWithBackGround[EDGE_BOTTOM];
 		}
 
 		CurrentPageItem = CurrentPageItem->Next;
@@ -923,9 +938,96 @@ void PageGroup::SetllMouseAccess()
 	CurrentllPageGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
 	CurrentllPageGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
 
+		//Set Input if not already set
+	if (CurrentllPageGroup->InputType != INPUT_CENTER || Input_Left_Once == true)
+	{
+		TranslateInput();
+		//WithNewInput = true;
+		llUpdate();
+	}
+
 	SetBackGround();
 }
 
+
+void PageGroup::TranslateInput()
+{
+	float LeftEdgeOffset = CurrentllPageGroup->Position[X_AXIS] - CurrentllPageGroup->Left;
+	float RightEdgeOffset = CurrentllPageGroup->Position[X_AXIS] - CurrentllPageGroup->Right;
+	float TopEdgeOffset = CurrentllPageGroup->Position[Y_AXIS] - CurrentllPageGroup->Top;
+	float BottomEdgeOffset = CurrentllPageGroup->Position[Y_AXIS] - CurrentllPageGroup->Bottom;
+
+	switch (CurrentllPageGroup->InputType)
+	{
+	case INPUT_LEFT: //Center
+		CurrentllPageGroup->Position[Y_AXIS] += TopEdgeOffset;
+		CurrentllPageGroup->Position[Y_AXIS] += (CurrentllPageGroup->Size[Y_AXIS] / 2);
+		CurrentllPageGroup->Position[X_AXIS] += LeftEdgeOffset;
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	case INPUT_RIGHT: //Center
+		CurrentllPageGroup->Position[Y_AXIS] += TopEdgeOffset;
+		CurrentllPageGroup->Position[Y_AXIS] += (CurrentllPageGroup->Size[Y_AXIS] / 2);
+		CurrentllPageGroup->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	case INPUT_TOP: //Center
+		CurrentllPageGroup->Position[Y_AXIS] += TopEdgeOffset;
+		CurrentllPageGroup->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageGroup->Position[X_AXIS] += (CurrentllPageGroup->Size[X_AXIS] / 2);
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	case INPUT_BOTTOM: //Center
+		CurrentllPageGroup->Position[Y_AXIS] += BottomEdgeOffset;
+		CurrentllPageGroup->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageGroup->Position[X_AXIS] += (CurrentllPageGroup->Size[X_AXIS] / 2);
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	case INPUT_TOPLEFT: //Corner
+		CurrentllPageGroup->Position[X_AXIS] += LeftEdgeOffset;
+		CurrentllPageGroup->Position[Y_AXIS] += TopEdgeOffset;
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		Log::LogString("went in!!!!!!!!!!!!!!!!!!!!!!");
+		break;
+	case INPUT_TOPRIGHT: //Corner
+		CurrentllPageGroup->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageGroup->Position[Y_AXIS] += TopEdgeOffset;
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	case INPUT_BOTTOMLEFT: //Corner
+		CurrentllPageGroup->Position[X_AXIS] += LeftEdgeOffset;
+		CurrentllPageGroup->Position[Y_AXIS] += BottomEdgeOffset;
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	case INPUT_BOTTOMRIGHT: //Corner
+		CurrentllPageGroup->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageGroup->Position[Y_AXIS] += BottomEdgeOffset;
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	case INPUT_CENTER:
+		CurrentllPageGroup->Position[Y_AXIS] += TopEdgeOffset;
+		CurrentllPageGroup->Position[Y_AXIS] += (CurrentllPageGroup->Size[Y_AXIS] / 2);
+		CurrentllPageGroup->Position[X_AXIS] += RightEdgeOffset;
+		CurrentllPageGroup->Position[X_AXIS] += (CurrentllPageGroup->Size[X_AXIS] / 2);
+		Input_Left_Once = false;
+		CurrentllPageGroup->InputType = INPUT_CENTER;
+		break;
+	}
+
+	CurrentllPageGroup->InputType = INPUT_CENTER;
+}
+
+void PageGroup::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
+{
+	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
+	llUpdate();
+}
+
+void PageGroup::PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
+{
+	ManualPlaceRight(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
+	llUpdate();
+}
 
 void PageGroup::llUpdate()
 {
@@ -934,62 +1036,58 @@ void PageGroup::llUpdate()
 	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Update FAILED:: Invalid PageGroup State"); return; }
 	if (CurrentllPageGroup->PageItem == nullptr) { Log::LogString("WARNING:: PageGroup Update FAILED:: No Contents to Update"); return; }
 
-	//Log::LogString("Updating PageGroup");
+	llPageItemData* CurrentPageItem = CurrentllPageGroup->PageItem;
 
-	if (CurrentllPageGroup != nullptr && LoadedBook != nullptr)
+	while (CurrentPageItem->Previous != nullptr)
 	{
-		llPageItemData* CurrentPageItem = CurrentllPageGroup->PageItem;
-
-		while (CurrentPageItem->Previous != nullptr)
-		{
-			CurrentPageItem = CurrentPageItem->Previous;
-		}
-
-		//if (CurrentllPageGroup->BackGround == true)
-		//{
-		//	CurrentPageItem = CurrentPageItem->Next;
-		//}
-
-		//Main Loop
-		while (CurrentPageItem != nullptr)
-		{
-			//switch (CurrentPageItem->Type)
-			//{
-			//case TYPE_PAGEITEM: 
-			//{
-				PageGroupItem PageItemSelected(CurrentPageItem);
-				PageItemSelected.llSwitch(CurrentPageItem);
-				PageItemSelected.LoadedBook = LoadedBook;
-				CurrentPageItem->Position = CurrentllPageGroup->Position + CurrentPageItem->PositionOffset;
-				//Log::LogString(" ");
-				//Log::LogVec2("New PageItem Position", CurrentPageItem->Position);
-				//Log::LogVec2("Based on this offset: ", CurrentPageItem->PositionOffset);
-				//Log::LogVec2("from this PageGroup position: ", CurrentllPageGroup->Position);
-				//Log::LogString(" ");
-
-				CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
-				CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
-				//CurrentPageItem->Size = CurrentllPageGroup->Size - CurrentPageItem->SizeOffset;
-				//CurrentPageItem->Color = CurrentllPageGroup->Color - CurrentPageItem->ColorOffset;
-				CurrentPageItem->ChangeAsGroup = true;
-				PageItemSelected.SetllPageItem(CurrentPageItem);
-				//break;
-			//}
-			//case TYPE_PAGEITEM_SLIDER:
-			//{
-			//	Slider SliderSelected(CurrentPageItem);
-			//	SliderSelected.llSwitch(CurrentPageItem);
-			//	SliderSelected.LoadedBook = LoadedBook;
-			//	CurrentPageItem->Position = CurrentllPageGroup->Position - CurrentPageItem->PositionOffset;
-			//	CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
-			//	CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
-			//	CurrentPageItem->ChangeAsGroup = true;
-			//	SliderSelected.SetllPageItem(CurrentPageItem);
-			//	break;
-			//}
-			//}
-			CurrentPageItem = CurrentPageItem->Next;
-				//CurrentPageItem = nullptr;
-		}
+		CurrentPageItem = CurrentPageItem->Previous;
 	}
+
+	//if (CurrentllPageGroup->BackGround == true)
+	//{
+	//	CurrentPageItem = CurrentPageItem->Next;
+	//}
+
+	//Main Loop
+	while (CurrentPageItem != nullptr)
+	{
+		//switch (CurrentPageItem->Type)
+		//{
+		//case TYPE_PAGEITEM: 
+		//{
+		PageGroupItem PageItemSelected(CurrentPageItem);
+		PageItemSelected.llSwitch(CurrentPageItem);
+		PageItemSelected.LoadedBook = LoadedBook;
+		CurrentPageItem->Position = CurrentllPageGroup->Position + CurrentPageItem->PositionOffset;
+		//Log::LogString(" ");
+		//Log::LogVec2("New PageItem Position", CurrentPageItem->Position);
+		//Log::LogVec2("Based on this offset: ", CurrentPageItem->PositionOffset);
+		//Log::LogVec2("from this PageGroup position: ", CurrentllPageGroup->Position);
+		//Log::LogString(" ");
+
+		CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
+		CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
+		//CurrentPageItem->Size = CurrentllPageGroup->Size - CurrentPageItem->SizeOffset;
+		//CurrentPageItem->Color = CurrentllPageGroup->Color - CurrentPageItem->ColorOffset;
+		CurrentPageItem->ChangeAsGroup = true;
+		PageItemSelected.SetllPageItem(CurrentPageItem);
+		//break;
+	//}
+	//case TYPE_PAGEITEM_SLIDER:
+	//{
+	//	Slider SliderSelected(CurrentPageItem);
+	//	SliderSelected.llSwitch(CurrentPageItem);
+	//	SliderSelected.LoadedBook = LoadedBook;
+	//	CurrentPageItem->Position = CurrentllPageGroup->Position - CurrentPageItem->PositionOffset;
+	//	CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
+	//	CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
+	//	CurrentPageItem->ChangeAsGroup = true;
+	//	SliderSelected.SetllPageItem(CurrentPageItem);
+	//	break;
+	//}
+	//}
+		CurrentPageItem = CurrentPageItem->Next;
+		//CurrentPageItem = nullptr;
+	}
+	SetllMouseAccess();
 }
