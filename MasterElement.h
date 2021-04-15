@@ -331,6 +331,7 @@ struct llPageItemData
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
+	bool Hide = false;
 	bool ChangeAsGroup = false;
 	float Top = -3;
 	float Bottom = -3;
@@ -374,6 +375,7 @@ struct llPageGroupData
 	bool Centered = false;
 	bool Highlighted = false;
 	bool MouseAccess = true;
+	bool Hide = false;
 	bool ChangeAsGroup = false;
 	float Top = -3;
 	float Bottom = -3;

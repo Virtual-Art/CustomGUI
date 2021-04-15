@@ -12,6 +12,7 @@ NumberPrinter::NumberPrinter(llBookData* llBook)
 	CurrentllPageItem->XYShapePerRow = { 2.0, 2.0 }; // Can use without
 	CurrentllPageItem->ShapeSize = { 0.8, 0.8 };  // Can use without
 	CurrentllPageItem->Type = TYPE_PAGEITEM_NUMBER;
+	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
 	LoadedBook = llBook;
 	CreateNumber();
 }
@@ -20,6 +21,8 @@ NumberPrinter::NumberPrinter(llBookData* llBook, llPageItemData* llPageItem, Num
 	: PageGroupItem(llBook, llPageItem)
 {
 	CurrentNumberPrinter = NumberPrinter;
+	CurrentllPageItem->Type = TYPE_PAGEITEM_NUMBER;
+	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
 	LoadedBook = llBook;
 	CreateNumber();
 }
@@ -34,7 +37,17 @@ void NumberPrinter::llInit(llBookData* llBook, llPageItemData* llPageItem, Numbe
 {
 	llPageItemInit(llBook, llPageItem);
 	CurrentNumberPrinter = NumberPrinter;
+	CurrentllPageItem->Type = TYPE_PAGEITEM_NUMBER;
+	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
 	CreateNumber();
+}
+
+void NumberPrinter::llSwitch(llPageItemData* PageItem)
+{
+	CurrentllPageItem = PageItem;
+	CurrentNumberPrinter = PageItem->NumberPrinterData;
+	Parent_PageGroup = (llPageGroupData*)PageItem->ParentGroup;
+	CalculateGroupOffset();
 }
 
 void NumberPrinter::SetString(const string& NewString)
@@ -84,9 +97,9 @@ void NumberPrinter::SetVec2(const glm::vec2& Vec2)
 	llUpdate();
 }
 
-void NumberPrinter::ChangeString(string* NewString)
+void NumberPrinter::ChangeString(string NewString)
 {
-	CurrentNumberPrinter.String = NewString;
+	*CurrentNumberPrinter.String = NewString;
 	llUpdate();
 }
 
@@ -670,3 +683,21 @@ string NumberPrinter::ProcessDecimalPlace(string& Reference_String)
 	return Reference_String;
 }
 
+//We are setting it to the second shapegroup
+void NumberPrinter::SetKeyBoardInputFunction(Button* Button, ButtonFunction SetFunction)
+{
+	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
+
+	CurrentShapeGroup = HeadShapeGroup(CurrentShapeGroup);
+
+	if (CurrentllPageItem->BackGround == true)
+	{
+		CurrentShapeGroup = CurrentShapeGroup->Next;
+	}
+
+	//Answer Shape Group
+	CurrentShapeGroup = CurrentShapeGroup->Next;
+
+	CurrentShapeGroup->ShapeGroupButton = Button;
+	Button->LogicalActions[GUI_MOUSELEFT_CLICKED] = SetFunction;
+}

@@ -22,6 +22,7 @@ public:
 	NumberPrinter(llPageItemData* llPageItem);
 
 	void llInit(llBookData* llBook, llPageItemData* llPageItem, NumberPrinterData NumberPrinter);
+	void llSwitch(llPageItemData* PageItem) override;
 
 	//Creation Functions
 	void CreateNumber();
@@ -51,7 +52,7 @@ public:
 
 	//Change NumberPrinterPointers
 	void ChangeVec2(glm::vec2* NewVec2);
-	void ChangeString(string* NewString);
+	void ChangeString(string NewString);
 
 	string& GetCurrentString();
 
@@ -61,7 +62,9 @@ public:
 
 	void Add_Default() override {};
 	void Add_Insert() override {};
-
+		
+	//Set to ShapeGroup
+	void SetKeyBoardInputFunction(Button* Button, ButtonFunction SetFunction);
 
 private:
 

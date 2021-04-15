@@ -118,6 +118,9 @@ public:
 	int FindChildGroup(int ChildGroupID);
 	int FindPageItem(bool FromBottom, double xMouse, double yMouse);
 
+	void Hide();
+	void UnHide();
+
 	void PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
 	void PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
 

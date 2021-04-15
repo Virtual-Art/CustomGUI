@@ -322,6 +322,8 @@ void NewPage::InitiatePage(llBookData* llBook, ShaderProgram ShaderProgram)
 void NewPage::DrawPage()
 {
 
+	LoadedBook->Page = CurrentllPage;
+
 	CurrentllPage->LoadPage(); //Sets all book data into page
 	LoadGPU(); //loads that data to the gpu
 

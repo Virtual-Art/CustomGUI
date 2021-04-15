@@ -1017,6 +1017,28 @@ void PageGroup::TranslateInput()
 	CurrentllPageGroup->InputType = INPUT_CENTER;
 }
 
+
+void PageGroup::Hide()
+{
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: ShapeGrou Hide FAILED:: Invalid ShapeGroup State"); return; }
+	if (CurrentllPageGroup->Hide == true) { return; }
+
+	CurrentllPageGroup->Hide = true;
+	CurrentllPageGroup->MouseAccess = false;
+	llUpdate();
+}
+
+void PageGroup::UnHide()
+{
+	if (CurrentllPageGroup== nullptr) { Log::LogString("ERROR:: ShapeGroup Hide FAILED:: Invalid ShapeGroup State"); return; }
+	if (CurrentllPageGroup->Hide == false) { return; }
+
+	CurrentllPageGroup->Hide = false;
+	CurrentllPageGroup->MouseAccess = true;
+	llUpdate();
+}
+
+
 void PageGroup::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
 {
 	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
@@ -1064,7 +1086,8 @@ void PageGroup::llUpdate()
 		//Log::LogVec2("Based on this offset: ", CurrentPageItem->PositionOffset);
 		//Log::LogVec2("from this PageGroup position: ", CurrentllPageGroup->Position);
 		//Log::LogString(" ");
-
+		CurrentPageItem->Hide = CurrentllPageGroup->Hide;
+		CurrentPageItem->MouseAccess = CurrentllPageGroup->MouseAccess;
 		CurrentPageItem->Highlighted = CurrentllPageGroup->Highlighted;
 		CurrentPageItem->HighlightColor = CurrentllPageGroup->HighlightColor;
 		//CurrentPageItem->Size = CurrentllPageGroup->Size - CurrentPageItem->SizeOffset;

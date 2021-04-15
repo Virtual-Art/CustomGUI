@@ -54,6 +54,8 @@ class ShapeGroup : public MasterElement
 	//glm::vec2 GetPosition(int OutputType);
 	void ConvertInputToInputLeft();
 
+	void Hide();
+	void UnHide();
 
 	//Shape Placement Functions + Padding
 	void PlaceBelow(const glm::vec4& ElementEdges, int PlacementType);
@@ -85,6 +87,8 @@ class ShapeGroup : public MasterElement
 	{
 		return CurrentllShapeGroup;
 	}
+
+	void AttachButton(Button* Button);
 
 	float GetAccessRight();
 	float GetAccessLeft();

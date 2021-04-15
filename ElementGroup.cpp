@@ -594,6 +594,8 @@ void ShapeGroup::llUpdate()
 			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
 			CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
 			CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
+			CurrentShape->Hide = CurrentllShapeGroup->Hide;
+			CurrentShape->MouseAccess = CurrentllShapeGroup->MouseAccess;
 			//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
 			//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
 			CurrentShape->ChangeAsGroup = true;
@@ -610,6 +612,8 @@ void ShapeGroup::llUpdate()
 			CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
 			//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
 			//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+			CurrentShape->Hide = CurrentllShapeGroup->Hide;
+			CurrentShape->MouseAccess = CurrentllShapeGroup->MouseAccess;
 			CurrentShape->ChangeAsGroup = true;
 			QuadSelected.SetllShape(CurrentShape);
 			break;
@@ -624,6 +628,8 @@ void ShapeGroup::llUpdate()
 			CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
 			//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;
 			//CurrentShape->Color = CurrentllShapeGroup->Color + CurrentShape->ColorOffset;
+			CurrentShape->Hide = CurrentllShapeGroup->Hide;
+			CurrentShape->MouseAccess = CurrentllShapeGroup->MouseAccess;
 			CurrentShape->ChangeAsGroup = true;
 			CharSelected.SetllShape(CurrentShape);
 			break;
@@ -1062,104 +1068,102 @@ void ShapeGroup::SetllMouseAccess()
 	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::Invalid ShapeGroup State "); return; };
 	if (CurrentllShapeGroup->Shape == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No Shapes in ShapeGroup"); return; };
 
-	if (CurrentllShapeGroup->MouseAccess == true)
+	//Setup
+	llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
+
+	//Go to Head Shape
+	while (CurrentShape->Previous != nullptr)
 	{
-		//Setup
-		llShapeData* CurrentShape = CurrentllShapeGroup->Shape;
-
-		//Go to Head Shape
-		while (CurrentShape->Previous != nullptr)
-		{
-			CurrentShape = CurrentShape->Previous;
-		}
-
-		//Skip BackGround Shape
-		if (CurrentllShapeGroup->BackGround == true && CurrentShape->Next != nullptr)
-		{
-			CurrentShape = CurrentShape->Next;
-		}
-
-		//The First Shape
-		float FurthestRight = CurrentShape->Right;
-		float FurthestLeft = CurrentShape->Left;
-		float FurthestTop = CurrentShape->Top;
-		float FurthestBottom = CurrentShape->Bottom;
-
-		if (CurrentShape->Next != nullptr)
-		{
-			CurrentShape = CurrentShape->Next;
-		}
-		//Log::LogString("Start of MouseAccess");
-		//Compare CurrentShape's Access variables with all other shapes
-		while (CurrentShape != nullptr)
-		{
-			//Log::LogFloat("Right ", CurrentllShapeGroup->Right);
-			//Log::LogFloat("Left  ", CurrentllShapeGroup->Left);
-			//Log::LogFloat("Top   ", CurrentllShapeGroup->Top);
-			//Log::LogFloat("Bottom", CurrentllShapeGroup->Bottom);
-
-			//Furthest Right is the most positive number
-			if (FurthestRight < CurrentShape->Right) //
-			{
-				FurthestRight = CurrentShape->Right;
-			}
-
-			//Furthest Left is the most negative number
-			if (FurthestLeft > CurrentShape->Left) //
-			{
-				FurthestLeft = CurrentShape->Left;
-			}
-
-			//Furthest Top is the most positive number
-			if (FurthestTop < CurrentShape->Top) //
-			{
-				FurthestTop = CurrentShape->Top;
-			}
-
-			//Furthest Bottom is the most negative number
-			if (FurthestBottom > CurrentShape->Bottom) //
-			{
-				FurthestBottom = CurrentShape->Bottom;
-			}
-
-			CurrentShape = CurrentShape->Next;
-		}
-
-		//Set ShapeGroup
-		CurrentllShapeGroup->Right = FurthestRight;
-		CurrentllShapeGroup->Left = FurthestLeft;
-		CurrentllShapeGroup->Top = FurthestTop;
-		CurrentllShapeGroup->Bottom = FurthestBottom;
-
-		CurrentllShapeGroup->EdgesWithBackGround = { FurthestLeft , FurthestRight, FurthestTop, FurthestBottom };
-
-		CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
-		CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
-
-		//Set BackGround Will update the Mouse Access
-		SetBackGround();
-
-		//SizeFromEdges(GetEdgesWithBackGround(), CurrentllShapeGroup->Size);
-		//Log::LogFloat("Right", CurrentllShapeGroup->EdgesWithBackGround[EDGE_RIGHT]);
-		//Log::LogFloat("Left", CurrentllShapeGroup->EdgesWithBackGround[EDGE_LEFT]);
-		//Log::LogFloat("Size = Right - Left", (CurrentllShapeGroup->EdgesWithBackGround[EDGE_RIGHT] - CurrentllShapeGroup->EdgesWithBackGround[EDGE_LEFT]));
-
-		//CurrentllShapeGroup->Size[X_AXIS] = CurrentllShapeGroup->EdgesWithBackGround[EDGE_RIGHT] - CurrentllShapeGroup->EdgesWithBackGround[EDGE_LEFT]; //Correct
-		//CurrentllShapeGroup->Size[Y_AXIS] = CurrentllShapeGroup->EdgesWithBackGround[EDGE_TOP] - CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM]; //Correct
-		
-
-		//Set Input if not already set
-		if (CurrentllShapeGroup->InputType != INPUT_LEFT  || Input_Left_Once == true)
-		{
-			//Uses Size w/ BackGround
-			//Uses Position
-			ConvertInputToInputLeft();
-			WithNewInput = true;
-			llUpdate();
-		}
-
-
+		CurrentShape = CurrentShape->Previous;
 	}
+
+	//Skip BackGround Shape
+	if (CurrentllShapeGroup->BackGround == true && CurrentShape->Next != nullptr)
+	{
+		CurrentShape = CurrentShape->Next;
+	}
+
+	//The First Shape
+	float FurthestRight = CurrentShape->Right;
+	float FurthestLeft = CurrentShape->Left;
+	float FurthestTop = CurrentShape->Top;
+	float FurthestBottom = CurrentShape->Bottom;
+
+	if (CurrentShape->Next != nullptr)
+	{
+		CurrentShape = CurrentShape->Next;
+	}
+	//Log::LogString("Start of MouseAccess");
+	//Compare CurrentShape's Access variables with all other shapes
+	while (CurrentShape != nullptr)
+	{
+		//Log::LogFloat("Right ", CurrentllShapeGroup->Right);
+		//Log::LogFloat("Left  ", CurrentllShapeGroup->Left);
+		//Log::LogFloat("Top   ", CurrentllShapeGroup->Top);
+		//Log::LogFloat("Bottom", CurrentllShapeGroup->Bottom);
+
+		//Furthest Right is the most positive number
+		if (FurthestRight < CurrentShape->Right) //
+		{
+			FurthestRight = CurrentShape->Right;
+		}
+
+		//Furthest Left is the most negative number
+		if (FurthestLeft > CurrentShape->Left) //
+		{
+			FurthestLeft = CurrentShape->Left;
+		}
+
+		//Furthest Top is the most positive number
+		if (FurthestTop < CurrentShape->Top) //
+		{
+			FurthestTop = CurrentShape->Top;
+		}
+
+		//Furthest Bottom is the most negative number
+		if (FurthestBottom > CurrentShape->Bottom) //
+		{
+			FurthestBottom = CurrentShape->Bottom;
+		}
+
+		CurrentShape = CurrentShape->Next;
+	}
+
+	//Set ShapeGroup
+	CurrentllShapeGroup->Right = FurthestRight;
+	CurrentllShapeGroup->Left = FurthestLeft;
+	CurrentllShapeGroup->Top = FurthestTop;
+	CurrentllShapeGroup->Bottom = FurthestBottom;
+
+	CurrentllShapeGroup->EdgesWithBackGround = { FurthestLeft , FurthestRight, FurthestTop, FurthestBottom };
+
+	CurrentllShapeGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
+	CurrentllShapeGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
+
+	//Set BackGround Will update the Mouse Access
+	SetBackGround();
+
+	//SizeFromEdges(GetEdgesWithBackGround(), CurrentllShapeGroup->Size);
+	//Log::LogFloat("Right", CurrentllShapeGroup->EdgesWithBackGround[EDGE_RIGHT]);
+	//Log::LogFloat("Left", CurrentllShapeGroup->EdgesWithBackGround[EDGE_LEFT]);
+	//Log::LogFloat("Size = Right - Left", (CurrentllShapeGroup->EdgesWithBackGround[EDGE_RIGHT] - CurrentllShapeGroup->EdgesWithBackGround[EDGE_LEFT]));
+
+	//CurrentllShapeGroup->Size[X_AXIS] = CurrentllShapeGroup->EdgesWithBackGround[EDGE_RIGHT] - CurrentllShapeGroup->EdgesWithBackGround[EDGE_LEFT]; //Correct
+	//CurrentllShapeGroup->Size[Y_AXIS] = CurrentllShapeGroup->EdgesWithBackGround[EDGE_TOP] - CurrentllShapeGroup->EdgesWithBackGround[EDGE_BOTTOM]; //Correct
+	
+
+	//Set Input if not already set
+	if (CurrentllShapeGroup->InputType != INPUT_LEFT || Input_Left_Once == true)
+	{
+		//Uses Size w/ BackGround
+		//Uses Position
+		ConvertInputToInputLeft();
+		WithNewInput = true;
+		llUpdate();
+	}
+
+
+	
 }
 
 void ShapeGroup::CalculateGroupOffset()
@@ -1327,6 +1331,11 @@ glm::vec4 ShapeGroup::GetEdgesWithBackGround()
 	return CurrentllShapeGroup->EdgesWithBackGround;
 }
 
+void ShapeGroup::AttachButton(Button* Button)
+{
+	CurrentllShapeGroup->ShapeGroupButton = Button;
+}
+
 float ShapeGroup::GetAccessRight()
 {
 	//Validate 
@@ -1396,6 +1405,25 @@ float ShapeGroup::GetAccessBottom(int PixelOffset)
 	return CurrentllShapeGroup->Bottom + PIXEL * PixelOffset;
 }
 
+void ShapeGroup::Hide()
+{
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup Hide FAILED:: Invalid ShapeGroup State"); return; }
+	if (CurrentllShapeGroup->Hide == true) { Log::LogString("Skipped"); return; }
+	
+	CurrentllShapeGroup->Hide = true;
+	CurrentllShapeGroup->MouseAccess = false;
+	llUpdate();
+}
+
+void ShapeGroup::UnHide()
+{
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: ShapeGroup Hide FAILED:: Invalid ShapeGroup State"); return; }
+	if (CurrentllShapeGroup->Hide == false) { return; }
+
+	CurrentllShapeGroup->Hide = false;
+	CurrentllShapeGroup->MouseAccess = true;
+	llUpdate();
+}
 
 void ShapeGroup::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType)
 {
@@ -1693,7 +1721,7 @@ void ShapeGroup::SetBackGround()
 			//Same Size
 		}
 		//BackGround->Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
-
+		BackGround->Hide = CurrentllShapeGroup->Hide;
 		BackGround->InputType = INPUT_TOPLEFT;
 		Quad_Reference.SetllShape(BackGround);
 

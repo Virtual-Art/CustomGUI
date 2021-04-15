@@ -520,6 +520,8 @@ void PageGroupItem::llUpdate()
 			CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
 			//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
 			//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+			CurrentShapeGroup->Hide = CurrentllPageItem->Hide;
+			CurrentShapeGroup->MouseAccess = CurrentllPageItem->MouseAccess;
 			CurrentShapeGroup->ChangeAsGroup = true;
 			ShapeGroupSelected.SetllShapeGroup(CurrentShapeGroup);
 			//break;
@@ -1311,6 +1313,25 @@ float PageGroupItem::GetAccessBottom(int PixelOffset)
 	return CurrentllPageItem->Bottom + PIXEL * PixelOffset;
 }
 
+void PageGroupItem::Hide()
+{
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: ShapeGrou Hide FAILED:: Invalid ShapeGroup State"); return; }
+	if (CurrentllPageItem->Hide == true) { return; }
+
+	CurrentllPageItem->Hide = true;
+	CurrentllPageItem->MouseAccess = false;
+	llUpdate();
+}
+
+void PageGroupItem::UnHide()
+{
+	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR:: ShapeGroup Hide FAILED:: Invalid ShapeGroup State"); return; }
+	if (CurrentllPageItem->Hide == false) { return; }
+
+	CurrentllPageItem->Hide = false;
+	CurrentllPageItem->MouseAccess = true;
+	llUpdate();
+}
 
 
 void PageGroupItem::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType)

@@ -194,15 +194,15 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 		/////////////////////////////////////////////////////
 		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
 		{
-			if (ElementLevel == LEVEL_PAGEITEM)
-			{
-				if (xMouse < CurrentPageGroup->Right && xMouse >  CurrentPageGroup->Left&& yMouse < CurrentPageGroup->Top && yMouse >  CurrentPageGroup->Bottom)
+			//if (ElementLevel == LEVEL_PAGEITEM)
+			//{
+				if (xMouse < CurrentPageGroup->Right && xMouse >  CurrentPageGroup->Left && yMouse < CurrentPageGroup->Top && yMouse >  CurrentPageGroup->Bottom && CurrentPageGroup->MouseAccess == true)
 				{
-					cout << " [PageGroup Found] | P:" << PageCount << " | PG:" << PageGroupCount << endl;
+					//cout << " [PageGroup Found] | P:" << PageCount << " | PG:" << PageGroupCount << endl;
 					BookDirectory.PageGroup = CurrentPageGroup;
 					BookDirectory.NoDirectoryFound = false;
 				}
-			}
+			//}
 
 			PageGroupCount++;
 			//PageItem
@@ -216,15 +216,15 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 			/////////////////////////////////////////////////////
 			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
 			{
-				if (ElementLevel == LEVEL_PAGEITEM)
-				{
-					if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left&& yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom)
+				//if (ElementLevel == LEVEL_PAGEITEM)
+				//{
+					if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left&& yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom && CurrentPageItem->MouseAccess == true)
 					{
-						cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
+						//cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
 						BookDirectory.PageItem = CurrentPageItem;
 						BookDirectory.NoDirectoryFound = false;
 					}
-				}
+				//}
 
 				PageItemCount++;
 				//ShapeGroup
@@ -246,10 +246,10 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 					if (CurrentShapeGroup->Shape != nullptr)
 					{
 
-						if (xMouse < CurrentShapeGroup->Right && xMouse >  CurrentShapeGroup->Left&& yMouse < CurrentShapeGroup->Top && yMouse >  CurrentShapeGroup->Bottom)
+						if (xMouse < CurrentShapeGroup->Right && xMouse >  CurrentShapeGroup->Left&& yMouse < CurrentShapeGroup->Top && yMouse >  CurrentShapeGroup->Bottom && CurrentShapeGroup->MouseAccess == true)
 						{
-							if (ElementLevel == LEVEL_SHAPEGROUP)
-							{
+							//if (ElementLevel == LEVEL_SHAPEGROUP)
+							//{
 								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
@@ -258,7 +258,7 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 									BookDirectory.ShapeGroup = CurrentShapeGroup;
 									BookDirectory.NoDirectoryFound = false;
 								}
-							}
+							//}
 						}
 						//Set shape to beginning
 						/////////////////////////////////////////////////////
@@ -277,7 +277,7 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 									
 									if (CurrentShape->ShapeButton != nullptr)
 									{
-										cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+										//cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
 										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
 										BookDirectory.Shape;
 										BookDirectory.NoDirectoryFound = false;

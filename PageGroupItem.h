@@ -132,6 +132,9 @@ public:
 	glm::vec4 GetEdges();
 	glm::vec4 GetEdgesWithBackGround();
 
+	void Hide();
+	void UnHide();
+
 	//Shape Placement Functions + Padding
 	void PlaceBelow(const glm::vec4& Edges, int PlacementType);
 	void PlaceAbove(const glm::vec4& Edges, int PlacementType);
@@ -244,7 +247,7 @@ public:
 	};
 
 	//ShapeData Editing
-	void llSwitch(llPageItemData* llPageItem);
+	virtual void llSwitch(llPageItemData* llPageItem);
 	ShapeData& Switch(int RequstedShapeID);
 	ShapeData& Switch(Page& Page, int RequstedShapeID);
 	void SetPageItem(ShapeData& ShapeData);

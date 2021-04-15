@@ -533,7 +533,7 @@ int main(int argc, char** argv)
 		//Restaurant POS
 		//+-------------------------+
 		//SubmitOrder::Update();
-		MenuCreator::Update();
+		MenuCreator::Update(KeyState);
 		//+-------------------------+
 
 
@@ -561,7 +561,7 @@ int main(int argc, char** argv)
 			//PageCreator::PrintCreatorStats();
 		}
 
-		Log::LogVec2("", MousePosition);
+		//Log::LogVec2("", MousePosition);
 
 		//a SliderPointer points to a function that belongs to slider
 		typedef void(MasterElement::* MasterElementFunction)();

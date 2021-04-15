@@ -2015,11 +2015,11 @@ void PageCreator::SetCustomerDetails(CustomerDetails* CustomerDetails)
 		PrinterToEdit = Empty;
 		ResetCustomerDetailHighlights();
 
-		Printer_First_Name.ChangeString(&CustomerDetails->FirstName);
-		Printer_Last_Name.ChangeString(&CustomerDetails->LastName);
-		Printer_Phone.ChangeString(&CustomerDetails->Phone);
-		Printer_Email.ChangeString(&CustomerDetails->Email);
-		Printer_Address.ChangeString(&CustomerDetails->Address);
+		Printer_First_Name.ChangeString(CustomerDetails->FirstName);
+		Printer_Last_Name.ChangeString(CustomerDetails->LastName);
+		Printer_Phone.ChangeString(CustomerDetails->Phone);
+		Printer_Email.ChangeString(CustomerDetails->Email);
+		Printer_Address.ChangeString(CustomerDetails->Address);
 	}
 	else
 	{
