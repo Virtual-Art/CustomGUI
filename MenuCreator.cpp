@@ -1,9 +1,12 @@
 #include "MenuCreator.h"
 
+Dish MenuCreator::Eight;
+
 //Menu Creator
 //+----------------------------+
 void MenuCreator::Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2)
 {
+	Eight.Name = "I am Eight";
 	RestaurantBook = Restaurant_POS;
 	CurrentShader = ShaderProgram;
 	Page_MenuCreator.llInit(RestaurantBook, CurrentShader, Texture0, Texture1, Texture2);
@@ -19,15 +22,62 @@ void MenuCreator::Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram*
 	CurrentKeyBoardInput = Empty;
 }
 
+void MenuCreator::PrepareMenuContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient)
+{
+	All_Sections = Section;
+	All_Dishes = Dish;
+	All_Sides = Side;
+	All_Ingredients = Ingredient;
+}
+
+
 void MenuCreator::Update(KeyResult& CurrentKeyResult)
 {
 	Page_MenuCreator.DrawPage();
 	KeyboardToCurrentText(CurrentKeyResult);
 	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
 	CurrentKeyBoardInput();
+
+	if (ElementsHovered.ShapeGroup != nullptr && GUI_R_CLICKED)
+	{
+		//cout << ElementsHovered.ShapeGroup << endl;
+		//Log::LogString(ElementsHovered.ShapeGroup->DescriptiveData);
+	}
+
 }
 //+----------------------------+
 	 
+
+void MenuCreator::PrintSectionDishes(Section& Current_Section)
+{
+	Log::LogString("Section: " + Current_Section.Name + "-------------------------------------");
+	for (auto Dish_Name : Current_Section.Dish_Names)
+	{
+		Log::LogString("  ");
+		PrintDishSides((*All_Dishes)[Dish_Name]); //Prints the Specific Sides in this Dish
+	}
+}
+
+void MenuCreator::PrintDishSides(Dish& Current_Dish)
+{
+	Log::LogString("  ");
+	Log::LogString("Dish: " + Current_Dish.Name + "-------------------------------------");
+	for (auto Side_Name : Current_Dish.Side_Names)
+	{
+		PrintSideIngredients((*All_Sides)[Side_Name]); //Prints the Specific Sides in this Dish
+	}
+}
+
+void MenuCreator::PrintSideIngredients(DishSide& Current_Side)
+{
+	//Loop through all Ingredients in Side
+	Log::LogString("  ");
+	Log::LogString("Side: " + Current_Side.Name + "-------------------------------------");
+	for (auto Ingredient_Name_Quantity : Current_Side.Ingredient_Names)
+	{
+		cout << "Ingredient " << Ingredient_Name_Quantity.first << " , " << Ingredient_Name_Quantity.second << endl;
+	}
+}
 	 
 //Side Editor
 //+----------------------------+
@@ -149,7 +199,12 @@ void MenuCreator::Submit_Section()
 	//Hide Form
 	PageGroup_Section_Filler.Hide();
 
+
+
 	////CHANGE THIS TO UPDATE ONCE YOU HAVE CONTAINERS FIGURED OUT
+	//Add Section into all sections
+	Current_Section->Name;
+	(*All_Sections)[Current_Section->Name].Name = Current_Section->Name;
 	Add_Section_Graphic(Current_Section->Name);
 	//
 	////Display Add Button Below All Side
@@ -165,7 +220,43 @@ void MenuCreator::Submit_Section()
 	CurrentText = Current_Section->Name;
 	//CurrentPrinter.ChangeString(Current_Section->Name);
 }
-void MenuCreator::Update_Section_Graphics() {}
+
+//Display all the Dishes in the selected section
+void MenuCreator::Select_Section()
+{
+	Log::LogString("Selecting Section");
+	string Name_Hovered = ElementsHovered.PageItem->DescriptiveData;
+	Current_Section = &(*All_Sections)[Name_Hovered];
+	
+	//Load Dishes
+	Update_Dish_Graphics();
+
+
+	//Dishes Already Loaded? // Display Section Form
+
+
+
+	//Dishes Already Loaded? // Section Form Already Displayed? // Hide Section Form
+
+}
+
+void MenuCreator::Update_Section_Graphics() 
+{
+	//Display All section Graphics
+
+	//loop through all Sections
+	for (auto Section : (*All_Sections))
+	{
+		Add_Section_Graphic(Section.first);
+		Current_Section = &(*All_Sections)[Section.first]; //Set the current Section
+	}
+
+
+	//Nothing? //Display
+
+	//Existing? // Add // Hide
+}
+
 void MenuCreator::Add_Section_Graphic(const string Name)
 {
 	DR_PageGroup_Section.LoadUp(RestaurantBook);
@@ -187,12 +278,14 @@ void MenuCreator::Add_Section_Graphic(const string Name)
 	//Ordered Item UI --------------------------------------------------------//
 	PageItem_Template.BackGround = true;
 	PageItem_Template.BackGroundColor = SubmitOrder::DarkPurple; //Dark Red
-	PageItem_Template.BackGroundPadding[PADDING_LEFT] = 70;
-	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 70;
+	PageItem_Template.BackGroundPadding[PADDING_LEFT] = 30;
+	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 30;
 	PageItem_Template.BackGroundPadding[PADDING_TOP] = 10;
 	PageItem_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
-
+	PageItem_Template.DescriptiveData = Name; //Attach Key to UIPageItem_Default_Section
+	Button_Select_Section.LogicalActions[GUI_MOUSELEFT_CLICKED] = Select_Section;
 	PageItem_Default_Section.llPageItemInit(RestaurantBook, &PageItem_Template);
+	PageItem_Default_Section.GetData()->PageItemButton = &Button_Select_Section;
 	//MenuItem.OrderedDishGraphics = PageItem_Default_Side.GetData(); 
 
 	//Ordered Item-Section Name
@@ -206,8 +299,9 @@ void MenuCreator::Add_Section_Graphic(const string Name)
 	PageItem_Default_Section.PlaceBelow(last_section_edges, MATCH_CENTERS, Spacing);
 	last_section_edges = PageItem_Default_Section.GetEdgesWithBackGround();
 
+	Text_Add_Section.PlaceBelow(last_section_edges, MATCH_CENTERS, 20);
 }
-void MenuCreator::Remove_Section_Graphic() {}
+//void MenuCreator::Remove_Section_Graphic() {}
 void MenuCreator::Rearrange_Section_Graphics() {}
 //+----------------------------+
 	 
@@ -216,6 +310,8 @@ void MenuCreator::Rearrange_Section_Graphics() {}
 //+----------------------------+
 void MenuCreator::Prepare_Dish() 
 {
+	First_Dish_Graphic = nullptr;
+
 	llPageGroupData PageGroup_Template;
 	llPageItemData PageItem_Template;
 	NumberPrinterData NumberPrinter_Template;
@@ -258,6 +354,7 @@ void MenuCreator::Prepare_Dish()
 	DR_PageGroup_Dish.Capture(RestaurantBook);
 	first_dish = true;
 	last_dish_edges = Text_Label_Dish.GetEdges();
+	current_dish_edges = Text_Label_Dish.GetEdges();
 }
 
 void MenuCreator::Prepare_Dish_Form()
@@ -332,11 +429,19 @@ void MenuCreator::Add_Dish()
 	PageGroup_Dish_Filler.PlaceBelow(last_dish_edges, MATCH_CENTERS, 20);
 }
 
+void MenuCreator::Add_Dish_To_Container()
+{
+	(*All_Sections)[Current_Section->Name].Dish_Names.insert(Current_Dish->Name);
+
+	(*All_Dishes)[Current_Dish->Name] = *Current_Dish;
+}
+
 void MenuCreator::Submit_Dish() 
 {
 	//Hide Form
 	PageGroup_Dish_Filler.Hide();
 
+	Add_Dish_To_Container();
 	////CHANGE THIS TO UPDATE ONCE YOU HAVE CONTAINERS FIGURED OUT
 	Add_Dish_Graphic(Current_Dish->Name);
 	//
@@ -351,9 +456,51 @@ void MenuCreator::Submit_Dish()
 	New_Dish.Reset();
 }
 
-void MenuCreator::Update_Dish_Graphics() {}
+void MenuCreator::Update_Dish_Graphics()
+{
+	llPageItemData* Current_Dish_PageItem = First_Dish_Graphic;
+	first_dish = true;
+	last_dish_edges = current_dish_edges; 
+	bool AddOnly = false;
 
-void MenuCreator::Add_Dish_Graphic(const string Name) 
+	//Use the "Current_Section" to loop through it's dishes
+	for (auto Dish : (*All_Sections)[Current_Section->Name].Dish_Names)
+	{
+		//New Graphic
+		if (Current_Dish_PageItem == nullptr)
+		{
+			//Create Graphic
+			Current_Dish_PageItem = Add_Dish_Graphic(Dish);
+			Current_Dish = &(*All_Dishes)[Dish];
+			Log::LogString("Adding Dish Graphic-------------------------------------");
+			AddOnly = true;
+		}
+
+		////Existing Graphic
+		if (Current_Dish_PageItem != nullptr && AddOnly != true)
+		{
+			//Change Graphic
+			Replace_Dish_Graphic(Dish, Current_Dish_PageItem);
+			Log::LogString("Replacing-------------------------------------------------");
+		}
+
+		//if we add, it will go through replacing alse thats why we need this boolean
+		AddOnly = false;
+
+		//Stop Cycling if there is no shapegroup
+		if (Current_Dish_PageItem != nullptr) { Current_Dish_PageItem = Current_Dish_PageItem->Next;}
+	}
+
+	//Graphics left over
+	////Existing? // Add // Hide
+	while (Current_Dish_PageItem != nullptr)
+	{
+		Hide_Dish_Graphic(Current_Dish_PageItem);
+		Current_Dish_PageItem = Current_Dish_PageItem->Next;
+	}
+}
+
+llPageItemData* MenuCreator::Add_Dish_Graphic(const string Name) 
 {
 	DR_PageGroup_Dish.LoadUp(RestaurantBook);
 
@@ -374,18 +521,25 @@ void MenuCreator::Add_Dish_Graphic(const string Name)
 	//Ordered Item UI --------------------------------------------------------//
 	PageItem_Template.BackGround = true;
 	PageItem_Template.BackGroundColor = SubmitOrder::DarkPurple; //Dark Red
-	PageItem_Template.BackGroundPadding[PADDING_LEFT] = 70;
-	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 70;
+	PageItem_Template.BackGroundPadding[PADDING_LEFT] = 30;
+	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 30;
 	PageItem_Template.BackGroundPadding[PADDING_TOP] = 10;
 	PageItem_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
+	PageItem_Template.DescriptiveData = Name; //Attach Key to UI
 
+	Button_Select_Section.LogicalActions[GUI_MOUSELEFT_CLICKED] = Select_Section;
 	PageItem_Default_Dish.llPageItemInit(RestaurantBook, &PageItem_Template);
-	//MenuItem.OrderedDishGraphics = PageItem_Default_Side.GetData(); 
-
+	PageItem_Default_Dish.GetData()->PageItemButton = &Button_Select_Section;
+	
 	//Ordered Item-Section Name
 	TextData_Template.Phrase = Name;
 	ShapeGroup_Template.Color = PageCreator::White; // Light Red
 	Text_Default_Dish_Name.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+
+	if (First_Dish_Graphic == nullptr)
+	{
+		First_Dish_Graphic = PageItem_Default_Dish.GetData();
+	}
 
 	//Place New Side
 	int Spacing = 20;
@@ -393,8 +547,55 @@ void MenuCreator::Add_Dish_Graphic(const string Name)
 	PageItem_Default_Dish.PlaceBelow(last_dish_edges, MATCH_CENTERS, Spacing);
 	last_dish_edges = PageItem_Default_Dish.GetEdgesWithBackGround();
 
+	Text_Add_Dish.PlaceBelow(last_dish_edges, MATCH_CENTERS, 20);
+
+	return PageItem_Default_Dish.GetData();
 }
-void MenuCreator::Remove_Dish_Graphic() {}
+
+//Can't Delete Right Now so we will have to hide
+void MenuCreator::Replace_Dish_Graphic(string Name, llPageItemData* Dish_PageItem)
+{
+	llShapeGroupData* CurrentShapeGroup = Dish_PageItem->ShapeGroup;
+
+	//Set New Name
+	//Text_Default_Dish_Name.llSwitch(CurrentShapeGroup);
+	//Text_Default_Dish_Name.SetllText(Name);
+
+	Text Dish_Graphic_Reference(CurrentShapeGroup);
+	Dish_Graphic_Reference.LoadedBook = RestaurantBook;
+	Dish_Graphic_Reference.llSwitch(CurrentShapeGroup);
+	Dish_Graphic_Reference.SetllText(Name);
+	CurrentShapeGroup->DescriptiveData = Name; //Attach Key to UI
+
+	//Place New Side
+	int Spacing = 20;
+	if (first_dish == true) { Spacing = 100; first_dish = false; }
+	PageItem_Default_Dish.llSwitch(Dish_PageItem);
+	PageItem_Default_Dish.PlaceBelow(last_dish_edges, MATCH_CENTERS, Spacing);
+	last_dish_edges = PageItem_Default_Dish.GetEdgesWithBackGround();
+
+	Text_Add_Dish.PlaceBelow(last_dish_edges, MATCH_CENTERS, 20);
+}
+
+
+void MenuCreator::Hide_Dish_Graphic(llPageItemData* Dish_PageItem)
+{
+	//Set New Name
+	PageGroupItem Dish_Graphic_Reference(Dish_PageItem);
+	Dish_Graphic_Reference.LoadedBook = RestaurantBook;
+	Dish_Graphic_Reference.llSwitch(Dish_PageItem);
+	Dish_Graphic_Reference.Hide();
+
+	//Place New Side
+	int Spacing = 20;
+	if (first_dish == true) { Spacing = 100; first_dish = false; }
+	PageItem_Default_Dish.PlaceBelow(current_dish_edges, MATCH_CENTERS, Spacing);
+	current_dish_edges = PageItem_Default_Dish.GetEdgesWithBackGround();
+
+	Text_Add_Dish.PlaceBelow(current_dish_edges, MATCH_CENTERS, 20);
+}
+
+
 void MenuCreator::Rearrange_Dish_Graphics() {}
 //+----------------------------+
 	 
@@ -513,6 +714,12 @@ void MenuCreator::Submit_Side()
 	//Hide Form
 	PageGroup_Side_Filler.Hide();
 
+	//Dish has a list of sides. put the side name in there
+	(*All_Dishes)[Current_Dish->Name].Side_Names.insert(Current_Side->Name);    //Parent
+
+	//All Sides is where we store all the Side Object Data for lookup using it's name
+	(*All_Sides)[Current_Side->Name] = *Current_Side;                           //Current
+
 	//CHANGE THIS TO UPDATE ONCE YOU HAVE CONTAINERS FIGURED OUT
 	Add_Side_Graphic(Current_Side->Name);
 
@@ -527,7 +734,14 @@ void MenuCreator::Submit_Side()
 	New_Side.Reset();
 }
 
-void MenuCreator::Update_Side_Graphics() {}
+void MenuCreator::Update_Side_Graphics() 
+{
+	for (auto Side : (*All_Dishes)[Current_Dish->Name].Side_Names)
+	{
+		Add_Side_Graphic(Side);
+		Current_Side = &(*All_Sides)[Side]; //Set the Current Side
+	}
+}
 
 //Displays a Side
 void MenuCreator::Add_Side_Graphic(const string Name) 
@@ -551,8 +765,8 @@ void MenuCreator::Add_Side_Graphic(const string Name)
 	//Ordered Item UI --------------------------------------------------------//
 	PageItem_Template.BackGround = true;
 	PageItem_Template.BackGroundColor = SubmitOrder::DarkPurple; //Dark Red
-	PageItem_Template.BackGroundPadding[PADDING_LEFT]   = 70; 
-	PageItem_Template.BackGroundPadding[PADDING_RIGHT]  = 70;
+	PageItem_Template.BackGroundPadding[PADDING_LEFT]   = 30; 
+	PageItem_Template.BackGroundPadding[PADDING_RIGHT]  = 30;
 	PageItem_Template.BackGroundPadding[PADDING_TOP]    = 10;
 	PageItem_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
 	PageItem_Default_Side.llPageItemInit(RestaurantBook, &PageItem_Template);
@@ -561,6 +775,7 @@ void MenuCreator::Add_Side_Graphic(const string Name)
 	//Ordered Item-Section Name
 	TextData_Template.Phrase = Name;
 	ShapeGroup_Template.Color = PageCreator::White; // Light Red
+	ShapeGroup_Template.DescriptiveData = Name; //Attach Key to UI
 	Text_Default_Side_Name.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 
 	//Place New Side
@@ -568,6 +783,8 @@ void MenuCreator::Add_Side_Graphic(const string Name)
 	if (first_side == true) { Spacing = 100; first_side = false; }
 	PageItem_Default_Side.PlaceBelow(last_side_edges, MATCH_CENTERS, Spacing);
 	last_side_edges = PageItem_Default_Side.GetEdgesWithBackGround();
+
+	Text_Add_Side.PlaceBelow(last_side_edges, MATCH_CENTERS, 20);
 }
 
 void MenuCreator::Remove_Side_Graphic() {}
@@ -681,6 +898,8 @@ void MenuCreator::Prepare_Ingredient()
 	DR_PageGroup_Ingredient.Capture(RestaurantBook);
 	first_ingredient = true;
 	last_ingredient_edges = Text_Label_Ingredient.GetEdges();
+
+	Text_Add_Ingredient.PlaceBelow(last_ingredient_edges, MATCH_CENTERS, 20);
 }
 
 
@@ -750,6 +969,12 @@ void MenuCreator::Submit_Ingredient()
 	//Hide Form
 	PageGroup_Ingredient_Filler.Hide();
 
+	//Put an Ingredient name into the Side
+	(*All_Sides)[Current_Side->Name].Ingredient_Names[Current_Ingredient->Name] = 1.0; //Should insert
+
+	//Add the ingredient details into all ingredients
+	(*All_Ingredients)[Current_Ingredient->Name] = *Current_Ingredient;
+	
 	//CHANGE THIS TO UPDATE ONCE YOU HAVE CONTAINERS FIGURED OUT
 	Add_Ingredient_Graphic(Current_Ingredient->Name);
 
@@ -764,7 +989,15 @@ void MenuCreator::Submit_Ingredient()
 	Current_Ingredient->Reset();
 }
 
-void MenuCreator::Update_Ingredient_Graphics() {}
+void MenuCreator::Update_Ingredient_Graphics() 
+{
+	for (auto Ingredient : (*All_Sides)[Current_Side->Name].Ingredient_Names)
+	{
+		Add_Ingredient_Graphic(Ingredient.first);
+		Current_Ingredient = &(*All_Ingredients)[Ingredient.first]; //Set the Current Side
+	}
+}
+
 void MenuCreator::Add_Ingredient_Graphic(const string Name)
 {
 	
@@ -787,8 +1020,8 @@ void MenuCreator::Add_Ingredient_Graphic(const string Name)
 	//Ordered Item UI --------------------------------------------------------//
 	PageItem_Template.BackGround = true;
 	PageItem_Template.BackGroundColor = SubmitOrder::DarkPurple; //Dark Red
-	PageItem_Template.BackGroundPadding[PADDING_LEFT] = 70;
-	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 70;
+	PageItem_Template.BackGroundPadding[PADDING_LEFT]  = 30;
+	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 30;
 	PageItem_Template.BackGroundPadding[PADDING_TOP] = 10;
 	PageItem_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
 	PageItem_Default_Ingredient.llPageItemInit(RestaurantBook, &PageItem_Template);
@@ -797,6 +1030,7 @@ void MenuCreator::Add_Ingredient_Graphic(const string Name)
 	//Ordered Item-Section Name
 	TextData_Template.Phrase = Name;
 	ShapeGroup_Template.Color = PageCreator::White; // Light Red
+	ShapeGroup_Template.DescriptiveData = Name; //Attach Key to UI
 	Text_Default_Ingredient_Name.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 
 	//Place New Side
@@ -804,6 +1038,8 @@ void MenuCreator::Add_Ingredient_Graphic(const string Name)
 	if (first_ingredient == true) { Spacing = 100; first_ingredient = false; }
 	PageItem_Default_Ingredient.PlaceBelow(last_ingredient_edges, MATCH_CENTERS, Spacing);
 	last_ingredient_edges = PageItem_Default_Ingredient.GetEdgesWithBackGround();
+
+	Text_Add_Ingredient.PlaceBelow(last_ingredient_edges, MATCH_CENTERS, 20);
 }
 
 void MenuCreator::Remove_Ingredient_Graphic() {}

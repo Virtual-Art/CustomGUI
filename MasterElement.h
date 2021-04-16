@@ -343,7 +343,7 @@ struct llPageItemData
 	llPageItemData* Previous = nullptr;
 	llShapeGroupData* ShapeGroup = nullptr; // Child
 	llShapeGroupData* ShapeGroupHead = nullptr; // Child
-	Button PageItemButton;
+	Button* PageItemButton = nullptr;
 
 	NumberPrinterData NumberPrinterData;
 	SliderData SliderData;

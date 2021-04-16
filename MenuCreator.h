@@ -4,6 +4,8 @@
 #include <iostream>
 #include "SubmitOrder.h"
 
+
+
 namespace MenuCreator
 {
 	//Menu Creator
@@ -16,6 +18,26 @@ namespace MenuCreator
 	static string CurrentText;
 	void Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 	void Update(KeyResult& CurrentKeyResult);                    
+	void PrepareMenuContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient);
+
+	static map<string, Ingredient>* All_Ingredients;
+	static map<string, DishSide>* All_Sides;
+	static map<string, Dish>* All_Dishes;
+	static map<string, Section>* All_Sections; //Section Name | Section Object | Dish Names
+
+	//All_? Actually Contains 3 keys
+
+	//You can get 2 Pieces of Information from Section; The Object || All the Dish NAMES accociated with the Section
+
+	void PrintSectionDishes(Section& Current_Section);
+	void PrintDishSides(Dish& Current_Dish);
+	void PrintSideIngredients(DishSide& Current_Side);
+
+	//static Menu CurrentMenu;
+
+	extern Dish Eight;
+
+	//void PrintTest();
 
 	void Empty();
 	void SetCurrentKeyBoardInput();
@@ -49,6 +71,7 @@ namespace MenuCreator
 	static Button Button_Add_Section;          //(Direct Function) Calls the Add_Section() Method
 	static Button Button_Section_Name;			  //(Button) Links SetPrinter For Keyboard Input
 	static Button Button_Submit_Section;         //(Button) Links Submit_Side() to Text_Submit_Side Graphic
+	static Button Button_Select_Section;         //(Button) Links Submit_Side() to Text_Submit_Side Graphic
 	static NumberPrinter Printer_Section_Name; //(Graphic) Input Section Name 
 	static BookDirectory DR_PageGroup_Section;   //(Graphic Helper) Holds the Directory to correctly place new graphic groups
 
@@ -56,9 +79,9 @@ namespace MenuCreator
 	void Prepare_Section_Filler();			   //Displays Section title with background
 	void Add_Section();				   //Displays Graphics to Fill in Dish Details
 	void Submit_Section();			   //Pushes New Section into Section & Updates Graphics
+	void Select_Section();             //User can click on a name and display all dishes in section
 	void Update_Section_Graphics();    //Manages all Section Graphics 
 	void Add_Section_Graphic(const string Name);        //Creates a Single Section Graphic
-	void Remove_Section_Graphic();     //Removes a Single Section Graphic
 	void Rearrange_Section_Graphics(); //Rearranges the Section Graphics to a particular order
 	//+----------------------------+   
 
@@ -68,6 +91,7 @@ namespace MenuCreator
 	static Dish New_Dish;					  //(Object) New Dish to Modify
 	static Dish* Current_Dish;				  //(Object) Current Dish to Modify
 	static glm::vec4 last_dish_edges;        //(Object) Graphic Reference for the form filler to position with
+	static glm::vec4 current_dish_edges;        //(Object) Graphic Reference for the form filler to position with
 	static bool first_dish;
 
 	static PageGroup PageGroup_Dish;		  //(Graphic) All Existing Dish Graphics
@@ -84,14 +108,17 @@ namespace MenuCreator
 	static NumberPrinter Printer_Dish_Name;   //(Graphic) Input Dish Name 
 	static NumberPrinter Printer_Cost;		  //(Graphic) Input Dish Cost
 	static BookDirectory DR_PageGroup_Dish;   //(Graphic Helper) Holds the Directory to correctly place new graphic groups
+	static llPageItemData* First_Dish_Graphic;
 
 	void Prepare_Dish();			          //Displays Dish title with background
 	void Prepare_Dish_Form();			      //Prepares Filler GUI for usage
 	void Add_Dish();				          //Displays Graphics to Fill in Dish Details
+	void Add_Dish_To_Container();
 	void Submit_Dish();				          //Pushes New Dish into Dish & Updates Graphics
 	void Update_Dish_Graphics();              //Manages all Dish Graphics 
-	void Add_Dish_Graphic(const string Name); //Creates a Single Side Graphic
-	void Remove_Dish_Graphic();               //Removes a Single Dish Graphic
+	llPageItemData* Add_Dish_Graphic(const string Name); //Creates a Single Side Graphic
+	void Replace_Dish_Graphic(string Name, llPageItemData* Dish_PageItem);     //Removes a Single Section Graphic
+	void Hide_Dish_Graphic(llPageItemData* Dish_ShapeGroup);
 	void Rearrange_Dish_Graphics();           //Rearranges the Dish Graphics to a particular order
 	//+----------------------------+  
 

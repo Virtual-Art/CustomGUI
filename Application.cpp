@@ -478,6 +478,12 @@ int main(int argc, char** argv)
 
 	llBookData Book_Restaurant_POS;
 	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+	//Simple Form nothing else required
+	map<string, Ingredient> All_Ingredients; // Key: Name | Value: Ingredient Measurement Type, Gluten
+	map<string, DishSide> All_Sides;   //Holds Side Name   : Side Data : Set of Ingdt Names
+	map<string, Dish> All_Dishes;      //Holds Dish Name   : Dish Data : Set of Side  Names
+	map<string, Section> All_Sections; //Holds Sctn Name   : Sctn Data : Set of Dish  Names
+
 
 
 	llPageItemData PageItem_Template;
@@ -509,7 +515,19 @@ int main(int argc, char** argv)
 	NumberPrinter sigh_MousePosition(&Book_Restaurant_POS, &boooo, Tiredofthis);
 
 	MenuCreator::Prepare_MenuCreator(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
-	Log::LogString("Passed Prepare");
+	MenuCreator::PrepareMenuContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
+	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
+
+
+	SubmitOrder::FiguringoutContainers();
+
+	MenuCreator::Update_Section_Graphics();
+	MenuCreator::Update_Dish_Graphics();
+	//MenuCreator::Update_Side_Graphics();
+	//MenuCreator::Update_Ingredient_Graphics();
+
+	MenuCreator::Update_Dish_Graphics();
+
 	//MasterElement::PrintBookStats(&Book_Restaurant_POS);
 
 	typedef void(*Master_P)();

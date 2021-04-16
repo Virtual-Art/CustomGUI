@@ -223,6 +223,11 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 						//cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
 						BookDirectory.PageItem = CurrentPageItem;
 						BookDirectory.NoDirectoryFound = false;
+
+						if (CurrentPageItem->PageItemButton != nullptr)
+						{
+							CurrentPageItem->PageItemButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+						}
 					}
 				//}
 
@@ -251,12 +256,11 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 							//if (ElementLevel == LEVEL_SHAPEGROUP)
 							//{
 								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+								BookDirectory.ShapeGroup = CurrentShapeGroup;
+								BookDirectory.NoDirectoryFound = false;
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
-									//Log::LogString("Button exists");
 									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
-									BookDirectory.ShapeGroup = CurrentShapeGroup;
-									BookDirectory.NoDirectoryFound = false;
 								}
 							//}
 						}
@@ -272,17 +276,16 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 							ShapeCount++;
 							if (xMouse < CurrentShape->Right && xMouse >  CurrentShape->Left && yMouse < CurrentShape->Top && yMouse >  CurrentShape->Bottom && CurrentShape->MouseAccess == true)
 							{
-								if (ElementLevel == LEVEL_SHAPE)
-								{
+								BookDirectory.Shape;
+								BookDirectory.NoDirectoryFound = false;
 									
-									if (CurrentShape->ShapeButton != nullptr)
-									{
-										//cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
-										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
-										BookDirectory.Shape;
-										BookDirectory.NoDirectoryFound = false;
-									}
+								if (CurrentShape->ShapeButton != nullptr)
+								{
+									//cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+									CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+									
 								}
+								
 							}
 							CurrentShape = CurrentShape->Next;
 						}
