@@ -2076,8 +2076,8 @@ void MasterElement::ManualPlaceBelow(const int PlacementType, const glm::vec4& E
 		NewInputType = INPUT_TOPRIGHT;
 		break;
 	}
-	case MATCH_CENTERS:
 	{
+	case MATCH_CENTERS:
 		float Center_x = (ElementEdges[1] + ElementEdges[0]) / 2; // (Left + Right) / Half
 		float Bottom = ElementEdges[3] - (PixelPadding * PIXEL);
 		NewPosition = { Center_x, Bottom };

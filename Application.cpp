@@ -522,13 +522,51 @@ int main(int argc, char** argv)
 	SubmitOrder::FiguringoutContainers();
 
 	MenuCreator::Update_Section_Graphics();
-	MenuCreator::Update_Dish_Graphics();
+	//MenuCreator::Update_Dish_Graphics();
 	//MenuCreator::Update_Side_Graphics();
 	//MenuCreator::Update_Ingredient_Graphics();
 
-	MenuCreator::Update_Dish_Graphics();
+	//MenuCreator::Update_Dish_Graphics();
 
 	//MasterElement::PrintBookStats(&Book_Restaurant_POS);
+	Log::LogString("start---------------------------------end");
+	//llPageItemData PageItem_Fix_Filler;
+	//PageItem_Fix_Filler.BackGround = true;
+	//
+	//PageGroupItem Fix_Filler(&Book_Restaurant_POS, &PageItem_Fix_Filler);
+	//
+	//TextData _Data_Fix;
+	//_Data_Fix.Phrase = "Fix This";
+	//llShapeGroupData ShapeGroup_Fix;
+	//ShapeGroup_Fix.Position = { -0.2, 0.0 };
+	//ShapeGroup_Fix.Color = PageCreator::Blue;
+	//ShapeGroup_Fix.BackGround = true;
+	//
+	//Text FixThis(&Book_Restaurant_POS, &ShapeGroup_Fix, _Data_Fix);
+	//FixThis.SetllPosition({0.0, 0.0});
+	//
+	//_Data_Fix.Phrase = "Suddenly it's Working?";
+	//Text FixThis2(&Book_Restaurant_POS, &ShapeGroup_Fix, _Data_Fix);
+	//FixThis2.SetllPosition({ 0.0, 0.1 });
+	//
+	//
+	//Text Text_Copy(Fix_Filler.GetData()->ShapeGroup);
+	//Text_Copy.LoadedBook = &Book_Restaurant_POS;
+	//Text_Copy.llSwitch(Fix_Filler.GetData()->ShapeGroup);
+	//Text_Copy.SetllPosition({ 0.0, 0.2 });
+	//
+	//
+	//llPageItemData* Fix_This_Reference = Fix_Filler.GetData();
+	//
+	//PageGroupItem FixThisCopy(Fix_This_Reference);
+	//FixThisCopy.LoadedBook = &Book_Restaurant_POS;
+	//FixThisCopy.llSwitch(Fix_This_Reference);
+	//Fix_This_Reference->Position = {-0.5, 0.0};
+	//FixThisCopy.SetllPageItem(Fix_This_Reference);
+	//
+	//FixThisCopy.Hide();
+	//FixThisCopy.UnHide();
+	//Fix_Filler.SetllPosition({ -0.5, 0.0 });
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))

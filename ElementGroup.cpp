@@ -621,6 +621,7 @@ void ShapeGroup::llUpdate()
 		case TYPE_CHARACTER:
 		{
 			NewCharacter CharSelected(CurrentShape);
+			//CharSelected.SetParent(LoadedBook);
 			CharSelected.LoadedBook = LoadedBook;
 			CharSelected.llSwitch(CurrentShape);
 			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;

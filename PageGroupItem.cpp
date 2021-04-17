@@ -529,17 +529,17 @@ void PageGroupItem::llUpdate()
 		//case TYPE_SHAPEGROUP_TEXT:
 		//{
 		//	//TextData INCOMPLETE;
-		//	//Text TextSelected(CurrentShapeGroup);
-		//	//TextSelected.llSwitch(CurrentShapeGroup);
-		//	//TextSelected.LoadedBook = LoadedBook;
-		//	//CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
-		//	//CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
-		//	//CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
-		//	////CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
-		//	////CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
-		//	//CurrentShapeGroup->ChangeAsGroup = true;
-		//	//TextSelected.SetllTextGroup(CurrentShapeGroup);
-		//	//break;
+		//	Text TextSelected(CurrentShapeGroup);
+		//	TextSelected.LoadedBook = LoadedBook;
+		//	TextSelected.llSwitch(CurrentShapeGroup);
+		//	CurrentShapeGroup->Position = CurrentllPageItem->Position - CurrentShapeGroup->PositionOffset;
+		//	CurrentShapeGroup->Highlighted = CurrentllPageItem->Highlighted;
+		//	CurrentShapeGroup->HighlightColor = CurrentllPageItem->HighlightColor;
+		//	//CurrentShapeGroup->Size = CurrentllPageItem->Size - CurrentShapeGroup->SizeOffset;
+		//	//CurrentShapeGroup->Color = CurrentllPageItem->Color - CurrentShapeGroup->ColorOffset;
+		//	CurrentShapeGroup->ChangeAsGroup = true;
+		//	TextSelected.SetllTextGroup(CurrentShapeGroup);
+		//	break;
 		//}
 		//}
 		CurrentShapeGroup = CurrentShapeGroup->Next;
@@ -892,6 +892,7 @@ void PageGroupItem::SetBackGround()
 		Quad Quad_Reference(BackGround);
 		Quad_Reference.llSwitch(BackGround);
 		Quad_Reference.LoadedBook = LoadedBook;
+		BackGround->Color = CurrentllPageItem->BackGroundColor;
 		BackGround->Size[X_AXIS] = CurrentllPageItem->Size[X_AXIS] + ((CurrentllPageItem->BackGroundPadding[PADDING_LEFT] + CurrentllPageItem->BackGroundPadding[PADDING_RIGHT]) * PIXEL);
 		BackGround->Size[Y_AXIS] = CurrentllPageItem->Size[Y_AXIS] + ((CurrentllPageItem->BackGroundPadding[PADDING_TOP] + CurrentllPageItem->BackGroundPadding[PADDING_BOTTOM]) * PIXEL);
 		//BackGround->Position = { (CurrentllPageItem->Left + CurrentllPageItem->Right) / 2, (CurrentllPageItem->Top + CurrentllPageItem->Bottom) / 2 };
@@ -1423,6 +1424,11 @@ glm::vec4 PageGroupItem::GetEdgesWithBackGround()
 	return CurrentllPageItem->EdgesWithBackGround;
 }
 
+void PageGroupItem::SetBackGroundColor(glm::vec4 Color)
+{
+	CurrentllPageItem->BackGroundColor = Color;
+	llUpdate();
+}
 
 void PageGroupItem::TranslateInput()
 {

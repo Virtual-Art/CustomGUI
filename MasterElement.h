@@ -347,7 +347,7 @@ struct llPageItemData
 
 	NumberPrinterData NumberPrinterData;
 	SliderData SliderData;
-	string DescriptiveData;
+	string DescriptiveData = " ";
 };
 
 struct llPageGroupData

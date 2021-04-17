@@ -132,6 +132,8 @@ public:
 	glm::vec4 GetEdges();
 	glm::vec4 GetEdgesWithBackGround();
 
+	void SetBackGroundColor(glm::vec4 Color);
+
 	void Hide();
 	void UnHide();
 
