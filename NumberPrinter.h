@@ -53,6 +53,13 @@ public:
 	//Change NumberPrinterPointers
 	void ChangeVec2(glm::vec2* NewVec2);
 	void ChangeString(string NewString);
+	void ChangeFloat(string NewFloat);
+	string Get_Float_As_String();
+
+	//KeyBoard Input Functions
+	void Set_With_Keyboard(string CurrentText);
+	string Get_For_Keyboard();
+
 
 	string& GetCurrentString();
 
@@ -68,7 +75,7 @@ public:
 
 private:
 
-	string ProcessDecimalPlace(string& Reference_String);
+	string ProcessDecimalPlace(string& Reference_String, bool DollarSign);
 	void ProcessDescriptionHighlight(llShapeGroupData* DescriptionGroup);
 	glm::vec2 ProcessAnswerPlacement(Text* Text_Reference);
 

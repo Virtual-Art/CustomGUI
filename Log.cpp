@@ -16,6 +16,12 @@ void Log::LogFloat(string Description, float Float)
 	cout << Description << ": " << Float << endl;
 }
 
+void Log::LogDouble(string Description, const double& Double)
+{
+
+	cout << Description << ": " << Double << endl;
+}
+
 void Log::LogBool(string Description, bool Bool)
 {
 	if (Bool == true)

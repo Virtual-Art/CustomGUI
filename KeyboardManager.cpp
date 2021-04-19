@@ -170,7 +170,7 @@ KeyResult& Keyboard::GetKeyBoardState(GLFWwindow* window, float Time, float Clic
 
 	this->ManagerResult = Result;
 	CurrentLastAscii();
-	PlayFunction();
+	PlayFunction();	
 	return ManagerResult;
 }
 
@@ -511,7 +511,7 @@ void Keyboard::PlayFunction()
 {
 	if (ManagerResult.Key1 != 0)
 	{
-		int KeysPressed = ManagerResult.Ctrl + ManagerResult.Shift + ManagerResult.Alt;
+		int SpecialKeysPressed = ManagerResult.Ctrl + ManagerResult.Shift + ManagerResult.Alt;
 
 		if (ManagerResult.Caps != 0 && KeyButton[ManagerResult.Key1][9] != nullptr)
 		{
@@ -524,15 +524,14 @@ void Keyboard::PlayFunction()
 		//	FunctionState[8];
 		//  return;
 		//}
-
 		//Default
-		if (KeysPressed == 0 && KeyButton[ManagerResult.Key1][0] != nullptr)
+		if (SpecialKeysPressed == 0 && KeyButton[ManagerResult.Key1][0] != nullptr)
 		{
 			KeyButton[ManagerResult.Key1][0]();
 			return;
 		}
 
-		if (KeysPressed == 1)
+		if (SpecialKeysPressed == 1)
 		{
 			if (ManagerResult.Alt == true && KeyButton[ManagerResult.Key1][3] != nullptr)
 			{
@@ -553,7 +552,7 @@ void Keyboard::PlayFunction()
 			}
 		}
 
-		if (KeysPressed == 2)
+		if (SpecialKeysPressed == 2)
 		{
 			if (ManagerResult.Ctrl == true && ManagerResult.Alt == true && KeyButton[ManagerResult.Key1][6] != nullptr)
 			{
@@ -573,10 +572,11 @@ void Keyboard::PlayFunction()
 			}
 		}
 
-		if (KeysPressed == 3)
+		if (SpecialKeysPressed == 3)
 		{
 			KeyButton[ManagerResult.Key1][5]();
 			return;
 		}
 	}
+
 }

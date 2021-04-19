@@ -5,7 +5,6 @@
 #include "SubmitOrder.h"
 
 
-
 namespace MenuCreator
 {
 	//Menu Creator
@@ -24,6 +23,11 @@ namespace MenuCreator
 	static map<string, DishSide>* All_Sides;
 	static map<string, Dish>* All_Dishes;
 	static map<string, Section>* All_Sections; //Section Name | Section Object | Dish Names
+
+    #define Section_DataBase (*All_Sections)
+    #define Dish_DataBase (*All_Dishes)
+    #define Side_DataBase (*All_Sides)
+    #define Ingredient_DataBase (*All_Ingredients)
 
 	//All_? Actually Contains 3 keys
 
@@ -97,7 +101,7 @@ namespace MenuCreator
 
 	//Dish Editor
 	//+----------------------------+
-	const glm::vec4 Highlight_Dish_Color = PageCreator::Blue; //Light Purple
+	const glm::vec4 Highlight_Dish_Color = {0.0, 0.29, 0.33, 1.0}; //Green/Grey/Blue
 	const glm::vec4 Dish_Color = SubmitOrder::DarkPurple;
 	static Dish New_Dish;					  //(Object) New Dish to Modify
 	static Dish* Current_Dish;				  //(Object) Current Dish to Modify
@@ -129,20 +133,20 @@ namespace MenuCreator
 	void Add_Dish_To_Container();
 	void Submit_Dish();				          //Pushes New Dish into Dish & Updates Graphics
 	void Select_Dish();
+	void Double_Select_Dish();             //User can click on a name and display all dishes in section
 	void Highlight_Dish(llPageItemData* PageItem_Dish_Graphic);
 	void Update_Dish_Graphics();              //Manages all Dish Graphics 
 	void Add_Dish_Graphic(const string Name); //Creates a Single Side Graphic
 	void Replace_Dish_Graphic(string Name, llPageItemData* Dish_PageItem);     //Removes a Single Section Graphic
 	void Hide_Dish_Graphic(llPageItemData* Dish_ShapeGroup);
 	void Rearrange_Dish_Graphics();           //Rearranges the Dish Graphics to a particular order
+	void Update_Dish_Form();
 	//+----------------------------+  
-
-
-
+	 
 	//Side Editor
 	//+----------------------------+
 	//Menu Creator "Side" Objects
-	const glm::vec4 Highlight_Side_Color = PageCreator::Green; //Light Purple
+	const glm::vec4 Highlight_Side_Color = PageCreator::Red; //Light Purple
 	const glm::vec4 Side_Color = SubmitOrder::DarkPurple;
 	static DishSide New_Side;				 //(Object) New Side to Modify
 	static DishSide* Current_Side;			 //(Object) Current Side to Modify

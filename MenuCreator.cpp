@@ -10,13 +10,17 @@ void MenuCreator::Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram*
 	RestaurantBook = Restaurant_POS;
 	CurrentShader = ShaderProgram;
 	Page_MenuCreator.llInit(RestaurantBook, CurrentShader, Texture0, Texture1, Texture2);
+
+	//Prepare Sections
 	Prepare_Section();
-	Prepare_Section_Filler();
 	Prepare_Dish();
-	Prepare_Dish_Form();
 	Prepare_Side();
-	Prepare_Side_Filler();
 	Prepare_Ingredient();
+
+	//Prepare Forms
+	Prepare_Section_Filler();
+	Prepare_Dish_Form();
+	Prepare_Side_Filler();
 	Prepare_Ingredient_Form();
 
 	CurrentKeyBoardInput = Empty;
@@ -266,6 +270,13 @@ void MenuCreator::Select_Section()
 	//Dishes Already Loaded? // Section Form Already Displayed? // Hide Section Form
 }
 
+void MenuCreator::Double_Select_Dish()
+{
+	PageGroup_Dish_Filler.UnHide();
+	PageGroup_Dish_Filler.SetllPosition({0.0, 0.0}, INPUT_CENTER);
+	Update_Dish_Form();
+}
+
 void MenuCreator::Highlight_Section(llPageItemData* PageItem_Section_Graphic)
 {
 	//Validation & No Section_Graphic Selected 
@@ -444,7 +455,7 @@ void MenuCreator::Prepare_Dish_Form()
 	//Cost
 	NumberPrinter_Template.AnswerFontSize = 12;
 	NumberPrinter_Template.Type = TYPE_FLOAT;
-	NumberPrinter_Template.Float = &New_Dish.Cost;
+	NumberPrinter_Template.Float = &Current_Dish->Cost;
 	NumberPrinter_Template.Below = true;
 	NumberPrinter_Template.DollarSign = true;
 	NumberPrinter_Template.Description = "Cost";
@@ -510,8 +521,7 @@ void MenuCreator::Submit_Dish()
 	PageGroup_Dish_Filler.Hide();
 
 	Add_Dish_To_Container();
-	////CHANGE THIS TO UPDATE ONCE YOU HAVE CONTAINERS FIGURED OUT
-	//Add_Dish_Graphic(Current_Dish->Name); //when i add a dish 
+
 	Update_Dish_Graphics();
 	//
 	////Display Add Button Below All Side
@@ -529,15 +539,19 @@ void MenuCreator::Select_Dish()
 {
 
 	//Get Section Selected
-	string Name_Selected = ElementsHovered.PageItem->DescriptiveData;
-	Dish* Dish_Selected = &(*All_Dishes)[Name_Selected];
-
-	//Section Already Selected
-	if (Current_Dish == Dish_Selected) { return; }
+	string Selected_Dish_Name = ElementsHovered.PageItem->DescriptiveData;
 
 	//Set Section 
-	Current_Dish = Dish_Selected;
+	Current_Dish = &Dish_DataBase[Selected_Dish_Name]; // Dish_Selected;
+
+	Log::LogString("Name Hovered: " + Current_Dish->Name);
 	Highlight_Dish(ElementsHovered.PageItem);
+
+	//Hide Dish Form
+	PageGroup_Dish_Filler.Hide();
+
+	//Dish Already Selected
+	//if (Current_Dish == Dish_Selected) { return; }
 
 	//Display Dishes
 	Update_Side_Graphics();
@@ -599,7 +613,6 @@ void MenuCreator::Update_Dish_Graphics()
 		}
 
 		//Highlight Selected
-	//	string Desp = Current_Dish_PageItem->DescriptiveData;
 		if (Current_Dish_PageItem != nullptr)
 		{
 			if (Current_Dish_PageItem->DescriptiveData == Current_Dish->Name)
@@ -653,6 +666,7 @@ void MenuCreator::Add_Dish_Graphic(const string Name)
 
 	//Page Item
 	Button_Select_Dish.LogicalActions[GUI_MOUSELEFT_CLICKED] = Select_Dish;
+	Button_Select_Dish.LogicalActions[GUI_MOUSELEFT_DOUBLECLICKED] = Double_Select_Dish;
 	PageGroupItem PageItem_Dish_Graphic(RestaurantBook, &PageItem_Template);
 	PageItem_Dish_Graphic.GetData()->PageItemButton = &Button_Select_Dish;
 	
@@ -727,6 +741,13 @@ void MenuCreator::Hide_Dish_Graphic(llPageItemData* Dish_PageItem)
 }
 
 
+void MenuCreator::Update_Dish_Form()
+{
+	Printer_Dish_Name.ChangeString(Current_Dish->Name);//llUpdate();
+	Printer_Cost.SetFloat(Current_Dish->Cost);//llUpdate();
+}
+
+
 void MenuCreator::Rearrange_Dish_Graphics() {}
 //+----------------------------+
 	 
@@ -751,7 +772,7 @@ void MenuCreator::Prepare_Side()
 	ShapeGroup_Template.BackGroundPadding[PADDING_RIGHT] = 40;
 	ShapeGroup_Template.BackGroundPadding[PADDING_TOP] = 5;
 	ShapeGroup_Template.BackGroundPadding[PADDING_BOTTOM] = 1000;
-	ShapeGroup_Template.BackGroundColor = PageCreator::Yellow;
+	ShapeGroup_Template.BackGroundColor = { 0.0, 0.29, 0.33, 1.0 };
 	ShapeGroup_Template.Color = PageCreator::White;
 	Text_Label_Side.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 	Text_Label_Side.CopyBackGround(Text_Label_Section.GetData());
@@ -883,8 +904,8 @@ void MenuCreator::Submit_Side()
 	//Set Current Section to Container
 	Add_Side_To_Container();
 
-	//Display the New Section
-	Add_Side_Graphic(Side_Name); //Update_Section_Graphic() instead
+	//Add Side and Update
+	Update_Side_Graphics();// instead
 
 	//Display Dishes From New Section
 	Update_Ingredient_Graphics();
@@ -957,7 +978,6 @@ void MenuCreator::Update_Side_Graphics()
 	//Use the "Current_Section" to loop through it's dishes
 	for (auto Side : (*All_Dishes)[Current_Dish->Name].Side_Names)
 	{
-		Log::LogString("Side is: " + Side);
 		//New Graphic
 		if (Current_Side_PageItem == nullptr)
 		{
@@ -974,13 +994,21 @@ void MenuCreator::Update_Side_Graphics()
 			Replace_Side_Graphic(Side, Current_Side_PageItem);
 		}
 
+		//Highlight Selected
+		if (Current_Side_PageItem != nullptr)
+		{
+			if (Current_Side_PageItem->DescriptiveData == Current_Side->Name)
+			{
+				Highlight_Side(Current_Side_PageItem);
+			}
+		}
+
 		//if we add, it will go through replacing alse thats why we need this boolean
 		AddOnly = false;
 
 		//Stop Cycling if there is no shapegroup
 		if (Current_Side_PageItem != nullptr) { Current_Side_PageItem = Current_Side_PageItem->Next; }
 	}
-	Log::LogString("Container Finished");
 	//Graphics left over
 	////Existing? // Add // Hide
 	while (Current_Side_PageItem != nullptr)
@@ -1104,7 +1132,6 @@ void MenuCreator::Rearrange_Side_Graphics() {}
 //the printer we selected
 void MenuCreator::SetCurrentKeyBoardInput()
 {
-	Log::LogString("Going in because of background");
 	if (ElementsHovered.PageItem != nullptr)
 	{
 		//User Clicks the Printer Answer
@@ -1113,7 +1140,7 @@ void MenuCreator::SetCurrentKeyBoardInput()
 			Log::LogString("Found a Printer!");
 			CurrentPrinter.llSwitch(ElementsHovered.PageItem);
 			CurrentPrinter.LoadedBook = RestaurantBook;
-			CurrentText = *CurrentPrinter.CurrentNumberPrinter.String;
+			CurrentText = CurrentPrinter.Get_For_Keyboard();
 			//CurrentText = "Name";
 			CurrentPrinter.SetString(CurrentText);
 			CurrentKeyBoardInput = ProcessPrinterInput;
@@ -1122,9 +1149,11 @@ void MenuCreator::SetCurrentKeyBoardInput()
 
 }
 
+//Responsible for Setting Text in elements from user input
 void MenuCreator::ProcessPrinterInput()
 {
-	CurrentPrinter.ChangeString(CurrentText);
+	//CurrentPrinter.ChangeString(CurrentText);
+	CurrentPrinter.Set_With_Keyboard(CurrentText);
 }
 
 void MenuCreator::KeyboardToCurrentText(KeyResult& CurrentKeyResult)

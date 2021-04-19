@@ -99,8 +99,101 @@ void NumberPrinter::SetVec2(const glm::vec2& Vec2)
 
 void NumberPrinter::ChangeString(string NewString)
 {
+	if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ChangeString Failed:: No String Attached"); return; }
+
 	*CurrentNumberPrinter.String = NewString;
 	llUpdate();
+}
+
+void NumberPrinter::ChangeFloat(string NewFloat)
+{
+	if (CurrentNumberPrinter.Float == nullptr) { Log::LogString("ChangeString Failed:: No String Attached"); return; }
+
+	if (NewFloat == " ") {NewFloat = "0.0";}
+	
+	Log::LogString(NewFloat);
+
+	float StringAsFloat = stof(NewFloat);
+
+	//Log::LogFloat(" (from string)  FLOAT", StringAsFloat);
+
+	*CurrentNumberPrinter.Float = StringAsFloat;
+	llUpdate();
+}
+
+void NumberPrinter::Set_With_Keyboard(string CurrentText)
+{
+	switch (CurrentNumberPrinter.Type)
+	{
+	case TYPE_INT:
+		break;
+
+	case TYPE_FLOAT:
+		ChangeFloat(CurrentText);
+		break;
+
+	case TYPE_DOUBLE:
+		//CreateDouble();
+		break;
+
+	case TYPE_VEC2:
+		//ReplaceVec2();
+		break;
+
+	case TYPE_VEC3:
+		//CreateVec3();
+		break;
+
+	case TYPE_VEC4:
+		//CreateVec4();
+		break;
+	case TYPE_STRING:
+		ChangeString(CurrentText);
+		break;
+	}
+}
+
+
+string NumberPrinter::Get_For_Keyboard()
+{
+	switch (CurrentNumberPrinter.Type)
+	{
+	case TYPE_INT:
+		break;
+
+	case TYPE_FLOAT:
+		return Get_Float_As_String();
+		break;
+	case TYPE_DOUBLE:
+		//CreateDouble();
+		break;
+
+	case TYPE_VEC2:
+		//ReplaceVec2();
+		break;
+
+	case TYPE_VEC3:
+		//CreateVec3();
+		break;
+
+	case TYPE_VEC4:
+		//CreateVec4();
+		break;
+	case TYPE_STRING:
+		return *CurrentNumberPrinter.String;
+		break;
+	}
+}
+
+string NumberPrinter::Get_Float_As_String()
+{
+	if (CurrentNumberPrinter.Float == nullptr) { return "Error :: No Float"; }
+
+	//Convert float to a string
+	string FloatAsString = to_string(*CurrentNumberPrinter.Float);
+	//get rid of all the extra decimal places
+	FloatAsString = ProcessDecimalPlace(FloatAsString, false);
+	return FloatAsString;
 }
 
 void NumberPrinter::ChangeVec2(glm::vec2* NewVec2)
@@ -289,7 +382,7 @@ void NumberPrinter::CreateFloat()
 
 	//Main String
 	string RawString = to_string(MainFloat);
-	CurrentText.Phrase = ProcessDecimalPlace(RawString);
+	CurrentText.Phrase = ProcessDecimalPlace(RawString, CurrentNumberPrinter.DollarSign);
 	//TextShapeGroup.Position = { Description.GetAccessRight(10), CurrentllPageItem->Position[Y_AXIS] };
 	TextShapeGroup.Color = CurrentNumberPrinter.AnswerColor;
 	if (FloatConnected != true)
@@ -540,7 +633,7 @@ void NumberPrinter::ReplaceFloat()
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
 
 	string RawString = to_string(MainFloat);
-	CurrentText.Phrase = ProcessDecimalPlace(RawString);
+	CurrentText.Phrase = ProcessDecimalPlace(RawString, CurrentNumberPrinter.DollarSign);
 	CurrentShapeGroup = CurrentShapeGroup->Next;
 	CurrentShapeGroup->Position = ProcessAnswerPlacement(&Text_Reference);
 	//CurrentShapeGroup->Position = { Text_Reference.GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
@@ -552,9 +645,7 @@ void NumberPrinter::ReplaceFloat()
 
 	CurrentText.FontSize = CurrentNumberPrinter.AnswerFontSize;
 	//TextPlaceRight(MATCH_CENTERS, PreviousGroupEdges, CurrentShapeGroup->InputType, CurrentShapeGroup->Position, 0);
-	Log::LogString("Cost Replace 1st");
 	Text_Reference.SetllTextGroup(CurrentShapeGroup, CurrentText);
-	Log::LogString("Cost Replace 2st");
 	//Second_Text_Reference.PlaceRight(Text_Reference, MATCH_CENTERS);
 }
 
@@ -658,7 +749,7 @@ glm::vec2 NumberPrinter::ProcessAnswerPlacement(Text* Text_Reference)
 	return  { Text_Reference->GetAccessLeft(CurrentNumberPrinter.AnswerSpacing), CurrentllPageItem->Position[Y_AXIS] };
 }
 
-string NumberPrinter::ProcessDecimalPlace(string& Reference_String)
+string NumberPrinter::ProcessDecimalPlace(string& Reference_String, bool DollarSign)
 {
 	int EraseCount = 1;
 
@@ -670,7 +761,7 @@ string NumberPrinter::ProcessDecimalPlace(string& Reference_String)
 			Reference_String.erase(EraseCount + CurrentNumberPrinter.DecimalPlaces);
 			
 			//Process Dolar Sign
-			if (CurrentNumberPrinter.DollarSign == true)
+			if (DollarSign == true)
 			{
 				Reference_String = '$' + Reference_String;
 			}

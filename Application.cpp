@@ -61,6 +61,7 @@
 //#include "SubmitOrder.h"
 #include "Selector.h"
 #include "MenuCreator.h"
+#include "IngredientListCreator.h"
 
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -567,6 +568,33 @@ int main(int argc, char** argv)
 	//FixThisCopy.Hide();
 	//FixThisCopy.UnHide();
 	//Fix_Filler.SetllPosition({ -0.5, 0.0 });
+
+	//Task 1: Convert 246.65 Kilo's to ounces
+
+	double Tons;
+	double Kilos;
+	double Ounces = 4567;
+	double Grams;
+	double Milligrams;
+
+	double Litre;
+	double TableSpoon = 7;
+	double Teaspoon;
+	double Quart;
+
+	map<string, double> IngredientList;
+	IngredientList["Lemon"] = 2;
+	IngredientList["Orange"] = 3.453;
+	IngredientList["Strawberry"] = 4578.45;
+	IngredientList["BlueBerry"] = 56;
+
+	//IngredientListCreator::PrintShoppingList(IngredientList);
+	IngredientListCreator::Prepare();
+
+	double Measurement = 4;
+
+	double Result = IngredientListCreator::Measurement_Conversion(Measurement, LIQUID, CUP, MILLILITRE);
+	Log::LogDouble("Result: ", Result);
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
