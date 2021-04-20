@@ -16,7 +16,7 @@ namespace MenuCreator
 	static ButtonFunction CurrentKeyBoardInput;
 	static string CurrentText;
 	void Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
-	void Update(KeyResult& CurrentKeyResult);                    
+	void Update(KeyResult& CurrentKeyResult, int CurrentPage);                    
 	void PrepareMenuContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient);
 
 	static map<string, Ingredient>* All_Ingredients;
@@ -24,11 +24,12 @@ namespace MenuCreator
 	static map<string, Dish>* All_Dishes;
 	static map<string, Section>* All_Sections; //Section Name | Section Object | Dish Names
 
-    #define Section_DataBase (*All_Sections)
-    #define Dish_DataBase (*All_Dishes)
-    #define Side_DataBase (*All_Sides)
-    #define Ingredient_DataBase (*All_Ingredients)
+	static Measurement Default_Measurement;
 
+   #define Section_DataBase (*All_Sections)
+   #define Dish_DataBase (*All_Dishes)
+   #define Side_DataBase (*All_Sides)
+   #define Ingredient_DataBase (*All_Ingredients)
 	//All_? Actually Contains 3 keys
 
 	//You can get 2 Pieces of Information from Section; The Object || All the Dish NAMES accociated with the Section
@@ -229,5 +230,10 @@ namespace MenuCreator
 
 
 }
+
+
+
+
+
 
 #endif

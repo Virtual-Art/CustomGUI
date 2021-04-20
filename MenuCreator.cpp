@@ -35,11 +35,13 @@ void MenuCreator::PrepareMenuContainers(map<string, Section>* Section, map<strin
 }
 
 
-void MenuCreator::Update(KeyResult& CurrentKeyResult)
+void MenuCreator::Update(KeyResult& CurrentKeyResult, int CurrentPage)
 {
+	
+	if (CurrentPage != 1) { return; }
 	Page_MenuCreator.DrawPage();
-	KeyboardToCurrentText(CurrentKeyResult);
 	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
+	KeyboardToCurrentText(CurrentKeyResult);
 	CurrentKeyBoardInput();
 
 	if (ElementsHovered.PageItem != nullptr && GUI_R_CLICKED)
@@ -79,7 +81,7 @@ void MenuCreator::PrintSideIngredients(DishSide& Current_Side)
 	Log::LogString("Side: " + Current_Side.Name + "-------------------------------------");
 	for (auto Ingredient_Name_Quantity : Current_Side.Ingredient_Names)
 	{
-		cout << "Ingredient " << Ingredient_Name_Quantity.first << " , " << Ingredient_Name_Quantity.second << endl;
+		cout << "Ingredient " << Ingredient_Name_Quantity.first << " , " << Ingredient_Name_Quantity.second.Measurement << Ingredient_Name_Quantity.second.MeasurementMedium << endl;
 	}
 }
 	 
@@ -1317,7 +1319,7 @@ void MenuCreator::Add_Ingredient_To_Container()
 	//Sides = Ingredients
 
 	//Add Side Name into All Dishes
-	(*All_Sides)[Current_Side->Name].Ingredient_Names[Current_Ingredient->Name] = Current_Ingredient->Measurement;
+	(*All_Sides)[Current_Side->Name].Ingredient_Names[Current_Ingredient->Name] = Default_Measurement;
 
 	//Add the Data from Current Side into All Sides
 	(*All_Ingredients)[Current_Ingredient->Name] = *Current_Ingredient;

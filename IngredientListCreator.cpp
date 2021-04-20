@@ -7,6 +7,7 @@ void IngredientListCreator::Prepare()
 
 void IngredientListCreator::build_2d_conversion_map()
 {
+	litre_kilo_to[QUANTITY][QUANTITY] = dud;
 	litre_kilo_to[LIQUID][GALLON] = litre_to_gallon;
 	litre_kilo_to[LIQUID][QUART] = litre_to_quart;
 	litre_kilo_to[LIQUID][PINT] = litre_to_pint;
@@ -22,6 +23,7 @@ void IngredientListCreator::build_2d_conversion_map()
 	litre_kilo_to[WEIGHT][GRAM] = kilo_to_gram;
 	litre_kilo_to[WEIGHT][MILLIGRAM] = kilo_to_milligram;
 
+	to_litre_kilo[QUANTITY][QUANTITY] = dud;
 	to_litre_kilo[LIQUID][GALLON] = gallon_to_litre;
 	to_litre_kilo[LIQUID][QUART] = quart_to_litre;
 	to_litre_kilo[LIQUID][PINT] = pint_to_litre;
@@ -38,15 +40,64 @@ void IngredientListCreator::build_2d_conversion_map()
 	to_litre_kilo[WEIGHT][MILLIGRAM] = milligram_to_kilo;
 }
 
+void IngredientListCreator::PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient)
+{
+	All_Sections = Section;
+	All_Dishes = Dish;
+	All_Sides = Side;
+	All_Ingredients = Ingredient;
+}
+
+
 void IngredientListCreator::ConsolidateOrderIngredients(IngredientList& ShoppingList);
 void IngredientListCreator::ConsolidateDishIngredients(IngredientList& ShoppingList);
 
-void IngredientListCreator::PrintShoppingList(IngredientList& ShoppingList)
+void IngredientListCreator::ConsolidateSideIngredients(DishSide& Side)
+{
+	//Go Through All Ingredients in "Side"
+	for (auto ingredient : Side.Ingredient_Names)
+	{
+		//Get Ingredient Details
+		const string& Ingredient_Name           =  ingredient.first;
+		const double& Ingredient_Measurment     =  ingredient.second.Measurement;
+		const int& Ingredient_Measurment_Medium =  ingredient.second.MeasurementMedium;
+		const int& Ingredient_Type              =  Ingredient_DataBase[Ingredient_Name].MeasurementType;
+
+		//Log::LogString("Name:" + Ingredient_Name);
+		//Log::LogInt("Measurement Type", Ingredient_Type);
+		//Log::LogInt("Medium", Ingredient_Measurment_Medium);
+
+		//Convert Ingredient to Litre/Kilos
+		double amount_in_litre_kilo = to_litre_kilo[Ingredient_Type][Ingredient_Measurment_Medium](Ingredient_Measurment);
+		double amount_in_teaspoon = litre_kilo_to[LIQUID][CUP](amount_in_litre_kilo);
+
+		//Existing Shopping List Ingredient
+		if (ShoppingList.find(Ingredient_Name) != ShoppingList.end())
+		{
+			//Update Ingredient
+			ShoppingList[Ingredient_Name] += amount_in_teaspoon;
+		}
+		//New Shopping List Ingredient
+		else
+		{
+			//Add Ingredient
+			ShoppingList[Ingredient_Name] = amount_in_teaspoon;
+		}
+	}
+
+}
+
+void IngredientListCreator::PrintShoppingList()
 {
 	for (auto Ingredient : ShoppingList)
 	{
 		string MeasurementType = "L";
-		cout << Ingredient.first << " | " << Ingredient.second << " " << MeasurementType << endl;
+		const string& Ingredient_Name = Ingredient.first;
+		const double& Ingredient_Quantity = Ingredient.second;
+
+		string Quantity = SubmitOrder::ProcessDecimalPlace(Ingredient_Quantity, false, 3);
+
+		cout << Ingredient_Name << " | " << Quantity << " " << MeasurementType << endl;
 	}
 }
 
@@ -65,6 +116,7 @@ string IngredientListCreator::get_liquid_string(int LiquidType) {return " ";}
 string IngredientListCreator::get_weight_string(int WeightType) {return " ";}
 
 // kilo to
+double IngredientListCreator::dud(const double& dud) { return dud; }
 double IngredientListCreator::kilo_to_pound(const double& kilo)  { return kilo  * KILO_POUND_FACTOR; }
 double IngredientListCreator::kilo_to_ounce(const double& kilo)  { return kilo  * KILO_OUNCE_FACTOR; }
 double IngredientListCreator::kilo_to_ton  (const double& kilo)  { return kilo  * KILO_US_TON_FACTOR;}

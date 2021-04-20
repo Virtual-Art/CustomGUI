@@ -125,6 +125,8 @@ void NewPage::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTextur
 
 NewPage::NewPage(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2)
 {
+	llInit(llBook, ShaderProgram, Texture0, Texture1,  Texture2);
+
 	CurrentShader = ShaderProgram;
 	this->Texture0 = Texture0;
 	this->Texture1 = Texture1;

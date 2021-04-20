@@ -52,13 +52,26 @@ namespace IngredientListCreator
 	static Unordered_2d_Map to_litre_kilo;
 
 	void Prepare();
-
 	void build_2d_conversion_map();
+	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient);
+
+	static IngredientList ShoppingList;
+
+	static map<string, Ingredient>* All_Ingredients;
+	static map<string, DishSide>* All_Sides;
+	static map<string, Dish>* All_Dishes;
+	static map<string, Section>* All_Sections; //Section Name | Section Object | Dish Names
+
+    #define Section_DataBase (*All_Sections)
+    #define Dish_DataBase (*All_Dishes)
+    #define Side_DataBase (*All_Sides)
+    #define Ingredient_DataBase (*All_Ingredients)
 
 	void ConsolidateOrderIngredients(IngredientList& ShoppingList);
 	void ConsolidateDishIngredients(IngredientList& ShoppingList);
+	void ConsolidateSideIngredients(DishSide& Side);
 
-	void PrintShoppingList(IngredientList& ShoppingList);
+	void PrintShoppingList();
 
 	string get_liquid_string(int LiquidType);
 	string get_weight_string(int WeightType);
@@ -71,6 +84,8 @@ namespace IngredientListCreator
 
 
 	//-----------------Mass--------------------//
+
+	double dud(const double& dud);
 
 	// kilo to ?
 	double kilo_to_pound    (const double& kilo);

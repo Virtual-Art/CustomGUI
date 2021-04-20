@@ -16,6 +16,7 @@
 #include "DropDownList.h"
 #include "FileProcessor.h"
 #include "SearchBar.h"
+#include "Selector.h"
 
 using namespace std;
 

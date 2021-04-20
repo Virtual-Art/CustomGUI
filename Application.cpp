@@ -62,7 +62,7 @@
 #include "Selector.h"
 #include "MenuCreator.h"
 #include "IngredientListCreator.h"
-
+#include "ApplicationMenu.h"
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -478,8 +478,8 @@ int main(int argc, char** argv)
 	} */
 
 	llBookData Book_Restaurant_POS;
-	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
-	//Simple Form nothing else required
+
+
 	map<string, Ingredient> All_Ingredients; // Key: Name | Value: Ingredient Measurement Type, Gluten
 	map<string, DishSide> All_Sides;   //Holds Side Name   : Side Data : Set of Ingdt Names
 	map<string, Dish> All_Dishes;      //Holds Dish Name   : Dish Data : Set of Side  Names
@@ -489,7 +489,7 @@ int main(int argc, char** argv)
 
 	llPageItemData PageItem_Template;
 	PageItem_Template.Position = { -0.3, 0.95 };
-	PageItem_Template.BackGround = true;
+	//PageItem_Template.BackGround = true;
 	PageItem_Template.BackGroundColor = { 1.0, 0.0, 1.0, 1.0 };
 	PageItem_Template.BackGroundPadding = { 20, 20, 20, 20 };
 	SelectorData Selector_Template;
@@ -515,61 +515,19 @@ int main(int argc, char** argv)
 
 	NumberPrinter sigh_MousePosition(&Book_Restaurant_POS, &boooo, Tiredofthis);
 
+	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
+	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
+	ApplicationMenu::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
 	MenuCreator::Prepare_MenuCreator(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 	MenuCreator::PrepareMenuContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
-	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
-
-
-	SubmitOrder::FiguringoutContainers();
+	IngredientListCreator::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
+	IngredientListCreator::Prepare();
 
 	MenuCreator::Update_Section_Graphics();
-	//MenuCreator::Update_Dish_Graphics();
-	//MenuCreator::Update_Side_Graphics();
-	//MenuCreator::Update_Ingredient_Graphics();
 
-	//MenuCreator::Update_Dish_Graphics();
-
-	//MasterElement::PrintBookStats(&Book_Restaurant_POS);
 	Log::LogString("start---------------------------------end");
-	//llPageItemData PageItem_Fix_Filler;
-	//PageItem_Fix_Filler.BackGround = true;
-	//
-	//PageGroupItem Fix_Filler(&Book_Restaurant_POS, &PageItem_Fix_Filler);
-	//
-	//TextData _Data_Fix;
-	//_Data_Fix.Phrase = "Fix This";
-	//llShapeGroupData ShapeGroup_Fix;
-	//ShapeGroup_Fix.Position = { -0.2, 0.0 };
-	//ShapeGroup_Fix.Color = PageCreator::Blue;
-	//ShapeGroup_Fix.BackGround = true;
-	//
-	//Text FixThis(&Book_Restaurant_POS, &ShapeGroup_Fix, _Data_Fix);
-	//FixThis.SetllPosition({0.0, 0.0});
-	//
-	//_Data_Fix.Phrase = "Suddenly it's Working?";
-	//Text FixThis2(&Book_Restaurant_POS, &ShapeGroup_Fix, _Data_Fix);
-	//FixThis2.SetllPosition({ 0.0, 0.1 });
-	//
-	//
-	//Text Text_Copy(Fix_Filler.GetData()->ShapeGroup);
-	//Text_Copy.LoadedBook = &Book_Restaurant_POS;
-	//Text_Copy.llSwitch(Fix_Filler.GetData()->ShapeGroup);
-	//Text_Copy.SetllPosition({ 0.0, 0.2 });
-	//
-	//
-	//llPageItemData* Fix_This_Reference = Fix_Filler.GetData();
-	//
-	//PageGroupItem FixThisCopy(Fix_This_Reference);
-	//FixThisCopy.LoadedBook = &Book_Restaurant_POS;
-	//FixThisCopy.llSwitch(Fix_This_Reference);
-	//Fix_This_Reference->Position = {-0.5, 0.0};
-	//FixThisCopy.SetllPageItem(Fix_This_Reference);
-	//
-	//FixThisCopy.Hide();
-	//FixThisCopy.UnHide();
-	//Fix_Filler.SetllPosition({ -0.5, 0.0 });
-
-	//Task 1: Convert 246.65 Kilo's to ounces
 
 	double Tons;
 	double Kilos;
@@ -589,12 +547,69 @@ int main(int argc, char** argv)
 	IngredientList["BlueBerry"] = 56;
 
 	//IngredientListCreator::PrintShoppingList(IngredientList);
-	IngredientListCreator::Prepare();
 
 	double Measurement = 4;
 
-	double Result = IngredientListCreator::Measurement_Conversion(Measurement, LIQUID, CUP, MILLILITRE);
-	Log::LogDouble("Result: ", Result);
+	//double Result = IngredientListCreator::Measurement_Conversion(Measurement, LIQUID, CUP, MILLILITRE);
+	//Log::LogDouble("Result: ", Result);
+
+	Ingredient Lemon;
+	Lemon.Name = "Lemon";
+	Lemon.MeasurementType = QUANTITY;
+
+	Ingredient Milk;
+	Milk.Name = "Milk";
+	Milk.MeasurementType = LIQUID;
+
+	Ingredient Olive_Oil;
+	Olive_Oil.Name = "Olive Oil";
+	Olive_Oil.MeasurementType = LIQUID;
+
+	Ingredient Soya_Sauce;
+	Soya_Sauce.Name = "Soya Sauce";
+	Soya_Sauce.MeasurementType = LIQUID;
+
+	Ingredient Water;
+	Water.Name = "Water";
+	Water.MeasurementType = LIQUID;
+
+	Ingredient Sesame_Oil;
+	Sesame_Oil.Name = "Sesame Oil";
+	Sesame_Oil.MeasurementType = LIQUID;
+
+	All_Ingredients[Lemon.Name] = Lemon;
+
+	All_Ingredients[Milk.Name] = Milk;
+	All_Ingredients[Olive_Oil.Name] = Olive_Oil;
+	All_Ingredients[Soya_Sauce.Name] = Soya_Sauce;
+	All_Ingredients[Water.Name] = Water;
+	All_Ingredients[Sesame_Oil.Name] = Sesame_Oil;
+
+
+	DishSide FirstIngredientSide;
+	FirstIngredientSide.Name = "First Side!";
+	FirstIngredientSide.Ingredient_Names[Lemon.Name] = {0.5, QUANTITY};
+	FirstIngredientSide.Ingredient_Names[Milk.Name] = {1.0, CUP};
+	FirstIngredientSide.Ingredient_Names[Olive_Oil.Name] = {3.0, TABLESPOON};
+	FirstIngredientSide.Ingredient_Names[Soya_Sauce.Name] = {1.5, TABLESPOON};
+	FirstIngredientSide.Ingredient_Names[Water.Name] = {4, CUP};
+
+	DishSide SecondIngredientSide;
+	SecondIngredientSide.Name = "First Side!";
+	SecondIngredientSide.Ingredient_Names[Lemon.Name] = { 2, QUANTITY };
+	SecondIngredientSide.Ingredient_Names[Milk.Name] = { 3.0, TABLESPOON};
+	SecondIngredientSide.Ingredient_Names[Olive_Oil.Name] = { 2, TABLESPOON };
+	SecondIngredientSide.Ingredient_Names[Soya_Sauce.Name] = { 1, TEASPOON};
+	SecondIngredientSide.Ingredient_Names[Water.Name] = { 1, CUP };
+	SecondIngredientSide.Ingredient_Names[Sesame_Oil.Name] = { 0.5, TEASPOON};
+
+	Log::LogString("Added to container");
+
+
+
+	IngredientListCreator::ConsolidateSideIngredients(FirstIngredientSide);
+	IngredientListCreator::ConsolidateSideIngredients(SecondIngredientSide);
+	IngredientListCreator::PrintShoppingList();
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -616,8 +631,10 @@ int main(int argc, char** argv)
 		//sigh_MousePosition.SetVec2(MousePosition);
 		//Restaurant POS
 		//+-------------------------+
-		//SubmitOrder::Update();
-		MenuCreator::Update(KeyState);
+
+		int Page_To_Render = ApplicationMenu::Update();
+		SubmitOrder::Update(Page_To_Render);
+		MenuCreator::Update(KeyState, Page_To_Render);
 		//+-------------------------+
 
 
@@ -926,4 +943,3 @@ void PrintMap(map<string, string>& map)
 	}
 
 }
-

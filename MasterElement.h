@@ -302,6 +302,7 @@ struct llShapeGroupData
 	TextData TextData;
 	Button* ShapeGroupButton = nullptr;
 	string DescriptiveData;
+	int Key;
 };
 
 struct llPageItemData
