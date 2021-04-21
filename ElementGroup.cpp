@@ -434,6 +434,13 @@ void ShapeGroup::Delete()
 	if (NextllShapeGroup != nullptr) { NextllShapeGroup->Previous = PreviousllShapeGroup; }
 }
 
+void ShapeGroup::SetBackGroundColor(glm::vec4 Color)
+{
+	CurrentllShapeGroup->BackGroundColor = Color;
+	Log::LogVec4("Setting BackGround Color: ", CurrentllShapeGroup->BackGroundColor);
+	llUpdate();
+}
+
 void ShapeGroup::HighlightShapeGroup(glm::vec4 HighlightColor)
 {
 	//Validate
@@ -1722,6 +1729,8 @@ void ShapeGroup::SetBackGround()
 			//Same Size
 		}
 		//BackGround->Position = { (CurrentllShapeGroup->Left + CurrentllShapeGroup->Right) / 2, (CurrentllShapeGroup->Top + CurrentllShapeGroup->Bottom) / 2 };
+		
+		BackGround->Color = CurrentllShapeGroup->BackGroundColor;
 		BackGround->Hide = CurrentllShapeGroup->Hide;
 		BackGround->InputType = INPUT_TOPLEFT;
 		Quad_Reference.SetllShape(BackGround);

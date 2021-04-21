@@ -89,6 +89,7 @@ namespace PageCreator
 	const glm::vec4 Azure = { 0.0, 0.5, 1.0, 1.0 };
 	const glm::vec4 Purple = { 0.5, 0.0, 1.0, 1.0 };
 	const glm::vec4 Transparent = { 0.0, 0.0, 0.0, 0.0 };
+	const glm::vec4 Favourite_Color = { 0.0, 0.29, 0.33, 1.0 };
 
 	const glm::vec4 ShapeHighlightColor = {0.0, 0.5, 0.9, 0.8 }; // Light Blue 
 	const glm::vec4 ShapeGroupHighlightColor = { 0.0, 0.9, 0.4, 0.8 }; // Medium Green

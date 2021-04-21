@@ -23,8 +23,15 @@ namespace ApplicationMenu
 	void Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 	int Update();
 
-	void CreateSelectorMenu();
-	void SetCurrentPage();
+	void CreatePageSelector();
+
+	void Highlight_Page_Selector(llShapeGroupData* ShapeGroup_Section_Graphic);
+	void Select_Page();
+
+	const glm::vec4 Page_Color = { 0.52, 0.41, 0.0, 1.0 };
+	const glm::vec4 Page_Highlight_Color = { 0.77, 0.66, 0.0, 1.0 };
+	static llShapeGroupData* ShapeGroup_Page_Graphic_Selected;
+
 }
 
 #endif

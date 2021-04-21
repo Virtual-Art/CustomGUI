@@ -114,6 +114,7 @@ class ShapeGroup : public MasterElement
 	void Add_Insert();
 	void Delete();
 
+	void SetBackGroundColor(glm::vec4 Color);
 	void HighlightShapeGroup(glm::vec4 Color);
 	void HighlightOff();
 

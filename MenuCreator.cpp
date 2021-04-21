@@ -1293,6 +1293,11 @@ void MenuCreator::Prepare_Ingredient_Form()
 
 }
 
+void MenuCreator::Update_Ingredient_Form()
+{
+
+}
+
 void MenuCreator::Add_Ingredient()
 {
 	//Prepare a New Section

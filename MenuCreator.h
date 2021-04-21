@@ -218,6 +218,7 @@ namespace MenuCreator
 
 	void Prepare_Ingredient();			  //Displays Ingredient title with background
 	void Prepare_Ingredient_Form();			     //Prepares Filler GUI for usage
+	void Update_Ingredient_Form();			     //Prepares Filler GUI for usage
 	void Add_Ingredient();                //Displays Graphics to Fill in Ingredient Details
 	void Add_Ingredient_To_Container();
 	void Submit_Ingredient();			  //Pushes New Ingredient into Side & Updates Graphics
