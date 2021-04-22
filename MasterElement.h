@@ -741,6 +741,7 @@ public:
 
 	//Print Book
 	static void PrintBookStats(llBookData* llBook);
+	static void PrintPageItemStats(llPageItemData* llPageItem);
 	static void PrintBook(llBookData* llBook);
 
 	//Print Group Shapes

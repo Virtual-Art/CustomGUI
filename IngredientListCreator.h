@@ -44,18 +44,30 @@ typedef double(*Measurement_Function)(const double&); //Points to a liquid funct
 typedef unordered_map<int, Measurement_Function> ConversionFunctions;
 typedef unordered_map<int, ConversionFunctions> Unordered_2d_Map;
 	
-
+//The purpose of this class is to be able to select orders and display the ingredient list
 namespace IngredientListCreator
 {
 	typedef map<string, double> IngredientList;
 	static Unordered_2d_Map litre_kilo_to;
 	static Unordered_2d_Map to_litre_kilo;
 
+	static llBookData* RestaurantBook;
+	static ShaderProgram* CurrentShader;
+	static RawTexture* CurrentTexture0;
+	static RawTexture* CurrentTexture1;
+	static RawTexture* CurrentTexture2;
+	static NewPage Page_IngredientListCreator;
+	static llPageData* IngredientListCreatorOrderDirectory;
+	static BookDirectory ElementsHovered;
+
 	void Prepare();
 	void build_2d_conversion_map();
-	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient);
+	void Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
+	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, CustomerOrder>* Orders_By_Date);
+	void Update(int CurrentPage);
 
 	static IngredientList ShoppingList;
+	static map<string, CustomerOrder>* Orders_By_Date;
 
 	static map<string, Ingredient>* All_Ingredients;
 	static map<string, DishSide>* All_Sides;
@@ -66,9 +78,47 @@ namespace IngredientListCreator
     #define Dish_DataBase (*All_Dishes)
     #define Side_DataBase (*All_Sides)
     #define Ingredient_DataBase (*All_Ingredients)
+	#define Customer_Order_DataBase (*Orders_By_Date)
 
-	void ConsolidateOrderIngredients(IngredientList& ShoppingList);
-	void ConsolidateDishIngredients(IngredientList& ShoppingList);
+	static glm::vec4 first_customer_order_edges;
+	static glm::vec4 last_customer_order_edges;
+	static llPageItemData* First_Customer_Order_Graphic;
+	static bool first_customer_order;
+
+	static Button Button_Update_Customer_Orders;
+	static Text Text_Customer_Orders_Label;
+
+	void Prepare_Ingredient_List_Creator();
+	void Prepare_Customer_Orders();
+
+
+	void Add_Dish_To_Shopping_List();
+
+	//Display Customer Orders for selection
+	void Update_Customer_Orders_Graphics();
+	void Add_Customer_Orders_Graphic(const CustomerOrder& ordered_dish_to_add);
+	void Replace_Customer_Orders_Graphic(const CustomerOrder& ordered_dish_to_replace, llPageItemData* Ordered_Dish_PageItem);
+	void Hide_Customer_Orders_Graphic(llPageItemData* PageItem_Dish_Graphic);
+
+
+	static glm::vec4 first_ingredient_list_edges;
+	static glm::vec4 last_ingredient_list_edges;
+	static llPageItemData* First_Ingredient_List_Graphic;
+	static bool first_ingredient_list;
+
+	static Text Text_Ingredient_List_Label;
+	static Button Button_Update_Ingredient_List;
+
+	//Display Ingredient List
+	void Update_Ingredient_List_Graphics();
+	void Add_Ingredient_List_Graphic(const string& Ingredient_Name, const string& Ingredient_Measurement);
+	void Replace_Ingredient_List_Graphic(const string& Ingredient_Name, const string& Ingredient_Measurement, llPageItemData* Ordered_Dish_PageItem);
+	void Hide_Ingredient_List_Graphic(llPageItemData* PageItem_Dish_Graphic);
+
+	//Create Ingredient List
+	void CreateShoppingList();
+	void ConsolidateOrderIngredients(CustomerOrder& ShoppingList);
+	void ConsolidateDishIngredients(Dish& Dish);
 	void ConsolidateSideIngredients(DishSide& Side);
 
 	void PrintShoppingList();

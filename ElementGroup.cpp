@@ -205,13 +205,22 @@ ShapeGroup::ShapeGroup(llShapeGroupData* ShapeGroup)
 	:SetInStone(true)
 {
 	//If it exists
-	if (ShapeGroup != nullptr )
+	if (ShapeGroup != nullptr && ShapeGroup->Shape != nullptr)
 	{
-
-		CurrentllShapeGroup = ShapeGroup;
+		//if this group is a background group, go to the next group
+		if (ShapeGroup->Shape->IsBackGround == true)
+		{
+			Log::LogString("Shape Group Skipped, (background group)");
+			CurrentllShapeGroup = ShapeGroup->Next;
+		}
+		else
+		{
+			CurrentllShapeGroup = ShapeGroup;
+		}
 	}
 	else
 	{
+		CurrentllShapeGroup = nullptr;
 		Log::LogString("ERROR:: ShapeGroup FAILED:: ShapeGroup was nullptr ");
 	}
 }
@@ -1266,10 +1275,20 @@ int ShapeGroup::GetCount()
 void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
 {
 	//If it exists
-	if (llShapeGroup != nullptr)
+	if (llShapeGroup != nullptr && llShapeGroup->Shape != nullptr)
 	{
-		CurrentllShapeGroup = llShapeGroup;
-		Parent_PageItem = (llPageItemData*)llShapeGroup->ParentGroup;
+		//if this group is a background group, go to the next group
+		if (llShapeGroup->Shape->IsBackGround == true)
+		{
+			Log::LogString("Shape Group Skipped, (background group)");
+			CurrentllShapeGroup = llShapeGroup->Next;
+			Parent_PageItem = (llPageItemData*)CurrentllShapeGroup->ParentGroup;
+		}
+		else
+		{
+			CurrentllShapeGroup = llShapeGroup;
+			Parent_PageItem = (llPageItemData*)CurrentllShapeGroup->ParentGroup;
+		}
 	}
 	else
 	{

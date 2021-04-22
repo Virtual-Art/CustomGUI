@@ -479,13 +479,13 @@ int main(int argc, char** argv)
 
 	llBookData Book_Restaurant_POS;
 
+	map<string, CustomerOrder> Orders_By_Date;
 
+	//Menu Containers
 	map<string, Ingredient> All_Ingredients; // Key: Name | Value: Ingredient Measurement Type, Gluten
 	map<string, DishSide> All_Sides;   //Holds Side Name   : Side Data : Set of Ingdt Names
 	map<string, Dish> All_Dishes;      //Holds Dish Name   : Dish Data : Set of Side  Names
 	map<string, Section> All_Sections; //Holds Sctn Name   : Sctn Data : Set of Dish  Names
-
-
 
 	llPageItemData PageItem_Template;
 	PageItem_Template.Position = { -0.3, 0.95 };
@@ -515,17 +515,18 @@ int main(int argc, char** argv)
 
 	NumberPrinter sigh_MousePosition(&Book_Restaurant_POS, &boooo, Tiredofthis);
 
-	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
+	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &Orders_By_Date);
 	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	ApplicationMenu::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	MenuCreator::Prepare_MenuCreator(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 	MenuCreator::PrepareMenuContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
-	IngredientListCreator::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
-	IngredientListCreator::Prepare();
-
 	MenuCreator::Update_Section_Graphics();
+
+	IngredientListCreator::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &Orders_By_Date);
+	IngredientListCreator::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
 
 	Log::LogString("start---------------------------------end");
 
@@ -605,11 +606,9 @@ int main(int argc, char** argv)
 
 	Log::LogString("Added to container");
 
-
-
-	IngredientListCreator::ConsolidateSideIngredients(FirstIngredientSide);
-	IngredientListCreator::ConsolidateSideIngredients(SecondIngredientSide);
-	IngredientListCreator::PrintShoppingList();
+	//IngredientListCreator::ConsolidateSideIngredients(FirstIngredientSide);
+	//IngredientListCreator::ConsolidateSideIngredients(SecondIngredientSide);
+	//IngredientListCreator::PrintShoppingList();
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -634,6 +633,7 @@ int main(int argc, char** argv)
 
 		int Page_To_Render = ApplicationMenu::Update();
 		SubmitOrder::Update(Page_To_Render);
+		IngredientListCreator::Update(Page_To_Render);
 		MenuCreator::Update(KeyState, Page_To_Render);
 		//+-------------------------+
 

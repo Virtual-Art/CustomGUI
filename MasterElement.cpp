@@ -142,6 +142,82 @@ void MasterElement::PrintBookStats(llBookData* llBook)
 	}
 }
 
+void MasterElement::PrintPageItemStats(llPageItemData* llPageItem)
+{
+	int PageItemCount = -1;
+	int ShapeGroupCount = -1;
+	int ShapeCount = -1;
+	int VertexCount = -1;
+
+	if (llPageItem->ShapeGroup != nullptr)
+	{
+		//ShapeGroup
+		llShapeGroupData* CurrentShapeGroup = llPageItem->ShapeGroup;
+		//Set ShapeGroup to beginning
+		/////////////////////////////////////////////////////
+		while (CurrentShapeGroup->Previous != nullptr)
+		{
+			CurrentShapeGroup = CurrentShapeGroup->Previous;
+		}
+		/////////////////////////////////////////////////////
+
+		while (CurrentShapeGroup != nullptr)
+		{
+			if (ShapeGroupCount == -1)
+			{
+				cout << "-----------------PI" << endl;
+			}
+			ShapeGroupCount++;
+			//Shape
+			llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+			if (CurrentShapeGroup->Shape != nullptr)
+			{
+				//Set shape to beginning
+				/////////////////////////////////////////////////////
+				while (CurrentShape->Previous != nullptr)
+				{
+					CurrentShape = CurrentShape->Previous;
+				}
+				/////////////////////////////////////////////////////
+
+				while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
+				{
+					if (ShapeCount == -1)
+					{
+						cout << "---------------------SG" << endl;
+					}
+					ShapeCount++;
+					//PrintllShape(CurrentShape);
+					//Vertex
+					llVertexData* CurrentVertex = CurrentShape->Vertexx;
+					/////////////////////////////////////////////////////
+					while (CurrentVertex->Previous != nullptr)
+					{
+						CurrentVertex = CurrentVertex->Previous;
+					}
+					cout << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << " | " << CurrentShape << endl;
+					/////////////////////////////////////////////////////
+					while (CurrentVertex != nullptr)
+					{
+						if (VertexCount == -1)
+						{
+							//cout << "------------------------------S" << endl;
+						}
+						VertexCount++;
+
+						CurrentVertex = CurrentVertex->Next;
+					}
+					VertexCount = -1;
+					CurrentShape = CurrentShape->Next;
+				}
+			}
+			ShapeCount = -1;
+			CurrentShapeGroup = CurrentShapeGroup->Next;
+		}
+		ShapeGroupCount = -1;
+	}
+
+}
 
 void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirectory& BookDirectory)
 {

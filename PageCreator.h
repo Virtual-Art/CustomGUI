@@ -44,8 +44,8 @@ struct CustomerDetails
 
 	CustomerDetails()
 	{
-		FirstName = "First Name";
-		LastName  = "Last Name";
+		FirstName = "Customer";
+		LastName  = "1";
 		Phone     = "Phone #";
 		Email     = "Email";
 		Address   = "Address";
