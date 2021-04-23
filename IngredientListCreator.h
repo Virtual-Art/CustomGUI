@@ -21,24 +21,13 @@
 #define LITRE_US_TEASPOON_FACTOR 202.884 
 #define LITRE_MILLILITRE_FACTOR 1000 //
 
-#define QUANTITY 0
-#define LIQUID 1
-#define WEIGHT 2
-
-#define POUND 0
-#define OUNCE 1
-#define TON 2
-#define GRAM 3
-#define MILLIGRAM 4
-
-#define GALLON 5
-#define QUART 6
-#define PINT 7
-#define CUP 8 
-#define FUILD_OUNCE 9
-#define TABLESPOON 10
-#define TEASPOON 11
-#define MILLILITRE 12 
+struct Ingredient_Details
+{
+	string Name;
+	double Measurement;
+	int Measurement_Type;
+	int Measurmenet_Medium;
+};
 
 typedef double(*Measurement_Function)(const double&); //Points to a liquid function
 typedef unordered_map<int, Measurement_Function> ConversionFunctions;
@@ -47,7 +36,7 @@ typedef unordered_map<int, ConversionFunctions> Unordered_2d_Map;
 //The purpose of this class is to be able to select orders and display the ingredient list
 namespace IngredientListCreator
 {
-	typedef map<string, double> IngredientList;
+	typedef map<string, Ingredient_Details> IngredientList;
 	static Unordered_2d_Map litre_kilo_to;
 	static Unordered_2d_Map to_litre_kilo;
 
@@ -64,7 +53,7 @@ namespace IngredientListCreator
 	void build_2d_conversion_map();
 	void Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, CustomerOrder>* Orders_By_Date);
-	void Update(int CurrentPage);
+	void Update(int CurrentPage, KeyResult* KeyResult);
 
 	static IngredientList ShoppingList;
 	static map<string, CustomerOrder>* Orders_By_Date;
@@ -111,17 +100,23 @@ namespace IngredientListCreator
 
 	//Display Ingredient List
 	void Update_Ingredient_List_Graphics();
-	void Add_Ingredient_List_Graphic(const string& Ingredient_Name, const string& Ingredient_Measurement);
-	void Replace_Ingredient_List_Graphic(const string& Ingredient_Name, const string& Ingredient_Measurement, llPageItemData* Ordered_Dish_PageItem);
+	void Add_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Name, const string& Ingredient_Measurement);
+	void Replace_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Name, const string& Ingredient_Measurement, llPageItemData* Ordered_Dish_PageItem);
 	void Hide_Ingredient_List_Graphic(llPageItemData* PageItem_Dish_Graphic);
+
+	int Get_Conversion_Measurement(int Ingredient_Type, double Measurement_In_Millilitres);
+	int Get_Liquid_Conversion_Measurement(double Measurement_In_Millilitres);
+	int Get_Weight_Conversion_Measurement(double Measurement_In_Millilitres);
 
 	//Create Ingredient List
 	void CreateShoppingList();
 	void ConsolidateOrderIngredients(CustomerOrder& ShoppingList);
-	void ConsolidateDishIngredients(Dish& Dish);
-	void ConsolidateSideIngredients(DishSide& Side);
+	void ConsolidateDishIngredients(OrderedDish& Dish);
+	void ConsolidateSideIngredients(DishSide& Side, int DishQuantity); //Main Function
 
 	void PrintShoppingList();
+
+	string what_is_the_string(int Measurement_Type);
 
 	string get_liquid_string(int LiquidType);
 	string get_weight_string(int WeightType);

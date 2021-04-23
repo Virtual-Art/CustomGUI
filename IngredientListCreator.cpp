@@ -8,6 +8,7 @@ void IngredientListCreator::Prepare()
 void IngredientListCreator::build_2d_conversion_map()
 {
 	litre_kilo_to[QUANTITY][QUANTITY] = dud;
+	litre_kilo_to[LIQUID][0] = dud;
 	litre_kilo_to[LIQUID][GALLON] = litre_to_gallon;
 	litre_kilo_to[LIQUID][QUART] = litre_to_quart;
 	litre_kilo_to[LIQUID][PINT] = litre_to_pint;
@@ -17,6 +18,7 @@ void IngredientListCreator::build_2d_conversion_map()
 	litre_kilo_to[LIQUID][TEASPOON] = litre_to_teaspoon;
 	litre_kilo_to[LIQUID][MILLILITRE] = litre_to_millilitre;
 		
+	litre_kilo_to[WEIGHT][0] = dud;
 	litre_kilo_to[WEIGHT][POUND] = kilo_to_pound;
 	litre_kilo_to[WEIGHT][OUNCE] = kilo_to_ounce;
 	litre_kilo_to[WEIGHT][TON] = kilo_to_ton;
@@ -24,6 +26,7 @@ void IngredientListCreator::build_2d_conversion_map()
 	litre_kilo_to[WEIGHT][MILLIGRAM] = kilo_to_milligram;
 
 	to_litre_kilo[QUANTITY][QUANTITY] = dud;
+	to_litre_kilo[LIQUID][0] = dud;
 	to_litre_kilo[LIQUID][GALLON] = gallon_to_litre;
 	to_litre_kilo[LIQUID][QUART] = quart_to_litre;
 	to_litre_kilo[LIQUID][PINT] = pint_to_litre;
@@ -33,6 +36,7 @@ void IngredientListCreator::build_2d_conversion_map()
 	to_litre_kilo[LIQUID][TEASPOON] = teaspoon_to_litre;
 	to_litre_kilo[LIQUID][MILLILITRE] = millilitre_to_litre;
 
+	to_litre_kilo[WEIGHT][0] = dud;
 	to_litre_kilo[WEIGHT][POUND] = pound_to_kilo;
 	to_litre_kilo[WEIGHT][OUNCE] = ounce_to_kilo;
 	to_litre_kilo[WEIGHT][TON] = ton_to_kilo;
@@ -56,6 +60,7 @@ void IngredientListCreator::Prepare(llBookData* Restaurant_POS, ShaderProgram* S
 	IngredientListCreatorOrderDirectory = RestaurantBook->Page;
 
 	Prepare_Customer_Orders();
+	build_2d_conversion_map();
 }
 
 
@@ -68,13 +73,18 @@ void IngredientListCreator::PrepareContainers(map<string, Section>* Section, map
 	All_Ingredients = Ingredient;
 }
 
-void IngredientListCreator::Update(int CurrentPage)
+void IngredientListCreator::Update(int CurrentPage, KeyResult* KeyResult)
 {
 	// 0 is this namespace
 	if (CurrentPage != 2) { return; }
 
 	Page_IngredientListCreator.DrawPage();
 	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
+
+	if (KeyResult->Key1 == GUI_X_CLICKED)
+	{
+		CreateShoppingList();
+	}
 }
 
 void IngredientListCreator::Prepare_Customer_Orders()
@@ -251,15 +261,16 @@ void IngredientListCreator::Update_Ingredient_List_Graphics()
 	//Use the "Current_Section" to loop through it's dishes
 	for (auto& kv : ShoppingList)
 	{
-		const string& Current_Ingredient_Name = kv.first;
-		string Current_Ingredient_Measurement  = SubmitOrder::ProcessDecimalPlace(kv.second, false, 4);
+		Ingredient_Details& Current_Ingredient_Details = kv.second;
+		string Current_Ingredient_Measurement  = SubmitOrder::ProcessDecimalPlace(Current_Ingredient_Details.Measurement, false, 2);
 
 		//New Graphic
 		if (Current_Ingredient_List_PageItem == nullptr)
 		{
 
 			//Create Graphic
-			Add_Ingredient_List_Graphic(Current_Ingredient_Name, Current_Ingredient_Measurement);
+			Log::LogString("Adding list ingredient");
+			Add_Ingredient_List_Graphic(Current_Ingredient_Details, Current_Ingredient_Measurement);
 			AddOnly = true;
 		}
 
@@ -267,7 +278,8 @@ void IngredientListCreator::Update_Ingredient_List_Graphics()
 		if (Current_Ingredient_List_PageItem != nullptr && AddOnly != true)
 		{
 			//Change Graphic
-			Replace_Ingredient_List_Graphic(Current_Ingredient_Name, Current_Ingredient_Measurement, Current_Ingredient_List_PageItem);
+			Log::LogString("replacing list ingredient");
+			Replace_Ingredient_List_Graphic(Current_Ingredient_Details, Current_Ingredient_Measurement, Current_Ingredient_List_PageItem);
 		}
 
 		//if we add, it will go through replacing alse thats why we need this boolean
@@ -286,7 +298,7 @@ void IngredientListCreator::Update_Ingredient_List_Graphics()
 	}
 }
 
-void IngredientListCreator::Add_Ingredient_List_Graphic(const string& Ingredient_Name, const string& Ingredient_Measurement)
+void IngredientListCreator::Add_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Details, const string& Ingredient_Measurement)
 {
 
 	//Text
@@ -310,20 +322,25 @@ void IngredientListCreator::Add_Ingredient_List_Graphic(const string& Ingredient
 	PageItem_Template.BackGroundPadding[PADDING_RIGHT] = 30;
 	PageItem_Template.BackGroundPadding[PADDING_TOP] = 10;
 	PageItem_Template.BackGroundPadding[PADDING_BOTTOM] = 10;
-	PageItem_Template.DescriptiveData = Ingredient_Name;
+	PageItem_Template.DescriptiveData = Ingredient_Details.Name;
 
 	//Page Item
 	PageGroupItem PageItem_Ingredient_Graphic(RestaurantBook, &PageItem_Template);
 
 	//Ingredient Name
-	TextData_Template.Phrase = Ingredient_Name;
+	TextData_Template.Phrase = Ingredient_Details.Name;
 	ShapeGroup_Template.Color = PageCreator::White; // Light Red
 	Text Text_Ingredient_Name(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 
+	string gettingannoyed = what_is_the_string(Ingredient_Details.Measurement_Type);
+
+	Log::LogString(gettingannoyed);
+
 	//Ingredient Measurement
-	TextData_Template.Phrase = Ingredient_Measurement + " ml";
+	TextData_Template.Phrase = Ingredient_Measurement + gettingannoyed;
 	ShapeGroup_Template.Color = PageCreator::White; // Light Red
 	Text Text_Ingredient_Measurement(RestaurantBook, &ShapeGroup_Template, TextData_Template);
+	Text_Ingredient_Measurement.PlaceRight(Text_Ingredient_Name.GetEdgesWithBackGround(), MATCH_CENTERS, 10);
 
 	if (First_Ingredient_List_Graphic == nullptr)
 	{
@@ -331,14 +348,14 @@ void IngredientListCreator::Add_Ingredient_List_Graphic(const string& Ingredient
 	}
 
 	//Place New Side
-	int Spacing = 20;
+	int Spacing = 30;
 	if (first_ingredient_list == true) { Spacing = 100; first_ingredient_list = false; }
 	PageItem_Ingredient_Graphic.PlaceBelow(last_ingredient_list_edges, MATCH_BEGINNINGS, Spacing);
 	last_ingredient_list_edges = PageItem_Ingredient_Graphic.GetEdgesWithBackGround();
 
 }
 
-void IngredientListCreator::Replace_Ingredient_List_Graphic(const string& Ingredient_Name, const string& Ingredient_Measurement, llPageItemData* Ingredient_List_Graphic_Data)
+void IngredientListCreator::Replace_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Details, const string& Ingredient_Measurement, llPageItemData* Ingredient_List_Graphic_Data)
 {
 	if (Ingredient_List_Graphic_Data == nullptr) { Log::LogString("replace_ordered_dish_graphic ERROR:: ordered_dish_Graphic nullptr"); return; }
 	void SetPageDirectory();
@@ -355,16 +372,17 @@ void IngredientListCreator::Replace_Ingredient_List_Graphic(const string& Ingred
 	//Replace Ingredient List Name
 	Attribute_Graphic_Data = Attribute_Graphic_Data->Next; //FIX THIS
 	Ordered_Dish_Graphic_Attribute.llSwitch(Attribute_Graphic_Data);
-	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Name);
+	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Details.Name);
 	Ordered_Dish_Graphic_Attribute.PlaceRight(last_shapegroup_edges, MATCH_CENTERS, 20);
-	last_shapegroup_edges = Ordered_Dish_Graphic_Attribute.GetEdgesWithBackGround();
+	last_shapegroup_edges = Ordered_Dish_Graphic_Attribute.GetEdges();
+	string gettingannoyed = what_is_the_string(Ingredient_Details.Measurement_Type);
 
 	//Replace Ingredient List Measurement
 	Attribute_Graphic_Data = Attribute_Graphic_Data->Next;
 	Ordered_Dish_Graphic_Attribute.llSwitch(Attribute_Graphic_Data);
-	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Measurement + " ml");
+	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Measurement + gettingannoyed);
 	Ordered_Dish_Graphic_Attribute.PlaceRight(last_shapegroup_edges, MATCH_CENTERS, 10);
-	last_shapegroup_edges = Ordered_Dish_Graphic_Attribute.GetEdgesWithBackGround();
+	last_shapegroup_edges = Ordered_Dish_Graphic_Attribute.GetEdges();
 
 
 	//Temporary Fix
@@ -379,9 +397,9 @@ void IngredientListCreator::Replace_Ingredient_List_Graphic(const string& Ingred
 	Ordered_Dish_Graphic.LoadedBook = RestaurantBook;
 	Ordered_Dish_Graphic.llSwitch(Ingredient_List_Graphic_Data);
 	Ordered_Dish_Graphic.PlaceBelow(last_ingredient_list_edges, AlignmentType, Padding);
-	Ordered_Dish_Graphic.UnHide();
+	//Ordered_Dish_Graphic.UnHide();
 
-	last_ingredient_list_edges = Ordered_Dish_Graphic.GetEdges();
+	last_ingredient_list_edges = Ordered_Dish_Graphic.GetEdgesWithBackGround();
 }
 
 void IngredientListCreator::Hide_Ingredient_List_Graphic(llPageItemData* Ingredient_List_Graphic_Data)
@@ -400,39 +418,87 @@ void IngredientListCreator::Hide_Ingredient_List_Graphic(llPageItemData* Ingredi
 	Ingredient_List_Graphic.PlaceBelow(last_ingredient_list_edges, MATCH_CENTERS, Spacing);
 }
 
+
+
+int IngredientListCreator::Get_Conversion_Measurement(int Ingredient_Type, double Measurement_In_Grams_Liquid)
+{
+	if (Ingredient_Type == LIQUID)
+	{
+		return Get_Liquid_Conversion_Measurement(Measurement_In_Grams_Liquid);
+	}
+
+	if (Ingredient_Type == WEIGHT)
+	{
+		return Get_Weight_Conversion_Measurement(Measurement_In_Grams_Liquid);
+	}
+
+	return QUANTITY;
+}
+
+int IngredientListCreator::Get_Liquid_Conversion_Measurement(double Measurement_In_Millilitres)
+{
+	if (Measurement_In_Millilitres < 4.929) //millilitres
+	{
+		return TEASPOON;
+	}
+
+	if (Measurement_In_Millilitres < 59.148) //millilitres
+	{
+		return TABLESPOON;
+	}
+	if (Measurement_In_Millilitres > 59.148)// 944) //millilitres
+	{
+		return CUP;
+	}
+	//if (Measurement_In_Millilitres > 944)
+	//{
+	//	return LITRE;
+	//}
+}
+
+int IngredientListCreator::Get_Weight_Conversion_Measurement(double Measurement_In_Grams)
+{
+
+}
+
 void IngredientListCreator::CreateShoppingList()
 {
+	Log::LogString("Creating Shopping List");
 	for (auto kv : Customer_Order_DataBase)
 	{
 		CustomerOrder& Current_Order = kv.second;
 		ConsolidateOrderIngredients(Current_Order);
 	}
-
+	
 	Update_Ingredient_List_Graphics();
+	Log::LogString("Done Creating Shopping List and updating graphics");
 }
 
 void IngredientListCreator::ConsolidateOrderIngredients(CustomerOrder& Customer_Order)
 {
+	Log::LogString("Consolidating Customer Order" + Customer_Order.CustomerDetails.LastName);
+	//Loop through customer's ordered dishes
 	for (auto kv : Customer_Order.OrderedDishes)
 	{
-		const OrderedDish& Customers_Ordered_Dish = kv.second;
-		Dish& Current_Dish = Dish_DataBase[Customers_Ordered_Dish.Name];
-		ConsolidateDishIngredients(Current_Dish);
+		OrderedDish& Customers_Ordered_Dish = kv.second;
+		ConsolidateDishIngredients(Customers_Ordered_Dish);
 	}
 }
 
-void IngredientListCreator::ConsolidateDishIngredients(Dish& Dish)
+void IngredientListCreator::ConsolidateDishIngredients(OrderedDish& OrderedDish)
 {
-	//Go through all the side names
-	for (auto& Side_Name : Dish_DataBase[Dish.Name].Side_Names)
+	Log::LogString("Consolidating Dish" + OrderedDish.Name);
+	//Loop through ordered dish's sides
+	for (auto& Side_Name : Dish_DataBase[OrderedDish.Name].Side_Names)
 	{
 		DishSide& Current_Side = Side_DataBase[Side_Name];
-		ConsolidateSideIngredients(Current_Side);
+		ConsolidateSideIngredients(Current_Side, OrderedDish.Quantity);
 	}
 }
 
-void IngredientListCreator::ConsolidateSideIngredients(DishSide& Side)
+void IngredientListCreator::ConsolidateSideIngredients(DishSide& Side, int DishQuantity)
 {
+	Log::LogString("Adding Side Ingredients to Shopping List");
 	//Go Through All Ingredients in "Side"
 	for (auto ingredient : Side.Ingredient_Names)
 	{
@@ -440,28 +506,33 @@ void IngredientListCreator::ConsolidateSideIngredients(DishSide& Side)
 		const string& Ingredient_Name           =  ingredient.first;
 		const double& Ingredient_Measurment     =  ingredient.second.Measurement;
 		const int& Ingredient_Measurment_Medium =  ingredient.second.MeasurementMedium;
-		const int& Ingredient_Type              =  Ingredient_DataBase[Ingredient_Name].MeasurementType;
+		const int& Measurment_Type              =  Ingredient_DataBase[Ingredient_Name].MeasurementType;
 		
-		Log::LogString("Name: " + Ingredient_Name);
-		Log::LogInt("Ingredient Type", Ingredient_Type);
-		Log::LogInt("Ingredient_Measurment_Medium", Ingredient_Measurment_Medium);
-		Log::LogInt("Ingredient_Measurment", Ingredient_Measurment);
+		//Log::LogString("Name: " + Ingredient_Name);
+		//Log::LogInt("Measurment_Type", Measurment_Type);
+		//Log::LogInt("Ingredient_Measurment_Medium", Ingredient_Measurment_Medium);
+		//Log::LogInt("Ingredient_Measurment", Ingredient_Measurment);
 
 		//Convert Ingredient to Litre/Kilos
-		double amount_in_litre_kilo = Ingredient_Measurment;// = to_litre_kilo[Ingredient_Type][Ingredient_Measurment_Medium](Ingredient_Measurment);
-		//double amount_in_teaspoon = litre_kilo_to[LIQUID][CUP](amount_in_litre_kilo);
+		double amount_in_litre_kilo = to_litre_kilo[Measurment_Type][Ingredient_Measurment_Medium](Ingredient_Measurment* DishQuantity);
+		//double amount_in_litre_kilo = to_litre_kilo[LIQUID][CUP](Ingredient_Measurment* DishQuantity);
+
+		Ingredient_Details List_Ingredient;
+		List_Ingredient.Name = Ingredient_Name;
+		List_Ingredient.Measurement = amount_in_litre_kilo;
+		List_Ingredient.Measurement_Type = Measurment_Type;
 
 		//Existing Shopping List Ingredient
 		if (ShoppingList.find(Ingredient_Name) != ShoppingList.end())
 		{
 			//Update Ingredient
-			ShoppingList[Ingredient_Name] += amount_in_litre_kilo;
+			ShoppingList[Ingredient_Name].Measurement += amount_in_litre_kilo;
 		}
 		//New Shopping List Ingredient
 		else
 		{
 			//Add Ingredient
-			ShoppingList[Ingredient_Name] = amount_in_litre_kilo;
+			ShoppingList[Ingredient_Name] = List_Ingredient;
 		}
 	}
 
@@ -473,12 +544,35 @@ void IngredientListCreator::PrintShoppingList()
 	{
 		string MeasurementType = "L";
 		const string& Ingredient_Name = Ingredient.first;
-		const double& Ingredient_Quantity = Ingredient.second;
+		const double& Ingredient_Measurment = Ingredient.second.Measurement;
 
-		string Quantity = SubmitOrder::ProcessDecimalPlace(Ingredient_Quantity, false, 3);
+		string Quantity = SubmitOrder::ProcessDecimalPlace(Ingredient_Measurment, false, 3);
 
 		cout << Ingredient_Name << " | " << Quantity << " " << MeasurementType << endl;
 	}
+}
+
+string IngredientListCreator::what_is_the_string(int Measurement_Type)
+{
+	string Result;
+	if (Measurement_Type == LIQUID)
+	{
+		Result = " L";
+		return Result;
+	}
+	if (Measurement_Type == WEIGHT)
+	{
+		Result = " kg";
+		return Result;
+	}
+	if (Measurement_Type == QUANTITY)
+	{
+		Result = " Q";
+		return Result;
+	}
+
+	Result = "Didn't Work";
+	return Result;
 }
 
 // Ex: Convert 7 TableSpoons to Teaspoons (7, MEASUREMENT_LIQUID, LIQUID_TABLESPOON, LIQUID_TEASPOON)

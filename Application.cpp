@@ -541,11 +541,11 @@ int main(int argc, char** argv)
 	double Teaspoon;
 	double Quart;
 
-	map<string, double> IngredientList;
-	IngredientList["Lemon"] = 2;
-	IngredientList["Orange"] = 3.453;
-	IngredientList["Strawberry"] = 4578.45;
-	IngredientList["BlueBerry"] = 56;
+	//map<string, double> IngredientList;
+	//IngredientList["Lemon"] = 2;
+	//IngredientList["Orange"] = 3.453;
+	//IngredientList["Strawberry"] = 4578.45;
+	//IngredientList["BlueBerry"] = 56;
 
 	//IngredientListCreator::PrintShoppingList(IngredientList);
 
@@ -554,57 +554,55 @@ int main(int argc, char** argv)
 	//double Result = IngredientListCreator::Measurement_Conversion(Measurement, LIQUID, CUP, MILLILITRE);
 	//Log::LogDouble("Result: ", Result);
 
-	Ingredient Lemon;
-	Lemon.Name = "Lemon";
-	Lemon.MeasurementType = QUANTITY;
-
-	Ingredient Milk;
-	Milk.Name = "Milk";
-	Milk.MeasurementType = LIQUID;
-
-	Ingredient Olive_Oil;
-	Olive_Oil.Name = "Olive Oil";
-	Olive_Oil.MeasurementType = LIQUID;
-
-	Ingredient Soya_Sauce;
-	Soya_Sauce.Name = "Soya Sauce";
-	Soya_Sauce.MeasurementType = LIQUID;
-
-	Ingredient Water;
-	Water.Name = "Water";
-	Water.MeasurementType = LIQUID;
-
-	Ingredient Sesame_Oil;
-	Sesame_Oil.Name = "Sesame Oil";
-	Sesame_Oil.MeasurementType = LIQUID;
-
-	All_Ingredients[Lemon.Name] = Lemon;
-
-	All_Ingredients[Milk.Name] = Milk;
-	All_Ingredients[Olive_Oil.Name] = Olive_Oil;
-	All_Ingredients[Soya_Sauce.Name] = Soya_Sauce;
-	All_Ingredients[Water.Name] = Water;
-	All_Ingredients[Sesame_Oil.Name] = Sesame_Oil;
-
-
-	DishSide FirstIngredientSide;
-	FirstIngredientSide.Name = "First Side!";
-	FirstIngredientSide.Ingredient_Names[Lemon.Name] = {0.5, QUANTITY};
-	FirstIngredientSide.Ingredient_Names[Milk.Name] = {1.0, CUP};
-	FirstIngredientSide.Ingredient_Names[Olive_Oil.Name] = {3.0, TABLESPOON};
-	FirstIngredientSide.Ingredient_Names[Soya_Sauce.Name] = {1.5, TABLESPOON};
-	FirstIngredientSide.Ingredient_Names[Water.Name] = {4, CUP};
-
-	DishSide SecondIngredientSide;
-	SecondIngredientSide.Name = "First Side!";
-	SecondIngredientSide.Ingredient_Names[Lemon.Name] = { 2, QUANTITY };
-	SecondIngredientSide.Ingredient_Names[Milk.Name] = { 3.0, TABLESPOON};
-	SecondIngredientSide.Ingredient_Names[Olive_Oil.Name] = { 2, TABLESPOON };
-	SecondIngredientSide.Ingredient_Names[Soya_Sauce.Name] = { 1, TEASPOON};
-	SecondIngredientSide.Ingredient_Names[Water.Name] = { 1, CUP };
-	SecondIngredientSide.Ingredient_Names[Sesame_Oil.Name] = { 0.5, TEASPOON};
-
-	Log::LogString("Added to container");
+	//Ingredient Lemon;
+	//Lemon.Name = "Lemon";
+	//Lemon.MeasurementType = QUANTITY;
+	//
+	//Ingredient Milk;
+	//Milk.Name = "Milk";
+	//Milk.MeasurementType = LIQUID;
+	//
+	//Ingredient Olive_Oil;
+	//Olive_Oil.Name = "Olive Oil";
+	//Olive_Oil.MeasurementType = LIQUID;
+	//
+	//Ingredient Soya_Sauce;
+	//Soya_Sauce.Name = "Soya Sauce";
+	//Soya_Sauce.MeasurementType = LIQUID;
+	//
+	//Ingredient Water;
+	//Water.Name = "Water";
+	//Water.MeasurementType = LIQUID;
+	//
+	//Ingredient Sesame_Oil;
+	//Sesame_Oil.Name = "Sesame Oil";
+	//Sesame_Oil.MeasurementType = LIQUID;
+	//
+	//All_Ingredients[Lemon.Name] = Lemon;
+	//
+	//All_Ingredients[Milk.Name] = Milk;
+	//All_Ingredients[Olive_Oil.Name] = Olive_Oil;
+	//All_Ingredients[Soya_Sauce.Name] = Soya_Sauce;
+	//All_Ingredients[Water.Name] = Water;
+	//All_Ingredients[Sesame_Oil.Name] = Sesame_Oil;
+	//
+	//
+	//DishSide FirstIngredientSide;
+	//FirstIngredientSide.Name = "First Side!";
+	//FirstIngredientSide.Ingredient_Names[Lemon.Name] = {0.5, QUANTITY};
+	//FirstIngredientSide.Ingredient_Names[Milk.Name] = {1.0, CUP};
+	//FirstIngredientSide.Ingredient_Names[Olive_Oil.Name] = {3.0, TABLESPOON};
+	//FirstIngredientSide.Ingredient_Names[Soya_Sauce.Name] = {1.5, TABLESPOON};
+	//FirstIngredientSide.Ingredient_Names[Water.Name] = {4, CUP};
+	//
+	//DishSide SecondIngredientSide;
+	//SecondIngredientSide.Name = "First Side!";
+	//SecondIngredientSide.Ingredient_Names[Lemon.Name] = { 2, QUANTITY };
+	//SecondIngredientSide.Ingredient_Names[Milk.Name] = { 3.0, TABLESPOON};
+	//SecondIngredientSide.Ingredient_Names[Olive_Oil.Name] = { 2, TABLESPOON };
+	//SecondIngredientSide.Ingredient_Names[Soya_Sauce.Name] = { 1, TEASPOON};
+	//SecondIngredientSide.Ingredient_Names[Water.Name] = { 1, CUP };
+	//SecondIngredientSide.Ingredient_Names[Sesame_Oil.Name] = { 0.5, TEASPOON};
 
 	//IngredientListCreator::ConsolidateSideIngredients(FirstIngredientSide);
 	//IngredientListCreator::ConsolidateSideIngredients(SecondIngredientSide);
@@ -633,10 +631,9 @@ int main(int argc, char** argv)
 
 		int Page_To_Render = ApplicationMenu::Update();
 		SubmitOrder::Update(Page_To_Render);
-		IngredientListCreator::Update(Page_To_Render);
+		IngredientListCreator::Update(Page_To_Render, &KeyState);
 		MenuCreator::Update(KeyState, Page_To_Render);
 		//+-------------------------+
-
 
 		PageGroupItem* jaj = &llSlider;
 		Slider Complex(jaj->GetData());
