@@ -52,11 +52,11 @@ namespace IngredientListCreator
 	void Prepare();
 	void build_2d_conversion_map();
 	void Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
-	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, CustomerOrder>* Orders_By_Date);
+	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Orders);
 	void Update(int CurrentPage, KeyResult* KeyResult);
 
 	static IngredientList ShoppingList;
-	static map<string, CustomerOrder>* Orders_By_Date;
+	static map<string, SameDayOrders>* All_Customer_Orders;
 
 	static map<string, Ingredient>* All_Ingredients;
 	static map<string, DishSide>* All_Sides;
@@ -67,7 +67,7 @@ namespace IngredientListCreator
     #define Dish_DataBase (*All_Dishes)
     #define Side_DataBase (*All_Sides)
     #define Ingredient_DataBase (*All_Ingredients)
-	#define Customer_Order_DataBase (*Orders_By_Date)
+	#define Customer_Order_DataBase (*All_Customer_Orders)
 
 	static glm::vec4 first_customer_order_edges;
 	static glm::vec4 last_customer_order_edges;

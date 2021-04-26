@@ -64,9 +64,9 @@ void IngredientListCreator::Prepare(llBookData* Restaurant_POS, ShaderProgram* S
 }
 
 
-void IngredientListCreator::PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, CustomerOrder>* Order_By_Date)
+void IngredientListCreator::PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Orders)
 {
-	Orders_By_Date = Order_By_Date;
+	All_Customer_Orders = All_Orders;
 	All_Sections = Section;
 	All_Dishes = Dish;
 	All_Sides = Side;
@@ -111,47 +111,47 @@ void IngredientListCreator::Prepare_Customer_Orders()
 
 void IngredientListCreator::Update_Customer_Orders_Graphics()
 {
-	Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
-	llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
-	first_customer_order = true;
-	last_customer_order_edges = first_customer_order_edges;
-	bool AddOnly = false;
-
-	//Use the "Current_Section" to loop through it's dishes
-	for (auto& kv : Customer_Order_DataBase)
-	{
-		const CustomerOrder& Current_Customer_Order = kv.second;
-
-		//New Graphic
-		if (Current_Customer_Order_PageItem == nullptr)
-		{
-
-			//Create Graphic
-			Add_Customer_Orders_Graphic(Current_Customer_Order);
-			AddOnly = true;
-		}
-
-		////Existing Graphic
-		if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
-		{
-			//Change Graphic
-			Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
-		}
-
-		//if we add, it will go through replacing alse thats why we need this boolean
-		AddOnly = false;
-
-		//Stop Cycling if there is no shapegroup
-		if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
-	}
-
-	//Graphics left over
-	////Existing? // Add // Hide
-	while (Current_Customer_Order_PageItem != nullptr)
-	{
-		Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
-		Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
-	}
+	//Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
+	//llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
+	//first_customer_order = true;
+	//last_customer_order_edges = first_customer_order_edges;
+	//bool AddOnly = false;
+	//
+	////Use the "Current_Section" to loop through it's dishes
+	//for (auto& kv : Customer_Order_DataBase)
+	//{
+	//	const CustomerOrder& Current_Customer_Order = kv.second;
+	//
+	//	//New Graphic
+	//	if (Current_Customer_Order_PageItem == nullptr)
+	//	{
+	//
+	//		//Create Graphic
+	//		Add_Customer_Orders_Graphic(Current_Customer_Order);
+	//		AddOnly = true;
+	//	}
+	//
+	//	////Existing Graphic
+	//	if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
+	//	{
+	//		//Change Graphic
+	//		Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
+	//	}
+	//
+	//	//if we add, it will go through replacing alse thats why we need this boolean
+	//	AddOnly = false;
+	//
+	//	//Stop Cycling if there is no shapegroup
+	//	if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
+	//}
+	//
+	////Graphics left over
+	//////Existing? // Add // Hide
+	//while (Current_Customer_Order_PageItem != nullptr)
+	//{
+	//	Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
+	//	Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
+	//}
 }
 
 void IngredientListCreator::Add_Customer_Orders_Graphic(const CustomerOrder& Current_Customer_Order)
@@ -463,15 +463,15 @@ int IngredientListCreator::Get_Weight_Conversion_Measurement(double Measurement_
 
 void IngredientListCreator::CreateShoppingList()
 {
-	Log::LogString("Creating Shopping List");
-	for (auto kv : Customer_Order_DataBase)
-	{
-		CustomerOrder& Current_Order = kv.second;
-		ConsolidateOrderIngredients(Current_Order);
-	}
-	
-	Update_Ingredient_List_Graphics();
-	Log::LogString("Done Creating Shopping List and updating graphics");
+	//Log::LogString("Creating Shopping List");
+	//for (auto kv : Customer_Order_DataBase)
+	//{
+	//	CustomerOrder& Current_Order = kv.second;
+	//	ConsolidateOrderIngredients(Current_Order);
+	//}
+	//
+	//Update_Ingredient_List_Graphics();
+	//Log::LogString("Done Creating Shopping List and updating graphics");
 }
 
 void IngredientListCreator::ConsolidateOrderIngredients(CustomerOrder& Customer_Order)

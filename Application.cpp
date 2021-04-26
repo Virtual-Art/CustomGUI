@@ -479,7 +479,8 @@ int main(int argc, char** argv)
 
 	llBookData Book_Restaurant_POS;
 
-	map<string, CustomerOrder> Orders_By_Date;
+	//Order Containers
+	map<string, SameDayOrders> All_Customer_Orders;
 
 	//Menu Containers
 	map<string, Ingredient> All_Ingredients; // Key: Name | Value: Ingredient Measurement Type, Gluten
@@ -515,7 +516,7 @@ int main(int argc, char** argv)
 
 	NumberPrinter sigh_MousePosition(&Book_Restaurant_POS, &boooo, Tiredofthis);
 
-	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &Orders_By_Date);
+	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	ApplicationMenu::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
@@ -524,7 +525,7 @@ int main(int argc, char** argv)
 	MenuCreator::PrepareMenuContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients);
 	MenuCreator::Update_Section_Graphics();
 
-	IngredientListCreator::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &Orders_By_Date);
+	IngredientListCreator::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 	IngredientListCreator::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 
