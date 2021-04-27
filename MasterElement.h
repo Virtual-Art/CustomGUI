@@ -187,6 +187,23 @@ struct NumberPrinterData
 	bool Below = false;
 };
 
+struct SelectorData
+{
+	glm::vec2 ColumnsRows = { 1, 2 };
+	bool BackGround = true;
+	glm::vec4 BackGroundColor = { 0.5, 0.5, 0.5, 0.5 };
+	glm::vec4 BackGroundPadding = { 0, 0, 0, 0 };
+	glm::vec4 HighlightColor = { 0.3, 0.3, 0.3, 0.3 };
+	bool UniformBackGround = true;
+	string Selector[20] = { "Selection1", "Selection2", "Selection3", "Selection4" };
+	int Key[20] = { 1, 2,3, 4 };
+	string ResultSelected;
+	int AmountOfResults;
+	int XSpacing = 10;
+	int YSpacing = 10;
+	void* SelecteeHighlighted = nullptr;
+};
+
 
 struct llVertexData
 {
@@ -348,6 +365,7 @@ struct llPageItemData
 
 	NumberPrinterData NumberPrinterData;
 	SliderData SliderData;
+	SelectorData SelectorData;
 	string DescriptiveData = " ";
 };
 

@@ -48,6 +48,8 @@ class ShapeGroup : public MasterElement
 	void ProcessBackGround();
 	void SetBackGround();
 
+	void SetShapeGroupButton(Button* Button);
+
 
 	glm::vec4 GetEdges();
 	glm::vec4 GetEdgesWithBackGround();

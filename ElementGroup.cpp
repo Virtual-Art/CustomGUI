@@ -1272,6 +1272,13 @@ int ShapeGroup::GetCount()
 	return CurrentShapeGroup.ShapeCount;
 }
 
+void ShapeGroup::SetShapeGroupButton(Button* Button)
+{
+	if (CurrentllShapeGroup == nullptr) { Log::LogString("ERROR:: SetShapeGroupButton FAILED:: Invalid ShapeGroup State"); return; }
+
+	CurrentllShapeGroup->ShapeGroupButton = Button;
+}
+
 void ShapeGroup::llSwitch(llShapeGroupData* llShapeGroup)
 {
 	//If it exists

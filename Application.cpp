@@ -72,6 +72,7 @@ void AddWord(map<string, string>& map, string Search);
 void PrintMap(map<string, string>& map);
 string PerfectFit(string TestString, string ReferenceString);
 
+
 struct ListNode
 {
 	int val = -1;
@@ -518,6 +519,9 @@ int main(int argc, char** argv)
 
 	SubmitOrder::PrepareSubmitContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
+	//SelectorActions::Prepare(&Book_Restaurant_POS); //ElementsHovered would be in Book
+	SelectorActions::Prepare(&Book_Restaurant_POS, &SubmitOrder::GetElementsHovered());
 
 	ApplicationMenu::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
