@@ -197,7 +197,7 @@ struct SelectorData
 	bool UniformBackGround = true;
 	string Selector[20] = { "Selection1", "Selection2", "Selection3", "Selection4" };
 	int Key[20] = { 1, 2,3, 4 };
-	string ResultSelected;
+	string ResultSelected = "404";
 	int AmountOfResults;
 	int XSpacing = 10;
 	int YSpacing = 10;

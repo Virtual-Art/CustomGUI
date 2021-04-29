@@ -11,17 +11,24 @@
 #include "KeyboardManager.h"
 #include "ElementAction.h"
 #include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <list>
+#include <set>
 
 
 using namespace std;
 typedef void(*ButtonFunction)();
 
+typedef list<ButtonFunction> Single_Mouse_Actions;
 
 class Button 
 {
 public:
 
-	static vector<ButtonFunction*> ActiveFunctions;
+	//Key = Mouse Key Pressed // Value: Set of Actions ( void() Functions )
+	vector<Single_Mouse_Actions> MouseActions;
+	Single_Mouse_Actions Left_Actions;
 
 	//Behaviours
 	ElementAction*** TriggeredActions;
@@ -32,6 +39,8 @@ public:
 
 	//Continuous Actions
 	ButtonFunction* ContinuousActions;
+
+	void Add_Mouse_Action(int Mouse_Key, ButtonFunction Button_Function);
 
 	void PlayLogicalActions();
 	void PlayActiveActions();

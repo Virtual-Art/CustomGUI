@@ -1545,6 +1545,7 @@ void ShapeGroup::CopyBackGround(llShapeGroupData* CopyShapeGroup)
 	llShapeData* Copy_BackGround_Data = CopyShapeGroup->Shape;
 	while (Copy_BackGround_Data->Previous != nullptr) { Copy_BackGround_Data = Copy_BackGround_Data->Previous; }
 
+	//Set Copy BackGround
 	Quad This_BackGround(Current_BackGround_Data);
 	This_BackGround.llSwitch(Current_BackGround_Data);
 	This_BackGround.LoadedBook = LoadedBook;

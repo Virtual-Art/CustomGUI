@@ -651,7 +651,7 @@ int main(int argc, char** argv)
 
 		if (KeyState.Key1 == GUI_I_CLICKED)
 		{
-			//WordSearch(StringDataBase, "S", &FirstSearchBar);
+			SubmitOrder::PrintAllOrders();
 		}
 		
 		if (KeyState.Key1 == GUI_O_CLICKED)

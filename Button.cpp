@@ -46,6 +46,23 @@ Button::~Button()
 	delete[] ContinuousActions;
 }
 
+
+void Button::Add_Mouse_Action(int Mouse_Key, ButtonFunction Button_Function)
+{
+	////Add list if none
+	//if (MouseActions[Mouse_Key].empty())
+	//{
+	//	Single_Mouse_Actions Temp;
+	//	MouseActions.insert(MouseActions.begin() + Mouse_Key, Temp);
+	//}
+	Log::LogString("Added Action!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+	//Add Action
+	//MouseActions[Mouse_Key].push_back(Button_Function);
+	Left_Actions.push_back(Button_Function);
+}
+
+
 void Button::PlayLogicalActions()
 {
 	for (int i = 0; i < 11; i++)
@@ -71,6 +88,16 @@ void Button::ProcessMouseButtons(int MouseState)
 	if (ContinuousActions[MouseState] != Empty)
 	{
 	//	ActiveFunctions[ActiveFunctions.size()] = ContinuousActions[MouseState];
+	}
+
+	//Play All Actions for Mouse Key Pressed
+	if (MouseState == GUI_MOUSELEFT_CLICKED)
+	{
+		for (const auto& Single_Action : Left_Actions)//MouseActions[MouseState]
+		{
+			//Play Single Action
+			Single_Action();
+		}
 	}
 }
 
