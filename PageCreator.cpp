@@ -432,15 +432,15 @@ void PageCreator::SetCreatorFunctions()
 void PageCreator::SetArrowKeys()
 {
 	//A value of type blah cannot be initialized to type blah
-	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_DEFAULT]   = ArrowKeyUp;
-	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_DEFAULT] = ArrowKeyDown;
-    Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_DEFAULT] = ArrowKeyRight;
-	Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_DEFAULT]  = ArrowKeyLeft;
-	
-	Keyboard::KeyButton[GUI_UP_PRESSED][WITH_DEFAULT]    = ArrowKeyUp;
-	Keyboard::KeyButton[GUI_DOWN_PRESSED][WITH_DEFAULT]  = ArrowKeyDown;
-	Keyboard::KeyButton[GUI_RIGHT_PRESSED][WITH_DEFAULT] = ArrowKeyRight;
-	Keyboard::KeyButton[GUI_LEFT_PRESSED][WITH_DEFAULT]  = ArrowKeyLeft;
+	Keyboard::GetKeyButton()[GUI_UP_CLICKED][WITH_DEFAULT]   = ArrowKeyUp;
+	Keyboard::GetKeyButton()[GUI_DOWN_CLICKED][WITH_DEFAULT] = ArrowKeyDown;
+    Keyboard::GetKeyButton()[GUI_RIGHT_CLICKED][WITH_DEFAULT] = ArrowKeyRight;
+	Keyboard::GetKeyButton()[GUI_LEFT_CLICKED][WITH_DEFAULT]  = ArrowKeyLeft;
+			  			  
+	Keyboard::GetKeyButton()[GUI_UP_PRESSED][WITH_DEFAULT]    = ArrowKeyUp;
+	Keyboard::GetKeyButton()[GUI_DOWN_PRESSED][WITH_DEFAULT]  = ArrowKeyDown;
+	Keyboard::GetKeyButton()[GUI_RIGHT_PRESSED][WITH_DEFAULT] = ArrowKeyRight;
+	Keyboard::GetKeyButton()[GUI_LEFT_PRESSED][WITH_DEFAULT]  = ArrowKeyLeft;
 	// CreatorFunction[CurrentLevel][CurrentFunction][ARROW_UP];
 
 	//50 - 101
@@ -448,10 +448,10 @@ void PageCreator::SetArrowKeys()
 	//Should actually almost every default key and + caps + shft
 	for (int CharKey = 50; CharKey < 102; CharKey++)
 	{
-		Keyboard::KeyButton[CharKey][WITH_DEFAULT] = AddLetter;
+		Keyboard::GetKeyButton()[CharKey][WITH_DEFAULT] = AddLetter;
 	}
 
-	Keyboard::KeyButton[GUI_BACKSPACE_PRESSED][WITH_DEFAULT] = BackSpace;
+	Keyboard::GetKeyButton()[GUI_BACKSPACE_PRESSED][WITH_DEFAULT] = BackSpace;
 }
 
 void PageCreator::AddLetter()
@@ -496,10 +496,10 @@ void PageCreator::ArrowKeyLeft()
 //Arrow Keys with Shift
 void PageCreator::SetShift()
 {
-	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_SHIFT] = LevelUp;
-	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_SHIFT] = LevelDown;
-	Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_SHIFT] = DataRight;
-	Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_SHIFT] = DataLeft;
+	Keyboard::GetKeyButton()[GUI_UP_CLICKED][WITH_SHIFT] = LevelUp;
+	Keyboard::GetKeyButton()[GUI_DOWN_CLICKED][WITH_SHIFT] = LevelDown;
+	Keyboard::GetKeyButton()[GUI_RIGHT_CLICKED][WITH_SHIFT] = DataRight;
+	Keyboard::GetKeyButton()[GUI_LEFT_CLICKED][WITH_SHIFT] = DataLeft;
 }
 
 void PageCreator::OptionsUp()
@@ -931,10 +931,10 @@ void PageCreator::SetPageType()
 //Arrow Key with Alt
 void PageCreator::SetAlternate()
 {
-	Keyboard::KeyButton[GUI_UP_CLICKED][WITH_ALT] = OptionsUp;
-	Keyboard::KeyButton[GUI_DOWN_CLICKED][WITH_ALT] = OptionsDown;
-	Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_ALT] = TypeRight;
-	Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_ALT] = TypeLeft;
+	Keyboard::GetKeyButton()[GUI_UP_CLICKED][WITH_ALT] = OptionsUp;
+	Keyboard::GetKeyButton()[GUI_DOWN_CLICKED][WITH_ALT] = OptionsDown;
+	Keyboard::GetKeyButton()[GUI_RIGHT_CLICKED][WITH_ALT] = TypeRight;
+	Keyboard::GetKeyButton()[GUI_LEFT_CLICKED][WITH_ALT] = TypeLeft;
 }
 
 
@@ -1122,20 +1122,20 @@ void PageCreator::SetQuadSelected(int MouseState, int ShapeHovered)
 
 }
 
-void PageCreator::SetKeyAdd() { Keyboard::KeyButton[GUI_A_CLICKED][WITH_CTRL] = Add; }
-void PageCreator::SetInsertKey() { Keyboard::KeyButton[GUI_INSERT_CLICKED][WITH_DEFAULT] = Insert; }
-void PageCreator::SetEraseKey() { Keyboard::KeyButton[GUI_E_CLICKED][WITH_CTRL] = ErasePage; }
-void PageCreator::SetSaveKey() { Keyboard::KeyButton[GUI_S_CLICKED][WITH_CTRL] = SavePage; }
-void PageCreator::SetKeyDuplicate() { Keyboard::KeyButton[GUI_D_CLICKED][WITH_CTRL] = Duplicate; }
-void PageCreator::SetDeleteKey() { Keyboard::KeyButton[GUI_DELETE_CLICKED][WITH_DEFAULT] = Delete; }
+void PageCreator::SetKeyAdd() { Keyboard::GetKeyButton()[GUI_A_CLICKED][WITH_CTRL] = Add; }
+void PageCreator::SetInsertKey() { Keyboard::GetKeyButton()[GUI_INSERT_CLICKED][WITH_DEFAULT] = Insert; }
+void PageCreator::SetEraseKey() { Keyboard::GetKeyButton()[GUI_E_CLICKED][WITH_CTRL] = ErasePage; }
+void PageCreator::SetSaveKey() { Keyboard::GetKeyButton()[GUI_S_CLICKED][WITH_CTRL] = SavePage; }
+void PageCreator::SetKeyDuplicate() { Keyboard::GetKeyButton()[GUI_D_CLICKED][WITH_CTRL] = Duplicate; }
+void PageCreator::SetDeleteKey() { Keyboard::GetKeyButton()[GUI_DELETE_CLICKED][WITH_DEFAULT] = Delete; }
 //void PageCreator::SetKeyNext() { Keyboard::KeyButton[GUI_RIGHT_CLICKED][WITH_CTRL] = Next; }
 //void PageCreator::SetKeyPrevious() { Keyboard::KeyButton[GUI_LEFT_CLICKED][WITH_CTRL] = Previous; }
 
 
 void PageCreator::SetPixelOffsetKeys()
 {
-	Keyboard::KeyButton[GUI_F1_CLICKED][WITH_DEFAULT] = IncreasePixelOffset;
-	Keyboard::KeyButton[GUI_F2_CLICKED][WITH_DEFAULT] = DecreasePixelOffset;
+	Keyboard::GetKeyButton()[GUI_F1_CLICKED][WITH_DEFAULT] = IncreasePixelOffset;
+	Keyboard::GetKeyButton()[GUI_F2_CLICKED][WITH_DEFAULT] = DecreasePixelOffset;
 }
 
 void PageCreator::IncreasePixelOffset()

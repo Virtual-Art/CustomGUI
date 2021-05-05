@@ -94,97 +94,75 @@ struct KeyResult
 	int LastAscii = -1;
 };
 
-class Keyboard
+namespace Keyboard
 {
-   public:
 
+	void PlayFunction();
+	void Empty();
 
-	   void PlayFunction();
+	//Set
+    //Keyboard::KeyBoardButton[ARROW_UP][DEFAULT][PRESSED] = ShapePositionUp;
     
+    //Call
+    //KeyBoard::KeyButton[ARROW_UP][ALT_SHIFT][PRESSED]();
+	static KeyFunction** KeyButton;
+	KeyFunction** GetKeyButton();
+	KeyResult& GetState();
 
-	   //Set
-       //Keyboard::KeyBoardButton[ARROW_UP][DEFAULT][PRESSED] = ShapePositionUp;
-       
-       //Call
-       //KeyBoard::KeyButton[ARROW_UP][ALT_SHIFT][PRESSED]();
-	   static KeyFunction** KeyButton;
+	void CreateKeyFuncContainer();
+	Container<Key> MakeKeyContainer(int ContainerSize);
+
+	static Container<Key> KeyContainer(MakeKeyContainer(144));
+
+	static KeyResult KeyBoard_State; //Most Used Vairable
+	static string CurrentText;
+
+	const string& GetText();
+	void ResetText();
+	void SetText(string string);
+	void TextKeepTrack();
 
 
-	   static void CreateKeyFuncContainer()
-	   {
-		   //EX: 'h' : 'Alt, shift" : "KEY_CLICKED"
-		   int AmountofKeys = 227; 
-		   int AmountofControllers = 9;
+	// Key A
+	static bool KeyAStartTimer;
+	static float KeyAClickTime;
+	static float KeyAMultiTrack;
+	static float KeyAStartTime;
+	static float KeyADoubleClickLength;
+	// Key D
+	static bool  KeyDStartTimer;
+	static float KeyDClickTime;
+	static float KeyDMultiTrack;
+	static float KeyDStartTime;
+	static float KeyDDoubleClickLength;
+	// Key W
+	static bool  KeyWStartTimer;
+	static float KeyWClickTime;
+	static float KeyWMultiTrack;
+	static float KeyWStartTime;
+	static float KeyWDoubleClickLength;
+	// Key S
+	static bool  KeySStartTimer;
+	static float KeySClickTime;
+	static float KeySMultiTrack;
+	static float KeySStartTime;
+	static float KeySDoubleClickLength;
 
-		   //Create Key Container
-		   KeyButton = new KeyFunction*[AmountofKeys];
-		   for (int CurrentKey = 0; CurrentKey < AmountofKeys; CurrentKey++)
-		   {
-			   //Every Key gets 9 Controllers
-			   KeyButton[CurrentKey] = new KeyFunction[9];
-		   }
+	void Prepare();
 
-		   for (int i = 0; i < AmountofKeys;i++)
-		   {
-			   for (int j = 0; j < 9; j++)
-			   {
-				   KeyButton[i][j] = Empty;
-			   }
-		   }
-		   //Set: KeyButton[ARROW_UP_CLICKED][ALT_SHIFT] = Non_Member_Function;
-		   //Call: KeyButton[ARROW_UP_CLICKED][ALT_SHIFT]();
-	   }
+	void CurrentLastAscii();
 
-	   Container<Key> MakeKeyContainer(int ContainerSize)
-	   {
-		   Container<Key> ArrElements(ContainerSize);
-		   return ArrElements;
-	   }
+	float TimeStamp();
 
-	   Container<Key> KeyContainer;
+	void GetKeyBoardState(GLFWwindow* window, float Time, float ClickLength, float PressLength);
+	bool ProcessDoubleKeys(GLFWwindow* window, Key& First, Key& Second, float Time);
 
-	   KeyResult ManagerResult;
-	   // Key A
-	   bool KeyAStartTimer;
-	   float KeyAClickTime;
-	   float KeyAMultiTrack;
-	   float KeyAStartTime;
-	   float KeyADoubleClickLength;
-	   // Key D
-	   bool  KeyDStartTimer;
-	   float KeyDClickTime;
-	   float KeyDMultiTrack;
-	   float KeyDStartTime;
-	   float KeyDDoubleClickLength;
-	   // Key W
-	   bool  KeyWStartTimer;
-	   float KeyWClickTime;
-	   float KeyWMultiTrack;
-	   float KeyWStartTime;
-	   float KeyWDoubleClickLength;
-	   // Key S
-	   bool  KeySStartTimer;
-	   float KeySClickTime;
-	   float KeySMultiTrack;
-	   float KeySStartTime;
-	   float KeySDoubleClickLength;
+	void PrintKey(int KeyID);
+	void PrintKeySheet();
 
-	   Keyboard();
+	int KeyToAscii();
 
-	   void PlayButton();
-	   void CurrentLastAscii();
-
-	   float TimeStamp();
-
-	   KeyResult& GetKeyBoardState(GLFWwindow* window, float Time, float ClickLength, float PressLength);
-	   bool ProcessDoubleKeys(GLFWwindow* window, Key& First, Key& Second, float Time);
-
-	   void PrintKey(int KeyID);
-	   void PrintKeySheet();
-
-	   int KeyToAscii();
-
-	   static void Empty() {};
+	
 };
 
 

@@ -1,16 +1,13 @@
 #include "KeyboardManager.h"
 
-KeyFunction** Keyboard::KeyButton;
 
-Keyboard::Keyboard()
-	:KeyContainer(MakeKeyContainer(144))
+void Keyboard::Prepare()
 {
-
-	this->KeyAStartTimer = false;
-	this->KeyAClickTime = 0.0;
-	this->KeyAMultiTrack = 0.0;
-	this->KeyAStartTime = 0.0;
-	this->KeyADoubleClickLength = 0.0;
+	KeyAStartTimer = false;
+	KeyAClickTime = 0.0;
+	KeyAMultiTrack = 0.0;
+	KeyAStartTime = 0.0;
+	KeyADoubleClickLength = 0.0;
 
 	Key Sample;
 	Key Sample2;
@@ -19,15 +16,15 @@ Keyboard::Keyboard()
 	for (int i = 340; i < 347; i++)
 	{
 		Sample.KeyType = i;
-		this->KeyContainer.Add(Sample);
+		KeyContainer.Add(Sample);
 	}
 
 	//Caps lockk
 	Sample.KeyType = 280;
-	this->KeyContainer.Add(Sample);
+	KeyContainer.Add(Sample);
 	//Space
 	Sample2.KeyType = 32;
-	this->KeyContainer.Add(Sample2);
+	KeyContainer.Add(Sample2);
 
 	for (int k = 44; k < 94; k++)
 	{
@@ -35,7 +32,7 @@ Keyboard::Keyboard()
 		{
 			//EX: GLFW_KEY_A
 			Sample.KeyType = k;
-			this->KeyContainer.Add(Sample);
+			KeyContainer.Add(Sample);
 		}
 	}
 
@@ -48,13 +45,47 @@ Keyboard::Keyboard()
 				if (j < 315 || j > 319)
 				{
 					Sample2.KeyType = j;
-					this->KeyContainer.Add(Sample2);
+					KeyContainer.Add(Sample2);
 				}
 			}
 		}
 	}
-
+	cout << "Prepare End" << endl;
 	CreateKeyFuncContainer();
+}
+
+const string& Keyboard::GetText()
+{
+	return CurrentText;
+}
+
+void Keyboard::ResetText()
+{
+	CurrentText = "";
+}
+
+void Keyboard::SetText(string string)
+{
+	CurrentText = string;
+}
+
+void Keyboard::TextKeepTrack()
+{
+
+	//Type Letters
+	if (KeyBoard_State.Ctrl != true && KeyBoard_State.CurrentAscii != -1 && KeyBoard_State.Key1 != 0)
+	{
+		CurrentText += KeyBoard_State.CurrentAscii;
+	}
+
+	//Process BackSpace
+	if (KeyBoard_State.Ctrl != true && KeyBoard_State.Key1 == GUI_BACKSPACE_CLICKED)
+	{
+		if (CurrentText.size() > 0)
+		{
+			CurrentText.erase(CurrentText.size() - 1);
+		}
+	}
 }
 
 void Keyboard::PrintKeySheet()
@@ -93,9 +124,11 @@ float Keyboard::TimeStamp()
 	return glfwGetTime();
 }
 
-KeyResult& Keyboard::GetKeyBoardState(GLFWwindow* window, float Time, float ClickLength, float PressLength)
+//This function runs it's tasks based on a timer
+//so focus on the StartTime boolean 
+void Keyboard::GetKeyBoardState(GLFWwindow* window, float Time, float ClickLength, float PressLength)
 {
-	KeyResult Result;
+
 	Key* KEY;
 	Key* KEY1;
 	Key* KEY2;
@@ -103,49 +136,53 @@ KeyResult& Keyboard::GetKeyBoardState(GLFWwindow* window, float Time, float Clic
 	//Alt
 	KEY1 = KeyContainer.RetrieveDataP(2);
 	KEY2 = KeyContainer.RetrieveDataP(6);
-	Result.Alt = ProcessDoubleKeys(window , *KEY1, *KEY2,  Time);
+	//KeyBoard_State.Alt = ProcessDoubleKeys(window , *KEY1, *KEY2,  Time);
 
 	//Shift
 	KEY1 = KeyContainer.RetrieveDataP(0);
 	KEY2 = KeyContainer.RetrieveDataP(4);
-	Result.Shift = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
+	//KeyBoard_State.Shift = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
 
 	//Ctrl
 	KEY1 = KeyContainer.RetrieveDataP(1);
 	KEY2 = KeyContainer.RetrieveDataP(5);
-	Result.Ctrl = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
+	//KeyBoard_State.Ctrl = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
 
+	KeyBoard_State.Key1 = -1;
+	//Go through all the keys
 	for (int i = 8; i < 144; i++)
 	{
 		//Get Active Key Info
 		KEY = KeyContainer.RetrieveDataP(i);
 
+		//start the timer if the current k is released
 		if (glfwGetKey(window, KEY->KeyType) == GLFW_RELEASE)
 		{
 			KEY->StartTimer = true;
 		}
 
 		//KEY->Type === GLFW_KEY_TYPE (EX: GLFW_KEY_A)
+		//if a key is currently pressed, what happens
 		if (glfwGetKey(window, KEY->KeyType) == GLFW_PRESS)
 		{
 			//Press
 			if (Time > KEY->ClickTime && KEY->StartTimer != true)
 			{
 				KEY->MultiTrack = 0;
-				Result.Key1 = i * 2 + 1;
+				KeyBoard_State.Key1 = i * 2 + 1;
 			}
 
 			//Click
 			if (KEY->StartTimer == true && Time - KEY->StartTime > KEY->DoubleClickLength)
 			{
-				KEY->StartTime = TimeStamp();
-				KEY->ClickTime = KEY->StartTime + PressLength;
+				KEY->StartTime = TimeStamp(); //Log Time when first clicked
+				KEY->ClickTime = KEY->StartTime + PressLength; //Establish how many miliseconds is a click (controller by user)
 				if (PressLength != 0.0) // Click is an impoosible state when PressState is Instant
 				{
-					KEY->StartTimer = false;
+					KEY->StartTimer = false; 
 					cout << "Key Clicked " << i << endl;
 					KEY->MultiTrack = 1;
-					Result.Key1 = i * 2;
+					KeyBoard_State.Key1 = i * 2;
 				}
 				KEY->StartTimer = false;
 			}
@@ -164,14 +201,11 @@ KeyResult& Keyboard::GetKeyBoardState(GLFWwindow* window, float Time, float Clic
 				}
 			}
 			KEY->StartTimer = false;
-
 		}
 	}
 
-	this->ManagerResult = Result;
 	CurrentLastAscii();
 	PlayFunction();	
-	return ManagerResult;
 }
 
 //Call this after every result
@@ -179,10 +213,10 @@ void Keyboard::CurrentLastAscii()
 {
 	int Ascii = KeyToAscii();
 
-    ManagerResult.CurrentAscii = Ascii; //returns -1 if no key pressed
-	if (ManagerResult.CurrentAscii != -1)
+	KeyBoard_State.CurrentAscii = Ascii; //returns -1 if no key pressed
+	if (KeyBoard_State.CurrentAscii != -1)
 	{
-		ManagerResult.LastAscii = ManagerResult.CurrentAscii;
+		KeyBoard_State.LastAscii = KeyBoard_State.CurrentAscii;
 	}
 }
 
@@ -254,7 +288,7 @@ bool Keyboard::ProcessDoubleKeys(GLFWwindow* window, Key& First, Key& Second, fl
 int Keyboard::KeyToAscii()
 {
 	int AsciiCarry = 0;
-	int KeyNumber = ManagerResult.Key1;
+	int KeyNumber = KeyBoard_State.Key1;
 
 	if (KeyNumber == 16 || KeyNumber == 17)
 	{
@@ -266,7 +300,7 @@ int Keyboard::KeyToAscii()
 	{
 		AsciiCarry = float((KeyNumber / 2) + 35);
 
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			
 			AsciiCarry = float((KeyNumber / 2) + 1);
@@ -350,7 +384,7 @@ int Keyboard::KeyToAscii()
 		AsciiCarry = float(KeyNumber / 2) + 72;
 
 		//(A - Z)
-		if (ManagerResult.Shift == true)
+		if (KeyBoard_State.Shift == true)
 		{
 			AsciiCarry -= 32;
 		}
@@ -364,7 +398,7 @@ int Keyboard::KeyToAscii()
 	{
 
 		// <
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 60;
 		}
@@ -376,7 +410,7 @@ int Keyboard::KeyToAscii()
 	if (AsciiCarry == 13)
 	{
 		// ?
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 63;
 		}
@@ -396,7 +430,7 @@ int Keyboard::KeyToAscii()
 	{
 	
 		// >
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 62;
 		}
@@ -409,7 +443,7 @@ int Keyboard::KeyToAscii()
 	if (AsciiCarry == 24)
 	{
 		// :
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 58;
 		}
@@ -421,7 +455,7 @@ int Keyboard::KeyToAscii()
 	if (AsciiCarry == 25)
 	{
 		// +
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 43;
 		}
@@ -434,7 +468,7 @@ int Keyboard::KeyToAscii()
 	{
 
 		// {
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 123;
 		}
@@ -447,7 +481,7 @@ int Keyboard::KeyToAscii()
 	{
 
 		// |
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 124;
 		}
@@ -461,7 +495,7 @@ int Keyboard::KeyToAscii()
 
 
 		// }
-		if (ManagerResult.Shift == true || ManagerResult.Caps == true)
+		if (KeyBoard_State.Shift == true || KeyBoard_State.Caps == true)
 		{
 			return 125;
 		}
@@ -509,13 +543,13 @@ int Keyboard::KeyToAscii()
 
 void Keyboard::PlayFunction()
 {
-	if (ManagerResult.Key1 != 0)
+	if (KeyBoard_State.Key1 != 0)
 	{
-		int SpecialKeysPressed = ManagerResult.Ctrl + ManagerResult.Shift + ManagerResult.Alt;
+		int SpecialKeysPressed = KeyBoard_State.Ctrl + KeyBoard_State.Shift + KeyBoard_State.Alt;
 
-		if (ManagerResult.Caps != 0 && KeyButton[ManagerResult.Key1][9] != nullptr)
+		if (KeyBoard_State.Caps != 0 && KeyButton[KeyBoard_State.Key1][9] != nullptr)
 		{
-			KeyButton[ManagerResult.Key1][9]();
+			KeyButton[KeyBoard_State.Key1][9]();
 			return;
 		}
 
@@ -525,58 +559,108 @@ void Keyboard::PlayFunction()
 		//  return;
 		//}
 		//Default
-		if (SpecialKeysPressed == 0 && KeyButton[ManagerResult.Key1][0] != nullptr)
+		if (SpecialKeysPressed == 0 && KeyButton[KeyBoard_State.Key1][0] != nullptr)
 		{
-			KeyButton[ManagerResult.Key1][0]();
+			KeyButton[KeyBoard_State.Key1][0]();
 			return;
 		}
 
 		if (SpecialKeysPressed == 1)
 		{
-			if (ManagerResult.Alt == true && KeyButton[ManagerResult.Key1][3] != nullptr)
+			if (KeyBoard_State.Alt == true && KeyButton[KeyBoard_State.Key1][3] != nullptr)
 			{
-				KeyButton[ManagerResult.Key1][3]();
+				KeyButton[KeyBoard_State.Key1][3]();
 				return;
 			}
 
-			if (ManagerResult.Shift == true && KeyButton[ManagerResult.Key1][1] != nullptr)
+			if (KeyBoard_State.Shift == true && KeyButton[KeyBoard_State.Key1][1] != nullptr)
 			{
-				KeyButton[ManagerResult.Key1][1]();
+				KeyButton[KeyBoard_State.Key1][1]();
 				return;
 			}
 
-			if (ManagerResult.Ctrl == true && KeyButton[ManagerResult.Key1][2] != nullptr)
+			if (KeyBoard_State.Ctrl == true && KeyButton[KeyBoard_State.Key1][2] != nullptr)
 			{
-				KeyButton[ManagerResult.Key1][2]();
+				KeyButton[KeyBoard_State.Key1][2]();
 				return;
 			}
 		}
 
 		if (SpecialKeysPressed == 2)
 		{
-			if (ManagerResult.Ctrl == true && ManagerResult.Alt == true && KeyButton[ManagerResult.Key1][6] != nullptr)
+			if (KeyBoard_State.Ctrl == true && KeyBoard_State.Alt == true && KeyButton[KeyBoard_State.Key1][6] != nullptr)
 			{
-				KeyButton[ManagerResult.Key1][6]();
+				KeyButton[KeyBoard_State.Key1][6]();
 				return;
 			}
 
-			if (ManagerResult.Ctrl == true && ManagerResult.Shift == true && KeyButton[ManagerResult.Key1][4] != nullptr)
+			if (KeyBoard_State.Ctrl == true && KeyBoard_State.Shift == true && KeyButton[KeyBoard_State.Key1][4] != nullptr)
 			{
-				KeyButton[ManagerResult.Key1][4]();
+				KeyButton[KeyBoard_State.Key1][4]();
 				return;
 			}
-			if (ManagerResult.Alt == true && ManagerResult.Shift == true && KeyButton[ManagerResult.Key1][5] != nullptr)
+			if (KeyBoard_State.Alt == true && KeyBoard_State.Shift == true && KeyButton[KeyBoard_State.Key1][5] != nullptr)
 			{
-				KeyButton[ManagerResult.Key1][5]();
+				KeyButton[KeyBoard_State.Key1][5]();
 				return;
 			}
 		}
 
 		if (SpecialKeysPressed == 3)
 		{
-			KeyButton[ManagerResult.Key1][5]();
+			KeyButton[KeyBoard_State.Key1][5]();
 			return;
 		}
 	}
 
+}
+
+
+void Keyboard::Empty()
+{
+
+}
+
+KeyFunction** Keyboard::GetKeyButton()
+{
+	return KeyButton;
+}
+
+KeyResult& Keyboard::GetState()
+{
+	return KeyBoard_State;
+}
+
+void Keyboard::CreateKeyFuncContainer()
+{
+	//EX: 'h' : 'Alt, shift" : "KEY_CLICKED"
+	int AmountofKeys = 227;
+	int AmountofControllers = 9;
+
+	//Create Key Container
+	KeyButton = new KeyFunction * [AmountofKeys];
+	for (int CurrentKey = 0; CurrentKey < AmountofKeys; CurrentKey++)
+	{
+		//Every Key gets 9 Controllers
+		KeyButton[CurrentKey] = new KeyFunction[9];
+	}
+
+	for (int i = 0; i < AmountofKeys; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			KeyButton[i][j] = Empty;
+		}
+	}
+
+	cout << "Calling FUNCTION" << endl;
+	KeyButton[0][0]();
+	//Set: KeyButton[ARROW_UP_CLICKED][ALT_SHIFT] = Non_Member_Function;
+	//Call: KeyButton[ARROW_UP_CLICKED][ALT_SHIFT]();
+}
+
+Container<Key> Keyboard::MakeKeyContainer(int ContainerSize)
+{
+	Container<Key> ArrElements(ContainerSize);
+	return ArrElements;
 }

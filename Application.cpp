@@ -97,7 +97,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	Keyboard Keyboard;
+	Keyboard::Prepare();
 	Keyboard::CreateKeyFuncContainer();
 
 	MemoryManagment<int> VertexContainer;
@@ -521,7 +521,8 @@ int main(int argc, char** argv)
 	SubmitOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	//SelectorActions::Prepare(&Book_Restaurant_POS); //ElementsHovered would be in Book
-	SelectorActions::Prepare(&Book_Restaurant_POS, &SubmitOrder::GetElementsHovered());
+	SelectorActions::Prepare(&Book_Restaurant_POS);
+	NumberPrinterActions::Prepare(&Book_Restaurant_POS);
 
 	ApplicationMenu::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
@@ -625,11 +626,20 @@ int main(int argc, char** argv)
 
 		//Setup
 		int MouseState = MouseManager::GetMouseState(window, glfwGetTime(), 0.3, 0.4);
-		KeyResult KeyState = Keyboard.GetKeyBoardState(window, glfwGetTime(), 0.3, 0.4);
+		Keyboard::GetKeyBoardState(window, glfwGetTime(), 0.3, 0.4);
+		KeyResult& KeyState = Keyboard::KeyBoard_State;
 		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		PageCreator::OnUpdate(KeyState, MouseState);
 
+		//if (Keyboard::GetState().Key1 == GUI_P_CLICKED || Keyboard::GetState().Key1 == GUI_P_PRESSED)
+		//{
+		//	Log::LogString("Once");
+		//}
+
+
+
+		Keyboard::TextKeepTrack();
 		//sigh_MousePosition.SetVec2(MousePosition);
 		//Restaurant POS
 		//+-------------------------+
@@ -638,6 +648,8 @@ int main(int argc, char** argv)
 		SubmitOrder::Update(Page_To_Render);
 		IngredientListCreator::Update(Page_To_Render, &KeyState);
 		MenuCreator::Update(KeyState, Page_To_Render);
+		Book_Restaurant_POS.Update();
+		NumberPrinterActions::Update();
 		//+-------------------------+
 
 		PageGroupItem* jaj = &llSlider;

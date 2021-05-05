@@ -15,6 +15,7 @@ public:
 
 	NumberPrinterData CurrentNumberPrinter;
 	string Empty = "";
+	Button Button_NumberPrinter;
 
 	NumberPrinter() {};
 	NumberPrinter(llBookData* llBook);
@@ -80,5 +81,21 @@ private:
 	glm::vec2 ProcessAnswerPlacement(Text* Text_Reference);
 
 };
+
+namespace NumberPrinterActions
+{
+	static llBookData* CurrentBook;
+	static NumberPrinter CurrentPrinter;
+	static ButtonFunction RunningFunction;
+	static KeyResult& Keyboard_State = Keyboard::GetState();
+
+	void Prepare(llBookData* Book);
+	void SetKeyboardInput();
+	void Update(); //Updates the NumberPrinter for input
+	void Stop();
+	void Run();
+	void Empty();
+
+}
 
 #endif

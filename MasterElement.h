@@ -574,6 +574,8 @@ struct llPageData
 	}
 };
 
+
+
 struct llBookData
 {
 	int PageCount = 0;
@@ -581,6 +583,184 @@ struct llBookData
 	llBookData* Previous = nullptr;
 	llPageData* Page = nullptr; // = nullptr; // Child
 	llPageData* PageHead = nullptr;
+
+	llPageData* Page_Hovered;
+	llPageGroupData* PageGroup_Hovered = nullptr;
+	llPageItemData* PageItem_Hovered = nullptr;
+	llShapeGroupData* ShapeGroup_Hovered = nullptr;
+	llShapeData* Shape_Hovered = nullptr;
+
+	void SwitchPage(llPageData* Page_Selected)
+	{
+		this->Page = Page_Selected;
+	}
+
+	void Update()
+	{
+		float xMouse = MouseManager::xPos;
+		float yMouse = MouseManager::yPos;
+
+		int VertexIndex = 0;
+		int PageCount = 0;
+		int PageGroupCount = 0;
+		int PageItemCount = 0;
+		int ShapeGroupCount = 0;
+		int ShapeCount = 0;
+		int VertexCount = 0;
+
+		//Nothing in PageGroup
+		llPageData* SavedPage = this->Page;
+		llPageGroupData* SavedPageGroup = this->Page->PageGroup;
+		llPageItemData* SavedPageItem = this->Page->PageGroup->PageItem;
+		llShapeGroupData* SavedShapeGroup = this->Page->PageGroup->PageItem->ShapeGroup;
+		llShapeData* SavedShape = this->Page->PageGroup->PageItem->ShapeGroup->Shape;
+		llVertexData* SavedVertex = this->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+
+		//Page
+		llPageData* CurrentPage = SavedPage;
+
+		Page_Hovered = CurrentPage;
+
+		while (CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
+		{
+			PageCount++;
+			//Page Group
+			llPageGroupData* CurrentPageGroup = CurrentPage->PageGroup;
+
+			//Set PageGroup Beginning
+			/////////////////////////////////////////////////////
+			while (CurrentPageGroup->Previous != nullptr)
+			{
+				CurrentPageGroup = CurrentPageGroup->Previous;
+
+			}
+			/////////////////////////////////////////////////////
+			while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
+			{
+				if (xMouse < CurrentPageGroup->Right && xMouse >  CurrentPageGroup->Left&& yMouse < CurrentPageGroup->Top && yMouse >  CurrentPageGroup->Bottom&& CurrentPageGroup->MouseAccess == true)
+				{
+					//cout << " [PageGroup Found] | P:" << PageCount << " | PG:" << PageGroupCount << endl;
+					PageGroup_Hovered = CurrentPageGroup;
+				}
+
+				PageGroupCount++;
+				//PageItem
+				llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
+				//Set PageItem Beginning
+				/////////////////////////////////////////////////////
+				while (CurrentPageItem->Previous != nullptr)
+				{
+					CurrentPageItem = CurrentPageItem->Previous;
+				}
+				/////////////////////////////////////////////////////
+				while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
+				{
+					if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left && yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom && CurrentPageItem->MouseAccess == true)
+					{
+						//cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
+						PageItem_Hovered = CurrentPageItem;
+
+						if (CurrentPageItem->PageItemButton != nullptr)
+						{
+							CurrentPageItem->PageItemButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+						}
+					}
+
+					PageItemCount++;
+					//ShapeGroup
+					llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+					//Set ShapeGroup to beginning
+					/////////////////////////////////////////////////////
+					while (CurrentShapeGroup->Previous != nullptr)
+					{
+						CurrentShapeGroup = CurrentShapeGroup->Previous;
+					}
+
+					/////////////////////////////////////////////////////
+					while (CurrentShapeGroup != nullptr)
+					{
+						ShapeGroupCount++;
+						//Shape
+						llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+						if (CurrentShapeGroup->Shape != nullptr)
+						{
+
+							if (xMouse < CurrentShapeGroup->Right && xMouse >  CurrentShapeGroup->Left && yMouse < CurrentShapeGroup->Top && yMouse >  CurrentShapeGroup->Bottom && CurrentShapeGroup->MouseAccess == true)
+							{
+								
+								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+								ShapeGroup_Hovered = CurrentShapeGroup;
+
+								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
+								{
+									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+								}
+								
+							}
+							//Set shape to beginning
+							/////////////////////////////////////////////////////
+							while (CurrentShape->Previous != nullptr)
+							{
+								CurrentShape = CurrentShape->Previous;
+							}
+							/////////////////////////////////////////////////////
+							while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
+							{
+								ShapeCount++;
+								if (xMouse < CurrentShape->Right && xMouse >  CurrentShape->Left&& yMouse < CurrentShape->Top && yMouse >  CurrentShape->Bottom&& CurrentShape->MouseAccess == true)
+								{
+									Shape_Hovered = CurrentShape;
+
+									if (CurrentShape->ShapeButton != nullptr)
+									{
+										//cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+
+									}
+
+								}
+								CurrentShape = CurrentShape->Next;
+							}
+						}
+						ShapeCount = -1;
+						CurrentShapeGroup = CurrentShapeGroup->Next;
+					}
+					ShapeGroupCount = -1;
+					CurrentPageItem = CurrentPageItem->Next;
+				}
+				PageItemCount = -1;
+				CurrentPageGroup = CurrentPageGroup->Next;
+			}
+			PageGroupCount = -1;
+			CurrentPage = CurrentPage->Next;
+		}
+
+		if (this != nullptr)
+		{
+			this->Page = SavedPage;
+			if (this->Page != nullptr)
+			{
+				this->Page->PageGroup = SavedPageGroup;
+				if (this->Page->PageGroup != nullptr)
+				{
+					this->Page->PageGroup->PageItem = SavedPageItem;
+					if (this->Page->PageGroup->PageItem != nullptr)
+					{
+						this->Page->PageGroup->PageItem->ShapeGroup = SavedShapeGroup;
+						if (this->Page->PageGroup->PageItem->ShapeGroup != nullptr)
+						{
+							this->Page->PageGroup->PageItem->ShapeGroup->Shape = SavedShape;
+							if (this->Page->PageGroup->PageItem->ShapeGroup->Shape != nullptr)
+							{
+								this->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = SavedVertex;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 };
 
 struct BookDirectory
@@ -636,6 +816,8 @@ struct BookDirectory
 		if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape == nullptr) { return; }
 	}
 };
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 

@@ -55,6 +55,8 @@ struct CustomerDetails
 //We are going to need to store functions for specific functions inside objects
 //Only these objects can call these functions
 
+
+//FYI Keyboard:: might not be working as expected /////////////////////////
 namespace PageCreator
 {
 	// Min/Max Variables
