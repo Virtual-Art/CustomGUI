@@ -614,6 +614,30 @@ int main(int argc, char** argv)
 	//IngredientListCreator::ConsolidateSideIngredients(SecondIngredientSide);
 	//IngredientListCreator::PrintShoppingList();
 
+	//Add some Dishes
+
+
+	//Create Customer
+	CustomerOrder Test_Customer_Order;
+	Test_Customer_Order.CustomerDetails.FirstName = "John";
+	Test_Customer_Order.CustomerDetails.LastName = "Doe";
+	Test_Customer_Order.CustomerDetails.Phone = "1234567890";
+
+	OrderedDish Test_Ordered_Dish;
+	Test_Ordered_Dish.Name = "Pepperoni";
+	Test_Ordered_Dish.Quantity = 5;
+	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
+
+	Test_Ordered_Dish.Name = "Pinapples";
+	Test_Ordered_Dish.Quantity = 40;
+	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
+
+	//Add Customer to their order date
+	SameDayOrders Test_Same_Day_Orders;
+	Test_Same_Day_Orders.CustomerOrders[Test_Customer_Order.CustomerDetails.LastName] = Test_Customer_Order;
+
+	All_Customer_Orders["2021 04 27"] = Test_Same_Day_Orders;
+
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -627,9 +651,9 @@ int main(int argc, char** argv)
 		//Setup
 		int MouseState = MouseManager::GetMouseState(window, glfwGetTime(), 0.3, 0.4);
 		Keyboard::GetKeyBoardState(window, glfwGetTime(), 0.3, 0.4);
-		KeyResult& KeyState = Keyboard::KeyBoard_State;
-		EditorShapeDataHovered = MainBook.Page[0].FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
-		GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
+		KeyResult& KeyState = Keyboard::GetState();
+		//EditorShapeDataHovered = MainBook.Page[0].FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
+		//GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		PageCreator::OnUpdate(KeyState, MouseState);
 
 		//if (Keyboard::GetState().Key1 == GUI_P_CLICKED || Keyboard::GetState().Key1 == GUI_P_PRESSED)
@@ -645,7 +669,7 @@ int main(int argc, char** argv)
 		//+-------------------------+
 
 		int Page_To_Render = ApplicationMenu::Update();
-		SubmitOrder::Update(Page_To_Render);
+		SubmitOrder::Update(Page_To_Render, KeyState);
 		IngredientListCreator::Update(Page_To_Render, &KeyState);
 		MenuCreator::Update(KeyState, Page_To_Render);
 		Book_Restaurant_POS.Update();

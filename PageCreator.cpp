@@ -451,7 +451,7 @@ void PageCreator::SetArrowKeys()
 		Keyboard::GetKeyButton()[CharKey][WITH_DEFAULT] = AddLetter;
 	}
 
-	Keyboard::GetKeyButton()[GUI_BACKSPACE_PRESSED][WITH_DEFAULT] = BackSpace;
+	//Keyboard::GetKeyButton()[GUI_BACKSPACE_PRESSED][WITH_DEFAULT] = BackSpace;
 }
 
 void PageCreator::AddLetter()
@@ -464,6 +464,7 @@ void PageCreator::AddLetter()
 
 void PageCreator::BackSpace()
 {
+	Log::LogString("Backspace function");
 	CurrentText.erase(CurrentText.size() - 1);
 }
 

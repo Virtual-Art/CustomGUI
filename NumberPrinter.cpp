@@ -3,6 +3,8 @@
 NumberPrinter::NumberPrinter(llBookData* llBook)
 	:PageGroupItem(llBook)
 {
+	Button_NumberPrinter.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, NumberPrinterActions::SetKeyboardInput);
+	CurrentllPageItem->PageItemButton = &Button_NumberPrinter;
 	CurrentllPageItem->Color = { 1.0, 1.0, 1.0, 1.0 };
 	CurrentllPageItem->Size = { 0.0, 0.0 }; // all of the xadvances of all the text
 	CurrentllPageItem->Position = { 0.0, 0.0 };
@@ -14,7 +16,6 @@ NumberPrinter::NumberPrinter(llBookData* llBook)
 	CurrentllPageItem->Type = TYPE_PAGEITEM_NUMBER;
 	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
 	LoadedBook = llBook;
-	Button_NumberPrinter.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, NumberPrinterActions::SetKeyboardInput);
 	CreateNumber();
 
 	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
@@ -23,11 +24,12 @@ NumberPrinter::NumberPrinter(llBookData* llBook)
 NumberPrinter::NumberPrinter(llBookData* llBook, llPageItemData* llPageItem, NumberPrinterData NumberPrinter)
 	: PageGroupItem(llBook, llPageItem)
 {
+	Button_NumberPrinter.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, NumberPrinterActions::SetKeyboardInput);
+	CurrentllPageItem->PageItemButton = &Button_NumberPrinter;
 	CurrentNumberPrinter = NumberPrinter;
 	CurrentllPageItem->Type = TYPE_PAGEITEM_NUMBER;
 	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
 	LoadedBook = llBook;
-	Button_NumberPrinter.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, NumberPrinterActions::SetKeyboardInput);
 	CreateNumber();
 	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
 }
@@ -41,10 +43,11 @@ NumberPrinter::NumberPrinter(llPageItemData* llPageItem)
 void NumberPrinter::llInit(llBookData* llBook, llPageItemData* llPageItem, NumberPrinterData NumberPrinter)
 {
 	llPageItemInit(llBook, llPageItem);
+	Button_NumberPrinter.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, NumberPrinterActions::SetKeyboardInput);
+	CurrentllPageItem->PageItemButton = &Button_NumberPrinter;
 	CurrentNumberPrinter = NumberPrinter;
 	CurrentllPageItem->Type = TYPE_PAGEITEM_NUMBER;
 	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
-	Button_NumberPrinter.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, NumberPrinterActions::SetKeyboardInput);
 	CreateNumber();
 	CurrentllPageItem->NumberPrinterData = CurrentNumberPrinter;
 }
@@ -293,7 +296,6 @@ void NumberPrinter::CreateString()
 	llShapeGroupData TextShapeGroup;
 	TextShapeGroup.Position = CurrentllPageItem->Position;
 	TextShapeGroup.Color = CurrentllPageItem->Color;
-	TextShapeGroup.ShapeGroupButton = &Button_NumberPrinter;
 
 	string MainString = CurrentNumberPrinter.Description;
 	bool StringConnected = false;
@@ -333,7 +335,6 @@ void NumberPrinter::CreateInt()
 	llShapeGroupData TextShapeGroup;
 	TextShapeGroup.Position = CurrentllPageItem->Position;
 	TextShapeGroup.Color = CurrentllPageItem->Color;
-	TextShapeGroup.ShapeGroupButton = &Button_NumberPrinter;
 
 	int MainInteger = 0.0;
 	bool IntegerConnected = false;
@@ -376,7 +377,6 @@ void NumberPrinter::CreateFloat()
 	llShapeGroupData TextShapeGroup;
 	TextShapeGroup.Position = CurrentllPageItem->Position;
 	TextShapeGroup.Color = CurrentllPageItem->Color;
-	TextShapeGroup.ShapeGroupButton = &Button_NumberPrinter;
 
 	float MainFloat = 0.0;
 	bool FloatConnected = false;
@@ -431,7 +431,6 @@ void NumberPrinter::CreateVec2()
 	llShapeGroupData TextShapeGroup;
 	TextShapeGroup.Position = CurrentllPageItem->Position;
 	TextShapeGroup.Color = CurrentllPageItem->Color;
-	TextShapeGroup.ShapeGroupButton = &Button_NumberPrinter;
 
 	float x = -0.0000000;
 	float y = -0.0000000;
@@ -511,7 +510,6 @@ void NumberPrinter::ReplaceString()
 	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Contents Found in PageItem"); return; }
 	//if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: ReplaceVec2 FAILED:: No Vector Provided"); return; }
 
-	Log::LogString("ReplaceString");
 
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
 	string MainString;
@@ -709,13 +707,11 @@ void NumberPrinter::ReplaceInteger()
 void NumberPrinter::CreateVec3()
 {
 	llShapeGroupData TextShapeGroup;
-	TextShapeGroup.ShapeGroupButton = &Button_NumberPrinter;
 }
 
 void NumberPrinter::CreateVec4()
 {
 	llShapeGroupData TextShapeGroup;
-	TextShapeGroup.ShapeGroupButton = &Button_NumberPrinter;
 }
 
 void NumberPrinter::ProcessDescriptionHighlight(llShapeGroupData* DescriptionGroup)
@@ -837,8 +833,6 @@ void NumberPrinterActions::SetKeyboardInput()
 			CurrentPrinter.LoadedBook = CurrentBook;
 			CurrentPrinter.llSwitch(Hovered_PageItem);
 			Keyboard::SetText(CurrentPrinter.Get_For_Keyboard());
-			Log::LogString("Setting Keyboard to " + CurrentPrinter.Get_For_Keyboard());
-			Log::LogString("Keyboard Text: " + Keyboard::GetText());
 			CurrentPrinter.SetString(Keyboard::GetText());
 			RunningFunction = Run;
 		}

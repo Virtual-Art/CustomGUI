@@ -28,7 +28,10 @@ public:
 
 	//Key = Mouse Key Pressed // Value: Set of Actions ( void() Functions )
 	vector<Single_Mouse_Actions> MouseActions;
-	Single_Mouse_Actions Left_Actions;
+
+	//a vector with each slot container a list of actions
+
+	Single_Mouse_Actions Left_Actions; //This Works i can add 1 action
 
 	//Behaviours
 	ElementAction*** TriggeredActions;

@@ -96,14 +96,14 @@ void IngredientListCreator::Prepare_Customer_Orders()
 
 	TextData_Template.Phrase = "Customer Orders";
 	ShapeGroup_Template.Position = {-0.95, 0.8};
-	Button_Update_Customer_Orders.LogicalActions[GUI_MOUSELEFT_CLICKED] = Update_Customer_Orders_Graphics;
+	Button_Update_Customer_Orders.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, Update_Customer_Orders_Graphics);
 	Text_Customer_Orders_Label.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 	Text_Customer_Orders_Label.GetData()->ShapeGroupButton = &Button_Update_Customer_Orders;
 	first_customer_order_edges = Text_Customer_Orders_Label.GetEdges();
 
 	TextData_Template.Phrase = "Ingredient List";
 	ShapeGroup_Template.Position = { 0.0, 0.8 };
-	Button_Update_Ingredient_List.LogicalActions[GUI_MOUSELEFT_CLICKED] = CreateShoppingList;
+	Button_Update_Ingredient_List.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, CreateShoppingList);
 	Text_Ingredient_List_Label.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 	Text_Ingredient_List_Label.GetData()->ShapeGroupButton = &Button_Update_Ingredient_List;
 	first_ingredient_list_edges = Text_Ingredient_List_Label.GetEdges();
@@ -111,47 +111,51 @@ void IngredientListCreator::Prepare_Customer_Orders()
 
 void IngredientListCreator::Update_Customer_Orders_Graphics()
 {
-	//Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
-	//llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
-	//first_customer_order = true;
-	//last_customer_order_edges = first_customer_order_edges;
-	//bool AddOnly = false;
-	//
-	////Use the "Current_Section" to loop through it's dishes
-	//for (auto& kv : Customer_Order_DataBase)
-	//{
-	//	const CustomerOrder& Current_Customer_Order = kv.second;
-	//
-	//	//New Graphic
-	//	if (Current_Customer_Order_PageItem == nullptr)
-	//	{
-	//
-	//		//Create Graphic
-	//		Add_Customer_Orders_Graphic(Current_Customer_Order);
-	//		AddOnly = true;
-	//	}
-	//
-	//	////Existing Graphic
-	//	if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
-	//	{
-	//		//Change Graphic
-	//		Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
-	//	}
-	//
-	//	//if we add, it will go through replacing alse thats why we need this boolean
-	//	AddOnly = false;
-	//
-	//	//Stop Cycling if there is no shapegroup
-	//	if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
-	//}
-	//
-	////Graphics left over
-	//////Existing? // Add // Hide
-	//while (Current_Customer_Order_PageItem != nullptr)
-	//{
-	//	Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
-	//	Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
-	//}
+	Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
+	llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
+	first_customer_order = true;
+	last_customer_order_edges = first_customer_order_edges;
+	bool AddOnly = false;
+	
+	//Use the "Current_Section" to loop through it's dishes
+	for (const auto& Same_DayOrder : Customer_Order_DataBase)
+	{
+		const SameDayOrders& Date = Same_DayOrder.second;
+
+		for (const auto& kv : Date.CustomerOrders)
+		{
+			const CustomerOrder& Current_Customer_Order = kv.second;
+			//New Graphic
+			if (Current_Customer_Order_PageItem == nullptr)
+			{
+
+				//Create Graphic
+				Add_Customer_Orders_Graphic(Current_Customer_Order);
+				AddOnly = true;
+			}
+
+			////Existing Graphic
+			if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
+			{
+				//Change Graphic
+				Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
+			}
+
+			//if we add, it will go through replacing alse thats why we need this boolean
+			AddOnly = false;
+
+			//Stop Cycling if there is no shapegroup
+			if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
+		}
+
+		//Graphics left over
+		////Existing? // Add // Hide
+		while (Current_Customer_Order_PageItem != nullptr)
+		{
+			Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
+			Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
+		}
+	}
 }
 
 void IngredientListCreator::Add_Customer_Orders_Graphic(const CustomerOrder& Current_Customer_Order)

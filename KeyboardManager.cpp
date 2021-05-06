@@ -79,7 +79,7 @@ void Keyboard::TextKeepTrack()
 	}
 
 	//Process BackSpace
-	if (KeyBoard_State.Ctrl != true && KeyBoard_State.Key1 == GUI_BACKSPACE_CLICKED)
+	if (KeyBoard_State.Key1 == GUI_BACKSPACE_CLICKED || KeyBoard_State.Key1 == GUI_BACKSPACE_PRESSED && KeyBoard_State.Ctrl != true )
 	{
 		if (CurrentText.size() > 0)
 		{
@@ -136,19 +136,19 @@ void Keyboard::GetKeyBoardState(GLFWwindow* window, float Time, float ClickLengt
 	//Alt
 	KEY1 = KeyContainer.RetrieveDataP(2);
 	KEY2 = KeyContainer.RetrieveDataP(6);
-	//KeyBoard_State.Alt = ProcessDoubleKeys(window , *KEY1, *KEY2,  Time);
+	KeyBoard_State.Alt = ProcessDoubleKeys(window , *KEY1, *KEY2,  Time);
 
 	//Shift
 	KEY1 = KeyContainer.RetrieveDataP(0);
 	KEY2 = KeyContainer.RetrieveDataP(4);
-	//KeyBoard_State.Shift = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
+	KeyBoard_State.Shift = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
 
 	//Ctrl
 	KEY1 = KeyContainer.RetrieveDataP(1);
 	KEY2 = KeyContainer.RetrieveDataP(5);
-	//KeyBoard_State.Ctrl = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
+	KeyBoard_State.Ctrl = ProcessDoubleKeys(window, *KEY1, *KEY2, Time);
 
-	KeyBoard_State.Key1 = -1;
+	KeyBoard_State.Key1 = 0;
 	//Go through all the keys
 	for (int i = 8; i < 144; i++)
 	{
@@ -543,6 +543,8 @@ int Keyboard::KeyToAscii()
 
 void Keyboard::PlayFunction()
 {
+	if (KeyButton == nullptr) { cout << "Keyboard Play Function Error" << endl;  return; }
+
 	if (KeyBoard_State.Key1 != 0)
 	{
 		int SpecialKeysPressed = KeyBoard_State.Ctrl + KeyBoard_State.Shift + KeyBoard_State.Alt;
@@ -559,6 +561,7 @@ void Keyboard::PlayFunction()
 		//  return;
 		//}
 		//Default
+
 		if (SpecialKeysPressed == 0 && KeyButton[KeyBoard_State.Key1][0] != nullptr)
 		{
 			KeyButton[KeyBoard_State.Key1][0]();
@@ -612,13 +615,12 @@ void Keyboard::PlayFunction()
 			return;
 		}
 	}
-
 }
 
 
 void Keyboard::Empty()
 {
-
+	Log::LogString("Empty Function");
 }
 
 KeyFunction** Keyboard::GetKeyButton()
@@ -642,19 +644,20 @@ void Keyboard::CreateKeyFuncContainer()
 	for (int CurrentKey = 0; CurrentKey < AmountofKeys; CurrentKey++)
 	{
 		//Every Key gets 9 Controllers
-		KeyButton[CurrentKey] = new KeyFunction[9];
+		KeyButton[CurrentKey] = new KeyFunction[10];
 	}
 
 	for (int i = 0; i < AmountofKeys; i++)
 	{
-		for (int j = 0; j < 9; j++)
+		for (int j = 0; j < 10; j++)
 		{
 			KeyButton[i][j] = Empty;
 		}
 	}
 
-	cout << "Calling FUNCTION" << endl;
-	KeyButton[0][0]();
+	cout << "Calling FUNCTION 115  0" << endl;
+	KeyButton[115][0]();
+
 	//Set: KeyButton[ARROW_UP_CLICKED][ALT_SHIFT] = Non_Member_Function;
 	//Call: KeyButton[ARROW_UP_CLICKED][ALT_SHIFT]();
 }

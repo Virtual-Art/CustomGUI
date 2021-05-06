@@ -51,6 +51,14 @@ struct CustomerDetails
 		Address   = "Address";
 	}
 
+	void reset()
+	{
+		FirstName = "First Name";
+		LastName = "Last Name";
+		Phone = "Phone #";
+		Email = "Email";
+		Address = "Address";
+	}
 };
 //We are going to need to store functions for specific functions inside objects
 //Only these objects can call these functions

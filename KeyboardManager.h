@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Container.h"
 #include "Define.h"
+#include "Log.h"
 //#include "PageCreator.h"
 
 using namespace std;
@@ -97,7 +98,6 @@ struct KeyResult
 namespace Keyboard
 {
 
-	void PlayFunction();
 	void Empty();
 
 	//Set
@@ -116,11 +116,6 @@ namespace Keyboard
 
 	static KeyResult KeyBoard_State; //Most Used Vairable
 	static string CurrentText;
-
-	const string& GetText();
-	void ResetText();
-	void SetText(string string);
-	void TextKeepTrack();
 
 
 	// Key A
@@ -149,13 +144,19 @@ namespace Keyboard
 	static float KeySDoubleClickLength;
 
 	void Prepare();
-
-	void CurrentLastAscii();
-
 	float TimeStamp();
+	void CurrentLastAscii();
+	void PlayFunction();
 
 	void GetKeyBoardState(GLFWwindow* window, float Time, float ClickLength, float PressLength);
 	bool ProcessDoubleKeys(GLFWwindow* window, Key& First, Key& Second, float Time);
+
+	//Text Functions
+	const string& GetText();
+	void ResetText();
+	void SetText(string string);
+	void TextKeepTrack();
+
 
 	void PrintKey(int KeyID);
 	void PrintKeySheet();
