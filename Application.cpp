@@ -63,6 +63,7 @@
 #include "MenuCreator.h"
 #include "IngredientListCreator.h"
 #include "ApplicationMenu.h"
+#include "stdExtensioon.h"
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -72,6 +73,9 @@ void AddWord(map<string, string>& map, string Search);
 void PrintMap(map<string, string>& map);
 string PerfectFit(string TestString, string ReferenceString);
 
+float Top_Right_Brightness_Vector(float Root, float Top, float Right);
+float First_Second_Brightness_Vector(float Root, float First, float Second, float OffsetDegree_Second);
+glm::vec4 Sort_Descend(float Top, float Right, float Bottom, float Left);
 
 struct ListNode
 {
@@ -92,6 +96,30 @@ void RandomTest2()
 {
 	Log::LogString("TEST 2");
 }
+
+#define RIGHT_DEGREE 0 
+#define TOP_DEGREE 90
+#define LEFT_DEGREE 180
+#define BOTTOM_DEGREE 270
+
+#define PIXEL_RIGHT 0
+#define PIXEL_TOP 1
+#define PIXEL_BOTTOM 2
+#define PIXEL_RIGHT 3
+
+struct PixelSpot
+{
+	float Root_Brightness;
+	float Top_Brightness;
+	float Right_Brightness;
+	float Bottom_Brightness;
+	float Left_Brightness;
+
+	float One_Place;
+	float Two_Place;
+	float Three_Place;
+	float Four_Place;
+};
 
 using namespace std;
 
@@ -480,6 +508,8 @@ int main(int argc, char** argv)
 
 	llBookData Book_Restaurant_POS;
 
+	////////////////////////////////////////////////////////////////////////////////////////
+
 	//Order Containers
 	map<string, SameDayOrders> All_Customer_Orders;
 
@@ -488,6 +518,9 @@ int main(int argc, char** argv)
 	map<string, DishSide> All_Sides;   //Holds Side Name   : Side Data : Set of Ingdt Names
 	map<string, Dish> All_Dishes;      //Holds Dish Name   : Dish Data : Set of Side  Names
 	map<string, Section> All_Sections; //Holds Sctn Name   : Sctn Data : Set of Dish  Names
+
+	////////////////////////////////////////////////////////////////////////////////////////
+
 
 	llPageItemData PageItem_Template;
 	PageItem_Template.Position = { -0.3, 0.95 };
@@ -522,6 +555,7 @@ int main(int argc, char** argv)
 
 	//SelectorActions::Prepare(&Book_Restaurant_POS); //ElementsHovered would be in Book
 	SelectorActions::Prepare(&Book_Restaurant_POS);
+	SearchBarActions::Prepare(&Book_Restaurant_POS);
 	NumberPrinterActions::Prepare(&Book_Restaurant_POS);
 
 	ApplicationMenu::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
@@ -560,37 +594,39 @@ int main(int argc, char** argv)
 	//double Result = IngredientListCreator::Measurement_Conversion(Measurement, LIQUID, CUP, MILLILITRE);
 	//Log::LogDouble("Result: ", Result);
 
-	//Ingredient Lemon;
-	//Lemon.Name = "Lemon";
-	//Lemon.MeasurementType = QUANTITY;
-	//
-	//Ingredient Milk;
-	//Milk.Name = "Milk";
-	//Milk.MeasurementType = LIQUID;
-	//
-	//Ingredient Olive_Oil;
-	//Olive_Oil.Name = "Olive Oil";
-	//Olive_Oil.MeasurementType = LIQUID;
-	//
-	//Ingredient Soya_Sauce;
-	//Soya_Sauce.Name = "Soya Sauce";
-	//Soya_Sauce.MeasurementType = LIQUID;
-	//
-	//Ingredient Water;
-	//Water.Name = "Water";
-	//Water.MeasurementType = LIQUID;
-	//
-	//Ingredient Sesame_Oil;
-	//Sesame_Oil.Name = "Sesame Oil";
-	//Sesame_Oil.MeasurementType = LIQUID;
-	//
-	//All_Ingredients[Lemon.Name] = Lemon;
-	//
-	//All_Ingredients[Milk.Name] = Milk;
-	//All_Ingredients[Olive_Oil.Name] = Olive_Oil;
-	//All_Ingredients[Soya_Sauce.Name] = Soya_Sauce;
-	//All_Ingredients[Water.Name] = Water;
-	//All_Ingredients[Sesame_Oil.Name] = Sesame_Oil;
+	Ingredient Lemon;
+	Lemon.Name = "Lemon";
+	Lemon.MeasurementType = QUANTITY;
+	
+	Ingredient Milk;
+	Milk.Name = "Milk";
+	Milk.MeasurementType = LIQUID;
+	
+	Ingredient Olive_Oil;
+	Olive_Oil.Name = "Olive Oil";
+	Olive_Oil.MeasurementType = LIQUID;
+	
+	Ingredient Soya_Sauce;
+	Soya_Sauce.Name = "Soya Sauce";
+	Soya_Sauce.MeasurementType = LIQUID;
+	
+	Ingredient Water;
+	Water.Name = "Water";
+	Water.MeasurementType = LIQUID;
+	
+	Ingredient Sesame_Oil;
+	Sesame_Oil.Name = "Sesame Oil";
+	Sesame_Oil.MeasurementType = LIQUID;
+	
+	All_Ingredients[Lemon.Name] = Lemon;
+	
+	All_Ingredients[Milk.Name] = Milk;
+	All_Ingredients[Olive_Oil.Name] = Olive_Oil;
+	All_Ingredients[Soya_Sauce.Name] = Soya_Sauce;
+	All_Ingredients[Water.Name] = Water;
+	All_Ingredients[Sesame_Oil.Name] = Sesame_Oil;
+
+
 	//
 	//
 	//DishSide FirstIngredientSide;
@@ -638,6 +674,49 @@ int main(int argc, char** argv)
 
 	All_Customer_Orders["2021 04 27"] = Test_Same_Day_Orders;
 
+	float LEFT_BRIGHTNESS = 40;
+
+	float TOP_BRIGHTNESS = 60;
+	float RIGHT_BRIGHTNESS = 30; //Right is Brighter than top
+	float ROOT_BRIGHTNESS = 0;
+	//*--------------------------------------------------------*//
+	float COUNTER_BRIGHTNESS = 60; //top
+	float CLOCKWISE_BRIGHTNESS = 0; //right
+	//*--------------------------------------------------------*//
+
+	float DegreeInput_Clockwise = 0; // 0 | 90 | 180 | 270
+
+	//Log::LogFloat("Top_Right Direction (Deg): ", Top_Right_Brightness_Vector(ROOT_BRIGHTNESS, RIGHT_BRIGHTNESS, TOP_BRIGHTNESS)); //Difference in pixel brightness between rig
+	//Log::LogFloat("Left_Top Direction (Deg): ", Left_Top_Brightness_Vector(ROOT_BRIGHTNESS, LEFT_BRIGHTNESS, TOP_BRIGHTNESS));
+	//Log::LogFloat("First_Second Direction (Deg): ", First_Second_Brightness_Vector(ROOT_BRIGHTNESS, COUNTER_BRIGHTNESS, CLOCKWISE_BRIGHTNESS, DegreeInput_Clockwise));
+
+	float Top = 0.0;
+	float Right = 0.0;
+	float Bottom = 0.0;
+	float Left = 0.0;
+
+	//We can sort pixels
+	glm::vec4 Sorted_Pixels = Sort_Descend(Top, Right, Bottom, Left);
+
+	//how do we know which spot got switched too?
+
+	//Map_Test<string, Dish> CopyMap;
+	//CopyMap.Current_Map = &All_Dishes;
+	//
+	//Log::LogString("Printing Map");
+	//for (auto it : *CopyMap.Current_Map)
+	//{
+	//	Log::LogString(it.first);
+	//}
+	//
+	//Log::LogString("Extracting Keys");
+	//for (const auto& Element : search_map("O", All_Dishes))
+	//{
+	//	Log::LogString(Element);
+	//}
+
+
+
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
 	{
@@ -661,8 +740,7 @@ int main(int argc, char** argv)
 		//	Log::LogString("Once");
 		//}
 
-
-
+	
 		Keyboard::TextKeepTrack();
 		//sigh_MousePosition.SetVec2(MousePosition);
 		//Restaurant POS
@@ -674,6 +752,7 @@ int main(int argc, char** argv)
 		MenuCreator::Update(KeyState, Page_To_Render);
 		Book_Restaurant_POS.Update();
 		NumberPrinterActions::Update();
+		SearchBarActions::Update();
 		//+-------------------------+
 
 		PageGroupItem* jaj = &llSlider;
@@ -685,7 +764,7 @@ int main(int argc, char** argv)
 
 		//EditorPage.DrawPage();
 
-		if (KeyState.Key1 == GUI_I_CLICKED)
+		if (KeyState.Key1 == GUI_I_CLICKED && KeyState.Ctrl == true)
 		{
 			SubmitOrder::PrintAllOrders();
 		}
@@ -980,4 +1059,126 @@ void PrintMap(map<string, string>& map)
 		cout << "Key:" << Key << endl;
 	}
 
+}
+
+
+
+//Working
+//Returns the direction (vector Deg) of the brightest node
+//if both nodes are brighter than the root, interpolation occurs to the vector
+
+//Top  == 40
+//Left == 0
+//Root == 0
+
+//Working
+//Returns the direction (vector Deg) of the brightest node
+//if both nodes are brighter than the root, interpolation occurs to the vector
+float Top_Right_Brightness_Vector(float Root, float Right, float Top)
+{
+	float Percentage_0_45;
+	float Root_Right_Diff;
+	float Root_Top_Diff;
+	float MAX_RIGHT_ANGLE_DEG = 45.0;
+	float MAX_TOP_ANGLE_DEG = 90.0;
+	int EQUAL_ANGLE = 45;
+
+	//Compare Difference in brightness between root and node
+	Root_Right_Diff = Right - Root;
+	Root_Top_Diff = Top - Root;
+
+	//if both nodes are darker than the root node
+	//*there is no valid vector as we want to point to brightness*//
+	if (Root_Right_Diff < 0 && Root_Top_Diff < 0) { return -1.0; } //No Appropriate vector angle
+
+	//One Node can be darker than the root thats fine
+	//but we need to set that darkness node to zero for proper calucalation of brightness vector
+	if (Root_Right_Diff < 0) { Root_Right_Diff = 0; } //No Negatives for calculations
+	if (Root_Top_Diff < 0) { Root_Top_Diff = 0; } //No Appropriate vector angle
+
+
+
+	//Right is the brighter than top   //DONE
+	if (Root_Right_Diff > Root_Top_Diff)
+	{
+		Percentage_0_45 = Root_Top_Diff / Root_Right_Diff;
+		return Percentage_0_45 * MAX_RIGHT_ANGLE_DEG;
+	}
+
+	//Top is brighter than right //DONE
+	if (Root_Top_Diff > Root_Right_Diff)
+	{
+		Percentage_0_45 = Root_Right_Diff / Root_Top_Diff;
+		float Vector_Angle = Percentage_0_45 * MAX_RIGHT_ANGLE_DEG;
+		return MAX_TOP_ANGLE_DEG - Vector_Angle;
+	}
+
+	//Both are equal in brightness //DONE
+	if (Root_Top_Diff == Root_Right_Diff)
+	{
+		return EQUAL_ANGLE;
+	}
+
+}
+
+
+
+//Working
+//Returns the direction (vector Deg) of the brightest node
+//if both nodes are brighter than the root, interpolation occurs to the vector
+//offset in degrees = 0 (right) | 90 (top) | 180 (left) | 270 (bottom) 
+float First_Second_Brightness_Vector(float Root, float First, float Second, float OffsetDegree_Second)
+{
+	float Percentage_0_45;
+	float Root_Second_Diff;
+	float Root_First_Diff;
+	float MAX_SECOND_ANGLE_DEG = 45.0;
+	float MAX_FIRST_ANGLE_DEG = 90.0;
+	int EQUAL_ANGLE = OffsetDegree_Second + 45;
+
+	//Compare Difference in brightness between root and node
+	Root_Second_Diff = Second - Root;
+	Root_First_Diff = First - Root;
+
+	//if both nodes are darker than the root node
+	//*there is no valid vector as we want to point to brightness*//
+	if (Root_Second_Diff < 0 && Root_First_Diff < 0) { return -1.0; } //No Appropriate vector angle
+
+	//One Node can be darker than the root thats fine
+	//but we need to set that darkness node to zero for proper calucalation of brightness vector
+	if (Root_Second_Diff < 0) { Root_Second_Diff = 0; } //No Negatives for calculations
+	if (Root_First_Diff < 0) { Root_First_Diff = 0; } //No Appropriate vector angle
+
+
+
+	//Right is the brighter than top   //DONE
+	if (Root_Second_Diff > Root_First_Diff)
+	{
+		Percentage_0_45 = Root_First_Diff / Root_Second_Diff;
+		return (Percentage_0_45 * MAX_SECOND_ANGLE_DEG) + OffsetDegree_Second;
+	}
+
+	//Top is brighter than right //DONE
+	if (Root_First_Diff > Root_Second_Diff)
+	{
+		Percentage_0_45 = Root_Second_Diff / Root_First_Diff;
+		float Vector_Angle = Percentage_0_45 * MAX_SECOND_ANGLE_DEG;
+		return (MAX_FIRST_ANGLE_DEG - Vector_Angle + OffsetDegree_Second);
+	}
+
+	//Both are equal in brightness //DONE
+	if (Root_First_Diff == Root_Second_Diff)
+	{
+		return EQUAL_ANGLE;
+	}
+
+}
+
+glm::vec4 Sort_Descend(float Top, float Right, float Bottom, float Left)
+{
+	vector<float> Four_Pedals = { Top, Right, Bottom, Left };
+
+	sort(Four_Pedals.begin(), Four_Pedals.end());
+	reverse(Four_Pedals.begin(), Four_Pedals.end());
+	return { Four_Pedals[0], Four_Pedals[1], Four_Pedals[2], Four_Pedals[3]};
 }

@@ -1185,8 +1185,8 @@ void ShapeGroup::SetllMouseAccess()
 
 void ShapeGroup::CalculateGroupOffset()
 {
-	if (LoadedBook == nullptr) { Log::LogString("ERROR:: Calculate ShapeGroup Offset FAILED:: Invalid Book State"); return; }
-	if (Parent_PageItem == nullptr) { Log::LogString("ERROR:: Calculate ShapeGroup Offset FAILED:: Can't Find Parent Group"); return; }
+	if (LoadedBook == nullptr) { return; }// Log::LogString("ERROR:: Calculate ShapeGroup Offset FAILED:: Invalid Book State"); return; }
+	if (Parent_PageItem == nullptr) { return; } // Log::LogString("ERROR:: Calculate ShapeGroup Offset FAILED:: Can't Find Parent Group"); return; }
 
 	CurrentllShapeGroup->PositionOffset = CurrentllShapeGroup->Position - Parent_PageItem->Position;
 

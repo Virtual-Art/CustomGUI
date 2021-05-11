@@ -362,6 +362,9 @@
     <ClInclude Include="ApplicationMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="stdExtensioon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CustomGUI.rc">

@@ -1854,6 +1854,7 @@ void PageCreator::WordSearch(string Search)
 		//Check to see if the string matches up 
 		Match = PerfectFit(Key, Search);
 
+		//Add Result to 
 		if (Match != " " && Count < 19)
 		{
 			SearchBar_Customer_Search.CurrentSearchBar.Results[Count] = Match;
@@ -1867,6 +1868,7 @@ void PageCreator::WordSearch(string Search)
 
 string PageCreator::PerfectFit(string TestString, string ReferenceString)
 {
+	//No Match
 	if (TestString.size() < ReferenceString.size()) { return " "; }
 
 	//Go through all Characters in Reference String 
@@ -1887,10 +1889,12 @@ string PageCreator::PerfectFit(string TestString, string ReferenceString)
 		if (TestString[i] != ReferenceString[i] && TestString[0] != ReferenceString[i] + AddorSub)
 		{
 			//Exit if strings stop matching
+			//No Match
 			return " ";
 		}
 	}
 
+	//Passed Everything, it's a Match!
 	return TestString;
 }
 

@@ -246,6 +246,7 @@
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stdExtensioon.h" />
     <ClInclude Include="SubmitOrder.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Text.h" />

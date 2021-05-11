@@ -139,7 +139,6 @@
 
 using namespace std;
 
-
 struct TextData
 {
 	string Phrase = "Text";
@@ -203,7 +202,6 @@ struct SelectorData
 	int YSpacing = 10;
 	void* SelecteeHighlighted = nullptr;
 };
-
 
 struct llVertexData
 {
@@ -366,6 +364,7 @@ struct llPageItemData
 	NumberPrinterData NumberPrinterData;
 	SliderData SliderData;
 	SelectorData SelectorData;
+	SearchBarData SearchBarData;
 	string DescriptiveData = " ";
 };
 
@@ -817,6 +816,17 @@ struct BookDirectory
 	}
 };
 
+
+struct SearchBarData
+{
+	string SearchString = "Search..";
+	//string Results[20];
+	vector<string> Results;
+	string ResultSelected;
+	int AmountOfResults;
+	ButtonFunction SearchFunction;
+	BookDirectory SearchBarDirectory;
+};
 
 
 //////////////////////////////////////////////////////////////////////////////////////
