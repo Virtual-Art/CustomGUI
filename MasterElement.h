@@ -203,6 +203,17 @@ struct SelectorData
 	void* SelecteeHighlighted = nullptr;
 };
 
+
+struct SearchBarData
+{
+	string SearchString = "Search..";
+	//string Results[20];
+	vector<string> Results;
+	string ResultSelected;
+	int AmountOfResults;
+	ButtonFunction SearchFunction;
+};
+
 struct llVertexData
 {
 	glm::vec2 Position = { 0.0, 0.0 };
@@ -349,6 +360,7 @@ struct llPageItemData
 	bool MouseAccess = true;
 	bool Hide = false;
 	bool ChangeAsGroup = false;
+	bool GraphicSelected = false;
 	float Top = -3;
 	float Bottom = -3;
 	float Left = -3;
@@ -814,18 +826,6 @@ struct BookDirectory
 		Shape = llBook->Page->PageGroup->PageItem->ShapeGroup->Shape;
 		if (llBook->Page->PageGroup->PageItem->ShapeGroup->Shape == nullptr) { return; }
 	}
-};
-
-
-struct SearchBarData
-{
-	string SearchString = "Search..";
-	//string Results[20];
-	vector<string> Results;
-	string ResultSelected;
-	int AmountOfResults;
-	ButtonFunction SearchFunction;
-	BookDirectory SearchBarDirectory;
 };
 
 

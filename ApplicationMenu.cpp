@@ -25,15 +25,17 @@ void ApplicationMenu::CreatePageSelector()
 	SelectorData Selector_Template;
 	llPageItemData PageItem_Template;
 	PageItem_Template.Position = { -0.4, 0.95 };
-	Selector_Template.ColumnsRows = { 3, 1 };
+	Selector_Template.ColumnsRows = { 4, 1 };
 	Selector_Template.BackGroundColor = {0.52, 0.41, 0.0, 1.0}; //Amber Color
 	Selector_Template.BackGroundPadding = {15, 15, 15, 15}; 
 	Selector_Template.Selector[0] = "Submit Order";
 	Selector_Template.Selector[1] = "Menu Creator";
 	Selector_Template.Selector[2] = "Ingredient List";
+	Selector_Template.Selector[3] = "Complete Order";
 	Selector_Template.Key[0] = PAGE_SUBMIT_ORDER;
 	Selector_Template.Key[1] = PAGE_MENU_CREATOR;
 	Selector_Template.Key[2] = PAGE_INGREDIENT_LIST;
+	Selector_Template.Key[3] = PAGE_COMPLETE_ORDER;
 
 	Selector Selector_Menu(RestaurantBook, &PageItem_Template, Selector_Template);
 	Button_Set_Current_Page.LogicalActions[GUI_MOUSELEFT_CLICKED] = Select_Page;

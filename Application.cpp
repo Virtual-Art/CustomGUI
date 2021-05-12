@@ -63,6 +63,7 @@
 #include "MenuCreator.h"
 #include "IngredientListCreator.h"
 #include "ApplicationMenu.h"
+#include "CompleteOrder.h"
 #include "stdExtensioon.h"
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
@@ -568,6 +569,7 @@ int main(int argc, char** argv)
 	IngredientListCreator::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 
+
 	Log::LogString("start---------------------------------end");
 
 	double Tons;
@@ -655,24 +657,40 @@ int main(int argc, char** argv)
 
 	//Create Customer
 	CustomerOrder Test_Customer_Order;
+	Test_Customer_Order.OrderDateKey = "2021 4 27";
+	Test_Customer_Order.ReadableOrderDate = "April 27, 2021";
 	Test_Customer_Order.CustomerDetails.FirstName = "John";
 	Test_Customer_Order.CustomerDetails.LastName = "Doe";
 	Test_Customer_Order.CustomerDetails.Phone = "1234567890";
 
 	OrderedDish Test_Ordered_Dish;
-	Test_Ordered_Dish.Name = "Pepperoni";
-	Test_Ordered_Dish.Quantity = 5;
+	Test_Ordered_Dish.Name = "Maccaroni";
+	Test_Ordered_Dish.Quantity = 3;
 	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
 
-	Test_Ordered_Dish.Name = "Pinapples";
-	Test_Ordered_Dish.Quantity = 40;
+	Test_Ordered_Dish.Name = "Checutrie";
+	Test_Ordered_Dish.Quantity = 8;
 	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
 
 	//Add Customer to their order date
 	SameDayOrders Test_Same_Day_Orders;
 	Test_Same_Day_Orders.CustomerOrders[Test_Customer_Order.CustomerDetails.LastName] = Test_Customer_Order;
 
+	//Create Customer
+	Test_Customer_Order.CustomerDetails.FirstName = "Wildely";
+	Test_Customer_Order.CustomerDetails.LastName = "Sara";
+	Test_Customer_Order.CustomerDetails.Phone = " 905 847 9475";
+
+	Test_Ordered_Dish.Name = "Maccaroni";
+	Test_Ordered_Dish.Quantity = 9;
+	Test_Ordered_Dish.Name = "Checutrie";
+	Test_Ordered_Dish.Quantity = 0;
+	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
+
+	Test_Same_Day_Orders.CustomerOrders[Test_Customer_Order.CustomerDetails.LastName] = Test_Customer_Order;
+
 	All_Customer_Orders["2021 04 27"] = Test_Same_Day_Orders;
+	All_Customer_Orders["2021 04 27"].Day = "2021 04 27";
 
 	float LEFT_BRIGHTNESS = 40;
 
@@ -715,6 +733,8 @@ int main(int argc, char** argv)
 	//	Log::LogString(Element);
 	//}
 
+	CompleteOrder::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
+	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 
 	typedef void(*Master_P)();
@@ -750,6 +770,7 @@ int main(int argc, char** argv)
 		SubmitOrder::Update(Page_To_Render, KeyState);
 		IngredientListCreator::Update(Page_To_Render, &KeyState);
 		MenuCreator::Update(KeyState, Page_To_Render);
+		CompleteOrder::Update(KeyState, Page_To_Render);
 		Book_Restaurant_POS.Update();
 		NumberPrinterActions::Update();
 		SearchBarActions::Update();

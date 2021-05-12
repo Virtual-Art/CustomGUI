@@ -179,6 +179,11 @@ int MouseManager::GetMouseState(GLFWwindow* window, float Time, float DoubleClic
 }
 
 
+int MouseManager::MouseState()
+{
+	return CurrentMouseState;
+}
+
 
 void MouseManager::GetMousePosition(GLFWwindow* window)
 {

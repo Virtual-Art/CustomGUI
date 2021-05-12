@@ -64,10 +64,16 @@ void NumberPrinter::SetString(const string& NewString)
 {
 	if (CurrentNumberPrinter.Type != TYPE_STRING) { Log::LogString("ERROR:: Printer Set String FAILED:: Type is Not String"); return; }
 	if (CurrentNumberPrinter.String == nullptr) { Log::LogString("ERROR:: Printer Set String FAILED:: No String Provided"); return;}
-	if (*CurrentNumberPrinter.String == NewString) { return; }
+	//if (*CurrentNumberPrinter.String == NewString) { return; }
+
+	Log::LogString("Changing Too :" + NewString);
 
 	//if the string already has a string in there that isn't "Description" don't change it to discription
 	*CurrentNumberPrinter.String = NewString;
+
+
+	Log::LogString("Changed TOO :" + *CurrentNumberPrinter.String);
+
 	llUpdate();
 }
 

@@ -37,7 +37,6 @@ void MenuCreator::PrepareMenuContainers(map<string, Section>* Section, map<strin
 
 void MenuCreator::Update(KeyResult& CurrentKeyResult, int CurrentPage)
 {
-	
 	if (CurrentPage != 1) { return; }
 	Page_MenuCreator.DrawPage();
 	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);

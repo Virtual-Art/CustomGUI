@@ -8,6 +8,7 @@
 #define PAGE_SUBMIT_ORDER 0
 #define PAGE_MENU_CREATOR 1
 #define PAGE_INGREDIENT_LIST 2
+#define PAGE_COMPLETE_ORDER 3
 
 
 namespace ApplicationMenu

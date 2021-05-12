@@ -85,6 +85,8 @@ namespace MouseManager
 
 	int GetMouseState(GLFWwindow* window, float Time, float ClickLength, float PressLength);
 
+	int MouseState();
+
 	bool Toggle(bool& Toggle);
 
 	static double MouseX, MouseY;

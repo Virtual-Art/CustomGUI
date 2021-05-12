@@ -142,6 +142,7 @@
     <ClCompile Include="Book.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="CompleteOrder.cpp" />
     <ClCompile Include="Container.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="CustomShape.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="PageCreator.cpp" />
     <ClCompile Include="PageGroup.cpp" />
     <ClCompile Include="PageGroupItem.cpp" />
+    <ClCompile Include="PageItemGrid.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="SearchBar.cpp" />
@@ -196,6 +198,7 @@
     <ClInclude Include="Boolean.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="CompleteOrder.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="CustomShape.h" />
@@ -234,6 +237,7 @@
     <ClInclude Include="PageCreator.h" />
     <ClInclude Include="PageGroup.h" />
     <ClInclude Include="PageGroupItem.h" />
+    <ClInclude Include="PageItemGrid.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RawModel.h" />
     <ClInclude Include="RawTexture.h" />
