@@ -111,51 +111,52 @@ void IngredientListCreator::Prepare_Customer_Orders()
 
 void IngredientListCreator::Update_Customer_Orders_Graphics()
 {
-	Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
-	llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
-	first_customer_order = true;
-	last_customer_order_edges = first_customer_order_edges;
-	bool AddOnly = false;
-	
-	//Use the "Current_Section" to loop through it's dishes
-	for (const auto& Same_DayOrder : Customer_Order_DataBase)
-	{
-		const SameDayOrders& Date = Same_DayOrder.second;
-
-		for (const auto& kv : Date.CustomerOrders)
-		{
-			const CustomerOrder& Current_Customer_Order = kv.second;
-			//New Graphic
-			if (Current_Customer_Order_PageItem == nullptr)
-			{
-
-				//Create Graphic
-				Add_Customer_Orders_Graphic(Current_Customer_Order);
-				AddOnly = true;
-			}
-
-			////Existing Graphic
-			if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
-			{
-				//Change Graphic
-				Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
-			}
-
-			//if we add, it will go through replacing alse thats why we need this boolean
-			AddOnly = false;
-
-			//Stop Cycling if there is no shapegroup
-			if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
-		}
-
-		//Graphics left over
-		////Existing? // Add // Hide
-		while (Current_Customer_Order_PageItem != nullptr)
-		{
-			Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
-			Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
-		}
-	}
+	Log::LogString("IngredientListCreator");
+	//Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
+	//llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
+	//first_customer_order = true;
+	//last_customer_order_edges = first_customer_order_edges;
+	//bool AddOnly = false;
+	//
+	////Use the "Current_Section" to loop through it's dishes
+	//for (const auto& Same_DayOrder : Customer_Order_DataBase)
+	//{
+	//	const SameDayOrders& Date = Same_DayOrder.second;
+	//
+	//	for (const auto& kv : Date.CustomerOrders)
+	//	{
+	//		const CustomerOrder& Current_Customer_Order = kv.second;
+	//		//New Graphic
+	//		if (Current_Customer_Order_PageItem == nullptr)
+	//		{
+	//
+	//			//Create Graphic
+	//			Add_Customer_Orders_Graphic(Current_Customer_Order);
+	//			AddOnly = true;
+	//		}
+	//
+	//		////Existing Graphic
+	//		if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
+	//		{
+	//			//Change Graphic
+	//			Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
+	//		}
+	//
+	//		//if we add, it will go through replacing alse thats why we need this boolean
+	//		AddOnly = false;
+	//
+	//		//Stop Cycling if there is no shapegroup
+	//		if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
+	//	}
+	//
+	//	//Graphics left over
+	//	////Existing? // Add // Hide
+	//	while (Current_Customer_Order_PageItem != nullptr)
+	//	{
+	//		Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
+	//		Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
+	//	}
+	//}
 }
 
 void IngredientListCreator::Add_Customer_Orders_Graphic(const CustomerOrder& Current_Customer_Order)

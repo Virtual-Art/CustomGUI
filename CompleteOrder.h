@@ -6,14 +6,19 @@
 
 namespace CompleteOrder
 {
+	void SetOrderDate(const string& OrderDateKey); //Main Driver
+
 	//+-------------------------Complete Order--------------------------+//
 	static llBookData* RestaurantBook;
 	static NewPage Page_Complete_Order;
 	static RawTexture* CurrentTexture0;
 	static RawTexture* CurrentTexture1;
 	static RawTexture* CurrentTexture2;
-	static llPageData* SubmitOrderDirectory;
+	static llPageData* CompleteOrderDirectory;
 	static ShaderProgram* CurrentShader;
+	static BookDirectory DRPageGroup_Customer;
+	static BookDirectory DRPageGroup_Dish;
+	static BookDirectory ElementsHovered;
 
 	static map<string, SameDayOrders>* All_Customer_Orders;
 	static map<string, Ingredient>* All_Ingredients;
@@ -27,9 +32,11 @@ namespace CompleteOrder
 	#define Ingredient_DataBase (*All_Ingredients) //Search by Ingredient Name (string)
 	#define Customer_Order_DataBase (*All_Customer_Orders) //Search by Data (string)
 
+
 	void Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Customer_Orders);
 	void Update(KeyResult& CurrentKeyResult, int CurrentPage);
+	void SetPageDirectory();
 
 	//+-------------------------Customer Orders-------------------------+//
 	static SameDayOrders Current_Day_Orders;		//Drives the graphics
@@ -41,25 +48,33 @@ namespace CompleteOrder
 
 	static llPageItemData* First_Customer_Order_Graphic;
 	static llPageItemData* Customer_Order_Selected;
-
-	static PageGroup PageGroup_Orders_To_Complete;
+	static PageGroup PageGroup_Customers;
 	static PageGroupItem PageItem_Customer_Order;
 	static Text Text_Customer_Name;
 	static Text Text_Customer_Item_Quantity;
 	static Text Text_Label_Todays_Orders;
+	static Button Button_Update_Customers;
+	static Button Button_Toggle_Customer;
+	static Button Button_Select_All_Customers;
 
 	//Building Block Functions
-	void Prepare_Customer_Orders();
+	void Prepare_Customers();
 
 	//Manage Customers
-	int GetCustomerItemCount(const CustomerOrder& Order);
-	void ToggleCustomer();
-	void SelectCustomer();
-	void UnSelectCustomer();
+	int  GetCustomerItemCount(const CustomerOrder& Order);
 
-	void SelectAllCustomers();
+	static bool Select_Once;
+	static bool UnSelect_Once;
+
+	void ToggleCustomer();		// This Works but it gets called like 4 times in a row
+	void SelectCustomer();		// This Works but it gets called like 4 times in a row
+	void UnSelectCustomer();	// This Works but it gets called like 4 times in a row
+	void SelectAllCustomers();	// This Works but it gets called like 4 times in a row
 
 	//Display Customers
+	void Highlight_Customer_Graphic();
+	void DeHighlight_Customer_Graphic();
+	void Update_Complete_Order();
 	void Update_Customer_Graphics();
 	void Add_Customer_Graphic(const CustomerOrder& Customer_Order_To_Add);
 	void Replace_Customer_Graphic(const CustomerOrder& Customer_Order_To_Replace, llPageItemData* Customer_Order_PageItem);
@@ -70,14 +85,29 @@ namespace CompleteOrder
 	//+-------------------Items from Orders Selected---------------------+//
 	static map<string, int> All_Ordered_Dishes; //Name, quntity
 
+	static glm::vec4 last_dish_edges;        //(Object) Graphic Reference for the form filler to position with
+	static glm::vec4 first_dish_edges;        //(Object) Graphic Reference for the form filler to position with
+	static bool first_dish;
+
+	static llPageItemData* First_Dish_Graphic;
+	static llPageItemData* Dish_Selected;
+
 	static PageGroup PageGroup_Ordered_Dishes;
 	static PageGroupItem PageItem_Ordered_Dish;
 	static Text Text_Dish_Name;
 	static Text Text_Dish_Quantity;
 	static Quad Quad_CheckBox;
 
+	void Prepare_Dish_Graphics();
+
 	void Condense_Ordered_Dishes();
 	void Print_Condensed_Dishes();
+	void Update_Condensed_Dishes();
+
+	void Update_Dish_Graphics();              //Manages all Dish Graphics 
+	void Add_Dish_Graphic(const string& Name, const int& Quantity); //Creates a Single Side Graphic
+	void Replace_Dish_Graphic(string Name, const int& Quantity, llPageItemData* Dish_PageItem);     //Removes a Single Section Graphic
+	void Hide_Dish_Graphic(llPageItemData* Dish_ShapeGroup);
 	//+------------------------------------------------------------------+//
 
 

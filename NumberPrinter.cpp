@@ -857,7 +857,7 @@ void NumberPrinterActions::Run()
 
 void NumberPrinterActions::Stop()
 {
-	RunningFunction = Empty;
+	//RunningFunction = Empty;
 }
 
 void NumberPrinterActions::Empty()

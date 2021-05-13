@@ -14,9 +14,9 @@ void ApplicationMenu::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderP
 int ApplicationMenu::Update()
 {
 	//BD_ApplicationMenu.LoadUp(RestaurantBook);
-	RestaurantBook->Page = Page_ApplicationMenu.GetData();
-	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
+	//RestaurantBook->Page = Page_ApplicationMenu.GetData();
 	Page_ApplicationMenu.DrawPage();
+	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
 	return CurrentPage;
 }
 
@@ -38,7 +38,8 @@ void ApplicationMenu::CreatePageSelector()
 	Selector_Template.Key[3] = PAGE_COMPLETE_ORDER;
 
 	Selector Selector_Menu(RestaurantBook, &PageItem_Template, Selector_Template);
-	Button_Set_Current_Page.LogicalActions[GUI_MOUSELEFT_CLICKED] = Select_Page;
+	//Button_Set_Current_Page.LogicalActions[GUI_MOUSELEFT_CLICKED] = Select_Page;
+	Button_Set_Current_Page.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, Select_Page);
 	Selector_Menu.SetButton(&Button_Set_Current_Page);
 
 	//Setup Default Page to Highlight

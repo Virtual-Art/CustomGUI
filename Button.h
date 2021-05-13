@@ -20,7 +20,8 @@
 using namespace std;
 typedef void(*ButtonFunction)();
 
-typedef list<ButtonFunction> Single_Mouse_Actions;
+//typedef list<ButtonFunction> Single_Mouse_Actions;
+typedef set<ButtonFunction> Single_Mouse_Actions;
 
 class Button 
 {

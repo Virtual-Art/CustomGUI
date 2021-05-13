@@ -56,17 +56,17 @@ Button::~Button()
 
 void Button::Add_Mouse_Action(int Mouse_Key, ButtonFunction Button_Function)
 {
+	//Add list if none
+	//if (MouseActions[Mouse_Key].find(Button_Function) == MouseActions[Mouse_Key].end())
+	//{
+	//	MouseActions[Mouse_Key].push_back(Button_Function);
+	//}
 
 	//Add list if none
-	
-	Single_Mouse_Actions Temp;
-	MouseActions[Mouse_Key].push_back(Button_Function);
-
-
-
-	//Add Action
-	//MouseActions[Mouse_Key].push_back(Button_Function);
-	//Left_Actions.push_back(Button_Function);
+	if (MouseActions[Mouse_Key].find(Button_Function) == MouseActions[Mouse_Key].end())
+	{
+		MouseActions[Mouse_Key].emplace(Button_Function);
+	}
 }
 
 
@@ -101,17 +101,13 @@ void Button::ProcessMouseButtons(int MouseState)
 {
 	LogicalActions[MouseState]();
 
-	LogicalActions[10]();
-
-	if (ContinuousActions[MouseState] != Empty)
-	{
-	//	ActiveFunctions[ActiveFunctions.size()] = ContinuousActions[MouseState];
-	}
+	//LogicalActions[10]();
 
 	//EX: Play all actions for MouseState = GUI_LEFT_CLICKED
 	//Go through action list
-	for (const auto& Action : MouseActions[MouseState])
+	for (const ButtonFunction& Action : MouseActions[MouseState])
 	{
+		cout << MouseActions[MouseState].size() << endl;
 		Action();
 	}
 }

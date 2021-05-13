@@ -619,13 +619,35 @@ struct llBookData
 		int ShapeCount = 0;
 		int VertexCount = 0;
 
+		llPageGroupData* SavedPageGroup = nullptr;
+		llPageItemData* SavedPageItem = nullptr;
+		llShapeGroupData* SavedShapeGroup = nullptr;
+		llShapeData* SavedShape	= nullptr;
+		llVertexData* SavedVertex  = nullptr;
+
 		//Nothing in PageGroup
 		llPageData* SavedPage = this->Page;
-		llPageGroupData* SavedPageGroup = this->Page->PageGroup;
-		llPageItemData* SavedPageItem = this->Page->PageGroup->PageItem;
-		llShapeGroupData* SavedShapeGroup = this->Page->PageGroup->PageItem->ShapeGroup;
-		llShapeData* SavedShape = this->Page->PageGroup->PageItem->ShapeGroup->Shape;
-		llVertexData* SavedVertex = this->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+		if (SavedPage != nullptr)
+		{
+			SavedPageGroup = this->Page->PageGroup;
+			if (SavedPageGroup != nullptr)
+			{
+				SavedPageItem = this->Page->PageGroup->PageItem;
+				if (SavedPageItem != nullptr)
+				{
+					 SavedShapeGroup = this->Page->PageGroup->PageItem->ShapeGroup;
+					if (SavedShapeGroup != nullptr)
+					{
+						 SavedShape = this->Page->PageGroup->PageItem->ShapeGroup->Shape;
+						if (SavedShape != nullptr)
+						{
+							 SavedVertex = this->Page->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+						}
+					}
+				}
+			}
+		}
+	
 
 		//Page
 		llPageData* CurrentPage = SavedPage;
@@ -673,7 +695,7 @@ struct llBookData
 
 						if (CurrentPageItem->PageItemButton != nullptr)
 						{
-							CurrentPageItem->PageItemButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+							//CurrentPageItem->PageItemButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
 						}
 					}
 
@@ -704,7 +726,7 @@ struct llBookData
 
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
-									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+									//CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
 								}
 								
 							}
@@ -725,7 +747,7 @@ struct llBookData
 									if (CurrentShape->ShapeButton != nullptr)
 									{
 										//cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
-										CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+										//CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
 
 									}
 
@@ -951,6 +973,8 @@ public:
 
 	//Print Book
 	static void PrintBookStats(llBookData* llBook);
+	static void PrintPageStats(llPageData* llPage);
+	static void PrintPageGroupStats(llPageGroupData* llPageGroup);
 	static void PrintPageItemStats(llPageItemData* llPageItem);
 
 	static void PrintBook(llBookData* llBook);

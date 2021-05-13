@@ -655,39 +655,45 @@ int main(int argc, char** argv)
 	//Add some Dishes
 
 
-	//Create Customer
-	CustomerOrder Test_Customer_Order;
-	Test_Customer_Order.OrderDateKey = "2021 4 27";
-	Test_Customer_Order.ReadableOrderDate = "April 27, 2021";
-	Test_Customer_Order.CustomerDetails.FirstName = "John";
-	Test_Customer_Order.CustomerDetails.LastName = "Doe";
-	Test_Customer_Order.CustomerDetails.Phone = "1234567890";
+	//John
+	CustomerOrder Customer_John;
+	Customer_John.OrderDateKey = "2021 4 27";
+	Customer_John.ReadableOrderDate = "April 27, 2021";
+	Customer_John.CustomerDetails.FirstName = "John";
+	Customer_John.CustomerDetails.LastName = "Doe";
+	Customer_John.CustomerDetails.Phone = "1234567890";
 
-	OrderedDish Test_Ordered_Dish;
-	Test_Ordered_Dish.Name = "Maccaroni";
-	Test_Ordered_Dish.Quantity = 3;
-	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
+	OrderedDish Test_Dog;
+	Test_Dog.Name = "Dog";
+	Test_Dog.Quantity = 3;
+	Customer_John.OrderedDishes[Test_Dog.Name] = Test_Dog;
 
-	Test_Ordered_Dish.Name = "Checutrie";
-	Test_Ordered_Dish.Quantity = 8;
-	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
+	OrderedDish Test_Cat;
+	Test_Cat.Name = "Cat";
+	Test_Cat.Quantity = 8;
+	Customer_John.OrderedDishes[Test_Cat.Name] = Test_Cat;
+
+	//////////////////////////////////////////////////////////
+
+	//Sara
+	CustomerOrder Customer_Sara;
+	Customer_Sara.CustomerDetails.FirstName = "Wildely";
+	Customer_Sara.CustomerDetails.LastName = "Sara";
+	Customer_Sara.CustomerDetails.Phone = " 905 847 9475";
+
+	Test_Dog.Name = "Dog";
+	Test_Dog.Quantity = 9;
+	Customer_Sara.OrderedDishes[Test_Dog.Name] = Test_Dog;
+
+	Test_Cat.Quantity = 0;
+	Customer_Sara.OrderedDishes[Test_Cat.Name] = Test_Cat;
 
 	//Add Customer to their order date
+
+
 	SameDayOrders Test_Same_Day_Orders;
-	Test_Same_Day_Orders.CustomerOrders[Test_Customer_Order.CustomerDetails.LastName] = Test_Customer_Order;
-
-	//Create Customer
-	Test_Customer_Order.CustomerDetails.FirstName = "Wildely";
-	Test_Customer_Order.CustomerDetails.LastName = "Sara";
-	Test_Customer_Order.CustomerDetails.Phone = " 905 847 9475";
-
-	Test_Ordered_Dish.Name = "Maccaroni";
-	Test_Ordered_Dish.Quantity = 9;
-	Test_Ordered_Dish.Name = "Checutrie";
-	Test_Ordered_Dish.Quantity = 0;
-	Test_Customer_Order.OrderedDishes[Test_Ordered_Dish.Name] = Test_Ordered_Dish;
-
-	Test_Same_Day_Orders.CustomerOrders[Test_Customer_Order.CustomerDetails.LastName] = Test_Customer_Order;
+	Test_Same_Day_Orders.CustomerOrders[Customer_John.CustomerDetails.LastName] = Customer_John;
+	Test_Same_Day_Orders.CustomerOrders[Customer_Sara.CustomerDetails.LastName] = Customer_Sara;
 
 	All_Customer_Orders["2021 04 27"] = Test_Same_Day_Orders;
 	All_Customer_Orders["2021 04 27"].Day = "2021 04 27";
@@ -733,8 +739,8 @@ int main(int argc, char** argv)
 	//	Log::LogString(Element);
 	//}
 
-	CompleteOrder::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+	CompleteOrder::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 
 
 	typedef void(*Master_P)();
@@ -754,26 +760,21 @@ int main(int argc, char** argv)
 		//EditorShapeDataHovered = MainBook.Page[0].FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		//GUIShapeDataHovered = GUI.FindShapeData(MouseManager::xPos, MouseManager::yPos, false);
 		PageCreator::OnUpdate(KeyState, MouseState);
-
-		//if (Keyboard::GetState().Key1 == GUI_P_CLICKED || Keyboard::GetState().Key1 == GUI_P_PRESSED)
-		//{
-		//	Log::LogString("Once");
-		//}
-
 	
 		Keyboard::TextKeepTrack();
 		//sigh_MousePosition.SetVec2(MousePosition);
 		//Restaurant POS
 		//+-------------------------+
-
-		int Page_To_Render = ApplicationMenu::Update();
-		SubmitOrder::Update(Page_To_Render, KeyState);
-		IngredientListCreator::Update(Page_To_Render, &KeyState);
-		MenuCreator::Update(KeyState, Page_To_Render);
-		CompleteOrder::Update(KeyState, Page_To_Render);
-		Book_Restaurant_POS.Update();
-		NumberPrinterActions::Update();
-		SearchBarActions::Update();
+			                                             
+		int Page_To_Render = ApplicationMenu::Update();           
+		//SubmitOrder::Update(Page_To_Render, KeyState);            
+		//IngredientListCreator::Update(Page_To_Render, &KeyState); 
+		//MenuCreator::Update(KeyState, Page_To_Render);            
+		//Log::LogString("Complete Order");
+		CompleteOrder::Update(KeyState, Page_To_Render);	      
+		//Book_Restaurant_POS.Update();					          
+		NumberPrinterActions::Update();					 
+		SearchBarActions::Update();						 
 		//+-------------------------+
 
 		PageGroupItem* jaj = &llSlider;
