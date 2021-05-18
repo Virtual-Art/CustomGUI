@@ -65,6 +65,7 @@
 #include "ApplicationMenu.h"
 #include "CompleteOrder.h"
 #include "stdExtensioon.h"
+#include "PageItemGrid.h"
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -720,6 +721,7 @@ int main(int argc, char** argv)
 	float Left = 0.0;
 
 	//We can sort pixels
+	Log::LogString("Sort Descend");
 	glm::vec4 Sorted_Pixels = Sort_Descend(Top, Right, Bottom, Left);
 
 	//how do we know which spot got switched too?
@@ -738,9 +740,16 @@ int main(int argc, char** argv)
 	//{
 	//	Log::LogString(Element);
 	//}
+	llBookData Trash_Book;
 
-	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+	
+
+
+	Log::LogString("Before Containers prepare");
 	CompleteOrder::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
+	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+
+	//PageItemGrid First_GRID(&Book_Restaurant_POS, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
 
 
 	typedef void(*Master_P)();
@@ -766,13 +775,13 @@ int main(int argc, char** argv)
 		//Restaurant POS
 		//+-------------------------+
 			                                             
-		int Page_To_Render = ApplicationMenu::Update();           
-		//SubmitOrder::Update(Page_To_Render, KeyState);            
-		//IngredientListCreator::Update(Page_To_Render, &KeyState); 
-		//MenuCreator::Update(KeyState, Page_To_Render);            
+		int Page_To_Render = ApplicationMenu::Update();
+		SubmitOrder::Update(Page_To_Render, KeyState);            
+		IngredientListCreator::Update(Page_To_Render, &KeyState); 
+		MenuCreator::Update(KeyState, Page_To_Render);            
 		//Log::LogString("Complete Order");
 		CompleteOrder::Update(KeyState, Page_To_Render);	      
-		//Book_Restaurant_POS.Update();					          
+		Book_Restaurant_POS.Update();					          
 		NumberPrinterActions::Update();					 
 		SearchBarActions::Update();						 
 		//+-------------------------+

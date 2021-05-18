@@ -54,6 +54,7 @@
 #define TYPE_PAGEITEM_DROPDOWNLIST 5
 #define TYPE_PAGEITEM_SELECTOR 6
 #define TYPE_PAGEGROUP 0
+#define TYPE_PAGEGROUP_PAGEITEMGRID 1
 #define TYPE_PAGE 0
 #define TYPE_BACKGROUND 33
 
@@ -692,11 +693,6 @@ struct llBookData
 					{
 						//cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
 						PageItem_Hovered = CurrentPageItem;
-
-						if (CurrentPageItem->PageItemButton != nullptr)
-						{
-							//CurrentPageItem->PageItemButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
-						}
 					}
 
 					PageItemCount++;
@@ -720,15 +716,8 @@ struct llBookData
 
 							if (xMouse < CurrentShapeGroup->Right && xMouse >  CurrentShapeGroup->Left && yMouse < CurrentShapeGroup->Top && yMouse >  CurrentShapeGroup->Bottom && CurrentShapeGroup->MouseAccess == true)
 							{
-								
 								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
 								ShapeGroup_Hovered = CurrentShapeGroup;
-
-								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
-								{
-									//CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
-								}
-								
 							}
 							//Set shape to beginning
 							/////////////////////////////////////////////////////
@@ -743,14 +732,6 @@ struct llBookData
 								if (xMouse < CurrentShape->Right && xMouse >  CurrentShape->Left&& yMouse < CurrentShape->Top && yMouse >  CurrentShape->Bottom&& CurrentShape->MouseAccess == true)
 								{
 									Shape_Hovered = CurrentShape;
-
-									if (CurrentShape->ShapeButton != nullptr)
-									{
-										//cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
-										//CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
-
-									}
-
 								}
 								CurrentShape = CurrentShape->Next;
 							}
@@ -959,6 +940,12 @@ public:
 	static void CopyPageGroup(llBookData* Book, llPageGroupData* PageGroupReference);
 	static void CopyPage(llBookData* Book, llBookData* PageReference);
 	static void CopyBook(llBookData* NewBook, llBookData* BookReference);
+
+
+	//Copy Child into Parent
+	static llPageItemData*   PageItemIntoPageGroup(llPageGroupData* PageGroup, llPageItemData* PageItem_ToCopy);
+	static llShapeGroupData* ShapeGroupIntoPageItem(llPageItemData* PageItem, llShapeGroupData* ShapeGroup_ToCopy);
+	static llShapeData*      ShapeIntoShapeGroup(llShapeGroupData* ShapeGroup, llShapeData* Shape_ToCopy);
 
 	//Delete
 	static void DeleteShape(llBookData* NewBook, llShapeData* ShapeReference);

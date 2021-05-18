@@ -641,6 +641,7 @@ void ShapeGroup::llUpdate()
 			CharSelected.LoadedBook = LoadedBook;
 			CharSelected.llSwitch(CurrentShape);
 			CurrentShape->Position = CurrentllShapeGroup->Position + CurrentShape->PositionOffset;
+			//Log::LogVec2("New Shape Position: ", CurrentShape->Position);
 			CurrentShape->Highlighted = CurrentllShapeGroup->Highlighted;
 			CurrentShape->HighlightColor = CurrentllShapeGroup->HighlightColor;
 			//CurrentShape->Size = CurrentllShapeGroup->Size + CurrentShape->SizeOffset;

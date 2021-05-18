@@ -153,130 +153,112 @@ void MasterElement::PrintPageStats(llPageData* llPage)
 	int ShapeCount = -1;
 	int VertexCount = -1;
 
-	if(llPage == nullptr)
-	{ 
-		//Page
-		llPageData* CurrentPage = llPage;
-
-		//Set to beginning
-		while (CurrentPage->Previous != nullptr)
+	if(llPage != nullptr)
+	{
+		//Page Group
+		llPageGroupData* CurrentPageGroup = llPage->PageGroup;
+		//Set PageGroup Beginning
+		/////////////////////////////////////////////////////
+		while (CurrentPageGroup->Previous != nullptr)
 		{
-			CurrentPage = CurrentPage->Previous;
+			CurrentPageGroup = CurrentPageGroup->Previous;
 		}
+		/////////////////////////////////////////////////////
 
-		while (CurrentPage != nullptr && CurrentPage->PageGroup != nullptr)
+		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
 		{
-			if (PageCount == -1)
+			if (PageGroupCount == -1)
 			{
-				cout << " " << endl;
+				cout << "----P" << endl;
 			}
-			PageCount++;
-			//Page Group
-			llPageGroupData* CurrentPageGroup = CurrentPage->PageGroup;
-			//Set PageGroup Beginning
+			PageGroupCount++;
+			//PageItem
+			llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
+			//Set PageItem Beginning
 			/////////////////////////////////////////////////////
-			while (CurrentPageGroup->Previous != nullptr)
+			while (CurrentPageItem->Previous != nullptr)
 			{
-				CurrentPageGroup = CurrentPageGroup->Previous;
+				CurrentPageItem = CurrentPageItem->Previous;
 			}
 			/////////////////////////////////////////////////////
 
-			while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
+			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
 			{
-				if (PageGroupCount == -1)
+				if (PageItemCount == -1)
 				{
-					cout << "----P" << endl;
+					cout << "----------PG" << endl;
 				}
-				PageGroupCount++;
-				//PageItem
-				llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
-				//Set PageItem Beginning
+				PageItemCount++;
+				//ShapeGroup
+				llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+				//Set ShapeGroup to beginning
 				/////////////////////////////////////////////////////
-				while (CurrentPageItem->Previous != nullptr)
+				while (CurrentShapeGroup->Previous != nullptr)
 				{
-					CurrentPageItem = CurrentPageItem->Previous;
+					CurrentShapeGroup = CurrentShapeGroup->Previous;
 				}
 				/////////////////////////////////////////////////////
 
-				while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
+				while (CurrentShapeGroup != nullptr)
 				{
-					if (PageItemCount == -1)
+					if (ShapeGroupCount == -1)
 					{
-						cout << "----------PG" << endl;
+						cout << "-----------------PI" << endl;
 					}
-					PageItemCount++;
-					//ShapeGroup
-					llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
-					//Set ShapeGroup to beginning
-					/////////////////////////////////////////////////////
-					while (CurrentShapeGroup->Previous != nullptr)
+					ShapeGroupCount++;
+					//Shape
+					llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+					if (CurrentShapeGroup->Shape != nullptr)
 					{
-						CurrentShapeGroup = CurrentShapeGroup->Previous;
-					}
-					/////////////////////////////////////////////////////
-
-					while (CurrentShapeGroup != nullptr)
-					{
-						if (ShapeGroupCount == -1)
+						//Set shape to beginning
+						/////////////////////////////////////////////////////
+						while (CurrentShape->Previous != nullptr)
 						{
-							cout << "-----------------PI" << endl;
+							CurrentShape = CurrentShape->Previous;
 						}
-						ShapeGroupCount++;
-						//Shape
-						llShapeData* CurrentShape = CurrentShapeGroup->Shape;
-						if (CurrentShapeGroup->Shape != nullptr)
+						/////////////////////////////////////////////////////
+
+						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
 						{
-							//Set shape to beginning
-							/////////////////////////////////////////////////////
-							while (CurrentShape->Previous != nullptr)
+							if (ShapeCount == -1)
 							{
-								CurrentShape = CurrentShape->Previous;
+								cout << "---------------------SG" << endl;
 							}
+							ShapeCount++;
+							//PrintllShape(CurrentShape);
+							//Vertex
+							llVertexData* CurrentVertex = CurrentShape->Vertexx;
 							/////////////////////////////////////////////////////
-
-							while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
+							while (CurrentVertex->Previous != nullptr)
 							{
-								if (ShapeCount == -1)
-								{
-									cout << "---------------------SG" << endl;
-								}
-								ShapeCount++;
-								//PrintllShape(CurrentShape);
-								//Vertex
-								llVertexData* CurrentVertex = CurrentShape->Vertexx;
-								/////////////////////////////////////////////////////
-								while (CurrentVertex->Previous != nullptr)
-								{
-									CurrentVertex = CurrentVertex->Previous;
-								}
-								cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << " | " << CurrentShape << endl;
-								/////////////////////////////////////////////////////
-								while (CurrentVertex != nullptr)
-								{
-									if (VertexCount == -1)
-									{
-										//cout << "------------------------------S" << endl;
-									}
-									VertexCount++;
-
-									CurrentVertex = CurrentVertex->Next;
-								}
-								VertexCount = -1;
-								CurrentShape = CurrentShape->Next;
+								CurrentVertex = CurrentVertex->Previous;
 							}
+							cout << "P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << " | " << CurrentShape << endl;
+							/////////////////////////////////////////////////////
+							while (CurrentVertex != nullptr)
+							{
+								if (VertexCount == -1)
+								{
+									//cout << "------------------------------S" << endl;
+								}
+								VertexCount++;
+
+								CurrentVertex = CurrentVertex->Next;
+							}
+							VertexCount = -1;
+							CurrentShape = CurrentShape->Next;
 						}
-						ShapeCount = -1;
-						CurrentShapeGroup = CurrentShapeGroup->Next;
 					}
-					ShapeGroupCount = -1;
-					CurrentPageItem = CurrentPageItem->Next;
+					ShapeCount = -1;
+					CurrentShapeGroup = CurrentShapeGroup->Next;
 				}
-				PageItemCount = -1;
-				CurrentPageGroup = CurrentPageGroup->Next;
+				ShapeGroupCount = -1;
+				CurrentPageItem = CurrentPageItem->Next;
 			}
-			PageGroupCount = -1;
-			CurrentPage = CurrentPage->Next;
+			PageItemCount = -1;
+			CurrentPageGroup = CurrentPageGroup->Next;
 		}
+	
     }
     else
     {
@@ -286,7 +268,7 @@ void MasterElement::PrintPageStats(llPageData* llPage)
 
 void MasterElement::PrintPageGroupStats(llPageGroupData* llPageGroup)
 {
-	Log::LogString("Printing PageGroup Stats");
+	Log::LogString("Printing PageGroup Stats ya ya");
 	int VertexIndex = 0;
 	int PageCount = -1;
 	int PageGroupCount = -1;
@@ -295,16 +277,12 @@ void MasterElement::PrintPageGroupStats(llPageGroupData* llPageGroup)
 	int ShapeCount = -1;
 	int VertexCount = -1;
 
-	if (llPageGroup == nullptr)
+	if (llPageGroup != nullptr)
 	{
 		//Page Group
 		llPageGroupData* CurrentPageGroup = llPageGroup;
 		//Set PageGroup Beginning
 		/////////////////////////////////////////////////////
-		while (CurrentPageGroup->Previous != nullptr)
-		{
-			CurrentPageGroup = CurrentPageGroup->Previous;
-		}
 		/////////////////////////////////////////////////////
 
 		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
@@ -579,7 +557,6 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 						//cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
 						BookDirectory.PageItem = CurrentPageItem;
 						BookDirectory.NoDirectoryFound = false;
-						cout << "PageItemFound: " << CurrentPageItem << endl;
 						if (CurrentPageItem->PageItemButton != nullptr)
 						{
 							CurrentPageItem->PageItemButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
@@ -614,7 +591,6 @@ void MasterElement::FindElement(llBookData* llBook, int ElementLevel, BookDirect
 								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
 								BookDirectory.ShapeGroup = CurrentShapeGroup;
 								BookDirectory.NoDirectoryFound = false;
-								cout << "ShapeGroupFound: " << CurrentPageItem << endl;
 								if (CurrentShapeGroup->ShapeGroupButton != nullptr)
 								{
 									CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
@@ -1754,6 +1730,186 @@ void MasterElement::CopyBook(llBookData* NewBook, llBookData* BookReference)
 {
 
 }
+
+//Add a Copy of PageItem into the PageGroup Provided
+llPageItemData* MasterElement::PageItemIntoPageGroup(llPageGroupData* PageGroup, llPageItemData* PageItem_ToCopy)
+{
+	if (PageGroup == nullptr) {Log::LogString("ERROR::InsertPageItem FAILED:: Invalid PageGroup Passed"); return nullptr;}
+	if (PageItem_ToCopy == nullptr)  {Log::LogString("ERROR::InsertPageItem FAILED:: Invalid PageItem Passed"); return nullptr;}
+
+
+	/////////////////////////////////////////////////////////////
+	Log::LogString("Copying Page Item");
+	//Create a New Shape Group and Set it's data
+	llPageItemData* NewPageItem = new llPageItemData;
+	*NewPageItem = *PageItem_ToCopy;
+
+	//Erase Links inherited from Copy
+	NewPageItem->Next = nullptr;
+	NewPageItem->Previous = nullptr;
+	NewPageItem->ShapeGroup = nullptr;
+
+	NewPageItem->ParentGroup = PageGroup;
+
+	//Find tail then add
+	llPageItemData* LastPageItemSpot = PageGroup->PageItem;
+	if (LastPageItemSpot == nullptr)
+	{
+		PageGroup->PageItem = NewPageItem;
+		PageGroup->PageItemHead = NewPageItem;
+	}
+	else
+	{
+		while (LastPageItemSpot->Next != nullptr)
+		{
+			LastPageItemSpot = LastPageItemSpot->Next;
+		}
+		LastPageItemSpot->Next = NewPageItem;
+		NewPageItem->Previous = LastPageItemSpot;
+	}
+
+	//Go to first Shape of the Shape Group reference
+	llShapeGroupData* CurrentReferenceShapeGroup = PageItem_ToCopy->ShapeGroup;
+	while (CurrentReferenceShapeGroup->Previous != nullptr)
+	{
+		CurrentReferenceShapeGroup = CurrentReferenceShapeGroup->Previous;
+	}
+
+	//Download all ShapeGroups in PageItem_ToCopy
+	while (CurrentReferenceShapeGroup != nullptr)
+	{
+		ShapeGroupIntoPageItem(NewPageItem, CurrentReferenceShapeGroup);
+		CurrentReferenceShapeGroup = CurrentReferenceShapeGroup->Next;
+	}
+
+	return NewPageItem;
+}
+
+llShapeGroupData* MasterElement::ShapeGroupIntoPageItem(llPageItemData* PageItem, llShapeGroupData* ShapeGroup_To_Copy)
+{
+	//Create a New Shape Group and Set it's data
+	llShapeGroupData* NewShapeGroup = new llShapeGroupData;
+	*NewShapeGroup = *ShapeGroup_To_Copy;
+
+	//Reset Links
+	NewShapeGroup->Next = nullptr;
+	NewShapeGroup->Previous = nullptr;
+	NewShapeGroup->Shape = nullptr;
+
+	NewShapeGroup->ParentGroup = PageItem;
+
+	//See if there is an Existing shape group inside page item
+	llShapeGroupData* FoundTail = PageItem->ShapeGroup;
+	if (FoundTail == nullptr)
+	{
+		PageItem->ShapeGroup = NewShapeGroup;
+		PageItem->ShapeGroupHead = NewShapeGroup;
+	}
+	else
+	{
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+		}
+
+		FoundTail->Next = NewShapeGroup;
+		NewShapeGroup->Previous = FoundTail;
+	}
+
+	//Go to first Shape of the Shape Group reference
+	llShapeData* CurrentReferenceShape = ShapeGroup_To_Copy->Shape;
+	while (CurrentReferenceShape->Previous != nullptr)
+	{
+		CurrentReferenceShape = CurrentReferenceShape->Previous;
+	}
+
+	while (CurrentReferenceShape != nullptr)
+	{
+		ShapeIntoShapeGroup(NewShapeGroup, CurrentReferenceShape);
+		CurrentReferenceShape = CurrentReferenceShape->Next;
+	}
+
+	return NewShapeGroup;
+}
+
+llShapeData* MasterElement::ShapeIntoShapeGroup(llShapeGroupData* ShapeGroup, llShapeData* Shape_ToCopy)
+{
+	llVertexData* TopRight = new llVertexData;
+	llVertexData* TopLeft = new llVertexData;
+	llVertexData* BottomRight = new llVertexData;
+	llVertexData* BottomLeft = new llVertexData;
+
+	//Log::LogString("Shape Created");
+	llShapeData* NewShape = new llShapeData;
+	*NewShape = *Shape_ToCopy;
+
+	//Reset any links
+	NewShape->Next = nullptr;
+	NewShape->Previous = nullptr;
+	NewShape->Vertexx = nullptr;
+
+	NewShape->ParentGroup = ShapeGroup;
+
+	llShapeData* FoundTail = ShapeGroup->Shape;
+
+	//Find tail then add
+	if (FoundTail == nullptr)
+	{
+		Log::LogString("New ShapeGroup Linked");
+		ShapeGroup->Shape = NewShape;
+		ShapeGroup->ShapeHead = NewShape;
+	}
+	else
+	{
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+		}
+
+		FoundTail->Next = NewShape;
+		NewShape->Previous = FoundTail;
+	}
+
+	llVertexData* CurrentReferenceVertex = Shape_ToCopy->Vertexx;
+	llVertexData* CurrentCopyVertex = TopLeft;
+
+	//Go to first vertex of the reference
+	while (CurrentReferenceVertex->Previous != nullptr)
+	{
+		CurrentReferenceVertex = CurrentReferenceVertex->Previous;
+	}
+
+	//Top Left
+	*TopLeft = *CurrentReferenceVertex;
+
+	//Top Right
+	CurrentReferenceVertex = CurrentReferenceVertex->Next;
+	*TopRight = *CurrentReferenceVertex;
+
+	//Bottom Right
+	CurrentReferenceVertex = CurrentReferenceVertex->Next;
+	*BottomRight = *CurrentReferenceVertex;
+
+	//Bottom Left
+	CurrentReferenceVertex = CurrentReferenceVertex->Next;
+	*BottomLeft = *CurrentReferenceVertex;
+
+	//Set Next
+	TopLeft->Next = TopRight;
+	TopRight->Next = BottomRight;
+	BottomRight->Next = BottomLeft;
+
+	//Set Previous
+	BottomLeft->Previous = BottomRight;
+	BottomRight->Previous = TopRight;
+	TopRight->Previous = TopLeft;
+
+	//Attach Vertices to Shape
+	NewShape->Vertexx = TopLeft;
+
+	return NewShape;
+}
+
 
 void MasterElement::DeleteShape(llBookData* llBook, llShapeData* ReferenceShape)
 {

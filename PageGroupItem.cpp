@@ -392,7 +392,9 @@ void PageGroupItem::SetllPosition(glm::vec2 Position)
 void PageGroupItem::SetllPosition(glm::vec2 Position, int InputType)
 {
 	PreviousPosition = CurrentllPageItem->Position;
+	Log::LogVec2("Previous Position: ", CurrentllPageItem->Position);
 	CurrentllPageItem->Position = Position;
+	Log::LogVec2("Position To Set: ", CurrentllPageItem->Position);
 	CurrentllPageItem->InputType = InputType;
 
 	if (InputType == INPUT_CENTER)
@@ -512,7 +514,6 @@ void PageGroupItem::llUpdate()
 			//Log::LogVec2("Based on this offset: ", CurrentShapeGroup->PositionOffset);
 			CurrentShapeGroup->Position = CurrentllPageItem->Position + CurrentShapeGroup->PositionOffset;
 
-			//Log::LogVec2("New ShapeGroup Position", CurrentShapeGroup->Position);
 			//Log::LogVec2("from this PageItem position: ", CurrentllPageItem->Position);
 			//Log::LogString(" ");
 			//if (CurrentShapeGroup->Next == nullptr) { CurrentShapeGroup->Position = { -0.7, -0.06 }; };
@@ -798,6 +799,7 @@ void PageGroupItem::UpdatellMouseAccess()
 	float FurthestTop = CurrentShapeGroup->EdgesWithBackGround[EDGE_TOP];
 	float FurthestBottom = CurrentShapeGroup->EdgesWithBackGround[EDGE_BOTTOM];
 
+
 	//if (CurrentShapeGroup->Next != nullptr)
 	//{
 	//	CurrentShapeGroup = CurrentShapeGroup->Next;
@@ -849,6 +851,8 @@ void PageGroupItem::UpdatellMouseAccess()
 	CurrentllPageItem->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
 
 	CurrentllPageItem->EdgesWithBackGround = { FurthestLeft , FurthestRight, FurthestTop, FurthestBottom};
+
+	//Correct the first time not the same the second
 
 	//Set Input if not already set
 	if (CurrentllPageItem->InputType != INPUT_CENTER || Input_Left_Once == true)
@@ -1436,6 +1440,7 @@ void PageGroupItem::TranslateInput()
 	float RightEdgeOffset = CurrentllPageItem->Position[X_AXIS] - CurrentllPageItem->Right;
 	float TopEdgeOffset = CurrentllPageItem->Position[Y_AXIS] - CurrentllPageItem->Top;
 	float BottomEdgeOffset = CurrentllPageItem->Position[Y_AXIS] - CurrentllPageItem->Bottom;
+
 
 	switch (CurrentllPageItem->InputType)
 	{

@@ -17,6 +17,7 @@
 #include "FileProcessor.h"
 #include "SearchBar.h"
 #include "Selector.h"
+#include "PageItemGrid.h"
 
 using namespace std;
 

@@ -1,50 +1,172 @@
 #include "PageItemGrid.h"
 
 
-//void PageItemGrid::AddPageItemGrid()
-//{
-//
-//}
-//
-//void PageItemGrid::ReplacePageItemGrid()
-//{
-//	Log::LogString("Updating Ordered Dish Graphics--------------------------------------------------");
-//	llPageItemData* Current_PageItem = (llPageItemData*)CurrentPageItemGrid.First_Ordered_Dish_Graphic;
-//	CurrentPageItemGrid.first_ordered_dish = true;
-//	CurrentPageItemGrid.last_ordered_dish_edges = CurrentPageItemGrid.first_ordered_dish_edges;
-//
-//	//Loop through Customer's Ordered Dishes
-//	for (int i = 0; i < 10; i++)
-//	{
-//		//New Graphic
-//		if (Current_PageItem == nullptr)
-//		{
-//			//Add
-//			Current_PageItem.UnHide();
-//
-//			CopyPageItem();
-//		}
-//
-//		if ()
-//		{
-//
-//		}
-//
-//		//Next PageItem
-//		if (Current_PageItem != nullptr) { Current_PageItem = Current_PageItem->Next; }
-//
-//	}
-//
-//
-//	//Hide
-//	while (Current_PageItem != nullptr)
-//	{
-//		Log::LogString("Hiding PageItem");
-//		PageGroupItem PageItem_Reference(Current_PageItem);
-//		PageItem_Reference.LoadedBook = LoadedBook;
-//		PageItem_Reference.llSwitch(Current_PageItem);
-//		PageItem_Reference.Hide();
-//		Current_PageItem = Current_PageItem->Next;
-//	}
-//
-//}
+PageItemGrid::PageItemGrid(llBookData* llBookData, llPageGroupData* PageGroupData, llPageItemData* PageItem_Template, PageItemGridData& PageItemGrid)
+	:PageGroup(llBookData, PageGroupData)
+{
+	CurrentllPageGroup->Type = TYPE_PAGEGROUP_PAGEITEMGRID;
+	CurrentGrid = PageItemGrid;
+	Grid_Template = PageItem_Template;
+	CurrentPlacement = &PageGroupItem::PlaceRight;
+	AddPageItemGrid();
+}
+
+//Working in terms of the book and data
+void PageItemGrid::AddPageItemGrid()
+{
+	//Place out of view
+	PageGroupItem PageItem_First(Grid_Template);
+	PageItem_First.LoadedBook = LoadedBook;
+	PageItem_First.llSwitch(Grid_Template);
+	PageItem_First.UnHide();
+	PageItem_First.SetllPosition({ -3.0, 0.0 });
+
+	//First One
+	llPageItemData* CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
+	PageItem_First.llSwitch(CurrentPageItem);
+	PageItem_First.SetllPosition(CurrentllPageGroup->Position, CurrentllPageGroup->InputType); //Doubling ......?
+	CurrentGrid.first_edges = PageItem_First.GetEdges();
+	CurrentGrid.last_edges = CurrentGrid.first_edges;
+
+	//Provide at least one page item hide if none required
+	if (CurrentGrid.ResultCount == 0) {PageItem_First.Hide();}
+
+	//Loop through Result Count and add a PageItem to the grid
+	for (int i = 0; i < (CurrentGrid.ResultCount - 1); i++)
+	{
+		//Add a PageItem
+		CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
+		PageGroupItem PageItem_Current(CurrentPageItem);
+		PageItem_Current.LoadedBook = LoadedBook;
+		PageItem_Current.llSwitch(CurrentPageItem);
+		PageItem_Current.PlaceBelow(CurrentGrid.last_edges, MATCH_CENTERS, CurrentGrid.yPadding);
+		CurrentGrid.last_edges = PageItem_Current.GetEdges();
+	}
+}
+
+void PageItemGrid::ReplacePageItemGrid()
+{
+	//Make Sure Reference is Visible or it can ruin things
+	PageGroupItem PageItem_First(Grid_Template);
+	PageItem_First.LoadedBook = LoadedBook;
+	PageItem_First.llSwitch(Grid_Template);
+	PageItem_First.UnHide();
+
+	//First One
+	llPageItemData* Current_PageItem = HeadPageItem(CurrentllPageGroup->PageItem);
+	PageItem_First.llSwitch(Current_PageItem);
+	PageItem_First.SetllPosition(CurrentllPageGroup->Position, CurrentllPageGroup->InputType); //Doubling ......?
+	CurrentGrid.first_edges = PageItem_First.GetEdgesWithBackGround();
+	CurrentGrid.last_edges = CurrentGrid.first_edges;
+	PageGroupItem PageItem_Current(Current_PageItem);
+	PageItem_Current.LoadedBook = LoadedBook;
+
+	Current_PageItem = Current_PageItem->Next;
+
+	glm::vec4 LastColumnOrRowEdges = CurrentGrid.last_edges;
+	glm::vec4 EdgeToUse = CurrentGrid.last_edges;
+
+	int SwapCount;
+	int CurrentCount = 1;
+	//auto generated lines going towards right
+	if (CurrentGrid.AutoColumns == true)
+	{
+		CurrentPlacement = &PageGroupItem::PlaceBelow;
+		SwapCount = CurrentGrid.ColumnsRows[1];
+	}
+
+	//auto generated lines going towards bottom
+	if (CurrentGrid.AutoRows == true)
+	{
+		CurrentPlacement = &PageGroupItem::PlaceRight;
+		SwapCount = CurrentGrid.ColumnsRows[0];
+	}
+
+	//Display Grid
+	for (int i = 0; i < (CurrentGrid.ResultCount - 1); i++)
+	{
+		// Stop Typing, it's time for a new line
+		if (CurrentCount == SwapCount) 
+		{
+			SwapPlacementDirection(); // Iteration j
+			CurrentCount = -1;
+			EdgeToUse = LastColumnOrRowEdges; //First Column
+		}
+
+		//We are on a new line, it's time to go back to typing
+		if (CurrentCount == 0) // 0
+		{
+			SwapPlacementDirection(); // Iteration  after j
+			CurrentCount = 1;
+		}
+
+		//Update
+		if (Current_PageItem != nullptr)
+		{
+			PageItem_Current.llSwitch(Current_PageItem);
+			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+			PageItem_Current.UnHide();
+			EdgeToUse = PageItem_Current.GetEdgesWithBackGround();
+
+			//New Row
+			if (CurrentCount == -1)
+			{
+				LastColumnOrRowEdges = EdgeToUse;
+			}
+		}
+
+		//Add if Neccessary
+		if (Current_PageItem == nullptr)
+		{
+			Current_PageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
+			PageItem_Current.llSwitch(Current_PageItem);
+			(PageItem_Current.*CurrentPlacement)(CurrentGrid.last_edges, MATCH_CENTERS, CurrentGrid.yPadding);
+			if (CurrentCount == -1)
+			{
+				LastColumnOrRowEdges = EdgeToUse;
+			}
+		}
+
+		//Next PageItem
+		if (Current_PageItem != nullptr) { Current_PageItem = Current_PageItem->Next; }
+		CurrentCount++;
+	}
+
+	//Hide if Neccessary
+	while (Current_PageItem != nullptr)
+	{
+		PageItem_Current.llSwitch(Current_PageItem);
+		PageItem_Current.Hide();
+		Current_PageItem = Current_PageItem->Next;
+	}
+}
+
+void PageItemGrid::llUpdate()
+{
+	ReplacePageItemGrid();
+	SetllMouseAccess();
+}
+
+void PageItemGrid::SwapPlacementDirection()
+{
+	//float F = 1.0;
+	//EX: static_cast<int> (F)
+	if (CurrentPlacement == static_cast<void(PageGroupItem::*)(const glm::vec4&, int, int)> (&PageGroupItem::PlaceBelow))
+	{
+		CurrentPlacement = &PageGroupItem::PlaceRight;
+	}
+	else
+	{
+		CurrentPlacement = &PageGroupItem::PlaceBelow;
+	}
+}
+
+void PageItemGrid::SetResultCount(int NewResultCount)
+{
+	CurrentGrid.ResultCount = NewResultCount;
+
+	llUpdate();
+}
+
+
+

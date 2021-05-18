@@ -344,6 +344,8 @@ void NewPage::DrawPage()
 	glDrawElements(GL_TRIANGLES, CurrentllPage->MaxIndexCount, GL_UNSIGNED_INT, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
+
+	FindElements();
 }
 
 void NewPage::DrawPage(ShaderProgram ShaderProgram, RawTexture RawTexture1, RawTexture RawTexture2, RawTexture RawTexture3)
@@ -366,6 +368,7 @@ void NewPage::DrawPage(ShaderProgram ShaderProgram, RawTexture RawTexture1, RawT
 	glDrawElements(GL_TRIANGLES, CurrentllPage->MaxIndexCount, GL_UNSIGNED_INT, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
+
 }
 
 
@@ -373,4 +376,178 @@ void NewPage::LoadGPU()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, CurrentllPage->VB);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, CurrentllPage->GetMaxSize(), CurrentllPage->VertexContainer); //
+}
+
+
+void NewPage::FindElements()
+{
+	if (CurrentllPage == nullptr) { Log::LogString("ERROR FindElement FAILED:: No CurrentllPage Provided"); }
+
+	float xMouse = MouseManager::xPos;
+	float yMouse = MouseManager::yPos;
+
+	int VertexIndex = 0;
+	int PageCount = 0;
+	int PageGroupCount = 0;
+	int PageItemCount = 0;
+	int ShapeGroupCount = 0;
+	int ShapeCount = 0;
+	int VertexCount = 0;
+
+	llPageGroupData* SavedPageGroup = nullptr;
+	llPageItemData* SavedPageItem = nullptr;
+	llShapeGroupData* SavedShapeGroup = nullptr;
+	llShapeData* SavedShape = nullptr;
+	llVertexData* SavedVertex = nullptr;
+
+	//Nothing in PageGroup
+	SavedPageGroup = CurrentllPage->PageGroup;
+	if (SavedPageGroup != nullptr)
+	{
+		SavedPageItem = CurrentllPage->PageGroup->PageItem;
+		if (SavedPageItem != nullptr)
+		{
+			SavedShapeGroup = CurrentllPage->PageGroup->PageItem->ShapeGroup;
+			if (SavedShapeGroup != nullptr)
+			{
+				SavedShape = CurrentllPage->PageGroup->PageItem->ShapeGroup->Shape;
+				if (SavedShape != nullptr)
+				{
+					SavedVertex = CurrentllPage->PageGroup->PageItem->ShapeGroup->Shape->Vertexx;
+				}
+			}
+		}
+	}	
+
+
+	//while (CurrentllPage != nullptr && CurrentllPage->PageGroup != nullptr)
+	//{
+	//	PageCount++;
+		//Page Group
+		llPageGroupData* CurrentPageGroup = CurrentllPage->PageGroup;
+
+		//Set PageGroup Beginning
+		/////////////////////////////////////////////////////
+		while (CurrentPageGroup->Previous != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Previous;
+
+		}
+		/////////////////////////////////////////////////////
+		while (CurrentPageGroup != nullptr && CurrentPageGroup->PageItem != nullptr)
+		{
+			//if (ElementLevel == LEVEL_PAGEITEM)
+			//{
+			if (xMouse < CurrentPageGroup->Right && xMouse >  CurrentPageGroup->Left&& yMouse < CurrentPageGroup->Top && yMouse >  CurrentPageGroup->Bottom&& CurrentPageGroup->MouseAccess == true)
+			{
+				//cout << " [PageGroup Found] | P:" << PageCount << " | PG:" << PageGroupCount << endl;
+				ElementsHovered.PageGroup = CurrentPageGroup;
+			}
+			//}
+
+			PageGroupCount++;
+			//PageItem
+			llPageItemData* CurrentPageItem = CurrentPageGroup->PageItem;
+			//Set PageItem Beginning
+			/////////////////////////////////////////////////////
+			while (CurrentPageItem->Previous != nullptr)
+			{
+				CurrentPageItem = CurrentPageItem->Previous;
+			}
+			/////////////////////////////////////////////////////
+			while (CurrentPageItem != nullptr && CurrentPageItem->ShapeGroup != nullptr)
+			{
+				if (xMouse < CurrentPageItem->Right && xMouse >  CurrentPageItem->Left&& yMouse < CurrentPageItem->Top && yMouse >  CurrentPageItem->Bottom&& CurrentPageItem->MouseAccess == true)
+				{
+					//cout << " [PageItem Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << endl;
+					ElementsHovered.PageItem = CurrentPageItem;
+					if (CurrentPageItem->PageItemButton != nullptr)
+					{
+						CurrentPageItem->PageItemButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+					}
+				}
+
+				PageItemCount++;
+				//ShapeGroup
+				llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+				//Set ShapeGroup to beginning
+				/////////////////////////////////////////////////////
+				while (CurrentShapeGroup->Previous != nullptr)
+				{
+					CurrentShapeGroup = CurrentShapeGroup->Previous;
+				}
+
+				/////////////////////////////////////////////////////
+				while (CurrentShapeGroup != nullptr)
+				{
+					ShapeGroupCount++;
+					//Shape
+					llShapeData* CurrentShape = CurrentShapeGroup->Shape;
+					if (CurrentShapeGroup->Shape != nullptr)
+					{
+
+						if (xMouse < CurrentShapeGroup->Right && xMouse >  CurrentShapeGroup->Left&& yMouse < CurrentShapeGroup->Top && yMouse >  CurrentShapeGroup->Bottom&& CurrentShapeGroup->MouseAccess == true)
+						{
+								//cout << "[ShapeGroup Found] |P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << endl;
+							ElementsHovered.ShapeGroup = CurrentShapeGroup;
+							if (CurrentShapeGroup->ShapeGroupButton != nullptr)
+							{
+								CurrentShapeGroup->ShapeGroupButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+							}
+						}
+						//Set shape to beginning
+						/////////////////////////////////////////////////////
+						while (CurrentShape->Previous != nullptr)
+						{
+							CurrentShape = CurrentShape->Previous;
+						}
+						/////////////////////////////////////////////////////
+						while (CurrentShape != nullptr && CurrentShape->Vertexx != nullptr)
+						{
+							ShapeCount++;
+							if (xMouse < CurrentShape->Right && xMouse >  CurrentShape->Left&& yMouse < CurrentShape->Top && yMouse >  CurrentShape->Bottom&& CurrentShape->MouseAccess == true)
+							{
+								ElementsHovered.Shape;
+
+								if (CurrentShape->ShapeButton != nullptr)
+								{
+									//cout << "[Shape Found] | P:" << PageCount << " | PG:" << PageGroupCount << " | PI:" << PageItemCount << " | SG:" << ShapeGroupCount << " | S:" << ShapeCount << " | Char: " << char(CurrentShape->Ascii) << endl;
+									CurrentShape->ShapeButton->ProcessMouseButtons(MouseManager::CurrentMouseState);
+
+								}
+
+							}
+							CurrentShape = CurrentShape->Next;
+						}
+					}
+					ShapeCount = -1;
+					CurrentShapeGroup = CurrentShapeGroup->Next;
+				}
+				ShapeGroupCount = -1;
+				CurrentPageItem = CurrentPageItem->Next;
+			}
+			PageItemCount = -1;
+			CurrentPageGroup = CurrentPageGroup->Next;
+		}
+		PageGroupCount = -1;
+	//}
+
+	CurrentllPage->PageGroup = SavedPageGroup;
+	if (CurrentllPage->PageGroup != nullptr)
+	{
+		CurrentllPage->PageGroup->PageItem = SavedPageItem;
+		if (CurrentllPage->PageGroup->PageItem != nullptr)
+		{
+			CurrentllPage->PageGroup->PageItem->ShapeGroup = SavedShapeGroup;
+			if (CurrentllPage->PageGroup->PageItem->ShapeGroup != nullptr)
+			{
+				CurrentllPage->PageGroup->PageItem->ShapeGroup->Shape = SavedShape;
+				if (CurrentllPage->PageGroup->PageItem->ShapeGroup->Shape != nullptr)
+				{
+					CurrentllPage->PageGroup->PageItem->ShapeGroup->Shape->Vertexx = SavedVertex;
+				}
+			}
+		}
+	}
+
 }

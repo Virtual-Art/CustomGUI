@@ -18,7 +18,7 @@ namespace CompleteOrder
 	static ShaderProgram* CurrentShader;
 	static BookDirectory DRPageGroup_Customer;
 	static BookDirectory DRPageGroup_Dish;
-	static BookDirectory ElementsHovered;
+	//static BookDirectory ElementsHovered;
 
 	static map<string, SameDayOrders>* All_Customer_Orders;
 	static map<string, Ingredient>* All_Ingredients;
@@ -37,6 +37,7 @@ namespace CompleteOrder
 	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Customer_Orders);
 	void Update(KeyResult& CurrentKeyResult, int CurrentPage);
 	void SetPageDirectory();
+	llPageData* GetPageData();
 
 	//+-------------------------Customer Orders-------------------------+//
 	static SameDayOrders Current_Day_Orders;		//Drives the graphics

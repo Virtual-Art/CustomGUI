@@ -15,7 +15,7 @@ using namespace std;
 class NewPage : public MasterElement
 {
    public:
-
+	   BookDirectory ElementsHovered;
 	   NewPage();
 	   NewPage(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 	   void llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
@@ -29,6 +29,7 @@ class NewPage : public MasterElement
 
 	   void DrawPage(ShaderProgram ShaderProgram, RawTexture RawTexture1, RawTexture RawTexture2, RawTexture RawTexture3);
 	   void DrawPage();
+	   void FindElements();
 
 
 

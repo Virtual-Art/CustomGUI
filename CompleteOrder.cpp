@@ -10,7 +10,6 @@ void CompleteOrder::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderPro
 	CurrentTexture0 = Texture0;
 	CurrentTexture1 = Texture1;
 	CurrentTexture2 = Texture2;
-
 	Page_Complete_Order.llInit(RestaurantBook, CurrentShader, CurrentTexture0, CurrentTexture1, CurrentTexture2);
 	CompleteOrderDirectory = RestaurantBook->Page;
 
@@ -19,7 +18,51 @@ void CompleteOrder::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderPro
 	Prepare_Customers();
 	Prepare_Dish_Graphics();
 
-	MasterElement::PrintPageStats(RestaurantBook->Page);
+	PageGroupItem PageItem_Grid_Template(RestaurantBook);
+	TextData HUUUHH;
+	HUUUHH.Phrase = "hello";
+	llShapeGroupData UHHHUU;
+	UHHHUU.Position = { 0.0, 0.0 };
+	Text Text_Grid_Template_1(RestaurantBook, &UHHHUU, HUUUHH);
+	HUUUHH.Phrase = "there";
+	Text Text_Grid_Template_2(RestaurantBook, &UHHHUU, HUUUHH);
+	Text_Grid_Template_2.PlaceRight(Text_Grid_Template_1.GetEdges(), MATCH_FLOORS, 10);
+	HUUUHH.Phrase = "guy";
+	Text Text_Grid_Template_3(RestaurantBook, &UHHHUU, HUUUHH);
+	Text_Grid_Template_3.PlaceRight(Text_Grid_Template_2.GetEdges(), MATCH_FLOORS, 10);
+	//UHHHUU.Color = PageCreator::Yellow;
+	//HUUUHH.Phrase = "This is awesome ";
+	//Text Text_Grid_Template_4(RestaurantBook, &UHHHUU, HUUUHH);
+	//Text_Grid_Template_4.PlaceBelow(Text_Grid_Template_3.GetEdges(), MATCH_BEGINNINGS, 10);
+
+	//Grid Data
+	PageItemGridData First_Grid_DATA;
+	First_Grid_DATA.ResultCount = 7;
+	First_Grid_DATA.ColumnsRows = {2, -1}; //Columns = 3
+	First_Grid_DATA.AutoRows = true;
+	First_Grid_DATA.yPadding = 20;
+
+	//Set Position Attributes
+	llPageGroupData PageGroup_DATA;
+	PageGroup_DATA.Position = { -0.5, 0.5 };
+	PageGroup_DATA.InputType = INPUT_LEFT;
+
+	PageItem_Grid_Template.llUpdate();
+	Log::LogString("Grid");
+	PageItemGrid First_GRID(RestaurantBook, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
+	//PageItem_Grid_Template.Hide();
+	//PageItem_Grid_Template.SetllPosition({-0.5, 0.0}, INPUT_TOP);
+
+
+	//First_GRID.SetResultCount(23);
+	First_GRID.SetResultCount(40);
+	//First_GRID.SetResultCount(12);
+
+	//Log::LogString("Prove");
+	//PageGroupItem Prove(PageItem_Grid_Template.GetData());
+	//Prove.LoadedBook = RestaurantBook;
+	//Prove.SetllPosition({ -0.5, 0.0 }, INPUT_TOP);
+	MasterElement::PrintPageGroupStats(First_GRID.GetData());
 }
 
 void CompleteOrder::PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Orders)
@@ -36,7 +79,6 @@ void CompleteOrder::Update(KeyResult& CurrentKeyResult, int CurrentPage)
 	if (CurrentPage == 3)
 	{
 		Page_Complete_Order.DrawPage();
-		MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
 	}
 }
 
@@ -44,6 +86,12 @@ void CompleteOrder::SetPageDirectory()
 {
 	RestaurantBook->Page = CompleteOrderDirectory;
 }
+
+llPageData* CompleteOrder::GetPageData()
+{
+	return Page_Complete_Order.GetData();
+}
+
 
 void CompleteOrder::SetOrderDate(const string& OrderDateKey)
 {
@@ -93,34 +141,35 @@ void CompleteOrder::Prepare_Customers()
 	//Customer Graphics
 	Update_Customer_Graphics();
 
+	Log::LogString("6");
 
 }
 
 void CompleteOrder::ToggleCustomer()
 {
-	if (ElementsHovered.PageItem == nullptr) { Log::LogString("Select Failed");  return; }
+	if (Page_Complete_Order.ElementsHovered.PageItem == nullptr) { Log::LogString("Select Failed");  return; }
 
-	bool Graphic_Selected = ElementsHovered.PageItem->GraphicSelected;
+	bool Graphic_Selected = Page_Complete_Order.ElementsHovered.PageItem->GraphicSelected;
 
 	if (Graphic_Selected == false)
 	{
 		SelectCustomer();
-		ElementsHovered.PageItem->GraphicSelected = true;
+		Page_Complete_Order.ElementsHovered.PageItem->GraphicSelected = true;
 		return;
 	}
 	
 	UnSelectCustomer();
-	ElementsHovered.PageItem->GraphicSelected = false;
+	Page_Complete_Order.ElementsHovered.PageItem->GraphicSelected = false;
 }
 
 void CompleteOrder::SelectCustomer()
 {
 
 	//Print 
-	Log::LogString(ElementsHovered.PageItem->DescriptiveData + " Order Selected");
+	Log::LogString(Page_Complete_Order.ElementsHovered.PageItem->DescriptiveData + " Order Selected");
 
 	//Get Customer Last Name From Graphic
-	const string Customer_Last_Name = ElementsHovered.PageItem->DescriptiveData;
+	const string Customer_Last_Name = Page_Complete_Order.ElementsHovered.PageItem->DescriptiveData;
 	
 	//Get The Customer Order
 	const CustomerOrder& Customer_Order = Current_Day_Orders.CustomerOrders[Customer_Last_Name];
@@ -144,10 +193,10 @@ void CompleteOrder::UnSelectCustomer()
 {
 	//if (UnSelect_Once == false)
 	//{
-		Log::LogString(ElementsHovered.PageItem->DescriptiveData + " Order UnSelected");
+		Log::LogString(Page_Complete_Order.ElementsHovered.PageItem->DescriptiveData + " Order UnSelected");
 
 		//Get Name from Element Hovered
-		const string Customer_Last_Name = ElementsHovered.PageItem->DescriptiveData;
+		const string Customer_Last_Name = Page_Complete_Order.ElementsHovered.PageItem->DescriptiveData;
 		
 		//Delete Selected if in there
 		if (Orders_Selected.find(Customer_Last_Name) != Orders_Selected.end())
@@ -212,6 +261,7 @@ void CompleteOrder::DeHighlight_Customer_Graphic()
 void CompleteOrder::Update_Complete_Order()
 {
 	Update_Customer_Graphics();
+	MasterElement::PrintPageStats(Page_Complete_Order.GetData());
 }
 
 void CompleteOrder::Update_Customer_Graphics()
