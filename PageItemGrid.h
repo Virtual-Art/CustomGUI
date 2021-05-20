@@ -4,6 +4,11 @@
 #include <iostream>
 #include "PageGroup.h"
 
+
+#define MIN_COLUMN 0 
+#define MIN_ROW 0 
+
+
 namespace PageItemGridActions
 {
 	static llBookData* CurrentBook;
@@ -15,8 +20,9 @@ namespace PageItemGridActions
 struct PageItemGridData
 {
 	int ResultCount = 1;
-	glm::vec2 ColumnsRows;
-	bool AutoRows = true;
+	unsigned int Row;
+	unsigned int Column;
+	bool AutoRows = false;
 	bool AutoColumns = false;
 	int xPadding = 10;
 	int yPadding = 10;
@@ -42,12 +48,12 @@ public:
 	PlacementFunction CurrentPlacement;
 
 	//+-----------------------+//
-	//PageItemGrid() {};
+	PageItemGrid() {};
 	//PageItemGrid(llBookData* llBookData);
 	PageItemGrid(llBookData* llBookData,llPageGroupData* PageGroupData, llPageItemData* PageItem_Template, PageItemGridData& SelectorData);
 	//PageItemGrid(llPageItemData* PageItemData);
 	//
-	//void llInit(llBookData* llBook, llPageGroupData* llPageGroup, llPageItemData* llPageItem, PageItemGrid& SearchBarData);
+	void llInit(llBookData* llBook, llPageGroupData* llPageGroup, llPageItemData* llPageItem, PageItemGridData& GridData);
 	//void llSwitch(llPageGroupData* PageGroup) override;
 	//
 	void AddPageItemGrid();
@@ -59,6 +65,7 @@ public:
 
 private:
 
+	int SetPlacementDirection();
 	void SwapPlacementDirection();
 
 };

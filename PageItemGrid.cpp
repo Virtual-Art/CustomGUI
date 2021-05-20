@@ -11,6 +11,17 @@ PageItemGrid::PageItemGrid(llBookData* llBookData, llPageGroupData* PageGroupDat
 	AddPageItemGrid();
 }
 
+void PageItemGrid::llInit(llBookData* llBook, llPageGroupData* llPageGroup, llPageItemData* llPageItem, PageItemGridData& GridData)
+{
+	llPageGroupInit(llBook, llPageGroup);
+	CurrentllPageGroup->Type = TYPE_PAGEGROUP_PAGEITEMGRID;
+	CurrentGrid = GridData;
+	Grid_Template = llPageItem;
+	CurrentPlacement = &PageGroupItem::PlaceRight;
+	AddPageItemGrid();
+}
+
+
 //Working in terms of the book and data
 void PageItemGrid::AddPageItemGrid()
 {
@@ -46,6 +57,8 @@ void PageItemGrid::AddPageItemGrid()
 
 void PageItemGrid::ReplacePageItemGrid()
 {
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR::ReplacePageItemGrid FAILED:: Invalid PageGroup State"); return; }
+
 	//Make Sure Reference is Visible or it can ruin things
 	PageGroupItem PageItem_First(Grid_Template);
 	PageItem_First.LoadedBook = LoadedBook;
@@ -65,22 +78,10 @@ void PageItemGrid::ReplacePageItemGrid()
 
 	glm::vec4 LastColumnOrRowEdges = CurrentGrid.last_edges;
 	glm::vec4 EdgeToUse = CurrentGrid.last_edges;
-
 	int SwapCount;
 	int CurrentCount = 1;
-	//auto generated lines going towards right
-	if (CurrentGrid.AutoColumns == true)
-	{
-		CurrentPlacement = &PageGroupItem::PlaceBelow;
-		SwapCount = CurrentGrid.ColumnsRows[1];
-	}
 
-	//auto generated lines going towards bottom
-	if (CurrentGrid.AutoRows == true)
-	{
-		CurrentPlacement = &PageGroupItem::PlaceRight;
-		SwapCount = CurrentGrid.ColumnsRows[0];
-	}
+	SwapCount = SetPlacementDirection();
 
 	//Display Grid
 	for (int i = 0; i < (CurrentGrid.ResultCount - 1); i++)
@@ -154,10 +155,12 @@ void PageItemGrid::SwapPlacementDirection()
 	if (CurrentPlacement == static_cast<void(PageGroupItem::*)(const glm::vec4&, int, int)> (&PageGroupItem::PlaceBelow))
 	{
 		CurrentPlacement = &PageGroupItem::PlaceRight;
+		Log::LogString("Swapped to Right");
 	}
 	else
 	{
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
+		Log::LogString("Swapped to Below");
 	}
 }
 
@@ -170,3 +173,27 @@ void PageItemGrid::SetResultCount(int NewResultCount)
 
 
 
+int PageItemGrid::SetPlacementDirection()
+{
+	//auto generated lines going towards right
+	if (CurrentGrid.AutoColumns == true)
+	{
+		CurrentPlacement = &PageGroupItem::PlaceBelow;
+		return CurrentGrid.Row;
+	}
+
+	//auto generated lines going towards bottom
+	if (CurrentGrid.AutoRows == true)
+	{
+		CurrentPlacement = &PageGroupItem::PlaceRight;
+		return CurrentGrid.Column;
+	}
+
+	//Direct Grid
+	if (CurrentGrid.AutoRows == false && CurrentGrid.AutoColumns == false)
+	{
+		CurrentGrid.ResultCount = CurrentGrid.Column * CurrentGrid.Row;
+		CurrentPlacement = &PageGroupItem::PlaceRight;
+		return CurrentGrid.Column;
+	}
+}

@@ -38,8 +38,9 @@ void CompleteOrder::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderPro
 	//Grid Data
 	PageItemGridData First_Grid_DATA;
 	First_Grid_DATA.ResultCount = 7;
-	First_Grid_DATA.ColumnsRows = {2, -1}; //Columns = 3
-	First_Grid_DATA.AutoRows = true;
+	First_Grid_DATA.Column = 3; //Columns = 3
+	First_Grid_DATA.Row = 2; //Columns = 3
+	//First_Grid_DATA.AutoColumns = true;
 	First_Grid_DATA.yPadding = 20;
 
 	//Set Position Attributes
@@ -49,20 +50,21 @@ void CompleteOrder::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderPro
 
 	PageItem_Grid_Template.llUpdate();
 	Log::LogString("Grid");
-	PageItemGrid First_GRID(RestaurantBook, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
+	//PageItemGrid First_GRID(RestaurantBook, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
 	//PageItem_Grid_Template.Hide();
 	//PageItem_Grid_Template.SetllPosition({-0.5, 0.0}, INPUT_TOP);
 
 
-	//First_GRID.SetResultCount(23);
-	First_GRID.SetResultCount(40);
+	//First_GRID.SetResultCount(5);
+	//First_GRID.SetResultCount(40);
 	//First_GRID.SetResultCount(12);
+	//First_GRID.SetResultCount(28);
 
 	//Log::LogString("Prove");
 	//PageGroupItem Prove(PageItem_Grid_Template.GetData());
 	//Prove.LoadedBook = RestaurantBook;
 	//Prove.SetllPosition({ -0.5, 0.0 }, INPUT_TOP);
-	MasterElement::PrintPageGroupStats(First_GRID.GetData());
+	//MasterElement::PrintPageGroupStats(First_GRID.GetData());
 }
 
 void CompleteOrder::PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Orders)
@@ -109,8 +111,6 @@ void CompleteOrder::Prepare_Customers()
 	Select_Once = false;
 	UnSelect_Once = false;
 
-
-
 	//Graphics Setup
 	TextData Text_Template;
 	Text_Template.Phrase = "Today's Orders:";
@@ -119,7 +119,7 @@ void CompleteOrder::Prepare_Customers()
 
 	//Today's Orders (Label)
 	Text_Label_Todays_Orders.llInit(RestaurantBook, &ShapeGroup_Template, Text_Template);
-	Button_Update_Customers.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, CompleteOrder::Update_Complete_Order);
+	Button_Update_Customers.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, Update_Customer_Grid);
 	Text_Label_Todays_Orders.GetData()->ShapeGroupButton = &Button_Update_Customers;
 
 	//Customer PageGroup
@@ -139,10 +139,60 @@ void CompleteOrder::Prepare_Customers()
 	//Print_Condensed_Dishes();
 
 	//Customer Graphics
-	Update_Customer_Graphics();
+	//Update_Customer_Graphics();
+	Create_Customer_Graphic();
+	Create_Customer_Grid();
+}
 
-	Log::LogString("6");
+void CompleteOrder::Create_Customer_Graphic()
+{
+	TextData Text_Template;
+	PageItemData PageItem_Template;
+	PageItem_Template.Position = {0.0, 0.0};
+	llShapeGroupData ShapeGroup_Template;
 
+	PageItem_Customer_Graphic.llInit(RestaurantBook);
+
+	//Name
+	Text_Template.Phrase = "Name";
+	Text Text_Name(RestaurantBook, &ShapeGroup_Template, Text_Template);
+
+	//Quantity of items
+	Text_Template.Phrase = "(0) Ordered Items";
+	Text Text_Item_Quantity(RestaurantBook, &ShapeGroup_Template, Text_Template);
+	Text_Item_Quantity.PlaceBelow(Text_Name.GetEdges(), MATCH_BEGINNINGS, 10);
+
+	Log::LogString("Graphic Created");
+}
+
+void CompleteOrder::Create_Customer_Grid()
+{
+	Log::LogString("Creating Customer Grid");
+	llPageGroupData PageGroup_Template;
+	PageGroup_Template.Position = { -0.7, 0.7 };
+
+	PageItemGridData Grid_Template;
+	Grid_Template.ResultCount = 1;
+	Grid_Template.Row = 1;
+	Grid_Template.AutoColumns = true;
+
+	Grid_Customers.llInit(RestaurantBook, &PageGroup_Template, PageItem_Customer_Graphic.GetData(), Grid_Template);
+}
+
+void CompleteOrder::Update_Customer_Grid()
+{
+	Log::LogString("Updating Grid");
+
+	int CustomerCount = 0;
+
+	for (auto kv : Customer_Order_DataBase["2021 4 8"].CustomerOrders)
+	{
+		CustomerCount++;
+	}
+
+	Log::LogInt("Nubmer of Customer Orders: ", CustomerCount);
+
+	Grid_Customers.SetResultCount(CustomerCount);
 }
 
 void CompleteOrder::ToggleCustomer()

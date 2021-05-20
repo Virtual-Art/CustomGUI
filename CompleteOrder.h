@@ -51,6 +51,8 @@ namespace CompleteOrder
 	static llPageItemData* Customer_Order_Selected;
 	static PageGroup PageGroup_Customers;
 	static PageGroupItem PageItem_Customer_Order;
+	static PageItemGrid Grid_Customers;
+	static PageGroupItem PageItem_Customer_Graphic;
 	static Text Text_Customer_Name;
 	static Text Text_Customer_Item_Quantity;
 	static Text Text_Label_Todays_Orders;
@@ -60,6 +62,10 @@ namespace CompleteOrder
 
 	//Building Block Functions
 	void Prepare_Customers();
+
+	void Create_Customer_Graphic();
+	void Create_Customer_Grid();
+	void Update_Customer_Grid();
 
 	//Manage Customers
 	int  GetCustomerItemCount(const CustomerOrder& Order);

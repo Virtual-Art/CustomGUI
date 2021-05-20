@@ -72,6 +72,7 @@ public:
 
 	void llInit(llBookData* llBook);
 	void llInit(llBookData* llBook, llPageGroupData* PageGroupData);
+	void llPageGroupInit(llBookData* llBookData, llPageGroupData* llPageGroup);
 
 	void CreateGrid(llPageItemData* PageItem_Reference, glm::vec2 Colomns_Rows, llBookData* llBookData, int RowSpacing);
 

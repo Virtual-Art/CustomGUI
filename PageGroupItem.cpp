@@ -1,9 +1,9 @@
 #include "PageGroupItem.h"
 
-void PageGroupItem::llInit(llBookData* llBook)
-{
-	LoadedBook = llBook;
-}
+//void PageGroupItem::llInit(llBookData* llBook)
+//{
+//	LoadedBook = llBook;
+//}
 
 PageGroupItem::PageGroupItem()
 {
@@ -287,6 +287,83 @@ PageGroupItem::PageGroupItem(Page& Page, int ID)
 		cout << "PageGroup Not Ready:: error page is nullptr" << endl;
 	}
 
+}
+
+void PageGroupItem::llInit(llBookData* llBook)
+{
+	if (llBook != nullptr)
+	{
+
+		if (llBook->Page == nullptr)
+		{
+			//Log::LogString("Book Is Brand New");
+			llPageData* CreatedPage = new llPageData;
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+			llBook->Page = CreatedPage;
+			llBook->PageHead = CreatedPage;
+			llBook->PageCount++;
+
+			llBook->Page->PageGroup = CreatedPageGroup;
+			llBook->Page->PageGroupHead = CreatedPageGroup;
+			llBook->Page->PageGroupCount++;
+		}
+
+		if (llBook->Page->PageGroup == nullptr)
+		{
+			//Log::LogString("Book Is Brand New");
+			llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+			llBook->Page->PageGroup = CreatedPageGroup;
+			llBook->Page->PageGroupHead = CreatedPageGroup;
+			llBook->Page->PageGroupCount++;
+		}
+
+		CurrentllPageItem = new llPageItemData;
+		//Log::LogString("PageItem Created and Shape Group?");
+
+		llPageItemData* TestingPageItem = llBook->Page->PageGroup->PageItem;
+
+		//Completely new object
+		if (TestingPageItem == nullptr)
+		{
+			//Log::LogString("PageGroup Empty. First PageItem!");
+			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+			llBook->Page->PageGroup->PageItemHead = CurrentllPageItem;
+			llBook->Page->PageGroup->PageItemCount++;
+		}
+		else //Shapes already created
+		{
+			llPageItemData* FoundTail = TestingPageItem;
+			int LinkCount = 0;
+
+			//Find tail then add
+			//Log::LogString("Finding Tail..");
+			while (FoundTail->Next != nullptr)
+			{
+				FoundTail = FoundTail->Next;
+				LinkCount++;
+			}
+			//Log::LogString("PageItem Linked");
+			FoundTail->Next = CurrentllPageItem;
+			CurrentllPageItem->Previous = FoundTail;
+			llBook->Page->PageGroup->PageItem = CurrentllPageItem;
+			llBook->Page->PageGroup->PageItemCount++;
+		}
+
+		LoadedBook = llBook;
+		CurrentllPageItem->Type = TYPE_CUSTOM;
+		CurrentllPageItem->ParentGroup = llBook->Page->PageGroup;
+		Parent_PageGroup = (llPageGroupData*)CurrentllPageItem->ParentGroup;
+		CalculateGroupOffset();
+
+
+		ProcessBackGround();
+	}
+	else
+	{
+		Log::LogString("PageItem Constructor FAILED:: No Book Provided");
+	}
 }
 
 void PageGroupItem::llPageItemInit(llBookData* llBookData, llPageItemData* llPageItem)

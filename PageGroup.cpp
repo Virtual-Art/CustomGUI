@@ -195,6 +195,74 @@ void PageGroup::llInit(llBookData* llBookData, llPageGroupData* llPageGroup)
 	ProcessBackGround();
 }
 
+void PageGroup::llPageGroupInit(llBookData* llBookData, llPageGroupData* llPageGroup)
+{
+
+//Make sure we are provided with data
+if (llPageGroup != nullptr && llBookData != nullptr)
+{
+	//Look at the book, is there a Page in the book? no?
+	if (llBookData->Page == nullptr)
+	{
+		//Create a new Page & PageGroup for the PageItem we are about to create
+		//Log::LogString("Book Is Brand New");
+		llPageData* CreatedPage = new llPageData;
+		llPageGroupData* CreatedPageGroup = new llPageGroupData;
+
+		//Link the Created groups to the book we are looking at
+		llBookData->Page = CreatedPage;
+		llBookData->PageHead = CreatedPage;
+
+		llBookData->Page->PageGroup = CreatedPageGroup;
+		llBookData->Page->PageGroupHead = CreatedPageGroup;
+	}
+
+	//Create a new PageItem & Copy the provided data
+	CurrentllPageGroup = new llPageGroupData;
+	*CurrentllPageGroup = *llPageGroup;
+	//Log::LogString("PageItem Created and ShapeGroup Created?");
+
+	//Take a look at the current PageItem in the current PageGroup
+	llPageGroupData* TestingPageGroup = llBookData->Page->PageGroup;
+
+	//The book doesn't have a PageItem in the current PageGroup
+	if (TestingPageGroup == nullptr)
+	{
+		//Set the book to include and point to the newly created PageItem
+		//Log::LogString("New PageGroup Linked");
+		llBookData->Page->PageGroup = CurrentllPageGroup;
+		llBookData->Page->PageGroupHead = CurrentllPageGroup;
+	}
+	else //A Page Item already exists in the current Page Group
+	{
+		llPageGroupData* FoundTail = TestingPageGroup;
+		int LinkCount = 0;
+
+		//Find the last PageItem in the current PageGroup
+		//Log::LogString("Finding Tail..");
+		while (FoundTail->Next != nullptr)
+		{
+			FoundTail = FoundTail->Next;
+			LinkCount++;
+		}
+
+		//When we find the last PageItem in the PageGroup, attach the newly created PageItem next to it and
+		//Log::LogString("New PageGroup Linked");
+		FoundTail->Next = CurrentllPageGroup;
+		CurrentllPageGroup->Previous = FoundTail;
+
+		//Then set the book to point to the new PageItem we created
+		llBookData->Page->PageGroup = CurrentllPageGroup;
+	}
+
+	CurrentllPageGroup->Type = TYPE_PAGEGROUP;
+	LoadedBook = llBookData;
+}
+else
+{
+	Log::LogString("ERROR:: PageGroup Constructor FAILED:: No Book or Page Group Provided");
+}
+}
 //PageItem Provided Ready Pre-Made 
 void PageGroup::CreateGrid(llPageItemData* PageItem_Reference, glm::vec2 Colomns_Rows, llBookData* llBookData, int RowSpacing)
 {
