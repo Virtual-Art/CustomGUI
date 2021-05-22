@@ -38,8 +38,8 @@ void CompleteOrder::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderPro
 	//Grid Data
 	PageItemGridData First_Grid_DATA;
 	First_Grid_DATA.ResultCount = 7;
-	First_Grid_DATA.Column = 3; //Columns = 3
-	First_Grid_DATA.Row = 2; //Columns = 3
+	First_Grid_DATA.ColumnCount = 3; //Columns = 3
+	First_Grid_DATA.RowCount = 2; //Columns = 3
 	//First_Grid_DATA.AutoColumns = true;
 	First_Grid_DATA.yPadding = 20;
 
@@ -152,6 +152,8 @@ void CompleteOrder::Create_Customer_Graphic()
 	llShapeGroupData ShapeGroup_Template;
 
 	PageItem_Customer_Graphic.llInit(RestaurantBook);
+	Button_Toggle_Customer.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, ToggleCustomer);
+	PageItem_Customer_Graphic.GetData()->PageItemButton = &Button_Toggle_Customer;
 
 	//Name
 	Text_Template.Phrase = "Name";
@@ -172,11 +174,12 @@ void CompleteOrder::Create_Customer_Grid()
 	PageGroup_Template.Position = { -0.7, 0.7 };
 
 	PageItemGridData Grid_Template;
-	Grid_Template.ResultCount = 1;
-	Grid_Template.Row = 1;
-	Grid_Template.AutoColumns = true;
+	Grid_Template.ResultCount = 0;
+	Grid_Template.RowCount = 1;
+	Grid_Template.yPadding = 40;
 
 	Grid_Customers.llInit(RestaurantBook, &PageGroup_Template, PageItem_Customer_Graphic.GetData(), Grid_Template);
+
 }
 
 void CompleteOrder::Update_Customer_Grid()
@@ -185,18 +188,26 @@ void CompleteOrder::Update_Customer_Grid()
 
 	int CustomerCount = 0;
 
+	//Replace all graphics
 	for (auto kv : Customer_Order_DataBase["2021 4 8"].CustomerOrders)
 	{
 		CustomerCount++;
 	}
 
-	Log::LogInt("Nubmer of Customer Orders: ", CustomerCount);
-
 	Grid_Customers.SetResultCount(CustomerCount);
+
+	llPageItemData* First_Customer_Graphic = Grid_Customers.GetFirst();
+
+	for (auto kv : Customer_Order_DataBase["2021 4 8"].CustomerOrders)
+	{
+		Replace_Customer_Graphic(kv.second, First_Customer_Graphic);
+		First_Customer_Graphic = First_Customer_Graphic->Next;
+	}
 }
 
 void CompleteOrder::ToggleCustomer()
 {
+	Log::LogString("Customer Toggled");
 	if (Page_Complete_Order.ElementsHovered.PageItem == nullptr) { Log::LogString("Select Failed");  return; }
 
 	bool Graphic_Selected = Page_Complete_Order.ElementsHovered.PageItem->GraphicSelected;
@@ -222,19 +233,20 @@ void CompleteOrder::SelectCustomer()
 	const string Customer_Last_Name = Page_Complete_Order.ElementsHovered.PageItem->DescriptiveData;
 	
 	//Get The Customer Order
-	const CustomerOrder& Customer_Order = Current_Day_Orders.CustomerOrders[Customer_Last_Name];
+	const CustomerOrder& Customer_Order = Customer_Order_DataBase["2021 4 8"].CustomerOrders[Customer_Last_Name];//Current_Day_Orders.CustomerOrders[Customer_Last_Name];
 	
 	//Customer Order in the Container
 	if (Orders_Selected.find(Customer_Last_Name) == Orders_Selected.end())
 	{
 		//Add Customer Order
 		Orders_Selected[Customer_Last_Name] = Customer_Order;
-		Highlight_Customer_Graphic();
+		//Highlight_Customer_Graphic();
 	}
 	
 	//Display Selected Dishes
 	Update_Condensed_Dishes();
-	Update_Dish_Graphics();
+	//Update_Dish_Graphics();
+	Update_Dish_Grid();
 	Print_Condensed_Dishes();
 
 }
@@ -448,7 +460,7 @@ void CompleteOrder::Replace_Customer_Graphic(const CustomerOrder& Customer_Order
 	Ordered_Dish_Graphic_Attribute.LoadedBook = RestaurantBook;
 
 	//Customer Name
-	Attribute_Graphic_Data = Attribute_Graphic_Data->Next; //FIX THIS
+	//Attribute_Graphic_Data = Attribute_Graphic_Data->Next; //FIX THIS
 	Ordered_Dish_Graphic_Attribute.llSwitch(Attribute_Graphic_Data);
 	Ordered_Dish_Graphic_Attribute.SetllText(Customer_Order_To_Replace.CustomerDetails.FirstName + " " + Customer_Order_To_Replace.CustomerDetails.LastName);
 	last_shapegroup_edges = Ordered_Dish_Graphic_Attribute.GetEdgesWithBackGround();
@@ -466,26 +478,26 @@ void CompleteOrder::Replace_Customer_Graphic(const CustomerOrder& Customer_Order
 	Ordered_Dish_Graphic.llSwitch(Customer_Order_PageItem);
 	Ordered_Dish_Graphic.GetData()->DescriptiveData = Customer_Order_To_Replace.CustomerDetails.LastName;
 
-	int Padding = 20;
-	int AlignmentType;
-	if (first_customer_order == true)
-	{
-		AlignmentType = MATCH_BEGINNINGS;
-		first_customer_order = false;
-
-		Log::LogString("Yes First");
-		Ordered_Dish_Graphic.PlaceBelow(last_customer_order_edges, AlignmentType, Padding);
-		Ordered_Dish_Graphic.UnHide();
-		last_customer_order_edges = Ordered_Dish_Graphic.GetEdgesWithBackGround();
-	}
-	else
-	{
-		Log::LogString("Not First");
-		AlignmentType = MATCH_CENTERS;
-		Ordered_Dish_Graphic.PlaceRight(last_customer_order_edges, AlignmentType, Padding);
-		Ordered_Dish_Graphic.UnHide();
-		last_customer_order_edges = Ordered_Dish_Graphic.GetEdgesWithBackGround();
-	}
+	//int Padding = 20;
+	//int AlignmentType;
+	//if (first_customer_order == true)
+	//{
+	//	AlignmentType = MATCH_BEGINNINGS;
+	//	first_customer_order = false;
+	//
+	//	Log::LogString("Yes First");
+	//	Ordered_Dish_Graphic.PlaceBelow(last_customer_order_edges, AlignmentType, Padding);
+	//	Ordered_Dish_Graphic.UnHide();
+	//	last_customer_order_edges = Ordered_Dish_Graphic.GetEdgesWithBackGround();
+	//}
+	//else
+	//{
+	//	Log::LogString("Not First");
+	//	AlignmentType = MATCH_CENTERS;
+	//	Ordered_Dish_Graphic.PlaceRight(last_customer_order_edges, AlignmentType, Padding);
+	//	Ordered_Dish_Graphic.UnHide();
+	//	last_customer_order_edges = Ordered_Dish_Graphic.GetEdgesWithBackGround();
+	//}
 }
 
 void CompleteOrder::Hide_Customer_Graphic(llPageItemData* PageItem_Customer_Graphic_Data)
@@ -532,9 +544,69 @@ void CompleteOrder::Condense_Ordered_Dishes()
 void CompleteOrder::Update_Condensed_Dishes()
 {
 	//Condense Again with a Clean Slate 
-	All_Ordered_Dishes.clear();
+	//All_Ordered_Dishes.clear();
 	Condense_Ordered_Dishes();
 }
+
+void CompleteOrder::Create_Dish_Graphic()
+{
+	TextData Text_Template;
+	PageItemData PageItem_Template;
+	PageItem_Template.Position = { 0.0, 0.0 };
+	llShapeGroupData ShapeGroup_Template;
+
+	PageItem_Ordered_Dish.llInit(RestaurantBook);
+
+	//Name
+	Text_Template.Phrase = "Name";
+	Text Text_Name(RestaurantBook, &ShapeGroup_Template, Text_Template);
+
+	//Quantity of items
+	Text_Template.Phrase = " 0";
+	Text Text_Item_Quantity(RestaurantBook, &ShapeGroup_Template, Text_Template);
+	Text_Item_Quantity.PlaceLeft(Text_Name.GetEdges(), MATCH_BEGINNINGS, 10);
+
+	Log::LogString("Graphic Created");
+}
+
+void CompleteOrder::Create_Dish_Grid()
+{
+	Log::LogString("Creating Customer Grid");
+	llPageGroupData PageGroup_Template;
+	PageGroup_Template.Position = { -0.8, 0.5 };
+
+	PageItemGridData Grid_Template;
+	Grid_Template.ResultCount = 0;
+	Grid_Template.ColumnCount = 1;
+	Grid_Template.yPadding = 40;
+
+	Grid_Dishes.llInit(RestaurantBook, &PageGroup_Template, PageItem_Ordered_Dish.GetData(), Grid_Template);
+
+}
+
+void CompleteOrder::Update_Dish_Grid()
+{
+	Log::LogString("Updating Grid");
+
+	int DishCount = 0;
+
+	//Replace all graphics
+	for (auto kv : All_Ordered_Dishes)
+	{
+		DishCount++;
+	}
+
+	Grid_Dishes.SetResultCount(DishCount);
+
+	//llPageItemData* First_Dish_Graphic = Grid_Dishes.GetFirst();
+	//
+	//for (auto kv : All_Ordered_Dishes)
+	//{
+	//	Replace_Dish_Graphic(kv.first, kv.second, First_Dish_Graphic);
+	//	First_Dish_Graphic = First_Dish_Graphic->Next;
+	//}
+}
+
 
 void CompleteOrder::Print_Condensed_Dishes()
 {
@@ -553,7 +625,9 @@ void CompleteOrder::Prepare_Dish_Graphics()
 	DRPageGroup_Dish.Capture(RestaurantBook);
 
 	//Condensed Dish Graphics
-	Update_Dish_Graphics();
+	//Update_Dish_Graphics();
+	Create_Dish_Graphic();
+	Create_Dish_Grid();
 }
 
 void CompleteOrder::Update_Dish_Graphics()
@@ -671,7 +745,7 @@ void CompleteOrder::Replace_Dish_Graphic(string Name, const int& Quantity, llPag
 	Dish_Graphic_Reference.LoadedBook = RestaurantBook;
 	Dish_Graphic_Reference.llSwitch(CurrentShapeGroup);
 	Dish_Graphic_Reference.SetllText(to_string(Quantity));
-	CurrentEdges = Dish_Graphic_Reference.GetEdges();
+	//CurrentEdges = Dish_Graphic_Reference.GetEdges();
 
 	//Dish Quantity
 	CurrentShapeGroup = CurrentShapeGroup->Next;
@@ -680,17 +754,17 @@ void CompleteOrder::Replace_Dish_Graphic(string Name, const int& Quantity, llPag
 	Dish_Graphic_Reference.PlaceRight(CurrentEdges, MATCH_FLOORS);
 
 	//Place New Side
-	int Spacing = 20;
-	if (first_dish == true) { Spacing = 200; first_dish = false; }
+	//int Spacing = 20;
+	//if (first_dish == true) { Spacing = 200; first_dish = false; }
 
-	PageGroupItem PageItem_Dish_Graphic(Dish_PageItem);
-	PageItem_Dish_Graphic.LoadedBook = RestaurantBook;
-	PageItem_Dish_Graphic.llSwitch(Dish_PageItem);
-	PageItem_Dish_Graphic.PlaceBelow(last_dish_edges, MATCH_BEGINNINGS, Spacing);
-	PageItem_Dish_Graphic.UnHide();
+	//PageGroupItem PageItem_Dish_Graphic(Dish_PageItem);
+	//PageItem_Dish_Graphic.LoadedBook = RestaurantBook;
+	//PageItem_Dish_Graphic.llSwitch(Dish_PageItem);
+	//PageItem_Dish_Graphic.PlaceBelow(last_dish_edges, MATCH_BEGINNINGS, Spacing);
+	//PageItem_Dish_Graphic.UnHide();
 	Dish_PageItem->DescriptiveData = Name; //Attach Key to UI
 
-	last_dish_edges = PageItem_Dish_Graphic.GetEdgesWithBackGround();
+	//last_dish_edges = PageItem_Dish_Graphic.GetEdgesWithBackGround();
 
 }
 

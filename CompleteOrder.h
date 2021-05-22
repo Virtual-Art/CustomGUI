@@ -99,6 +99,7 @@ namespace CompleteOrder
 	static llPageItemData* First_Dish_Graphic;
 	static llPageItemData* Dish_Selected;
 
+	static PageItemGrid Grid_Dishes;
 	static PageGroup PageGroup_Ordered_Dishes;
 	static PageGroupItem PageItem_Ordered_Dish;
 	static Text Text_Dish_Name;
@@ -110,6 +111,10 @@ namespace CompleteOrder
 	void Condense_Ordered_Dishes();
 	void Print_Condensed_Dishes();
 	void Update_Condensed_Dishes();
+
+	void Create_Dish_Graphic();
+	void Create_Dish_Grid();
+	void Update_Dish_Grid();
 
 	void Update_Dish_Graphics();              //Manages all Dish Graphics 
 	void Add_Dish_Graphic(const string& Name, const int& Quantity); //Creates a Single Side Graphic

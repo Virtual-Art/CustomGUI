@@ -25,6 +25,10 @@ void PageItemGrid::llInit(llBookData* llBook, llPageGroupData* llPageGroup, llPa
 //Working in terms of the book and data
 void PageItemGrid::AddPageItemGrid()
 {
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR::AddPageItemGrid FAILED:: Invalid PageGroup State"); return; }
+	if (CurrentGrid.RowCount < 0) { CurrentGrid.RowCount = 0; }
+	if (CurrentGrid.ColumnCount < 0) { CurrentGrid.ColumnCount = 0; }
+
 	//Place out of view
 	PageGroupItem PageItem_First(Grid_Template);
 	PageItem_First.LoadedBook = LoadedBook;
@@ -38,26 +42,67 @@ void PageItemGrid::AddPageItemGrid()
 	PageItem_First.SetllPosition(CurrentllPageGroup->Position, CurrentllPageGroup->InputType); //Doubling ......?
 	CurrentGrid.first_edges = PageItem_First.GetEdges();
 	CurrentGrid.last_edges = CurrentGrid.first_edges;
+	PageGroupItem PageItem_Current(CurrentPageItem);
+	PageItem_Current.LoadedBook = LoadedBook;
 
 	//Provide at least one page item hide if none required
 	if (CurrentGrid.ResultCount == 0) {PageItem_First.Hide();}
 
+	/////////////////////
+	glm::vec4 LastColumnOrRowEdges = CurrentGrid.last_edges;
+	glm::vec4 EdgeToUse = CurrentGrid.last_edges;
+	int SwapCount;
+	int CurrentCount = 1;
+
+	SwapCount = SetPlacementDirection();
+
 	//Loop through Result Count and add a PageItem to the grid
 	for (int i = 0; i < (CurrentGrid.ResultCount - 1); i++)
 	{
+		// Stop Typing, it's time for a new line
+		if (CurrentCount == SwapCount)
+		{
+			SwapPlacementDirection(); // Iteration j
+			CurrentCount = -1;
+			EdgeToUse = LastColumnOrRowEdges; //First Column
+		}
+
+		//We are on a new line, it's time to go back to typing
+		if (CurrentCount == 0) // 0
+		{
+			SwapPlacementDirection(); // Iteration  after j
+			CurrentCount = 1;
+		}
+		///////////////////////////
 		//Add a PageItem
+		//CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
+		//PageGroupItem PageItem_Current(CurrentPageItem);
+		//PageItem_Current.LoadedBook = LoadedBook;
+		//PageItem_Current.llSwitch(CurrentPageItem);
+		//PageItem_Current.PlaceBelow(CurrentGrid.last_edges, MATCH_CENTERS, CurrentGrid.yPadding);
+		//CurrentGrid.last_edges = PageItem_Current.GetEdges();
+		////////////////////////////////////////////////
+		//Add if Neccessary
 		CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
-		PageGroupItem PageItem_Current(CurrentPageItem);
-		PageItem_Current.LoadedBook = LoadedBook;
 		PageItem_Current.llSwitch(CurrentPageItem);
-		PageItem_Current.PlaceBelow(CurrentGrid.last_edges, MATCH_CENTERS, CurrentGrid.yPadding);
-		CurrentGrid.last_edges = PageItem_Current.GetEdges();
+		(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+		EdgeToUse = PageItem_Current.GetEdgesWithBackGround();
+
+		//New Column
+		if (CurrentCount == -1)
+		{
+			LastColumnOrRowEdges = EdgeToUse;
+		}
+
+		CurrentCount++;
 	}
 }
 
 void PageItemGrid::ReplacePageItemGrid()
 {
 	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR::ReplacePageItemGrid FAILED:: Invalid PageGroup State"); return; }
+	if (CurrentGrid.RowCount < 0) { CurrentGrid.RowCount = 0; }
+	if (CurrentGrid.ColumnCount < 0) { CurrentGrid.ColumnCount = 0; }
 
 	//Make Sure Reference is Visible or it can ruin things
 	PageGroupItem PageItem_First(Grid_Template);
@@ -69,6 +114,7 @@ void PageItemGrid::ReplacePageItemGrid()
 	llPageItemData* Current_PageItem = HeadPageItem(CurrentllPageGroup->PageItem);
 	PageItem_First.llSwitch(Current_PageItem);
 	PageItem_First.SetllPosition(CurrentllPageGroup->Position, CurrentllPageGroup->InputType); //Doubling ......?
+	PageItem_First.UnHide();
 	CurrentGrid.first_edges = PageItem_First.GetEdgesWithBackGround();
 	CurrentGrid.last_edges = CurrentGrid.first_edges;
 	PageGroupItem PageItem_Current(Current_PageItem);
@@ -121,7 +167,10 @@ void PageItemGrid::ReplacePageItemGrid()
 		{
 			Current_PageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
 			PageItem_Current.llSwitch(Current_PageItem);
-			(PageItem_Current.*CurrentPlacement)(CurrentGrid.last_edges, MATCH_CENTERS, CurrentGrid.yPadding);
+			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+			EdgeToUse = PageItem_Current.GetEdgesWithBackGround();
+
+			//New Column
 			if (CurrentCount == -1)
 			{
 				LastColumnOrRowEdges = EdgeToUse;
@@ -166,34 +215,56 @@ void PageItemGrid::SwapPlacementDirection()
 
 void PageItemGrid::SetResultCount(int NewResultCount)
 {
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR::SetResultCount FAILED:: Invalid PageGroup State"); return; }
+	if (CurrentGrid.ColumnCount > 0 && CurrentGrid.RowCount > 0) { Log::LogString("WARNING:: Grid SetResultCount BYPASSED:: Column and Row has a restricted count"); return; }
+
 	CurrentGrid.ResultCount = NewResultCount;
 
 	llUpdate();
 }
 
+void PageItemGrid::SetColumnRow(int ColumnCount, int RowCount)
+{
+	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR::SetColumnRow FAILED:: Invalid PageGroup State"); return; }
+	if (CurrentGrid.ColumnCount > 0 && CurrentGrid.RowCount > 0) { CurrentGrid.ResultCount = CurrentGrid.ColumnCount * CurrentGrid.RowCount; }
 
+	CurrentGrid.ColumnCount = ColumnCount;
+	CurrentGrid.RowCount = RowCount;
+
+	llUpdate();
+}
+
+llPageItemData* PageItemGrid::GetFirst()
+{
+	return HeadPageItem(CurrentllPageGroup->PageItem);
+}
 
 int PageItemGrid::SetPlacementDirection()
 {
+	Log::LogString("Setting Placement Direction");
+
 	//auto generated lines going towards right
-	if (CurrentGrid.AutoColumns == true)
+	if (CurrentGrid.RowCount > 0 && CurrentGrid.ColumnCount == 0) //if Rows is > 0
 	{
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
-		return CurrentGrid.Row;
+		if (CurrentGrid.RowCount == 1) { CurrentPlacement = &PageGroupItem::PlaceRight; return NEVER_SWITCH; }
+		return CurrentGrid.RowCount;
 	}
 
 	//auto generated lines going towards bottom
-	if (CurrentGrid.AutoRows == true)
+	if (CurrentGrid.ColumnCount > 0 && CurrentGrid.RowCount == 0) // if Columns is greater than 0
 	{
 		CurrentPlacement = &PageGroupItem::PlaceRight;
-		return CurrentGrid.Column;
+		if (CurrentGrid.ColumnCount == 1) { CurrentPlacement = &PageGroupItem::PlaceBelow;  return NEVER_SWITCH; }
+		return CurrentGrid.ColumnCount;
 	}
 
 	//Direct Grid
-	if (CurrentGrid.AutoRows == false && CurrentGrid.AutoColumns == false)
+	if (CurrentGrid.RowCount > 0  && CurrentGrid.ColumnCount > 0) //if row and column > 0
 	{
-		CurrentGrid.ResultCount = CurrentGrid.Column * CurrentGrid.Row;
-		CurrentPlacement = &PageGroupItem::PlaceRight;
-		return CurrentGrid.Column;
+		Log::LogString("Setting Result Count");
+		CurrentPlacement = &PageGroupItem::PlaceBelow;
+		CurrentGrid.ResultCount = CurrentGrid.ColumnCount * CurrentGrid.RowCount;
+		return CurrentGrid.ColumnCount;
 	}
 }

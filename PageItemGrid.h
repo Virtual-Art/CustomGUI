@@ -7,6 +7,7 @@
 
 #define MIN_COLUMN 0 
 #define MIN_ROW 0 
+#define NEVER_SWITCH -2
 
 
 namespace PageItemGridActions
@@ -20,10 +21,8 @@ namespace PageItemGridActions
 struct PageItemGridData
 {
 	int ResultCount = 1;
-	unsigned int Row;
-	unsigned int Column;
-	bool AutoRows = false;
-	bool AutoColumns = false;
+	int RowCount = 0;
+	int ColumnCount = 0;
 	int xPadding = 10;
 	int yPadding = 10;
 	glm::vec4 last_edges;        //(Object) Graphic Reference for the form filler to position with
@@ -60,6 +59,8 @@ public:
 	void ReplacePageItemGrid();
 
 	void SetResultCount(int NewResultCount);
+	void SetColumnRow(int Column, int Row);
+	llPageItemData* GetFirst();
 	void llUpdate() override;
 	//+-----------------------+//
 
