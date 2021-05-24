@@ -18,7 +18,7 @@ namespace ApplicationMenu
 	static int CurrentPage;
 	static NewPage Page_ApplicationMenu;
 	static BookDirectory BD_ApplicationMenu;
-	static BookDirectory ElementsHovered;
+	//static BookDirectory ElementsHovered;
 	static llBookData* RestaurantBook;
 
 	void Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);

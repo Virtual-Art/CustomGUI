@@ -6,7 +6,7 @@ void ApplicationMenu::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderP
 
 	Page_ApplicationMenu.llInit(Restaurant_POS, ShaderProgram, Texture0, Texture1, Texture2);
 	BD_ApplicationMenu.Capture(Restaurant_POS);
-	CurrentPage = PAGE_SUBMIT_ORDER;
+	CurrentPage = PAGE_COMPLETE_ORDER;
 
 	CreatePageSelector();
 }
@@ -16,7 +16,7 @@ int ApplicationMenu::Update()
 	//BD_ApplicationMenu.LoadUp(RestaurantBook);
 	//RestaurantBook->Page = Page_ApplicationMenu.GetData();
 	Page_ApplicationMenu.DrawPage();
-	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
+	//MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
 	return CurrentPage;
 }
 
@@ -74,8 +74,9 @@ void ApplicationMenu::Highlight_Page_Selector(llShapeGroupData* ShapeGroup_Secti
 
 void ApplicationMenu::Select_Page()
 {
-	CurrentPage = ElementsHovered.ShapeGroup->Key;
-	llShapeGroupData* ShapeGroup_Hovered = ElementsHovered.ShapeGroup;
+	
+	CurrentPage = Page_ApplicationMenu.ElementsHovered.ShapeGroup->Key;
+	llShapeGroupData* ShapeGroup_Hovered = Page_ApplicationMenu.ElementsHovered.ShapeGroup;
 	Highlight_Page_Selector(ShapeGroup_Hovered);
 
 }

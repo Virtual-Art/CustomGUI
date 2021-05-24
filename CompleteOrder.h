@@ -116,7 +116,7 @@ namespace CompleteOrder
 	void Create_Dish_Grid();
 	void Update_Dish_Grid();
 
-	void Update_Dish_Graphics();              //Manages all Dish Graphics 
+	//void Update_Dish_Graphics();              //Manages all Dish Graphics 
 	void Add_Dish_Graphic(const string& Name, const int& Quantity); //Creates a Single Side Graphic
 	void Replace_Dish_Graphic(string Name, const int& Quantity, llPageItemData* Dish_PageItem);     //Removes a Single Section Graphic
 	void Hide_Dish_Graphic(llPageItemData* Dish_ShapeGroup);

@@ -28,6 +28,8 @@ struct PageItemGridData
 	glm::vec4 last_edges;        //(Object) Graphic Reference for the form filler to position with
 	glm::vec4 first_edges;        //(Object) Graphic Reference for the form filler to position with
 	bool first;
+	int xMatchType = MATCH_CENTERS;
+	int yMatchType = MATCH_CENTERS;
 };
 
 
@@ -66,6 +68,7 @@ public:
 
 private:
 
+	int CurrentMatchType;
 	int SetPlacementDirection();
 	void SwapPlacementDirection();
 

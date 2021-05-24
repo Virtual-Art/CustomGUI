@@ -45,8 +45,7 @@ void PageItemGrid::AddPageItemGrid()
 	PageGroupItem PageItem_Current(CurrentPageItem);
 	PageItem_Current.LoadedBook = LoadedBook;
 
-	//Provide at least one page item hide if none required
-	if (CurrentGrid.ResultCount == 0) {PageItem_First.Hide();}
+
 
 	/////////////////////
 	glm::vec4 LastColumnOrRowEdges = CurrentGrid.last_edges;
@@ -96,6 +95,9 @@ void PageItemGrid::AddPageItemGrid()
 
 		CurrentCount++;
 	}
+
+	//Provide at least one page item hide if none required
+	if (CurrentGrid.ResultCount == 0) { PageItem_First.Hide(); }
 }
 
 void PageItemGrid::ReplacePageItemGrid()
@@ -189,6 +191,9 @@ void PageItemGrid::ReplacePageItemGrid()
 		PageItem_Current.Hide();
 		Current_PageItem = Current_PageItem->Next;
 	}
+
+	//Provide at least one page item hide if none required
+	if (CurrentGrid.ResultCount == 0) { PageItem_First.Hide(); }
 }
 
 void PageItemGrid::llUpdate()
@@ -204,11 +209,13 @@ void PageItemGrid::SwapPlacementDirection()
 	if (CurrentPlacement == static_cast<void(PageGroupItem::*)(const glm::vec4&, int, int)> (&PageGroupItem::PlaceBelow))
 	{
 		CurrentPlacement = &PageGroupItem::PlaceRight;
+		CurrentMatchType = CurrentGrid.yMatchType;
 		Log::LogString("Swapped to Right");
 	}
 	else
 	{
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
+		CurrentMatchType = CurrentGrid.xMatchType;
 		Log::LogString("Swapped to Below");
 	}
 }
@@ -247,7 +254,12 @@ int PageItemGrid::SetPlacementDirection()
 	if (CurrentGrid.RowCount > 0 && CurrentGrid.ColumnCount == 0) //if Rows is > 0
 	{
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
-		if (CurrentGrid.RowCount == 1) { CurrentPlacement = &PageGroupItem::PlaceRight; return NEVER_SWITCH; }
+		CurrentMatchType = CurrentGrid.xMatchType;
+		if (CurrentGrid.RowCount == 1) 
+		{ 
+			CurrentPlacement = &PageGroupItem::PlaceRight; return NEVER_SWITCH; 
+			CurrentMatchType = CurrentGrid.yMatchType;
+		}
 		return CurrentGrid.RowCount;
 	}
 
@@ -255,7 +267,12 @@ int PageItemGrid::SetPlacementDirection()
 	if (CurrentGrid.ColumnCount > 0 && CurrentGrid.RowCount == 0) // if Columns is greater than 0
 	{
 		CurrentPlacement = &PageGroupItem::PlaceRight;
-		if (CurrentGrid.ColumnCount == 1) { CurrentPlacement = &PageGroupItem::PlaceBelow;  return NEVER_SWITCH; }
+		CurrentMatchType = CurrentGrid.yMatchType;
+		if (CurrentGrid.ColumnCount == 1) 
+		{
+			CurrentPlacement = &PageGroupItem::PlaceBelow;  return NEVER_SWITCH; 
+			CurrentMatchType = CurrentGrid.xMatchType;
+		}
 		return CurrentGrid.ColumnCount;
 	}
 
@@ -264,6 +281,7 @@ int PageItemGrid::SetPlacementDirection()
 	{
 		Log::LogString("Setting Result Count");
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
+		CurrentMatchType = CurrentGrid.xMatchType;
 		CurrentGrid.ResultCount = CurrentGrid.ColumnCount * CurrentGrid.RowCount;
 		return CurrentGrid.ColumnCount;
 	}
