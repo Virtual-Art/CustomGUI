@@ -709,7 +709,8 @@ int main(int argc, char** argv)
 	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	//PageItemGrid First_GRID(&Book_Restaurant_POS, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
-
+	float WholeNumberTest = 456.00;
+	Log::LogString(SubmitOrder::ProcessDecimalPlaceWhole(WholeNumberTest, false, 2));
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))

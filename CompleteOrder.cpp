@@ -14,6 +14,7 @@ void CompleteOrder::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderPro
 	CompleteOrderDirectory = RestaurantBook->Page;
 
 	Quad PlaceHolder(RestaurantBook);
+	PlaceHolder.SetllPosition({-3.0, 0.0});
 
 	Prepare_Customers();
 	Prepare_Dish_Graphics();

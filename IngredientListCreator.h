@@ -21,13 +21,6 @@
 #define LITRE_US_TEASPOON_FACTOR 202.884 
 #define LITRE_MILLILITRE_FACTOR 1000 //
 
-struct Ingredient_Details
-{
-	string Name;
-	double Measurement;
-	int Measurement_Type;
-	int Measurmenet_Medium;
-};
 
 typedef double(*Measurement_Function)(const double&); //Points to a liquid function
 typedef unordered_map<int, Measurement_Function> ConversionFunctions;
@@ -36,9 +29,100 @@ typedef unordered_map<int, ConversionFunctions> Unordered_2d_Map;
 //The purpose of this class is to be able to select orders and display the ingredient list
 namespace IngredientListCreator
 {
-	typedef map<string, Ingredient_Details> IngredientList;
+
 	static Unordered_2d_Map litre_kilo_to;
 	static Unordered_2d_Map to_litre_kilo;
+
+	string get_measurement_label(int Ex_Cup, int Ex_LIQUID);
+	int PreferredLiquidforCooking(float MeasurementinLitres); //Ex: Litres -> Cup/Tablespoons/Teaspoon
+	int PreferredLiquid(float MeasurementinLitres);           //Ex: Litres -> Mililetres/Litres
+	int PreferredWeightMetric(float MeasurementinKilo);       //Ex: Kilo -> Kilo/Grams/Miligrams
+	int PreferredWeightImperial(float MeasurementinKilo);     //Ex: Kilo -> Pound/Ounce
+
+
+	//All you have to set is the Name, Measurement in Default Form and the type
+	struct Ingredient_Details
+	{
+		//Needed for Details
+		string Name;						  // Soya Sauce
+		double Measurement_Default;		      // 1.0L
+		int Measurement_Type;			      // LIQUID	
+
+		//Needed for graphic
+		double Basic_Measurement;			  // 23 
+		int    Basic_Medium_Type;			  //MILILITRE
+		double Descriptive_Measurement;		  // 40
+		int    Descriptive_Medium_Type;	      //TEASPOON
+
+		void CalculateMeasurements()
+		{
+			SetBasicMeasurement();
+			SetDescriptiveMeasurement();
+		}
+
+		string GetBasicMeasurement()
+		{
+			string string_Basic_Measurment       = SubmitOrder::ProcessDecimalPlaceWhole(Basic_Measurement, false, 2);
+			string string_Basic_Measurment_Label = get_measurement_label(Basic_Medium_Type, Measurement_Type);
+			return string_Basic_Measurment + string_Basic_Measurment_Label;
+		}
+
+		string GetDescriptiveMeasurement()
+		{
+			if (Basic_Medium_Type == Descriptive_Medium_Type) { return " "; }
+
+			string string_Descriptive_Measurment = SubmitOrder::ProcessDecimalPlaceWhole(Descriptive_Measurement, false, 2);
+			string string_Descriptive_Measurment_Label = get_measurement_label(Descriptive_Medium_Type, Measurement_Type);
+			return string_Descriptive_Measurment + string_Descriptive_Measurment_Label;
+		}
+
+	private:
+		void SetBasicMeasurement()
+		{
+			if (Measurement_Type == LIQUID)
+			{
+				//Ex: MILLILITRE
+				Basic_Medium_Type = PreferredLiquid(Measurement_Default); //Won't Fail
+			}
+			if (Measurement_Type == WEIGHT)
+			{
+				//Ex: MILLIGRAM
+				Basic_Medium_Type = PreferredWeightMetric(Measurement_Default); //Possible Fail
+			}
+			if (Measurement_Type == QUANTITY)
+			{
+				//Ex: QUANTITY
+				Basic_Medium_Type = QUANTITY;
+			}
+
+			//Ex: 1000 = [LIQUID][MILLILITRE](1.0L)
+			Basic_Measurement = litre_kilo_to[Measurement_Type][Basic_Medium_Type](Measurement_Default);
+		}
+
+		void SetDescriptiveMeasurement()
+		{
+			if (Measurement_Type == LIQUID)
+			{
+				//Ex: MILLILITRE
+				Descriptive_Medium_Type = PreferredLiquidforCooking(Measurement_Default); //won't fail
+			}
+			if (Measurement_Type == WEIGHT)
+			{
+				//Ex: MILLIGRAM
+				Descriptive_Medium_Type = PreferredWeightImperial(Measurement_Default); //won't fail
+			}
+			if (Measurement_Type == QUANTITY)
+			{
+				//Ex: QUANTITY
+				Descriptive_Medium_Type = QUANTITY;
+			}
+
+			//Ex: 1000 = [LIQUID][MILLILITRE](1.0L)
+			Descriptive_Measurement = litre_kilo_to[Measurement_Type][Descriptive_Medium_Type](Measurement_Default);
+		}
+	};
+
+	static map<string, Ingredient_Details> ShoppingList;
 
 	static llBookData* RestaurantBook;
 	static ShaderProgram* CurrentShader;
@@ -47,7 +131,7 @@ namespace IngredientListCreator
 	static RawTexture* CurrentTexture2;
 	static NewPage Page_IngredientListCreator;
 	static llPageData* IngredientListCreatorOrderDirectory;
-	static BookDirectory ElementsHovered;
+//	static BookDirectory ElementsHovered;
 
 	void Prepare();
 	void build_2d_conversion_map();
@@ -55,7 +139,7 @@ namespace IngredientListCreator
 	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Orders);
 	void Update(int CurrentPage, KeyResult* KeyResult);
 
-	static IngredientList ShoppingList;
+	//static IngredientList ShoppingList;
 	static map<string, SameDayOrders>* All_Customer_Orders;
 
 	static map<string, Ingredient>* All_Ingredients;
@@ -76,12 +160,23 @@ namespace IngredientListCreator
 
 	static Button Button_Update_Customer_Orders;
 	static Text Text_Customer_Orders_Label;
+	static map<string, CustomerOrder> Orders_Selected;
+	static PageItemGrid Grid_Shopping_List;
+	static Button Button_Remove_Item;
+	static PageGroupItem PageItem_Shopping_List_Item;
 
 	void Prepare_Ingredient_List_Creator();
+
 	void Prepare_Customer_Orders();
+	void Create_Shopping_List_Item();
+	void Create_Shopping_List_Grid();
 
 
 	void Add_Dish_To_Shopping_List();
+
+	void LoadShoppingList();
+	void UpdateShoppingList();
+	void Remove_Shopping_list_Item();
 
 	//Display Customer Orders for selection
 	void Update_Customer_Orders_Graphics();
@@ -101,7 +196,7 @@ namespace IngredientListCreator
 	//Display Ingredient List
 	void Update_Ingredient_List_Graphics();
 	void Add_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Name, const string& Ingredient_Measurement);
-	void Replace_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Name, const string& Ingredient_Measurement, llPageItemData* Ordered_Dish_PageItem);
+	void Replace_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Name, llPageItemData* Ordered_Dish_PageItem);
 	void Hide_Ingredient_List_Graphic(llPageItemData* PageItem_Dish_Graphic);
 
 	int Get_Conversion_Measurement(int Ingredient_Type, double Measurement_In_Millilitres);
@@ -109,7 +204,6 @@ namespace IngredientListCreator
 	int Get_Weight_Conversion_Measurement(double Measurement_In_Millilitres);
 
 	//Create Ingredient List
-	void CreateShoppingList();
 	void ConsolidateOrderIngredients(CustomerOrder& ShoppingList);
 	void ConsolidateDishIngredients(OrderedDish& Dish);
 	void ConsolidateSideIngredients(DishSide& Side, int DishQuantity); //Main Function
@@ -118,11 +212,8 @@ namespace IngredientListCreator
 
 	string what_is_the_string(int Measurement_Type);
 
-	string get_liquid_string(int LiquidType);
-	string get_weight_string(int WeightType);
 
 	double Measurement_Conversion(const double& Measurement, int MeasurementType, int Convert_From, int Convert_To);
-
 
 	//Prints all ingredients in side
 	void PrintSideIngredients();

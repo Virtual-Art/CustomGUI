@@ -7,8 +7,11 @@ void IngredientListCreator::Prepare()
 
 void IngredientListCreator::build_2d_conversion_map()
 {
+	//Quantity
 	litre_kilo_to[QUANTITY][QUANTITY] = dud;
-	litre_kilo_to[LIQUID][0] = dud;
+
+	//Liquid
+	litre_kilo_to[LIQUID][LITRE] = dud;
 	litre_kilo_to[LIQUID][GALLON] = litre_to_gallon;
 	litre_kilo_to[LIQUID][QUART] = litre_to_quart;
 	litre_kilo_to[LIQUID][PINT] = litre_to_pint;
@@ -18,15 +21,19 @@ void IngredientListCreator::build_2d_conversion_map()
 	litre_kilo_to[LIQUID][TEASPOON] = litre_to_teaspoon;
 	litre_kilo_to[LIQUID][MILLILITRE] = litre_to_millilitre;
 		
-	litre_kilo_to[WEIGHT][0] = dud;
+	//Weight
+	litre_kilo_to[WEIGHT][KILO] = dud;
 	litre_kilo_to[WEIGHT][POUND] = kilo_to_pound;
 	litre_kilo_to[WEIGHT][OUNCE] = kilo_to_ounce;
 	litre_kilo_to[WEIGHT][TON] = kilo_to_ton;
 	litre_kilo_to[WEIGHT][GRAM] = kilo_to_gram;
 	litre_kilo_to[WEIGHT][MILLIGRAM] = kilo_to_milligram;
 
+	//Quantity
 	to_litre_kilo[QUANTITY][QUANTITY] = dud;
-	to_litre_kilo[LIQUID][0] = dud;
+
+	//Liquid
+	to_litre_kilo[LIQUID][LITRE] = dud;
 	to_litre_kilo[LIQUID][GALLON] = gallon_to_litre;
 	to_litre_kilo[LIQUID][QUART] = quart_to_litre;
 	to_litre_kilo[LIQUID][PINT] = pint_to_litre;
@@ -36,7 +43,8 @@ void IngredientListCreator::build_2d_conversion_map()
 	to_litre_kilo[LIQUID][TEASPOON] = teaspoon_to_litre;
 	to_litre_kilo[LIQUID][MILLILITRE] = millilitre_to_litre;
 
-	to_litre_kilo[WEIGHT][0] = dud;
+	//Weight
+	to_litre_kilo[WEIGHT][KILO] = dud;
 	to_litre_kilo[WEIGHT][POUND] = pound_to_kilo;
 	to_litre_kilo[WEIGHT][OUNCE] = ounce_to_kilo;
 	to_litre_kilo[WEIGHT][TON] = ton_to_kilo;
@@ -60,6 +68,7 @@ void IngredientListCreator::Prepare(llBookData* Restaurant_POS, ShaderProgram* S
 	IngredientListCreatorOrderDirectory = RestaurantBook->Page;
 
 	Prepare_Customer_Orders();
+	Prepare_Ingredient_List_Creator();
 	build_2d_conversion_map();
 }
 
@@ -79,12 +88,8 @@ void IngredientListCreator::Update(int CurrentPage, KeyResult* KeyResult)
 	if (CurrentPage != 2) { return; }
 
 	Page_IngredientListCreator.DrawPage();
-	MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
+	//MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
 
-	if (KeyResult->Key1 == GUI_X_CLICKED)
-	{
-		CreateShoppingList();
-	}
 }
 
 void IngredientListCreator::Prepare_Customer_Orders()
@@ -103,60 +108,125 @@ void IngredientListCreator::Prepare_Customer_Orders()
 
 	TextData_Template.Phrase = "Ingredient List";
 	ShapeGroup_Template.Position = { 0.0, 0.8 };
-	Button_Update_Ingredient_List.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, CreateShoppingList);
+	Button_Update_Ingredient_List.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, LoadShoppingList);
 	Text_Ingredient_List_Label.llInit(RestaurantBook, &ShapeGroup_Template, TextData_Template);
 	Text_Ingredient_List_Label.GetData()->ShapeGroupButton = &Button_Update_Ingredient_List;
 	first_ingredient_list_edges = Text_Ingredient_List_Label.GetEdges();
+
+
+	//Current_Day_Orders = Customer_Order_DataBase["2021 4 8"];
+}
+
+void IngredientListCreator::Prepare_Ingredient_List_Creator()
+{
+	Create_Shopping_List_Item();
+	Create_Shopping_List_Grid();
+}
+
+void IngredientListCreator::Create_Shopping_List_Item()
+{
+	TextData Text_Template;
+	PageItemData PageItem_Template;
+	PageItem_Template.Position = { 0.0, 0.0 };
+	llShapeGroupData ShapeGroup_Template;
+
+	PageItem_Shopping_List_Item.llInit(RestaurantBook);
+	Button_Remove_Item.Add_Mouse_Action(GUI_MOUSELEFT_CLICKED, &Remove_Shopping_list_Item);
+	PageItem_Shopping_List_Item.GetData()->PageItemButton = &Button_Remove_Item;
+
+	//Ingredient Name
+	Text_Template.Phrase = "1.0 L";
+	ShapeGroup_Template.Color = {0.0, 0.3, 1.0, 1.0};
+	Text Text_Name(RestaurantBook, &ShapeGroup_Template, Text_Template);
+
+	//Ingredient Basic Quantity + Label
+	Text_Template.Phrase = "Ingredient";
+	ShapeGroup_Template.Color = PageCreator::White;
+	Text Text_Basic_Quantity(RestaurantBook, &ShapeGroup_Template, Text_Template);
+	Text_Basic_Quantity.PlaceRight(Text_Name.GetEdges(), MATCH_CENTERS, 10);
+
+	//Ingredient Descriptive Quantity + Label
+	Text_Template.Phrase = "4.23 Cups";
+	ShapeGroup_Template.Color = { 0.0, 0.6, 1.0, 1.0 };
+	Text Text_Descriptive_Quantity(RestaurantBook, &ShapeGroup_Template, Text_Template);
+	Text_Descriptive_Quantity.PlaceRight(Text_Basic_Quantity.GetEdges(), MATCH_CENTERS, 10);
+
+	Log::LogString("Graphic Created");
+}
+
+void IngredientListCreator::Create_Shopping_List_Grid()
+{
+	Log::LogString("Creating Customer Grid");
+	llPageGroupData PageGroup_Template;
+	PageGroup_Template.Position = { 0.1, 0.6 };
+
+	PageItemGridData Grid_Template;
+	Grid_Template.ResultCount = 0;
+	Grid_Template.ColumnCount = 1;
+	Grid_Template.yPadding = 30;
+
+	Grid_Shopping_List.llInit(RestaurantBook, &PageGroup_Template, PageItem_Shopping_List_Item.GetData(), Grid_Template);
+
+}
+
+void IngredientListCreator::Remove_Shopping_list_Item()
+{
+	Log::LogString(Page_IngredientListCreator.ElementsHovered.PageItem->DescriptiveData + "Found");
+	llPageItemData* PageItem_Selected = Page_IngredientListCreator.ElementsHovered.PageItem;
+	
+	ShoppingList.erase(PageItem_Selected->DescriptiveData);
+	
+	UpdateShoppingList();
 }
 
 void IngredientListCreator::Update_Customer_Orders_Graphics()
 {
 	Log::LogString("IngredientListCreator");
-	//Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
-	//llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
-	//first_customer_order = true;
-	//last_customer_order_edges = first_customer_order_edges;
-	//bool AddOnly = false;
-	//
-	////Use the "Current_Section" to loop through it's dishes
-	//for (const auto& Same_DayOrder : Customer_Order_DataBase)
-	//{
-	//	const SameDayOrders& Date = Same_DayOrder.second;
-	//
-	//	for (const auto& kv : Date.CustomerOrders)
-	//	{
-	//		const CustomerOrder& Current_Customer_Order = kv.second;
-	//		//New Graphic
-	//		if (Current_Customer_Order_PageItem == nullptr)
-	//		{
-	//
-	//			//Create Graphic
-	//			Add_Customer_Orders_Graphic(Current_Customer_Order);
-	//			AddOnly = true;
-	//		}
-	//
-	//		////Existing Graphic
-	//		if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
-	//		{
-	//			//Change Graphic
-	//			Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
-	//		}
-	//
-	//		//if we add, it will go through replacing alse thats why we need this boolean
-	//		AddOnly = false;
-	//
-	//		//Stop Cycling if there is no shapegroup
-	//		if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
-	//	}
-	//
-	//	//Graphics left over
-	//	////Existing? // Add // Hide
-	//	while (Current_Customer_Order_PageItem != nullptr)
-	//	{
-	//		Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
-	//		Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
-	//	}
-	//}
+	Log::LogString("Updating Customer Order Graphics--------------------------------------------------");
+	llPageItemData* Current_Customer_Order_PageItem = First_Customer_Order_Graphic;
+	first_customer_order = true;
+	last_customer_order_edges = first_customer_order_edges;
+	bool AddOnly = false;
+	
+	//Use the "Current_Section" to loop through it's dishes
+	for (const auto& Same_DayOrder : Customer_Order_DataBase)
+	{
+		const SameDayOrders& Date = Same_DayOrder.second;
+	
+		for (const auto& kv : Date.CustomerOrders)
+		{
+			const CustomerOrder& Current_Customer_Order = kv.second;
+			//New Graphic
+			if (Current_Customer_Order_PageItem == nullptr)
+			{
+	
+				//Create Graphic
+				Add_Customer_Orders_Graphic(Current_Customer_Order);
+				AddOnly = true;
+			}
+	
+			////Existing Graphic
+			if (Current_Customer_Order_PageItem != nullptr && AddOnly != true)
+			{
+				//Change Graphic
+				Replace_Customer_Orders_Graphic(Current_Customer_Order, Current_Customer_Order_PageItem);
+			}
+	
+			//if we add, it will go through replacing alse thats why we need this boolean
+			AddOnly = false;
+	
+			//Stop Cycling if there is no shapegroup
+			if (Current_Customer_Order_PageItem != nullptr) { Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next; }
+		}
+	
+		//Graphics left over
+		////Existing? // Add // Hide
+		while (Current_Customer_Order_PageItem != nullptr)
+		{
+			Hide_Customer_Orders_Graphic(Current_Customer_Order_PageItem);
+			Current_Customer_Order_PageItem = Current_Customer_Order_PageItem->Next;
+		}
+	}
 }
 
 void IngredientListCreator::Add_Customer_Orders_Graphic(const CustomerOrder& Current_Customer_Order)
@@ -267,7 +337,7 @@ void IngredientListCreator::Update_Ingredient_List_Graphics()
 	for (auto& kv : ShoppingList)
 	{
 		Ingredient_Details& Current_Ingredient_Details = kv.second;
-		string Current_Ingredient_Measurement  = SubmitOrder::ProcessDecimalPlace(Current_Ingredient_Details.Measurement, false, 2);
+		string Current_Ingredient_Measurement  = SubmitOrder::ProcessDecimalPlace(Current_Ingredient_Details.Measurement_Default, false, 2);
 
 		//New Graphic
 		if (Current_Ingredient_List_PageItem == nullptr)
@@ -284,7 +354,7 @@ void IngredientListCreator::Update_Ingredient_List_Graphics()
 		{
 			//Change Graphic
 			Log::LogString("replacing list ingredient");
-			Replace_Ingredient_List_Graphic(Current_Ingredient_Details, Current_Ingredient_Measurement, Current_Ingredient_List_PageItem);
+			Replace_Ingredient_List_Graphic(Current_Ingredient_Details, Current_Ingredient_List_PageItem);
 		}
 
 		//if we add, it will go through replacing alse thats why we need this boolean
@@ -360,10 +430,9 @@ void IngredientListCreator::Add_Ingredient_List_Graphic(Ingredient_Details& Ingr
 
 }
 
-void IngredientListCreator::Replace_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Details, const string& Ingredient_Measurement, llPageItemData* Ingredient_List_Graphic_Data)
+void IngredientListCreator::Replace_Ingredient_List_Graphic(Ingredient_Details& Ingredient_Details, llPageItemData* Ingredient_List_Graphic_Data)
 {
 	if (Ingredient_List_Graphic_Data == nullptr) { Log::LogString("replace_ordered_dish_graphic ERROR:: ordered_dish_Graphic nullptr"); return; }
-	void SetPageDirectory();
 
 	//Prepare Ordered Dish Attribute Graphic Data 
 	glm::vec4 last_shapegroup_edges;
@@ -374,37 +443,25 @@ void IngredientListCreator::Replace_Ingredient_List_Graphic(Ingredient_Details& 
 	Text Ordered_Dish_Graphic_Attribute(Attribute_Graphic_Data);
 	Ordered_Dish_Graphic_Attribute.LoadedBook = RestaurantBook;
 
-	//Replace Ingredient List Name
-	Attribute_Graphic_Data = Attribute_Graphic_Data->Next; //FIX THIS
+	//Ingredient Name
+	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Details.GetBasicMeasurement());
 	Ordered_Dish_Graphic_Attribute.llSwitch(Attribute_Graphic_Data);
-	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Details.Name);
-	Ordered_Dish_Graphic_Attribute.PlaceRight(last_shapegroup_edges, MATCH_CENTERS, 20);
+	//Ordered_Dish_Graphic_Attribute.PlaceRight(last_shapegroup_edges, MATCH_CENTERS, 20);
 	last_shapegroup_edges = Ordered_Dish_Graphic_Attribute.GetEdges();
-	string gettingannoyed = what_is_the_string(Ingredient_Details.Measurement_Type);
 
-	//Replace Ingredient List Measurement
+	//Ingredient Basic Quantity + Label
 	Attribute_Graphic_Data = Attribute_Graphic_Data->Next;
 	Ordered_Dish_Graphic_Attribute.llSwitch(Attribute_Graphic_Data);
-	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Measurement + gettingannoyed);
+	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Details.Name);
 	Ordered_Dish_Graphic_Attribute.PlaceRight(last_shapegroup_edges, MATCH_CENTERS, 10);
 	last_shapegroup_edges = Ordered_Dish_Graphic_Attribute.GetEdges();
+	Ingredient_List_Graphic_Data->DescriptiveData = Ingredient_Details.Name;
 
-
-	//Temporary Fix
-	int AlignmentType = MATCH_CENTERS;
-	int Padding = 20;
-
-	//Only the first item has a centered alignment type
-	if (first_ingredient_list == true) { AlignmentType = MATCH_CENTERS; first_ingredient_list = false; Padding = 40; }
-
-	//Prepare Ordered Dish Graphic for editing
-	PageGroupItem Ordered_Dish_Graphic(Ingredient_List_Graphic_Data);
-	Ordered_Dish_Graphic.LoadedBook = RestaurantBook;
-	Ordered_Dish_Graphic.llSwitch(Ingredient_List_Graphic_Data);
-	Ordered_Dish_Graphic.PlaceBelow(last_ingredient_list_edges, AlignmentType, Padding);
-	//Ordered_Dish_Graphic.UnHide();
-
-	last_ingredient_list_edges = Ordered_Dish_Graphic.GetEdgesWithBackGround();
+	//Ingredient Descriptive Quantity + Label
+	Attribute_Graphic_Data = Attribute_Graphic_Data->Next;
+	Ordered_Dish_Graphic_Attribute.llSwitch(Attribute_Graphic_Data);
+	Ordered_Dish_Graphic_Attribute.SetllText(Ingredient_Details.GetDescriptiveMeasurement());
+	Ordered_Dish_Graphic_Attribute.PlaceRight(last_shapegroup_edges, MATCH_CENTERS, 10);
 }
 
 void IngredientListCreator::Hide_Ingredient_List_Graphic(llPageItemData* Ingredient_List_Graphic_Data)
@@ -466,17 +523,62 @@ int IngredientListCreator::Get_Weight_Conversion_Measurement(double Measurement_
 
 }
 
-void IngredientListCreator::CreateShoppingList()
+void IngredientListCreator::LoadShoppingList()
 {
-	//Log::LogString("Creating Shopping List");
-	//for (auto kv : Customer_Order_DataBase)
-	//{
-	//	CustomerOrder& Current_Order = kv.second;
-	//	ConsolidateOrderIngredients(Current_Order);
-	//}
-	//
-	//Update_Ingredient_List_Graphics();
-	//Log::LogString("Done Creating Shopping List and updating graphics");
+	ShoppingList.clear();
+
+	Log::LogString("Creating Shopping List");
+	int Count = 0;
+	for (auto kv : Customer_Order_DataBase["2021 4 8"].CustomerOrders)
+	{
+		CustomerOrder& Current_Order = kv.second;
+		ConsolidateOrderIngredients(Current_Order);
+	}
+	
+	//Set Grid Count
+	for (auto kv : ShoppingList)
+	{
+		Count++;
+	}
+
+	Grid_Shopping_List.SetResultCount(Count);
+
+	//Update Grid Graphics
+	llPageItemData* First_Customer_Graphic = Grid_Shopping_List.GetFirst();
+	for (auto kv : ShoppingList)
+	{
+		Ingredient_Details& Current_Ingredient_Details = kv.second;
+		Replace_Ingredient_List_Graphic(Current_Ingredient_Details, First_Customer_Graphic);
+		First_Customer_Graphic = First_Customer_Graphic->Next;
+	}
+
+
+	PrintShoppingList();
+	Log::LogString("Done Creating Shopping List and updating graphics");
+}
+
+void IngredientListCreator::UpdateShoppingList()
+{
+	int Count = 0;
+	for (auto it : ShoppingList)
+	{
+		Count++;
+	}
+
+	Grid_Shopping_List.SetResultCount(Count);
+
+	//Update Grid Graphics
+	llPageItemData* First_Customer_Graphic = Grid_Shopping_List.GetFirst();
+	for (auto kv : ShoppingList)
+	{
+		Ingredient_Details& Current_Ingredient_Details = kv.second;
+		Replace_Ingredient_List_Graphic(Current_Ingredient_Details, First_Customer_Graphic);
+		First_Customer_Graphic = First_Customer_Graphic->Next;
+	}
+
+
+	PrintShoppingList();
+	Log::LogString("Done Creating Shopping List and updating graphics");
 }
 
 void IngredientListCreator::ConsolidateOrderIngredients(CustomerOrder& Customer_Order)
@@ -513,7 +615,7 @@ void IngredientListCreator::ConsolidateSideIngredients(DishSide& Side, int DishQ
 		const int& Ingredient_Measurment_Medium =  ingredient.second.MeasurementMedium;
 		const int& Measurment_Type              =  Ingredient_DataBase[Ingredient_Name].MeasurementType;
 		
-		//Log::LogString("Name: " + Ingredient_Name);
+		Log::LogString("Name: " + Ingredient_Name);
 		//Log::LogInt("Measurment_Type", Measurment_Type);
 		//Log::LogInt("Ingredient_Measurment_Medium", Ingredient_Measurment_Medium);
 		//Log::LogInt("Ingredient_Measurment", Ingredient_Measurment);
@@ -523,15 +625,15 @@ void IngredientListCreator::ConsolidateSideIngredients(DishSide& Side, int DishQ
 		//double amount_in_litre_kilo = to_litre_kilo[LIQUID][CUP](Ingredient_Measurment* DishQuantity);
 
 		Ingredient_Details List_Ingredient;
-		List_Ingredient.Name = Ingredient_Name;
-		List_Ingredient.Measurement = amount_in_litre_kilo;
+		List_Ingredient.Name = Ingredient_Name; //	1/5 Done!
+		List_Ingredient.Measurement_Default = amount_in_litre_kilo;
 		List_Ingredient.Measurement_Type = Measurment_Type;
 
 		//Existing Shopping List Ingredient
 		if (ShoppingList.find(Ingredient_Name) != ShoppingList.end())
 		{
 			//Update Ingredient
-			ShoppingList[Ingredient_Name].Measurement += amount_in_litre_kilo;
+			ShoppingList[Ingredient_Name].Measurement_Default += amount_in_litre_kilo;
 		}
 		//New Shopping List Ingredient
 		else
@@ -539,6 +641,11 @@ void IngredientListCreator::ConsolidateSideIngredients(DishSide& Side, int DishQ
 			//Add Ingredient
 			ShoppingList[Ingredient_Name] = List_Ingredient;
 		}
+	}
+
+	for (auto& Ingredient : ShoppingList)
+	{
+		Ingredient.second.CalculateMeasurements();
 	}
 
 }
@@ -549,7 +656,7 @@ void IngredientListCreator::PrintShoppingList()
 	{
 		string MeasurementType = "L";
 		const string& Ingredient_Name = Ingredient.first;
-		const double& Ingredient_Measurment = Ingredient.second.Measurement;
+		const double& Ingredient_Measurment = Ingredient.second.Measurement_Default;
 
 		string Quantity = SubmitOrder::ProcessDecimalPlace(Ingredient_Measurment, false, 3);
 
@@ -572,7 +679,7 @@ string IngredientListCreator::what_is_the_string(int Measurement_Type)
 	}
 	if (Measurement_Type == QUANTITY)
 	{
-		Result = " Q";
+		Result = " Quantity";
 		return Result;
 	}
 
@@ -591,8 +698,134 @@ double IngredientListCreator::Measurement_Conversion(const double& Measurement, 
 
 }//Be Careful of out of bounds, 
 
-string IngredientListCreator::get_liquid_string(int LiquidType) {return " ";}
-string IngredientListCreator::get_weight_string(int WeightType) {return " ";}
+string IngredientListCreator::get_measurement_label(int Measurement_Medium, int MeasruementType)
+{
+	if (Measurement_Medium == 0 && MeasruementType == 0)
+	{
+		return " ";
+	}
+
+	switch (Measurement_Medium)
+	{
+	case KILO:
+		return "kg";
+		break;
+
+	case LITRE:
+		return "L";
+		break;
+
+	case MILLILITRE:
+		return "ml";
+		break;
+
+	case  MILLIGRAM:
+		return "mg";
+		break;
+
+	case GRAM:
+		return "g";
+		break;
+
+	case CUP:
+		return "Cups";
+		break;
+
+	case POUND:
+		return "lb";
+		break;
+
+	case TEASPOON:
+		return "Teaspoons";
+		break;
+
+	case TABLESPOON:
+		return "Tablespoons";
+		break;
+
+	case OUNCE:
+		return "oz";
+		break;
+
+	case GALLON:
+		return "Gallons";
+		break;
+
+	case QUART:
+		return "Quarts";
+		break;
+
+	case PINT:
+		return "Pints";
+		break;
+
+	case FUILD_OUNCE:
+		return "fl oz";
+		break;
+
+	}
+}
+
+int IngredientListCreator::PreferredLiquidforCooking(float Measurement)
+{
+	Log::LogFloat("Measurment: ", Measurement);
+
+	if (Measurement >= 2.36588) //Greater than 4th a cup
+	{
+		return LITRE;
+	}
+
+	if (Measurement >= 0.236588) //Greater than 4th a cup
+	{
+		return CUP;
+	}
+
+	if (Measurement >= 0.014786) //Less than 1/4th a cup
+	{
+		return TABLESPOON;
+	}
+	
+	return TEASPOON;
+}
+
+
+int IngredientListCreator::PreferredLiquid(float Measurement)
+{
+	if (Measurement > 1.0) //Greater than a litre
+	{
+		return LITRE;
+	}
+
+	return MILLILITRE;
+}
+
+int IngredientListCreator::PreferredWeightMetric(float MeasurementInKilo)
+{
+	if (MeasurementInKilo > 1.0)
+	{
+		return KILO;
+	}
+
+	if (MeasurementInKilo > 0.1)
+	{
+		return GRAM;
+	}
+
+	if (MeasurementInKilo > 0.01)
+	{
+		return MILLIGRAM;
+	}
+}
+
+int IngredientListCreator::PreferredWeightImperial(float MeasurementInkilo)
+{
+	if (MeasurementInkilo > 0.454)
+	{
+		return POUND;
+	}
+
+	return OUNCE;
+}
 
 // kilo to
 double IngredientListCreator::dud(const double& dud) { return dud; }

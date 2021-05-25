@@ -123,10 +123,21 @@ namespace CompleteOrder
 	//+------------------------------------------------------------------+//
 
 
+
+
 	//+-----------------------Display Item--Details----------------------+//
 	static PageGroup PageGroup_Dish_Display;
 	static Text Text_Display_Dish_Name;
 	static Selector Selector_Sides;
+
+	static llPageItemData PageItem_Ingredient_Graphic;
+
+	static PageItemGrid Grid_Dish_Sides;
+	static llPageItemData PageItem_Side_Graphic;
+
+
+
+	void Prepare_Dish_Display();
 	//+------------------------------------------------------------------+//
 }
 
