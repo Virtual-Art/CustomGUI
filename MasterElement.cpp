@@ -1731,6 +1731,59 @@ void MasterElement::CopyBook(llBookData* NewBook, llBookData* BookReference)
 
 }
 
+llPageGroupData* MasterElement::PageGroupIntoPage(llPageData* Page, llPageGroupData* PageGroup_ToCopy)
+{
+	if (Page == nullptr) { Log::LogString("ERROR::InsertPageItem FAILED:: Invalid PageGroup Passed"); return nullptr; }
+	if (PageGroup_ToCopy == nullptr) { Log::LogString("ERROR::InsertPageItem FAILED:: Invalid PageItem Passed"); return nullptr; }
+
+
+	/////////////////////////////////////////////////////////////
+	Log::LogString("Copying PageGroup Item");
+	//Create a New Shape Group and Set it's data
+	llPageGroupData* NewPageGroup = new llPageGroupData;
+	*NewPageGroup = *PageGroup_ToCopy;
+
+	//Erase Links inherited from Copy
+	NewPageGroup->Next = nullptr;
+	NewPageGroup->Previous = nullptr;
+	NewPageGroup->PageItem = nullptr;
+
+	NewPageGroup->ParentGroup = Page;
+
+	//Find tail then add
+	llPageGroupData* LastPageGroupSpot = Page->PageGroup;
+	if (LastPageGroupSpot == nullptr)
+	{
+		Page->PageGroup = NewPageGroup;
+		Page->PageGroupHead = NewPageGroup;
+	}
+	else
+	{
+		while (LastPageGroupSpot->Next != nullptr)
+		{
+			LastPageGroupSpot = LastPageGroupSpot->Next;
+		}
+		LastPageGroupSpot->Next = NewPageGroup;
+		NewPageGroup->Previous = LastPageGroupSpot;
+	}
+
+	//Go to first Shape of the Shape Group reference
+	llPageItemData* CurrentReferencePageItem = PageGroup_ToCopy->PageItem;
+	while (CurrentReferencePageItem->Previous != nullptr)
+	{
+		CurrentReferencePageItem = CurrentReferencePageItem->Previous;
+	}
+
+	//Download all ShapeGroups in PageItem_ToCopy
+	while (CurrentReferencePageItem != nullptr)
+	{
+		PageItemIntoPageGroup(NewPageGroup, CurrentReferencePageItem);
+		CurrentReferencePageItem = CurrentReferencePageItem->Next;
+	}
+
+	return NewPageGroup;
+}
+
 //Add a Copy of PageItem into the PageGroup Provided
 llPageItemData* MasterElement::PageItemIntoPageGroup(llPageGroupData* PageGroup, llPageItemData* PageItem_ToCopy)
 {

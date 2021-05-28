@@ -943,6 +943,7 @@ public:
 
 
 	//Copy Child into Parent
+	static llPageGroupData*   PageGroupIntoPage(llPageData* Page, llPageGroupData* PageGroup_ToCopy);
 	static llPageItemData*   PageItemIntoPageGroup(llPageGroupData* PageGroup, llPageItemData* PageItem_ToCopy);
 	static llShapeGroupData* ShapeGroupIntoPageItem(llPageItemData* PageItem, llShapeGroupData* ShapeGroup_ToCopy);
 	static llShapeData*      ShapeIntoShapeGroup(llShapeGroupData* ShapeGroup, llShapeData* Shape_ToCopy);

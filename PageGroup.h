@@ -76,6 +76,11 @@ public:
 
 	void CreateGrid(llPageItemData* PageItem_Reference, glm::vec2 Colomns_Rows, llBookData* llBookData, int RowSpacing);
 
+	void PlaceBelow(const glm::vec4& Edges, int PlacementType, int PixelPadding);
+	void PlaceAbove(const glm::vec4& Edges, int PlacementType, int PixelPadding);
+	void PlaceRight(const glm::vec4& Edges, int PlacementType, int PixelPadding);
+	void PlaceLeft(const glm::vec4& Edges, int PlacementType, int PixelPadding) ;
+
 	void llSwitch(llPageGroupData* llPageGroup);
 	llPageGroupData* GetData() { return CurrentllPageGroup; };
 
@@ -121,9 +126,6 @@ public:
 
 	void Hide();
 	void UnHide();
-
-	void PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
-	void PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding);
 
 	void TranslateInput();
 	void SetllMouseAccess();

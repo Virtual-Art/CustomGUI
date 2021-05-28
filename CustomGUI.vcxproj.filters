@@ -177,6 +177,9 @@
     <ClCompile Include="PageItemGrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PageGroupGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loader.h">
@@ -375,6 +378,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PageItemGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PageGroupGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

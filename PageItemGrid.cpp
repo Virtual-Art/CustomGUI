@@ -72,15 +72,7 @@ void PageItemGrid::AddPageItemGrid()
 			SwapPlacementDirection(); // Iteration  after j
 			CurrentCount = 1;
 		}
-		///////////////////////////
-		//Add a PageItem
-		//CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
-		//PageGroupItem PageItem_Current(CurrentPageItem);
-		//PageItem_Current.LoadedBook = LoadedBook;
-		//PageItem_Current.llSwitch(CurrentPageItem);
-		//PageItem_Current.PlaceBelow(CurrentGrid.last_edges, MATCH_CENTERS, CurrentGrid.yPadding);
-		//CurrentGrid.last_edges = PageItem_Current.GetEdges();
-		////////////////////////////////////////////////
+
 		//Add if Neccessary
 		CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
 		PageItem_Current.llSwitch(CurrentPageItem);

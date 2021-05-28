@@ -323,6 +323,7 @@ void PageGroup::llSwitch(llPageGroupData* llPageGroup)
 
 	//Switch
 	CurrentllPageGroup = llPageGroup;
+
 }
 
 void PageGroup::Delete()
@@ -554,27 +555,29 @@ void PageGroup::OffsetColor(glm::vec4 Color, glm::vec4 bools)
 
 
 
+void PageGroup::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
+{
+	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
+	llUpdate();
+}
 
+void PageGroup::PlaceAbove(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
+{
+	ManualPlaceAbove(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
+	llUpdate();
+}
 
+void PageGroup::PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
+{
+	ManualPlaceRight(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
+	llUpdate();
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void PageGroup::PlaceLeft(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
+{
+	ManualPlaceLeft(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
+	llUpdate();
+}
 
 
 PageGroup::PageGroup(Page& Page)
@@ -1106,18 +1109,6 @@ void PageGroup::UnHide()
 	llUpdate();
 }
 
-
-void PageGroup::PlaceBelow(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
-{
-	ManualPlaceBelow(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
-	llUpdate();
-}
-
-void PageGroup::PlaceRight(const glm::vec4& ElementEdges, int PlacementType, int PixelPadding)
-{
-	ManualPlaceRight(PlacementType, ElementEdges, CurrentllPageGroup->InputType, CurrentllPageGroup->Position, PixelPadding);
-	llUpdate();
-}
 
 void PageGroup::llUpdate()
 {

@@ -173,6 +173,7 @@
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageCreator.cpp" />
     <ClCompile Include="PageGroup.cpp" />
+    <ClCompile Include="PageGroupGrid.cpp" />
     <ClCompile Include="PageGroupItem.cpp" />
     <ClCompile Include="PageItemGrid.cpp" />
     <ClCompile Include="Quad.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Page.h" />
     <ClInclude Include="PageCreator.h" />
     <ClInclude Include="PageGroup.h" />
+    <ClInclude Include="PageGroupGrid.h" />
     <ClInclude Include="PageGroupItem.h" />
     <ClInclude Include="PageItemGrid.h" />
     <ClInclude Include="Quad.h" />

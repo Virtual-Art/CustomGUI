@@ -66,6 +66,8 @@
 #include "CompleteOrder.h"
 #include "stdExtensioon.h"
 #include "PageItemGrid.h"
+#include "PageGroupGrid.h"
+
 //string ProcessInputString(GLFWwindow* window);
 //void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -699,18 +701,48 @@ int main(int argc, char** argv)
 	//{
 	//	Log::LogString(Element);
 	//}
-	llBookData Trash_Book;
 
-	
+	llBookData Book_Trash;
+	NewPage Page_Trash(&Book_Trash, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
+	//Example Customer
+	TextData Basic_Cusomter;
+	llShapeGroupData ShapeGroup_Basic_Customer;
+	ShapeGroup_Basic_Customer.Position = {0.0, 0.0};
+	PageGroupItem PageItem_Trash(&Book_Trash);
+	Basic_Cusomter.Phrase = "Hi";//"Kaden Cardenas-Marett";
+	Text Text_ONE(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
+	Basic_Cusomter.Phrase = "There";//"10 Ordered Items";
+	Text Text_TWO(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
+	Text_TWO.PlaceBelow(Text_ONE.GetEdges(), MATCH_BEGINNINGS);
+	PageItem_Trash.SetllPosition({0.0, 0.0});
+	//Example Customer
 
-	Log::LogString("Before Containers prepare");
+	////Exmaple Day
+	PageItemGridData ItemGrid_Basic_Customer;
+	ItemGrid_Basic_Customer.RowCount = 1;
+	ItemGrid_Basic_Customer.ResultCount = 3;
+	llPageGroupData PageGroup_Basic_Customer;
+	PageGroup_Basic_Customer.Position = {0.0, 0.0};
+	PageItemGrid PageItemGrid_Trash(&Book_Trash, &PageGroup_Basic_Customer, PageItem_Trash.GetData(), ItemGrid_Basic_Customer);
+	////Exmaple Day
+	//
+	//
+	////Example DataBase
+	PageGroupGridData GroupGrid_BasicCustomer;
+	GroupGrid_BasicCustomer.ColumnCount = 1;
+	GroupGrid_BasicCustomer.ResultCount = 5;
+	PageGroupGrid PageGroupGrid_Trash(&Book_Trash, Page_Trash.GetData(), PageItemGrid_Trash.GetData(), GroupGrid_BasicCustomer, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
+	////Example DataBase
+
+	Log::LogString("Before Containers Prepare");
 	CompleteOrder::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	//PageItemGrid First_GRID(&Book_Restaurant_POS, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
 	float WholeNumberTest = 456.00;
 	Log::LogString(SubmitOrder::ProcessDecimalPlaceWhole(WholeNumberTest, false, 2));
+
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -735,15 +767,16 @@ int main(int argc, char** argv)
 		//Restaurant POS
 		//+-------------------------+
 			                                             
-		int Page_To_Render = ApplicationMenu::Update();
-		SubmitOrder::Update(Page_To_Render, KeyState);            
-		IngredientListCreator::Update(Page_To_Render, &KeyState); 
-		MenuCreator::Update(KeyState, Page_To_Render);            
-		//Log::LogString("Complete Order");
-		CompleteOrder::Update(KeyState, Page_To_Render);	      
-		Book_Restaurant_POS.Update();					          
-		NumberPrinterActions::Update();					 
-		SearchBarActions::Update();						 
+		//int Page_To_Render = ApplicationMenu::Update();
+		//SubmitOrder::Update(Page_To_Render, KeyState);            
+		//IngredientListCreator::Update(Page_To_Render, &KeyState); 
+		//MenuCreator::Update(KeyState, Page_To_Render);            
+		////Log::LogString("Complete Order");
+		//CompleteOrder::Update(KeyState, Page_To_Render);	      
+		//Book_Restaurant_POS.Update();					          
+		//NumberPrinterActions::Update();					 
+		//SearchBarActions::Update();						 
+		Page_Trash.DrawPage();
 		//+-------------------------+
 
 		PageGroupItem* jaj = &llSlider;

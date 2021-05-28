@@ -1,0 +1,50 @@
+#include <iostream>
+#include "NewPage.h"
+
+#define NEVER_SWITCH -2
+
+using namespace std;
+
+struct PageGroupGridData
+{
+	int ResultCount = 1;
+	int RowCount = 0;
+	int ColumnCount = 0;
+	int xPadding = 10;
+	int yPadding = 10;
+	glm::vec4 last_edges;        //(Object) Graphic Reference for the form filler to position with
+	glm::vec4 first_edges;        //(Object) Graphic Reference for the form filler to position with
+	bool first;
+	int xMatchType = MATCH_CENTERS;
+	int yMatchType = MATCH_CENTERS;
+};
+
+typedef void(PageGroup::*PlacementFunction2)(const glm::vec4&, int, int);
+
+class PageGroupGrid : public NewPage
+{
+public:
+
+	PlacementFunction2 CurrentPlacement;
+	PageGroupGridData CurrentGrid;
+	llPageGroupData* Grid_Template;
+
+	PageGroupGrid(llBookData* llBook, llPageData* Page, llPageGroupData* PageGroup_Template, PageGroupGridData PageGroupGrid, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
+
+
+	void AddPageGroupGrid();
+	void ReplacePageGroupGrid();
+	void llUpdate();
+
+	void SetResultCount(int NewResultCount);
+	void SetColumnRow(int Column, int Row);
+	llPageItemData* GetFirst();
+	//+-----------------------+//
+
+private:
+
+	int CurrentMatchType;
+	int SetPlacementDirection();
+	void SwapPlacementDirection();
+
+};
