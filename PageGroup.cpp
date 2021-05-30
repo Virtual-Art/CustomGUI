@@ -323,7 +323,8 @@ void PageGroup::llSwitch(llPageGroupData* llPageGroup)
 
 	//Switch
 	CurrentllPageGroup = llPageGroup;
-
+	//Parent_PageGroup = (llPageData*)llPageGroup->ParentGroup;
+	//CalculateGroupOffset();
 }
 
 void PageGroup::Delete()
@@ -489,7 +490,9 @@ void PageGroup::SetllPosition(glm::vec2 Position, int InputType)
 {
 	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: OffsetPosition FAILED:: PageGroup nullptr"); return; };
 
+	Log::LogVec2("Previous Position", CurrentllPageGroup->Position);
 	CurrentllPageGroup->Position = Position;
+	Log::LogVec2("New Position", CurrentllPageGroup->Position);
 	CurrentllPageGroup->InputType = InputType;
 
 	if (InputType == INPUT_CENTER)
@@ -497,7 +500,7 @@ void PageGroup::SetllPosition(glm::vec2 Position, int InputType)
 		Input_Left_Once = true;
 	}
 
-	llUpdate();
+	PageGroup::llUpdate();
 }
 
 void PageGroup::OffsetPosition(glm::vec2 Position, glm::vec2 bools)
@@ -1009,12 +1012,14 @@ void PageGroup::SetllMouseAccess()
 	CurrentllPageGroup->Size[X_AXIS] = FurthestRight - FurthestLeft; //Correct
 	CurrentllPageGroup->Size[Y_AXIS] = FurthestTop - FurthestBottom; //Correct
 
+	CurrentllPageGroup->EdgesWithBackGround = { FurthestLeft , FurthestRight, FurthestTop, FurthestBottom };
+
 		//Set Input if not already set
 	if (CurrentllPageGroup->InputType != INPUT_CENTER || Input_Left_Once == true)
 	{
 		TranslateInput();
 		//WithNewInput = true;
-		llUpdate();
+		PageGroup::llUpdate();
 	}
 
 	SetBackGround();
@@ -1112,6 +1117,7 @@ void PageGroup::UnHide()
 
 void PageGroup::llUpdate()
 {
+	float TestBuffer = 0.0;
 	//Validate
 	if (LoadedBook == nullptr) { Log::LogString("ERROR:: PageGroup Update FAILED:: Invalid Book State");  return; }
 	if (CurrentllPageGroup == nullptr) { Log::LogString("ERROR:: PageGroup Update FAILED:: Invalid PageGroup State"); return; }
@@ -1129,21 +1135,26 @@ void PageGroup::llUpdate()
 	//	CurrentPageItem = CurrentPageItem->Next;
 	//}
 
+
 	//Main Loop
 	while (CurrentPageItem != nullptr)
 	{
+		Log::LogString("--Updating PageItem--");
 		//switch (CurrentPageItem->Type)
 		//{
 		//case TYPE_PAGEITEM: 
 		//{
 		PageGroupItem PageItemSelected(CurrentPageItem);
-		PageItemSelected.llSwitch(CurrentPageItem);
 		PageItemSelected.LoadedBook = LoadedBook;
+		PageItemSelected.llSwitch(CurrentPageItem);
 		CurrentPageItem->Position = CurrentllPageGroup->Position + CurrentPageItem->PositionOffset;
 		//Log::LogString(" ");
-		//Log::LogVec2("New PageItem Position", CurrentPageItem->Position);
-		//Log::LogVec2("Based on this offset: ", CurrentPageItem->PositionOffset);
-		//Log::LogVec2("from this PageGroup position: ", CurrentllPageGroup->Position);
+		//Log::LogVec2("PageGroup Position: ", CurrentllPageGroup->Position);
+		//Log::LogVec2("PageItem Offset: ", CurrentPageItem->PositionOffset);
+		Log::LogVec2("New PageItem Position", CurrentPageItem->Position);
+		Log::LogString(" ");
+		//CurrentPageItem->Position[Y_AXIS] += TestBuffer;
+		//TestBuffer += -0.1;
 		//Log::LogString(" ");
 		CurrentPageItem->Hide = CurrentllPageGroup->Hide;
 		CurrentPageItem->MouseAccess = CurrentllPageGroup->MouseAccess;
@@ -1171,5 +1182,7 @@ void PageGroup::llUpdate()
 		CurrentPageItem = CurrentPageItem->Next;
 		//CurrentPageItem = nullptr;
 	}
+	Log::LogString("Setting Mouse Access");
 	SetllMouseAccess();
+	Log::LogString("Didnt loop again mouse access done");
 }

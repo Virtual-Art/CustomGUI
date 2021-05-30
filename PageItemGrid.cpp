@@ -39,6 +39,7 @@ void PageItemGrid::AddPageItemGrid()
 	//First One
 	llPageItemData* CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
 	PageItem_First.llSwitch(CurrentPageItem);
+	//When i set this position the offset between the parent and child should be updated
 	PageItem_First.SetllPosition(CurrentllPageGroup->Position, CurrentllPageGroup->InputType); //Doubling ......?
 	CurrentGrid.first_edges = PageItem_First.GetEdges();
 	CurrentGrid.last_edges = CurrentGrid.first_edges;
@@ -76,7 +77,7 @@ void PageItemGrid::AddPageItemGrid()
 		//Add if Neccessary
 		CurrentPageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
 		PageItem_Current.llSwitch(CurrentPageItem);
-		(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+		(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentPadding);
 		EdgeToUse = PageItem_Current.GetEdgesWithBackGround();
 
 		//New Column
@@ -145,7 +146,7 @@ void PageItemGrid::ReplacePageItemGrid()
 		if (Current_PageItem != nullptr)
 		{
 			PageItem_Current.llSwitch(Current_PageItem);
-			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentPadding);
 			PageItem_Current.UnHide();
 			EdgeToUse = PageItem_Current.GetEdgesWithBackGround();
 
@@ -161,7 +162,7 @@ void PageItemGrid::ReplacePageItemGrid()
 		{
 			Current_PageItem = PageItemIntoPageGroup(CurrentllPageGroup, Grid_Template);
 			PageItem_Current.llSwitch(Current_PageItem);
-			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentPadding);
 			EdgeToUse = PageItem_Current.GetEdgesWithBackGround();
 
 			//New Column
@@ -202,12 +203,14 @@ void PageItemGrid::SwapPlacementDirection()
 	{
 		CurrentPlacement = &PageGroupItem::PlaceRight;
 		CurrentMatchType = CurrentGrid.yMatchType;
+		CurrentPadding = CurrentGrid.yPadding;
 		Log::LogString("Swapped to Right");
 	}
 	else
 	{
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
 		CurrentMatchType = CurrentGrid.xMatchType;
+		CurrentPadding = CurrentGrid.xPadding;
 		Log::LogString("Swapped to Below");
 	}
 }
@@ -247,10 +250,12 @@ int PageItemGrid::SetPlacementDirection()
 	{
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
 		CurrentMatchType = CurrentGrid.xMatchType;
+		CurrentPadding = CurrentGrid.xPadding;
 		if (CurrentGrid.RowCount == 1) 
 		{ 
 			CurrentPlacement = &PageGroupItem::PlaceRight; return NEVER_SWITCH; 
 			CurrentMatchType = CurrentGrid.yMatchType;
+			CurrentPadding = CurrentGrid.yPadding;
 		}
 		return CurrentGrid.RowCount;
 	}
@@ -260,10 +265,12 @@ int PageItemGrid::SetPlacementDirection()
 	{
 		CurrentPlacement = &PageGroupItem::PlaceRight;
 		CurrentMatchType = CurrentGrid.yMatchType;
+		CurrentPadding = CurrentGrid.yPadding;
 		if (CurrentGrid.ColumnCount == 1) 
 		{
 			CurrentPlacement = &PageGroupItem::PlaceBelow;  return NEVER_SWITCH; 
 			CurrentMatchType = CurrentGrid.xMatchType;
+			CurrentPadding = CurrentGrid.xPadding;
 		}
 		return CurrentGrid.ColumnCount;
 	}
@@ -274,6 +281,7 @@ int PageItemGrid::SetPlacementDirection()
 		Log::LogString("Setting Result Count");
 		CurrentPlacement = &PageGroupItem::PlaceBelow;
 		CurrentMatchType = CurrentGrid.xMatchType;
+		CurrentPadding = CurrentGrid.xPadding;
 		CurrentGrid.ResultCount = CurrentGrid.ColumnCount * CurrentGrid.RowCount;
 		return CurrentGrid.ColumnCount;
 	}

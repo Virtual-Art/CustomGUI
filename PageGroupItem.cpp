@@ -455,7 +455,7 @@ void PageGroupItem::llSwitch(llPageItemData* llPageItem)
 	//Switch
 	CurrentllPageItem = llPageItem;
 	Parent_PageGroup = (llPageGroupData*)llPageItem->ParentGroup;
-	CalculateGroupOffset();
+	//CalculateGroupOffset();
 }
 
 void PageGroupItem::SetllPosition(glm::vec2 Position)
@@ -554,7 +554,7 @@ void PageGroupItem::llUpdate()
 	if (CurrentllPageItem->ShapeGroup == nullptr ) { Log::LogString("WARNING:: PageItem Update FAILED:: No Contents to Update"); return; }
 
 	//Log::LogString("Updating PageItem");
-	//CalculateGroupOffset();
+	CalculateGroupOffset();
 
 	//Go To ShapeGroup Head
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
@@ -562,18 +562,6 @@ void PageGroupItem::llUpdate()
 	{
 		CurrentShapeGroup = CurrentShapeGroup->Previous;
 	}
-
-	//if (CurrentllPageItem->BackGround == true)
-	//{
-	//	CurrentShapeGroup = CurrentShapeGroup->Next;
-	//}
-
-	//if (CurrentllPageItem->ChangeAsGroup == false)
-	//{
-	//	//Set PageItem Position Offset
-	//	llPageGroupData* CurrentPageGroup = LoadedBook->Page->PageGroup;
-	//	CurrentllPageItem->PositionOffset = CurrentPageGroup->Position - CurrentllPageItem->Position;
-	//}
 
 	//Update all ShapeGroups in Current PageItem
 	while (CurrentShapeGroup != nullptr)
@@ -854,8 +842,6 @@ void PageGroupItem::UpdatellMouseAccess()
 	//Checks
 	if (CurrentllPageItem == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::ShapeGroup is null "); return; };
 	if (CurrentllPageItem->ShapeGroup == nullptr) { Log::LogString("ERROR::SetllMouseAccess FAILED::No ShapeGroups in Pageitem"); return; };
-
-	//Log::LogString("Start Of Groups");
 
 	//Setup
 	llShapeGroupData* CurrentShapeGroup = CurrentllPageItem->ShapeGroup;
@@ -1585,5 +1571,7 @@ void PageGroupItem::CalculateGroupOffset()
 	//Distance between parent and child positions
 	CurrentllPageItem->PositionOffset = CurrentllPageItem->Position - Parent_PageGroup->Position;
 	//cout << "PageItem Position Offset: " << CurrentllPageItem->PositionOffset[0] << " , " << CurrentllPageItem->PositionOffset[1] <<  " = (PageItem Position) " << CurrentllPageItem->Position[0] << " , " << CurrentllPageItem->Position[1] << " - " << "(Parent Position) " << Parent_PageGroup->Position[0] << " , " << Parent_PageGroup->Position[1] << endl;
+	Log::LogVec2("PageItemOffset", CurrentllPageItem->PositionOffset);
+	Log::LogVec2("Old", CurrentllPageItem->Position);
 
 }

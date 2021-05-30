@@ -260,8 +260,8 @@ struct llShapeData
 	bool PartOfGroup = false;
 	bool Hide = false;
 	float Top = -3;
-	float Bottom = -3;
-	float Left = -3;
+	float Bottom = 3;
+	float Left = 3;
 	float Right = -3;
 	string Text = "ll";
 	bool EndStart = false;

@@ -710,28 +710,34 @@ int main(int argc, char** argv)
 	llShapeGroupData ShapeGroup_Basic_Customer;
 	ShapeGroup_Basic_Customer.Position = {0.0, 0.0};
 	PageGroupItem PageItem_Trash(&Book_Trash);
-	Basic_Cusomter.Phrase = "Hi";//"Kaden Cardenas-Marett";
+	Basic_Cusomter.Phrase = "Kaden Cardenas-Marett";//"Kaden Cardenas-Marett";
 	Text Text_ONE(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
-	Basic_Cusomter.Phrase = "There";//"10 Ordered Items";
+	Basic_Cusomter.Phrase = "10 Items Ordered";//"10 Ordered Items";
 	Text Text_TWO(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
-	Text_TWO.PlaceBelow(Text_ONE.GetEdges(), MATCH_BEGINNINGS);
-	PageItem_Trash.SetllPosition({0.0, 0.0});
+	Text_TWO.PlaceBelow(Text_ONE.GetEdges(), MATCH_BEGINNINGS, 10);
+	//PageItem_Trash.SetllPosition({0.0, 0.0});
 	//Example Customer
 
 	////Exmaple Day
 	PageItemGridData ItemGrid_Basic_Customer;
 	ItemGrid_Basic_Customer.RowCount = 1;
-	ItemGrid_Basic_Customer.ResultCount = 3;
+	ItemGrid_Basic_Customer.ResultCount = 5; //3 Page Items Created
+	ItemGrid_Basic_Customer.xPadding = 20;
 	llPageGroupData PageGroup_Basic_Customer;
 	PageGroup_Basic_Customer.Position = {0.0, 0.0};
+	Log::LogString("---------------------Creating Same Day Order PageGroup--------------------");
 	PageItemGrid PageItemGrid_Trash(&Book_Trash, &PageGroup_Basic_Customer, PageItem_Trash.GetData(), ItemGrid_Basic_Customer);
+	//Log::LogString("Setting PAGEGROUP1");
+	//PageItemGrid_Trash.SetllPosition({-0.1, 0.3}, INPUT_LEFT); //position is doubled
+	//Log::LogString("Finished Setting PAGEGROUP1");
 	////Exmaple Day
-	//
-	//
+
 	////Example DataBase
 	PageGroupGridData GroupGrid_BasicCustomer;
+	GroupGrid_BasicCustomer.Position = {0.0, 0.7};
 	GroupGrid_BasicCustomer.ColumnCount = 1;
-	GroupGrid_BasicCustomer.ResultCount = 5;
+	GroupGrid_BasicCustomer.ResultCount = 20;
+	GroupGrid_BasicCustomer.yPadding = 60;
 	PageGroupGrid PageGroupGrid_Trash(&Book_Trash, Page_Trash.GetData(), PageItemGrid_Trash.GetData(), GroupGrid_BasicCustomer, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 	////Example DataBase
 
@@ -740,9 +746,15 @@ int main(int argc, char** argv)
 	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	//PageItemGrid First_GRID(&Book_Restaurant_POS, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
-	float WholeNumberTest = 456.00;
-	Log::LogString(SubmitOrder::ProcessDecimalPlaceWhole(WholeNumberTest, false, 2));
+	//float WholeNumberTest = 456.00;
+	//Log::LogString(SubmitOrder::ProcessDecimalPlaceWhole(WholeNumberTest, false, 2));
 
+	Log::LogString("Setting PAGEGROUP2");
+	//PageGroup PageGroup_First(PageItemGrid_Trash.GetData());
+	//PageGroup_First.LoadedBook = &Book_Trash;
+	//PageGroup_First.llSwitch(PageItemGrid_Trash.GetData());
+	//PageGroup_First.SetllPosition({ 0.0, 0.5 }, INPUT_LEFT);
+	Log::LogString("Finished Setting PAGEGROUP2");
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))

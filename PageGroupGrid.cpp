@@ -22,19 +22,13 @@ void PageGroupGrid::AddPageGroupGrid()
 	PageGroup_First.LoadedBook = LoadedBook;
 
 	PageGroup_First.llSwitch(Grid_Template);
-	Log::LogString("1");
 	PageGroup_First.UnHide();
-	Log::LogString("2");
-	PageGroup_First.SetllPosition({ -3.0, 0.0 }, INPUT_CENTER);
-	Log::LogString("3");
+	PageGroup_First.SetllPosition({-3.0, 0.0}, INPUT_LEFT);
 
 	//First One
-	Log::LogString("1");
 	llPageGroupData* CurrentPageGroup = PageGroupIntoPage(CurrentllPage, Grid_Template);
 	PageGroup_First.llSwitch(CurrentPageGroup);
-	Log::LogString("2");
-	PageGroup_First.SetllPosition({0.0, 0.0}, INPUT_CENTER); //Doubling ......?
-	Log::LogString("3");
+	PageGroup_First.SetllPosition(CurrentGrid.Position, CurrentGrid.InputType); //Doubling ......?
 	CurrentGrid.first_edges = PageGroup_First.GetEdges();
 	CurrentGrid.last_edges = CurrentGrid.first_edges;
 	PageGroup PageGroup_Current(CurrentPageGroup);
@@ -43,48 +37,48 @@ void PageGroupGrid::AddPageGroupGrid()
 	Log::LogString("---------Adding PageGroup Grid FINISHED ---------");
 
 	/////////////////////
-	//glm::vec4 LastColumnOrRowEdges = CurrentGrid.last_edges;
-	//glm::vec4 EdgeToUse = CurrentGrid.last_edges;
-	//int SwapCount;
-	//int CurrentCount = 1;
-	//
-	//SwapCount = SetPlacementDirection();
-	//
-	////Loop through Result Count and add a PageItem to the grid
-	//for (int i = 0; i < (CurrentGrid.ResultCount - 1); i++)
-	//{
-	//	// Stop Typing, it's time for a new line
-	//	if (CurrentCount == SwapCount)
-	//	{
-	//		SwapPlacementDirection(); // Iteration j
-	//		CurrentCount = -1;
-	//		EdgeToUse = LastColumnOrRowEdges; //First Column
-	//	}
-	//
-	//	//We are on a new line, it's time to go back to typing
-	//	if (CurrentCount == 0) // 0
-	//	{
-	//		SwapPlacementDirection(); // Iteration  after j
-	//		CurrentCount = 1;
-	//	}
-	//
-	//	//Add if Neccessary
-	//	CurrentPageGroup = PageGroupIntoPage(CurrentllPage, Grid_Template);
-	//	PageGroup_Current.llSwitch(CurrentPageGroup);
-	//	(PageGroup_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
-	//	EdgeToUse = PageGroup_Current.GetEdges();
-	//
-	//	//New Column
-	//	if (CurrentCount == -1)
-	//	{
-	//		LastColumnOrRowEdges = EdgeToUse;
-	//	}
-	//
-	//	CurrentCount++;
-	//}
-	//
-	////Provide at least one page item hide if none required
-	//if (CurrentGrid.ResultCount == 0) { PageGroup_First.Hide(); }
+	glm::vec4 LastColumnOrRowEdges = CurrentGrid.last_edges;
+	glm::vec4 EdgeToUse = CurrentGrid.last_edges;
+	int SwapCount;
+	int CurrentCount = 1;
+	
+	SwapCount = SetPlacementDirection();
+	
+	//Loop through Result Count and add a PageItem to the grid
+	for (int i = 0; i < (CurrentGrid.ResultCount - 1); i++)
+	{
+		// Stop Typing, it's time for a new line
+		if (CurrentCount == SwapCount)
+		{
+			SwapPlacementDirection(); // Iteration j
+			CurrentCount = -1;
+			EdgeToUse = LastColumnOrRowEdges; //First Column
+		}
+	
+		//We are on a new line, it's time to go back to typing
+		if (CurrentCount == 0) // 0
+		{
+			SwapPlacementDirection(); // Iteration  after j
+			CurrentCount = 1;
+		}
+	
+		//Add if Neccessary
+		CurrentPageGroup = PageGroupIntoPage(CurrentllPage, Grid_Template);
+		PageGroup_Current.llSwitch(CurrentPageGroup);
+		(PageGroup_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+		EdgeToUse = PageGroup_Current.GetEdges();
+	
+		//New Column
+		if (CurrentCount == -1)
+		{
+			LastColumnOrRowEdges = EdgeToUse;
+		}
+	
+		CurrentCount++;
+	}
+	
+	//Provide at least one page item hide if none required
+	if (CurrentGrid.ResultCount == 0) { PageGroup_First.Hide(); }
 }
 void PageGroupGrid::ReplacePageGroupGrid()
 {
@@ -219,10 +213,12 @@ int PageGroupGrid::SetPlacementDirection()
 	{
 		CurrentPlacement = &PageGroup::PlaceBelow;
 		CurrentMatchType = CurrentGrid.xMatchType;
+		CurrentPadding = CurrentGrid.xPadding;
 		if (CurrentGrid.RowCount == 1)
 		{
 			CurrentPlacement = &PageGroup::PlaceRight; return NEVER_SWITCH;
 			CurrentMatchType = CurrentGrid.yMatchType;
+			CurrentPadding = CurrentGrid.yPadding;
 		}
 		return CurrentGrid.RowCount;
 	}
@@ -232,10 +228,13 @@ int PageGroupGrid::SetPlacementDirection()
 	{
 		CurrentPlacement = &PageGroup::PlaceRight;
 		CurrentMatchType = CurrentGrid.yMatchType;
+		CurrentPadding = CurrentGrid.yPadding;
 		if (CurrentGrid.ColumnCount == 1)
 		{
 			CurrentPlacement = &PageGroup::PlaceBelow;  return NEVER_SWITCH;
 			CurrentMatchType = CurrentGrid.xMatchType;
+			CurrentPadding = CurrentGrid.xPadding;
+
 		}
 		return CurrentGrid.ColumnCount;
 	}
@@ -246,6 +245,7 @@ int PageGroupGrid::SetPlacementDirection()
 		Log::LogString("Setting Result Count");
 		CurrentPlacement = &PageGroup::PlaceBelow;
 		CurrentMatchType = CurrentGrid.xMatchType;
+		CurrentPadding = CurrentGrid.xPadding;
 		CurrentGrid.ResultCount = CurrentGrid.ColumnCount * CurrentGrid.RowCount;
 		return CurrentGrid.ColumnCount;
 	}
@@ -258,10 +258,12 @@ void PageGroupGrid::SwapPlacementDirection()
 	{
 		CurrentPlacement = &PageGroup::PlaceRight;
 		CurrentMatchType = CurrentGrid.yMatchType;
+		CurrentPadding = CurrentGrid.yPadding;
 	}
 	else
 	{
 		CurrentPlacement = &PageGroup::PlaceBelow;
 		CurrentMatchType = CurrentGrid.xMatchType;
+		CurrentPadding = CurrentGrid.xPadding;
 	}
 }

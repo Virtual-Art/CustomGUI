@@ -7,11 +7,13 @@ using namespace std;
 
 struct PageGroupGridData
 {
+	glm::vec2 Position;
 	int ResultCount = 1;
 	int RowCount = 0;
 	int ColumnCount = 0;
 	int xPadding = 10;
 	int yPadding = 10;
+	int InputType = INPUT_CENTER;
 	glm::vec4 last_edges;        //(Object) Graphic Reference for the form filler to position with
 	glm::vec4 first_edges;        //(Object) Graphic Reference for the form filler to position with
 	bool first;
@@ -44,6 +46,7 @@ public:
 private:
 
 	int CurrentMatchType;
+	int CurrentPadding;
 	int SetPlacementDirection();
 	void SwapPlacementDirection();
 
