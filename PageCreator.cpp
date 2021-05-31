@@ -23,7 +23,7 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	ShapeGroupEditor.llInit(CurrentBook);
 	PageItemEditor.llInit(CurrentBook);
 	PageGroupEditor.llInit(CurrentBook);
-	PageEditor.llInit(CurrentBook, CurrentShader, Texture0, Texture1, Texture2);
+	PageEditor.llPageInit(CurrentBook, CurrentShader, Texture0, Texture1, Texture2);
 
 	//Presets
 	QuadEditor.llInit(CurrentBook);
@@ -37,7 +37,7 @@ void PageCreator::llInit(llBookData* llBook, ShaderProgram* ShaderProgram, RawTe
 	SetKeyboardKeys();
 
 	//BookEditor Setup
-	BookCreatorPage.llInit(&CreatorBook, CurrentShader, Texture0, Texture1, Texture2);
+	BookCreatorPage.llPageInit(&CreatorBook, CurrentShader, Texture0, Texture1, Texture2);
 	//Quad DeleteWhenFixed(&CreatorBook);
 	//DeleteWhenFixed.SetllPosition({-2.0, 0.0});
 

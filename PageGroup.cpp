@@ -1139,7 +1139,6 @@ void PageGroup::llUpdate()
 	//Main Loop
 	while (CurrentPageItem != nullptr)
 	{
-		Log::LogString("--Updating PageItem--");
 		//switch (CurrentPageItem->Type)
 		//{
 		//case TYPE_PAGEITEM: 
@@ -1151,8 +1150,6 @@ void PageGroup::llUpdate()
 		//Log::LogString(" ");
 		//Log::LogVec2("PageGroup Position: ", CurrentllPageGroup->Position);
 		//Log::LogVec2("PageItem Offset: ", CurrentPageItem->PositionOffset);
-		Log::LogVec2("New PageItem Position", CurrentPageItem->Position);
-		Log::LogString(" ");
 		//CurrentPageItem->Position[Y_AXIS] += TestBuffer;
 		//TestBuffer += -0.1;
 		//Log::LogString(" ");

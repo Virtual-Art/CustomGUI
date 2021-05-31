@@ -1,14 +1,29 @@
 #include "ApplicationMenu.h"
 
-void ApplicationMenu::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2)
+void ApplicationMenu::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture00, RawTexture* Texture01, RawTexture* Texture02)
 {
 	RestaurantBook = Restaurant_POS;
+	CurrentShader = ShaderProgram;
 
-	Page_ApplicationMenu.llInit(Restaurant_POS, ShaderProgram, Texture0, Texture1, Texture2);
+	Texture0 = Texture00;
+	Texture1 = Texture01;
+	Texture2 = Texture02;
+
+	Page_ApplicationMenu.llPageInit(Restaurant_POS, ShaderProgram, Texture0, Texture1, Texture2);
 	BD_ApplicationMenu.Capture(Restaurant_POS);
 	CurrentPage = PAGE_COMPLETE_ORDER;
 
 	CreatePageSelector();
+	CreateCustomerSelect();
+}
+
+void ApplicationMenu::PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Orders)
+{
+	All_Customer_Orders = All_Orders;
+	All_Sections = Section;
+	All_Dishes = Dish;
+	All_Sides = Side;
+	All_Ingredients = Ingredient;
 }
 
 int ApplicationMenu::Update()
@@ -78,5 +93,154 @@ void ApplicationMenu::Select_Page()
 	CurrentPage = Page_ApplicationMenu.ElementsHovered.ShapeGroup->Key;
 	llShapeGroupData* ShapeGroup_Hovered = Page_ApplicationMenu.ElementsHovered.ShapeGroup;
 	Highlight_Page_Selector(ShapeGroup_Hovered);
+
+}
+
+void ApplicationMenu::CreateCustomerGraphic()
+{
+	TextData Customer_Data;
+	llShapeGroupData Graphic_Data;
+	Graphic_Data.Position = { 0.0, 0.0 };
+	int GraphicSpacing = 10;
+	PageItem_Customer_Graphic.llInit(RestaurantBook);
+
+	//Name
+	Customer_Data.Phrase = "Name";
+	Text Name(RestaurantBook, &Graphic_Data, Customer_Data);
+
+	// # of Items
+	Customer_Data.Phrase = "0 Items Ordered";
+	Text NumberItems(RestaurantBook, &Graphic_Data, Customer_Data);
+	NumberItems.PlaceBelow(Name.GetEdges(), MATCH_BEGINNINGS, GraphicSpacing);
+
+	//Address
+	Customer_Data.Phrase = "Address";
+	Text Address(RestaurantBook, &Graphic_Data, Customer_Data);
+	Address.PlaceBelow(NumberItems.GetEdges(), MATCH_BEGINNINGS, GraphicSpacing);
+
+	// Order Total
+	Customer_Data.Phrase = "$0";
+	Graphic_Data.Color = PageCreator::Green;
+	Text OrderTotal(RestaurantBook, &Graphic_Data, Customer_Data);
+	OrderTotal.PlaceBelow(Address.GetEdges(), MATCH_BEGINNINGS, GraphicSpacing);
+}
+
+
+void ApplicationMenu::CreateSameDayCustomerGraphics()
+{
+	PageItemGridData ItemGrid_Basic_Customer;
+	ItemGrid_Basic_Customer.RowCount = 1;
+	ItemGrid_Basic_Customer.ResultCount = 1; //3 Page Items Created
+	ItemGrid_Basic_Customer.xPadding = 90;
+	ItemGrid_Basic_Customer.yPadding = 40;
+	ItemGrid_Basic_Customer.Description = "Date";
+	ItemGrid_Basic_Customer.DescriptionColor = SubmitOrder::Pink;
+	ItemGrid_Basic_Customer.DescriptionyPadding = 70;
+	llPageGroupData PageGroup_Basic_Customer;
+	PageGroup_Basic_Customer.Position = { -0.7, 0.0 };
+	Log::LogString("---------------------Creating Same Day Order PageGroup--------------------");
+	PageItemGrid_Orders_By_Date.llInit(RestaurantBook, &PageGroup_Basic_Customer, PageItem_Customer_Graphic.GetData(), ItemGrid_Basic_Customer);
+}
+
+void ApplicationMenu::CreateCustomerSelect()
+{
+	CreateCustomerGraphic();
+	CreateSameDayCustomerGraphics();
+
+	PageGroupGridData GroupGrid_BasicCustomer;
+	GroupGrid_BasicCustomer.InputType = INPUT_LEFT;
+	GroupGrid_BasicCustomer.Position = { -0.7, 0.5 };
+	GroupGrid_BasicCustomer.ColumnCount = 1;
+	GroupGrid_BasicCustomer.ResultCount = 2;
+	GroupGrid_BasicCustomer.yPadding = 100;
+	PageGroupGrid_All_Orders.llInit(RestaurantBook, Page_ApplicationMenu.GetData(), PageItemGrid_Orders_By_Date.GetData(), GroupGrid_BasicCustomer, CurrentShader, Texture0, Texture1, Texture2);
+
+	UpdateCustomerSelect();
+}
+
+
+void ApplicationMenu::UpdateCustomerSelect()
+{
+	//Set Count
+	PageGroupGrid_All_Orders.SetResultCount(Customer_Order_DataBase.size());
+	llPageGroupData* CurrentPageGroup = PageGroupGrid_All_Orders.GetFirst();
+
+	//Replace
+	for (auto kv : Customer_Order_DataBase)
+	{
+		const SameDayOrders& CurrentDate =  kv.second;
+
+		SetSameDayCustomerGraphic(CurrentDate, CurrentPageGroup);
+
+		if (CurrentPageGroup != nullptr)
+		{
+			CurrentPageGroup = CurrentPageGroup->Next;
+		}
+	}
+}
+
+void ApplicationMenu::SetSameDayCustomerGraphic(const SameDayOrders& CurrentDate, llPageGroupData* CurrentPageGroup)
+{
+	if (CurrentPageGroup == nullptr) { Log::LogString("SetSameDataCustomerGraphic Failed:: null PageGroup"); return; }
+
+	Log::LogString("-----------------------Setting Dated Orders--------------------------");
+
+	PageItemGrid_Orders_By_Date.SetResultCount(CurrentDate.CustomerOrders.size());
+	PageItemGrid_Orders_By_Date.SetDescription(CurrentDate.Day);
+	llPageItemData* CurrentPageItem = PageItemGrid_Orders_By_Date.GetFirst();
+
+	//Replace
+	for (auto kv : CurrentDate.CustomerOrders)
+	{
+		const CustomerOrder& CurrentOrder = kv.second;
+
+		SetCustomerGraphic(CurrentOrder, CurrentPageItem);
+
+		if (CurrentPageItem != nullptr)
+		{
+			CurrentPageItem = CurrentPageItem->Next;
+		}
+	}
+}
+
+void ApplicationMenu::SetCustomerGraphic(const CustomerOrder& CurrentOrder, llPageItemData* CurrentPageItem)
+{
+
+	//Validation
+	if (CurrentPageItem == nullptr) { Log::LogString("SetCustomerGraphicFailed:: null PageItem"); return; }
+	Log::LogString("------------Setting Customer-----------");
+
+	//Setup 
+	llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
+	Text CustomerData(CurrentShapeGroup);
+	CustomerData.LoadedBook = RestaurantBook;
+	glm::vec4 Last_Edges;
+	int GraphicSpacing = 10;
+
+	//Name
+	CustomerData.llSwitch(CurrentShapeGroup);
+	CustomerData.SetllText(CurrentOrder.CustomerDetails.FirstName + " " + CurrentOrder.CustomerDetails.LastName);
+	Last_Edges = CustomerData.GetEdgesWithBackGround();
+
+	// # of Items
+	CurrentShapeGroup = CurrentShapeGroup->Next;
+	CustomerData.llSwitch(CurrentShapeGroup);
+	CustomerData.SetllText(to_string(CurrentOrder.OrderedDishes.size()));
+	CustomerData.PlaceBelow(Last_Edges, MATCH_BEGINNINGS, GraphicSpacing);
+	Last_Edges = CustomerData.GetEdgesWithBackGround();
+
+	//Address
+	CurrentShapeGroup = CurrentShapeGroup->Next;
+	CustomerData.llSwitch(CurrentShapeGroup);
+	CustomerData.SetllText(CurrentOrder.CustomerDetails.Address);
+	CustomerData.PlaceBelow(Last_Edges, MATCH_BEGINNINGS, GraphicSpacing);
+	Last_Edges = CustomerData.GetEdgesWithBackGround();
+
+	// Order Total
+	CurrentShapeGroup = CurrentShapeGroup->Next;
+	CustomerData.llSwitch(CurrentShapeGroup);
+	CustomerData.SetllText(to_string(CurrentOrder.Total));
+	CustomerData.PlaceBelow(Last_Edges, MATCH_BEGINNINGS, GraphicSpacing);
+	Last_Edges = CustomerData.GetEdgesWithBackGround();
 
 }

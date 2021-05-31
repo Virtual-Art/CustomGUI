@@ -215,6 +215,25 @@ struct SearchBarData
 	ButtonFunction SearchFunction;
 };
 
+struct PageItemGridData
+{
+	string Description = "Title";
+	int DescriptionyPadding = 10;
+	int DescriptionMatchType = MATCH_BEGINNINGS;
+	glm::vec4 DescriptionColor = { 1.0, 1.0, 1.0, 1.0 };
+	int ResultCount = 1;
+	int RowCount = 0;
+	int ColumnCount = 0;
+	int xPadding = 0;
+	int yPadding = 0;
+	glm::vec4 last_edges;        //(Object) Graphic Reference for the form filler to position with
+	glm::vec4 first_edges;        //(Object) Graphic Reference for the form filler to position with
+	bool first;
+	int xMatchType = MATCH_CENTERS;
+	int yMatchType = MATCH_CENTERS;
+};
+
+
 struct llVertexData
 {
 	glm::vec2 Position = { 0.0, 0.0 };
@@ -420,6 +439,10 @@ struct llPageGroupData
 	llPageItemData* PageItemHead = nullptr; // Child
 	Button PageGroupButton;
 	string DescriptiveData;
+
+	PageItemGridData PageItemGridData;
+	llPageItemData* PageItem_Template = nullptr;
+	llPageGroupData* FirstSubPageGroup = nullptr;
 };
 
 struct llPageData

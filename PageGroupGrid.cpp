@@ -9,6 +9,17 @@ PageGroupGrid::PageGroupGrid(llBookData* llBook, llPageData* Page, llPageGroupDa
 	AddPageGroupGrid();
 }
 
+void PageGroupGrid::llInit(llBookData* llBook, llPageData* Page, llPageGroupData* PageGroup_Template, PageGroupGridData PageGroupGrid, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2)
+{
+	llPageInit(llBook, Page, ShaderProgram, Texture0, Texture1, Texture2);
+	
+	CurrentGrid = PageGroupGrid;
+	Grid_Template = PageGroup_Template;
+	CurrentPlacement = &PageGroup::PlaceRight;
+	AddPageGroupGrid();
+}
+
+
 void PageGroupGrid::AddPageGroupGrid()
 {
 	if (CurrentllPage == nullptr) { Log::LogString("ERROR::AddPageItemGrid FAILED:: Invalid PageGroup State"); return; }
@@ -23,7 +34,7 @@ void PageGroupGrid::AddPageGroupGrid()
 
 	PageGroup_First.llSwitch(Grid_Template);
 	PageGroup_First.UnHide();
-	PageGroup_First.SetllPosition({-3.0, 0.0}, INPUT_LEFT);
+	PageGroup_First.SetllPosition({-30.0, 0.0}, INPUT_LEFT);
 
 	//First One
 	llPageGroupData* CurrentPageGroup = PageGroupIntoPage(CurrentllPage, Grid_Template);
@@ -33,6 +44,7 @@ void PageGroupGrid::AddPageGroupGrid()
 	CurrentGrid.last_edges = CurrentGrid.first_edges;
 	PageGroup PageGroup_Current(CurrentPageGroup);
 	PageGroup_Current.LoadedBook = LoadedBook;
+	First_PageGroup = PageGroup_First.GetData();
 
 	Log::LogString("---------Adding PageGroup Grid FINISHED ---------");
 
@@ -202,7 +214,10 @@ void PageGroupGrid::SetColumnRow(int ColumnCount, int RowCount)
 	llUpdate();
 }
 
-llPageItemData* PageGroupGrid::GetFirst() {};
+llPageGroupData* PageGroupGrid::GetFirst()
+{
+	return First_PageGroup;
+}
 
 int PageGroupGrid::SetPlacementDirection()
 {

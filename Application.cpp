@@ -562,6 +562,7 @@ int main(int argc, char** argv)
 	SearchBarActions::Prepare(&Book_Restaurant_POS);
 	NumberPrinterActions::Prepare(&Book_Restaurant_POS);
 
+	ApplicationMenu::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 	ApplicationMenu::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	MenuCreator::Prepare_MenuCreator(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
@@ -706,55 +707,66 @@ int main(int argc, char** argv)
 	NewPage Page_Trash(&Book_Trash, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	//Example Customer
-	TextData Basic_Cusomter;
-	llShapeGroupData ShapeGroup_Basic_Customer;
-	ShapeGroup_Basic_Customer.Position = {0.0, 0.0};
-	PageGroupItem PageItem_Trash(&Book_Trash);
-	Basic_Cusomter.Phrase = "Kaden Cardenas-Marett";//"Kaden Cardenas-Marett";
-	Text Text_ONE(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
-	Basic_Cusomter.Phrase = "10 Items Ordered";//"10 Ordered Items";
-	Text Text_TWO(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
-	Text_TWO.PlaceBelow(Text_ONE.GetEdges(), MATCH_BEGINNINGS, 10);
-	//PageItem_Trash.SetllPosition({0.0, 0.0});
-	//Example Customer
-
-	////Exmaple Day
-	PageItemGridData ItemGrid_Basic_Customer;
-	ItemGrid_Basic_Customer.RowCount = 1;
-	ItemGrid_Basic_Customer.ResultCount = 5; //3 Page Items Created
-	ItemGrid_Basic_Customer.xPadding = 20;
-	llPageGroupData PageGroup_Basic_Customer;
-	PageGroup_Basic_Customer.Position = {0.0, 0.0};
-	Log::LogString("---------------------Creating Same Day Order PageGroup--------------------");
-	PageItemGrid PageItemGrid_Trash(&Book_Trash, &PageGroup_Basic_Customer, PageItem_Trash.GetData(), ItemGrid_Basic_Customer);
-	//Log::LogString("Setting PAGEGROUP1");
-	//PageItemGrid_Trash.SetllPosition({-0.1, 0.3}, INPUT_LEFT); //position is doubled
-	//Log::LogString("Finished Setting PAGEGROUP1");
-	////Exmaple Day
+	//TextData Basic_Cusomter;
+	//llShapeGroupData ShapeGroup_Basic_Customer;
+	//ShapeGroup_Basic_Customer.Position = {0.0, 0.0};
+	//PageGroupItem PageItem_Trash(&Book_Trash);
+	//Basic_Cusomter.Phrase = "Kaden Cardenas-Marett";//"Kaden Cardenas-Marett";
+	//Text Text_ONE(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
+	//Basic_Cusomter.Phrase = "10 Items Ordered";//"10 Ordered Items";
+	//Text Text_TWO(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
+	//Text_TWO.PlaceBelow(Text_ONE.GetEdges(), MATCH_BEGINNINGS, 10);
+	//Basic_Cusomter.Phrase = "836 Talwood Dr";//"10 Ordered Items";
+	//Text Text_THREE(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
+	//Text_THREE.PlaceBelow(Text_TWO.GetEdges(), MATCH_BEGINNINGS, 10);
+	//Basic_Cusomter.Phrase = "$157";//"10 Ordered Items";
+	//ShapeGroup_Basic_Customer.Color = PageCreator::Green;
+	//Text Text_FOUR(&Book_Trash, &ShapeGroup_Basic_Customer, Basic_Cusomter);
+	//Text_FOUR.PlaceBelow(Text_THREE.GetEdges(), MATCH_BEGINNINGS, 10);
+	////PageItem_Trash.SetllPosition({0.0, 0.0});
+	////Example Customer
+	//
+	//////Exmaple Day
+	//PageItemGridData ItemGrid_Basic_Customer;
+	//ItemGrid_Basic_Customer.RowCount = 1;
+	//ItemGrid_Basic_Customer.ResultCount = 3; //3 Page Items Created
+	//ItemGrid_Basic_Customer.xPadding = 90;
+	//ItemGrid_Basic_Customer.yPadding = 40;
+	//ItemGrid_Basic_Customer.Description = "Thursday, January 1st 2021 ------------------------------------------------------------------------------";
+	//ItemGrid_Basic_Customer.DescriptionColor = SubmitOrder::Pink;
+	//ItemGrid_Basic_Customer.DescriptionyPadding = 70;
+	//llPageGroupData PageGroup_Basic_Customer;
+	//PageGroup_Basic_Customer.Position = {-0.7, 0.0};
+	//Log::LogString("---------------------Creating Same Day Order PageGroup--------------------");
+	//PageItemGrid PageItemGrid_Trash(&Book_Trash, &PageGroup_Basic_Customer, PageItem_Trash.GetData(), ItemGrid_Basic_Customer);
+	//
+	//
+	//PageItemGrid PageItemGrid_Copy(PageItemGrid_Trash.GetData()); //Working
+	//PageItemGrid_Copy.LoadedBook = &Book_Trash;
+	//PageItemGrid_Copy.SetDescription("February 2nd YOLO");
+	//PageItemGrid_Copy.SetResultCount(6);
+	//
+	////Log::LogString("Setting PAGEGROUP1");
+	////PageItemGrid_Trash.SetllPosition({-0.1, 0.3}, INPUT_LEFT); //position is doubled
+	////Log::LogString("Finished Setting PAGEGROUP1");
+	//////Exmaple Day
+	//
+	//////Example DataBase
+	//PageGroupGridData GroupGrid_BasicCustomer;
+	//GroupGrid_BasicCustomer.InputType = INPUT_LEFT;
+	//GroupGrid_BasicCustomer.Position = {-0.7, 0.5};
+	//GroupGrid_BasicCustomer.ColumnCount = 1;
+	//GroupGrid_BasicCustomer.ResultCount = 4;
+	//GroupGrid_BasicCustomer.yPadding = 100;
+	//PageGroupGrid PageGroupGrid_Trash(&Book_Trash, Page_Trash.GetData(), PageItemGrid_Trash.GetData(), GroupGrid_BasicCustomer, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
 	////Example DataBase
-	PageGroupGridData GroupGrid_BasicCustomer;
-	GroupGrid_BasicCustomer.Position = {0.0, 0.7};
-	GroupGrid_BasicCustomer.ColumnCount = 1;
-	GroupGrid_BasicCustomer.ResultCount = 20;
-	GroupGrid_BasicCustomer.yPadding = 60;
-	PageGroupGrid PageGroupGrid_Trash(&Book_Trash, Page_Trash.GetData(), PageItemGrid_Trash.GetData(), GroupGrid_BasicCustomer, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
-	////Example DataBase
+
 
 	Log::LogString("Before Containers Prepare");
 	CompleteOrder::PrepareContainers(&All_Sections, &All_Dishes, &All_Sides, &All_Ingredients, &All_Customer_Orders);
 	CompleteOrder::Prepare(&Book_Restaurant_POS, &ShapeShader, &RoundedCorners, &Segoe, &RoundedCorners);
 
-	//PageItemGrid First_GRID(&Book_Restaurant_POS, &PageGroup_DATA, PageItem_Grid_Template.GetData(), First_Grid_DATA);
-	//float WholeNumberTest = 456.00;
-	//Log::LogString(SubmitOrder::ProcessDecimalPlaceWhole(WholeNumberTest, false, 2));
-
-	Log::LogString("Setting PAGEGROUP2");
-	//PageGroup PageGroup_First(PageItemGrid_Trash.GetData());
-	//PageGroup_First.LoadedBook = &Book_Trash;
-	//PageGroup_First.llSwitch(PageItemGrid_Trash.GetData());
-	//PageGroup_First.SetllPosition({ 0.0, 0.5 }, INPUT_LEFT);
-	Log::LogString("Finished Setting PAGEGROUP2");
 
 	typedef void(*Master_P)();
 	while (!glfwWindowShouldClose(window))
@@ -779,7 +791,7 @@ int main(int argc, char** argv)
 		//Restaurant POS
 		//+-------------------------+
 			                                             
-		//int Page_To_Render = ApplicationMenu::Update();
+		int Page_To_Render = ApplicationMenu::Update();
 		//SubmitOrder::Update(Page_To_Render, KeyState);            
 		//IngredientListCreator::Update(Page_To_Render, &KeyState); 
 		//MenuCreator::Update(KeyState, Page_To_Render);            
@@ -788,7 +800,7 @@ int main(int argc, char** argv)
 		//Book_Restaurant_POS.Update();					          
 		//NumberPrinterActions::Update();					 
 		//SearchBarActions::Update();						 
-		Page_Trash.DrawPage();
+		//Page_Trash.DrawPage();
 		//+-------------------------+
 
 		PageGroupItem* jaj = &llSlider;

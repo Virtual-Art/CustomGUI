@@ -10,7 +10,7 @@ void CompleteOrder::Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderPro
 	CurrentTexture0 = Texture0;
 	CurrentTexture1 = Texture1;
 	CurrentTexture2 = Texture2;
-	Page_Complete_Order.llInit(RestaurantBook, CurrentShader, CurrentTexture0, CurrentTexture1, CurrentTexture2);
+	Page_Complete_Order.llPageInit(RestaurantBook, CurrentShader, CurrentTexture0, CurrentTexture1, CurrentTexture2);
 	CompleteOrderDirectory = RestaurantBook->Page;
 
 	Quad PlaceHolder(RestaurantBook);

@@ -1,3 +1,6 @@
+#ifndef	 PAGEGROUPGRID
+#define  PAGEGROUPGRID
+
 #include <iostream>
 #include "NewPage.h"
 
@@ -30,8 +33,11 @@ public:
 	PlacementFunction2 CurrentPlacement;
 	PageGroupGridData CurrentGrid;
 	llPageGroupData* Grid_Template;
+	llPageGroupData* First_PageGroup;
 
+	PageGroupGrid() {};
 	PageGroupGrid(llBookData* llBook, llPageData* Page, llPageGroupData* PageGroup_Template, PageGroupGridData PageGroupGrid, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
+	void llInit(llBookData* llBook, llPageData* Page, llPageGroupData* PageGroup_Template, PageGroupGridData PageGroupGrid, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 
 
 	void AddPageGroupGrid();
@@ -40,7 +46,7 @@ public:
 
 	void SetResultCount(int NewResultCount);
 	void SetColumnRow(int Column, int Row);
-	llPageItemData* GetFirst();
+	llPageGroupData* GetFirst();
 	//+-----------------------+//
 
 private:
@@ -51,3 +57,7 @@ private:
 	void SwapPlacementDirection();
 
 };
+
+
+
+#endif

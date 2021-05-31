@@ -1571,7 +1571,4 @@ void PageGroupItem::CalculateGroupOffset()
 	//Distance between parent and child positions
 	CurrentllPageItem->PositionOffset = CurrentllPageItem->Position - Parent_PageGroup->Position;
 	//cout << "PageItem Position Offset: " << CurrentllPageItem->PositionOffset[0] << " , " << CurrentllPageItem->PositionOffset[1] <<  " = (PageItem Position) " << CurrentllPageItem->Position[0] << " , " << CurrentllPageItem->Position[1] << " - " << "(Parent Position) " << Parent_PageGroup->Position[0] << " , " << Parent_PageGroup->Position[1] << endl;
-	Log::LogVec2("PageItemOffset", CurrentllPageItem->PositionOffset);
-	Log::LogVec2("Old", CurrentllPageItem->Position);
-
 }

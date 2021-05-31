@@ -18,20 +18,6 @@ namespace PageItemGridActions
 	//void HighlightSelectee(); //Selector has Selectees, Highlight Selectee Selected
 }
 
-struct PageItemGridData
-{
-	int ResultCount = 1;
-	int RowCount = 0;
-	int ColumnCount = 0;
-	int xPadding = 0;
-	int yPadding = 0;
-	glm::vec4 last_edges;        //(Object) Graphic Reference for the form filler to position with
-	glm::vec4 first_edges;        //(Object) Graphic Reference for the form filler to position with
-	bool first;
-	int xMatchType = MATCH_CENTERS;
-	int yMatchType = MATCH_CENTERS;
-};
-
 
 typedef void(PageGroupItem::*PlacementFunction)(const glm::vec4&, int , int );
 
@@ -42,7 +28,7 @@ class PageItemGrid : public PageGroup
 
 public:
 
-	PageItemGridData CurrentGrid;
+	PageItemGridData* CurrentGrid;
 	llPageItemData* Grid_Template;
 	Button Button_Selector;
 
@@ -52,7 +38,7 @@ public:
 	PageItemGrid() {};
 	//PageItemGrid(llBookData* llBookData);
 	PageItemGrid(llBookData* llBookData,llPageGroupData* PageGroupData, llPageItemData* PageItem_Template, PageItemGridData& SelectorData);
-	//PageItemGrid(llPageItemData* PageItemData);
+	PageItemGrid(llPageGroupData* PageGroupData);
 	//
 	void llInit(llBookData* llBook, llPageGroupData* llPageGroup, llPageItemData* llPageItem, PageItemGridData& GridData);
 	//void llSwitch(llPageGroupData* PageGroup) override;
@@ -62,6 +48,7 @@ public:
 
 	void SetResultCount(int NewResultCount);
 	void SetColumnRow(int Column, int Row);
+	void SetDescription(const string& Description);
 	llPageItemData* GetFirst();
 	void llUpdate() override;
 	//+-----------------------+//

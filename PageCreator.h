@@ -18,6 +18,7 @@
 #include "SearchBar.h"
 #include "Selector.h"
 #include "PageItemGrid.h"
+#include "PageGroupGrid.h"
 
 using namespace std;
 

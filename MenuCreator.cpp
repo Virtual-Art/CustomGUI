@@ -9,7 +9,7 @@ void MenuCreator::Prepare_MenuCreator(llBookData* Restaurant_POS, ShaderProgram*
 	Eight.Name = "I am Eight";
 	RestaurantBook = Restaurant_POS;
 	CurrentShader = ShaderProgram;
-	Page_MenuCreator.llInit(RestaurantBook, CurrentShader, Texture0, Texture1, Texture2);
+	Page_MenuCreator.llPageInit(RestaurantBook, CurrentShader, Texture0, Texture1, Texture2);
 
 	//Prepare Sections
 	Prepare_Section();

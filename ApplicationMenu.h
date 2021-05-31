@@ -20,11 +20,47 @@ namespace ApplicationMenu
 	static BookDirectory BD_ApplicationMenu;
 	//static BookDirectory ElementsHovered;
 	static llBookData* RestaurantBook;
+	static ShaderProgram* CurrentShader;
+	static RawTexture* Texture0;
+	static RawTexture* Texture1;
+	static RawTexture* Texture2;
 
 	void Prepare(llBookData* Restaurant_POS, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
+	void PrepareContainers(map<string, Section>* Section, map<string, Dish>* Dish, map<string, DishSide>* Side, map<string, Ingredient>* Ingredient, map<string, SameDayOrders>* All_Customer_Orders);
+
+	static map<string, SameDayOrders>* All_Customer_Orders;
+	static map<string, Ingredient>* All_Ingredients;
+	static map<string, DishSide>* All_Sides;
+	static map<string, Dish>* All_Dishes;
+	static map<string, Section>* All_Sections;
+
+	#define Section_DataBase (*All_Sections) //Search by Section Name (string)
+	#define Dish_DataBase (*All_Dishes) //Search by Dish Name (string)
+	#define DishSide_DataBase (*All_Sides) //Search by Side Name (string)
+	#define Ingredient_DataBase (*All_Ingredients) //Search by Ingredient Name (string)
+	#define Customer_Order_DataBase (*All_Customer_Orders) //Search by Data (string)
+
 	int Update();
 
 	void CreatePageSelector();
+
+	//---------Customer Selector------------//
+
+	static PageGroupItem PageItem_Customer_Graphic;
+	static PageItemGrid PageItemGrid_Orders_By_Date;
+	static PageGroupGrid PageGroupGrid_All_Orders;
+
+	void CreateCustomerGraphic();
+	void CreateSameDayCustomerGraphics();
+	void CreateCustomerSelect();
+
+
+	void UpdateCustomerSelect();
+	void SetSameDayCustomerGraphic(const SameDayOrders& CurrentDate, llPageGroupData* CurrentPageGroup);
+	void SetCustomerGraphic(const CustomerOrder& CurrentOrder, llPageItemData* CurrentPageItem);
+
+	//---------Customer Selector------------//
+
 
 	void Highlight_Page_Selector(llShapeGroupData* ShapeGroup_Section_Graphic);
 	void Select_Page();

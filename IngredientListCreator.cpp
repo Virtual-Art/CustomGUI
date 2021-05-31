@@ -63,7 +63,7 @@ void IngredientListCreator::Prepare(llBookData* Restaurant_POS, ShaderProgram* S
 	CurrentTexture1 = Texture1;
 	CurrentTexture2 = Texture2;
 
-	Page_IngredientListCreator.llInit(RestaurantBook, CurrentShader, CurrentTexture0, CurrentTexture1, CurrentTexture2);
+	Page_IngredientListCreator.llPageInit(RestaurantBook, CurrentShader, CurrentTexture0, CurrentTexture1, CurrentTexture2);
 
 	IngredientListCreatorOrderDirectory = RestaurantBook->Page;
 
