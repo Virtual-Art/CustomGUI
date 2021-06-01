@@ -41,7 +41,7 @@ public:
 	PageItemGrid(llPageGroupData* PageGroupData);
 	//
 	void llInit(llBookData* llBook, llPageGroupData* llPageGroup, llPageItemData* llPageItem, PageItemGridData& GridData);
-	//void llSwitch(llPageGroupData* PageGroup) override;
+	void llSwitch(llPageGroupData* PageGroup);
 	//
 	void AddPageItemGrid();
 	void ReplacePageItemGrid();

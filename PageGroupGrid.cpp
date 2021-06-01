@@ -19,6 +19,36 @@ void PageGroupGrid::llInit(llBookData* llBook, llPageData* Page, llPageGroupData
 	AddPageGroupGrid();
 }
 
+void PageGroupGrid::SetllPosition(glm::vec2 Position)
+{
+	if (CurrentllPage == nullptr) { Log::LogString("ERROR:: SetPosition FAILED:: Invalid Page State"); return; };
+	if (Position == CurrentGrid.Position) { return; }
+
+	CurrentGrid.Position = Position;
+	llUpdate();
+}
+
+void PageGroupGrid::SetllPosition(glm::vec2 Position, glm::vec2 bools)
+{
+	//Validate object State
+	if (CurrentllPage == nullptr) { Log::LogString("ERROR:: SetPosition FAILED:: Invalid Page State"); return; };
+	if (Position == CurrentGrid.Position) { return; }
+
+	//Set Details Provided
+	if (bools[0] == true) { CurrentGrid.Position[0] = Position[0]; }
+	if (bools[1] == true) { CurrentGrid.Position[1] = Position[1]; }
+	llUpdate();
+}
+
+void PageGroupGrid::SetllPosition(glm::vec2 Position, int Input_Type)
+{
+	if (CurrentllPage == nullptr) { Log::LogString("ERROR:: SetPosition FAILED:: Invalid Page State"); return; };
+	if (Position == CurrentGrid.Position) { return; }
+
+	CurrentGrid.Position = Position;
+	CurrentGrid.InputType = Input_Type;
+	llUpdate();
+}
 
 void PageGroupGrid::AddPageGroupGrid()
 {
@@ -44,7 +74,7 @@ void PageGroupGrid::AddPageGroupGrid()
 	CurrentGrid.last_edges = CurrentGrid.first_edges;
 	PageGroup PageGroup_Current(CurrentPageGroup);
 	PageGroup_Current.LoadedBook = LoadedBook;
-	First_PageGroup = PageGroup_First.GetData();
+	First_PageGroup = PageGroup_First.GetData()->Previous;
 
 	Log::LogString("---------Adding PageGroup Grid FINISHED ---------");
 
@@ -77,7 +107,7 @@ void PageGroupGrid::AddPageGroupGrid()
 		//Add if Neccessary
 		CurrentPageGroup = PageGroupIntoPage(CurrentllPage, Grid_Template);
 		PageGroup_Current.llSwitch(CurrentPageGroup);
-		(PageGroup_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+		(PageGroup_Current.*CurrentPlacement)(EdgeToUse, MATCH_BEGINNINGS, CurrentGrid.yPadding);
 		EdgeToUse = PageGroup_Current.GetEdges();
 	
 		//New Column
@@ -107,7 +137,7 @@ void PageGroupGrid::ReplacePageGroupGrid()
 	//First One
 	llPageGroupData* Current_PageGroup = CurrentllPage->PageGroup;
 	PageGroup_First.llSwitch(Current_PageGroup);
-	PageGroup_First.SetllPosition({0.0, 0.0}, INPUT_CENTER); //Doubling ......?
+	PageGroup_First.SetllPosition(CurrentGrid.Position, CurrentGrid.InputType); 
 	PageGroup_First.UnHide();
 	CurrentGrid.first_edges = PageGroup_First.GetEdges();
 	CurrentGrid.last_edges = CurrentGrid.first_edges;
@@ -145,7 +175,7 @@ void PageGroupGrid::ReplacePageGroupGrid()
 		if (Current_PageGroup != nullptr)
 		{
 			PageItem_Current.llSwitch(Current_PageGroup);
-			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_BEGINNINGS, CurrentGrid.yPadding);
 			PageItem_Current.UnHide();
 			EdgeToUse = PageItem_Current.GetEdges();
 
@@ -161,7 +191,7 @@ void PageGroupGrid::ReplacePageGroupGrid()
 		{
 			Current_PageGroup = PageGroupIntoPage(CurrentllPage, Grid_Template);
 			PageItem_Current.llSwitch(Current_PageGroup);
-			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_CENTERS, CurrentGrid.yPadding);
+			(PageItem_Current.*CurrentPlacement)(EdgeToUse, MATCH_BEGINNINGS, CurrentGrid.yPadding);
 			EdgeToUse = PageItem_Current.GetEdges();
 
 			//New Column

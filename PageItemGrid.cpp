@@ -33,6 +33,22 @@ void PageItemGrid::llInit(llBookData* llBook, llPageGroupData* llPageGroup, llPa
 	AddPageItemGrid();
 }
 
+void PageItemGrid::llSwitch(llPageGroupData* PageGroup)
+{
+	//If it exists
+	if (PageGroup != nullptr && PageGroup->PageItem != nullptr)
+	{
+		CurrentllPageGroup = PageGroup;
+		CurrentGrid = &PageGroup->PageItemGridData;
+		Grid_Template = PageGroup->PageItem_Template;
+		CurrentPlacement = &PageGroupItem::PlaceRight;
+	}
+	else
+	{
+		Log::LogString("ERROR:: PageItemGrid Switch FAILED:: No PageGroup Provided");
+	}
+}
+
 
 //Working in terms of the book and data
 void PageItemGrid::AddPageItemGrid()

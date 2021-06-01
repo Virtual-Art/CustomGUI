@@ -39,6 +39,9 @@ public:
 	PageGroupGrid(llBookData* llBook, llPageData* Page, llPageGroupData* PageGroup_Template, PageGroupGridData PageGroupGrid, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 	void llInit(llBookData* llBook, llPageData* Page, llPageGroupData* PageGroup_Template, PageGroupGridData PageGroupGrid, ShaderProgram* ShaderProgram, RawTexture* Texture0, RawTexture* Texture1, RawTexture* Texture2);
 
+	void SetllPosition(glm::vec2 Position);
+	void SetllPosition(glm::vec2 Position, glm::vec2 Only);
+	void SetllPosition(glm::vec2 Position, int Input_Type);
 
 	void AddPageGroupGrid();
 	void ReplacePageGroupGrid();

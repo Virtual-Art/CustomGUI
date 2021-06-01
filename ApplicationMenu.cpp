@@ -32,6 +32,8 @@ int ApplicationMenu::Update()
 	//RestaurantBook->Page = Page_ApplicationMenu.GetData();
 	Page_ApplicationMenu.DrawPage();
 	//MasterElement::FindElement(RestaurantBook, LEVEL_SHAPEGROUP, ElementsHovered);
+	PageGroupGrid_All_Orders.SetllPosition({ MouseManager::xPos, (1 - (MouseManager::yPos - 0.4)) }, PageCreator::OnlyY);
+
 	return CurrentPage;
 }
 
@@ -100,7 +102,7 @@ void ApplicationMenu::CreateCustomerGraphic()
 {
 	TextData Customer_Data;
 	llShapeGroupData Graphic_Data;
-	Graphic_Data.Position = { 0.0, 0.0 };
+	Graphic_Data.Position = { 0.0, 0.7 };
 	int GraphicSpacing = 10;
 	PageItem_Customer_Graphic.llInit(RestaurantBook);
 
@@ -137,7 +139,7 @@ void ApplicationMenu::CreateSameDayCustomerGraphics()
 	ItemGrid_Basic_Customer.DescriptionColor = SubmitOrder::Pink;
 	ItemGrid_Basic_Customer.DescriptionyPadding = 70;
 	llPageGroupData PageGroup_Basic_Customer;
-	PageGroup_Basic_Customer.Position = { -0.7, 0.0 };
+	PageGroup_Basic_Customer.Position = { -0.7, 0.8 };
 	Log::LogString("---------------------Creating Same Day Order PageGroup--------------------");
 	PageItemGrid_Orders_By_Date.llInit(RestaurantBook, &PageGroup_Basic_Customer, PageItem_Customer_Graphic.GetData(), ItemGrid_Basic_Customer);
 }
@@ -149,7 +151,7 @@ void ApplicationMenu::CreateCustomerSelect()
 
 	PageGroupGridData GroupGrid_BasicCustomer;
 	GroupGrid_BasicCustomer.InputType = INPUT_LEFT;
-	GroupGrid_BasicCustomer.Position = { -0.7, 0.5 };
+	GroupGrid_BasicCustomer.Position = { -0.7, 0.7 };
 	GroupGrid_BasicCustomer.ColumnCount = 1;
 	GroupGrid_BasicCustomer.ResultCount = 2;
 	GroupGrid_BasicCustomer.yPadding = 100;
@@ -161,6 +163,10 @@ void ApplicationMenu::CreateCustomerSelect()
 
 void ApplicationMenu::UpdateCustomerSelect()
 {
+	Log::LogString("---------------Updating Customer DataBase----------------");
+
+	Log::LogInt("Number Of Dates: ", Customer_Order_DataBase.size());
+
 	//Set Count
 	PageGroupGrid_All_Orders.SetResultCount(Customer_Order_DataBase.size());
 	llPageGroupData* CurrentPageGroup = PageGroupGrid_All_Orders.GetFirst();
@@ -183,8 +189,11 @@ void ApplicationMenu::SetSameDayCustomerGraphic(const SameDayOrders& CurrentDate
 {
 	if (CurrentPageGroup == nullptr) { Log::LogString("SetSameDataCustomerGraphic Failed:: null PageGroup"); return; }
 
-	Log::LogString("-----------------------Setting Dated Orders--------------------------");
+	Log::LogString("-----------------------Setting " + CurrentDate.Day + " --------------------------");
 
+	Log::LogInt("Number Of Orders: ", CurrentDate.CustomerOrders.size());
+
+	PageItemGrid_Orders_By_Date.llSwitch(CurrentPageGroup);
 	PageItemGrid_Orders_By_Date.SetResultCount(CurrentDate.CustomerOrders.size());
 	PageItemGrid_Orders_By_Date.SetDescription(CurrentDate.Day);
 	llPageItemData* CurrentPageItem = PageItemGrid_Orders_By_Date.GetFirst();
@@ -209,33 +218,33 @@ void ApplicationMenu::SetCustomerGraphic(const CustomerOrder& CurrentOrder, llPa
 	//Validation
 	if (CurrentPageItem == nullptr) { Log::LogString("SetCustomerGraphicFailed:: null PageItem"); return; }
 	Log::LogString("------------Setting Customer-----------");
-
+	
 	//Setup 
 	llShapeGroupData* CurrentShapeGroup = CurrentPageItem->ShapeGroup;
 	Text CustomerData(CurrentShapeGroup);
 	CustomerData.LoadedBook = RestaurantBook;
 	glm::vec4 Last_Edges;
 	int GraphicSpacing = 10;
-
+	
 	//Name
 	CustomerData.llSwitch(CurrentShapeGroup);
 	CustomerData.SetllText(CurrentOrder.CustomerDetails.FirstName + " " + CurrentOrder.CustomerDetails.LastName);
 	Last_Edges = CustomerData.GetEdgesWithBackGround();
-
+	
 	// # of Items
 	CurrentShapeGroup = CurrentShapeGroup->Next;
 	CustomerData.llSwitch(CurrentShapeGroup);
 	CustomerData.SetllText(to_string(CurrentOrder.OrderedDishes.size()));
 	CustomerData.PlaceBelow(Last_Edges, MATCH_BEGINNINGS, GraphicSpacing);
 	Last_Edges = CustomerData.GetEdgesWithBackGround();
-
+	
 	//Address
 	CurrentShapeGroup = CurrentShapeGroup->Next;
 	CustomerData.llSwitch(CurrentShapeGroup);
 	CustomerData.SetllText(CurrentOrder.CustomerDetails.Address);
 	CustomerData.PlaceBelow(Last_Edges, MATCH_BEGINNINGS, GraphicSpacing);
 	Last_Edges = CustomerData.GetEdgesWithBackGround();
-
+	
 	// Order Total
 	CurrentShapeGroup = CurrentShapeGroup->Next;
 	CustomerData.llSwitch(CurrentShapeGroup);
